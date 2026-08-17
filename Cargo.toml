@@ -612,6 +612,10 @@ name = "stage144_mixed_frontend_route_blind"
 path = "src/bin/stage144_mixed_frontend_route_blind.rs"
 
 [[bin]]
+name = "stage145_frontend_gap_education"
+path = "src/bin/stage145_frontend_gap_education.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

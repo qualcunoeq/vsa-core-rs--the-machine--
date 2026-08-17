@@ -1,0 +1,5038 @@
+{
+  "schema": "stage145-frontend-gap-education-v1",
+  "source": "route-blind incomplete frontend corpus plus independent source-validation evidence",
+  "corpus_sha256": "b07271e00f4b63d80ad40ed73cf6b685c9eeff5abd35f6a838d3d0693ba9da35",
+  "cases": 500,
+  "frontend_invocations": 2500,
+  "expected_missing": 300,
+  "expected_ambiguous": 100,
+  "expected_unsupported": 100,
+  "typed_gap_observations": 300,
+  "observation_replay_verified": 300,
+  "residual_classification_exact": 500,
+  "frontend_replay_verified": 500,
+  "frontend_tamper_rejections": 500,
+  "source_candidates": 5,
+  "source_receipts_validated": 5,
+  "admitted_candidates": 5,
+  "resolved_missing_cases": 300,
+  "remaining_residual_cases": 200,
+  "selected_modules": [
+    "source_frontend_number_theory",
+    "source_frontend_character",
+    "source_frontend_combinatorics",
+    "source_frontend_homology"
+  ],
+  "campaign_replay_verified": true,
+  "manifest_unchanged": true,
+  "ambiguous_or_unsupported_preserved": 200,
+  "false_authorizations": 0,
+  "forbidden_selections": 0,
+  "status_counts": {
+    "Some(Ambiguous)": 100,
+    "Some(MissingCapability)": 300,
+    "Some(Unsupported)": 100
+  },
+  "receipts": [
+    {
+      "id": "missing_000",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_001",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_002",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_003",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_004",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_005",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_006",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_007",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_008",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_009",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_010",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_011",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_012",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_013",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_014",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_015",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_016",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_017",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_018",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_019",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_020",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_021",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_022",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_023",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_024",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_025",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_026",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_027",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_028",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_029",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_030",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_031",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_032",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_033",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_034",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_035",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_036",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_037",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_038",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_039",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_040",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_041",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_042",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_043",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_044",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_045",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_046",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_047",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_048",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_049",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_050",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_051",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_052",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_053",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_054",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_055",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_056",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_057",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_058",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_059",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_060",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_061",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_062",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_063",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_064",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_065",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_066",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_067",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_068",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_069",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_070",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_071",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_072",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_073",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_074",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_075",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_076",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_077",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_078",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_079",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_080",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_081",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_082",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_083",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_084",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_085",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_086",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_087",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_088",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_089",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_090",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_091",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_092",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_093",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_094",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_095",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_096",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_097",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_098",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_099",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_100",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_101",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_102",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_103",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_104",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_105",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_106",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_107",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_108",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_109",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_110",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_111",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_112",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_113",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_114",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_115",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_116",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_117",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_118",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_119",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_120",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_121",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_122",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_123",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_124",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_125",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_126",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_127",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_128",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_129",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_130",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_131",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_132",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_133",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_134",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_135",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_136",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_137",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_138",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_139",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_140",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_141",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_142",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_143",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_144",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_145",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_146",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_147",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_148",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_149",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_150",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_151",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_152",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_153",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_154",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_155",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_156",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_157",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_158",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_159",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_160",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_161",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_162",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_163",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_164",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_165",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_166",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_167",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_168",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_169",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_170",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_171",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_172",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_173",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_174",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_175",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_176",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_177",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_178",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_179",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_180",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_181",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_182",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_183",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_184",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_185",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_186",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_187",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_188",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_189",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_190",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_191",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_192",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_193",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_194",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_195",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_196",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_197",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_198",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_199",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_200",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_201",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_202",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_203",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_204",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_205",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_206",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_207",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_208",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_209",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_210",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_211",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_212",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_213",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_214",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_215",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_216",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_217",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_218",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_219",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_220",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_221",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_222",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_223",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_224",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_225",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_226",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_227",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_228",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_229",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_230",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_231",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_232",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_233",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_234",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_235",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_236",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_237",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_238",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_239",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_240",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_241",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_242",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_243",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_244",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_245",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_246",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_247",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_248",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_249",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_250",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_251",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_252",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_253",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_254",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_255",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_256",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_257",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_258",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_259",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_260",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_261",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_262",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_263",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_264",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_265",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_266",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_267",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_268",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_269",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_270",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_271",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_272",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_273",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_274",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_275",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_276",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_277",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_278",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_279",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_280",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_281",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_282",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_283",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_284",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_285",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_286",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_287",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_288",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_289",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_290",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_291",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_292",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_293",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_294",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_295",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_296",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_297",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_298",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "missing_299",
+      "expected": "missing",
+      "signal_count": 1,
+      "residual_kind": "missing_capability",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_000",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_001",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_002",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_003",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_004",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_005",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_006",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_007",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_008",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_009",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_010",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_011",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_012",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_013",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_014",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_015",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_016",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_017",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_018",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_019",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_020",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_021",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_022",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_023",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_024",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_025",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_026",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_027",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_028",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_029",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_030",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_031",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_032",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_033",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_034",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_035",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_036",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_037",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_038",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_039",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_040",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_041",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_042",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_043",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_044",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_045",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_046",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_047",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_048",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_049",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_050",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_051",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_052",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_053",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_054",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_055",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_056",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_057",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_058",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_059",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_060",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_061",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_062",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_063",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_064",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_065",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_066",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_067",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_068",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_069",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_070",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_071",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_072",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_073",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_074",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_075",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_076",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_077",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_078",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_079",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_080",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_081",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_082",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_083",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_084",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_085",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_086",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_087",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_088",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_089",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_090",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_091",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_092",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_093",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_094",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_095",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_096",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_097",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_098",
+      "expected": "ambiguous",
+      "signal_count": 1,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "ambiguous_099",
+      "expected": "ambiguous",
+      "signal_count": 2,
+      "residual_kind": "ambiguous",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_000",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_001",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_002",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_003",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_004",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_005",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_006",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_007",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_008",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_009",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_010",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_011",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_012",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_013",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_014",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_015",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_016",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_017",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_018",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_019",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_020",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_021",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_022",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_023",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_024",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_025",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_026",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_027",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_028",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_029",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_030",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_031",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_032",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_033",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_034",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_035",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_036",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_037",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_038",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_039",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_040",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_041",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_042",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_043",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_044",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_045",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_046",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_047",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_048",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_049",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_050",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_051",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_052",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_053",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_054",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_055",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_056",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_057",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_058",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_059",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_060",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_061",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_062",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_063",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_064",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_065",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_066",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_067",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_068",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_069",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_070",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_071",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_072",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_073",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_074",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_075",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_076",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_077",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_078",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_079",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_080",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_081",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_082",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_083",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_084",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_085",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_086",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_087",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_088",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_089",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_090",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_091",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_092",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_093",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_094",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_095",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_096",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_097",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_098",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    },
+    {
+      "id": "unsupported_099",
+      "expected": "unsupported",
+      "signal_count": 0,
+      "residual_kind": "unsupported",
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "observation_replay": false,
+      "residual_preserved": true
+    }
+  ]
+}

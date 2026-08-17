@@ -1,0 +1,24 @@
+{
+  "schema": "stage151-hle-checkpoint-post-source-multimodal-v1",
+  "checkpoint": "post-integrated-source-multimodal-curriculum",
+  "producer_commit": "2ceafd9",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "manifest_sha256": "e252a0d7e1632815efde3dd5d6044e4e4aa3b9d697485b215e4269450943cb31",
+  "source_composition_sha256": "ce05d72e5c92473395434a5f24956b9ab90d6f905847ba69592da144af2401bd",
+  "cases": 2500,
+  "correct_authorized": 2,
+  "incorrect_authorized": 0,
+  "false_authorizations": 0,
+  "curriculum_signals": 569,
+  "route_receipts": 0,
+  "replay_compatibility_verified": 2,
+  "replay_not_applicable": 2498,
+  "replay_not_recorded": 0,
+  "terminal_counts": {
+    "correct_authorized": 2,
+    "visual_required": 260,
+    "no_curriculum_signal": 1718,
+    "unresolved": 520
+  },
+  "registry_mutated": false
+}

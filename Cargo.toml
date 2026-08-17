@@ -632,6 +632,10 @@ name = "stage150_source_multimodal_composition"
 path = "src/bin/stage150_source_multimodal_composition.rs"
 
 [[bin]]
+name = "stage151_hle_checkpoint_post_source_multimodal"
+path = "src/bin/stage151_hle_checkpoint_post_source_multimodal.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

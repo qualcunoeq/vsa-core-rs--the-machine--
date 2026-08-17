@@ -500,6 +500,10 @@ name = "stage112_curriculum_memory_source_extension"
 path = "src/bin/stage112_curriculum_memory_source_extension.rs"
 
 [[bin]]
+name = "stage113_curriculum_retrieval_prerequisites"
+path = "src/bin/stage113_curriculum_retrieval_prerequisites.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

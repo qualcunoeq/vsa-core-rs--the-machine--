@@ -648,6 +648,10 @@ name = "stage154_visual_source_curriculum_admission"
 path = "src/bin/stage154_visual_source_curriculum_admission.rs"
 
 [[bin]]
+name = "stage155_sealed_source_multimodal_exam"
+path = "src/bin/stage155_sealed_source_multimodal_exam.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

@@ -528,6 +528,10 @@ name = "stage119_source_memory_ingestion"
 path = "src/bin/stage119_source_memory_ingestion.rs"
 
 [[bin]]
+name = "stage120_source_transfer_checkpoint"
+path = "src/bin/stage120_source_transfer_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

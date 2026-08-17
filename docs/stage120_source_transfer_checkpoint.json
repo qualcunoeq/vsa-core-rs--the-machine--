@@ -1,0 +1,29 @@
+{
+  "schema": "stage120-source-transfer-checkpoint-v1",
+  "source_frontend_development_cases": 240,
+  "source_frontend_exact_decisions": 300,
+  "source_frontend_holdout_cases": 60,
+  "source_frontend_holdout_exact": 60,
+  "source_probability_cases": 240,
+  "source_probability_complete": 120,
+  "route_blind_cases": 240,
+  "route_blind_exact": 240,
+  "number_language_cases": 1200,
+  "number_language_downstream_complete": 600,
+  "number_language_false_authorizations": 0,
+  "source_records": 5,
+  "source_memory_total": 100005,
+  "source_memory_replay": 5,
+  "source_memory_tamper_rejected": 5,
+  "aggregate_false_authorizations": 0,
+  "aggregate_false_denials": 0,
+  "live_mutations": 0,
+  "parent_report_sha256": [
+    "4845aa734d5cfc2eab1b1987567a6a2b28d30cb1505afbbcf297f2c396796f04",
+    "aed85a4aa00bc95f9900c38c7ce46fa47e4a30f7b97319a110f933a69f180b65",
+    "264e36308c1941fd3a920010076167ec79d15e3198129284b0eb8e31f558e35e",
+    "0bbd040af5f80751ac9a3bd0f97504d3dec0732fe878f668b4e6a44b8bb7ffb8",
+    "179252126137e297bdf6b9089010194174292c2797f259978318c1027747bd1a",
+    "142475ff5feaae5b260b638669b39e2556bc16c59defba42fe16e206a6f8e7f0"
+  ]
+}

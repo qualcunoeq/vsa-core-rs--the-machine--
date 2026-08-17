@@ -1,0 +1,8335 @@
+{
+  "schema": "stage189-stationary-graph-composition-v1",
+  "corpus_sha256": "c9c509fb0a3707be3c19247e547a6dbc2467c53b1539c11b6ded5d152e1d63c1",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "receipts": [
+    {
+      "id": "cycle3_0",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_1",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_2",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_3",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_4",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_5",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_6",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_7",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_8",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_9",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_10",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_11",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_12",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_13",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_14",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_15",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_16",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_17",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_18",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_19",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_20",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_21",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_22",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_23",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_24",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_25",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_26",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_27",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_28",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_29",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_30",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_31",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_32",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_33",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_34",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_35",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_36",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_37",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_38",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "cycle3_39",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_0",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_1",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_2",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_3",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_4",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_5",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_6",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_7",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_8",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_9",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_10",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_11",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_12",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_13",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_14",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_15",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_16",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_17",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_18",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_19",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_20",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_21",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_22",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_23",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_24",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_25",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_26",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_27",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_28",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_29",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_30",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_31",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_32",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_33",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_34",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_35",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_36",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_37",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_38",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete3_39",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_0",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_1",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_2",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_3",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_4",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_5",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_6",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_7",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_8",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_9",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_10",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_11",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_12",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_13",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_14",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_15",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_16",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_17",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_18",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_19",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_20",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_21",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_22",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_23",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_24",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_25",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_26",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_27",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_28",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_29",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_30",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_31",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_32",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_33",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_34",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_35",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_36",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_37",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_38",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "complete4_39",
+      "expected": "complete",
+      "actual": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_0",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_1",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_2",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_3",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_4",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_5",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_6",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_7",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_8",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_9",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_10",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_11",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_12",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_13",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_14",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_15",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_16",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_17",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_18",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_19",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_20",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_21",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_22",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_23",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_24",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_25",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_26",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_27",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_28",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_29",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_30",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_31",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_32",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_33",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_34",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_35",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_36",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_37",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_38",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_39",
+      "expected": "ambiguous",
+      "actual": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_0",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_1",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_2",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_3",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_4",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_5",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_6",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_7",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_8",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_9",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_10",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_11",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_12",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_13",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_14",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_15",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_16",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_17",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_18",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "missing_graph_support_19",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_0",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_1",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_2",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_3",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_4",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_5",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_6",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_7",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_8",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_9",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_10",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_11",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_12",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_13",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_14",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_15",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_16",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_17",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_18",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "undirected_graph_19",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_0",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_1",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_2",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_3",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_4",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_5",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_6",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_7",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_8",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_9",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_10",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_11",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_12",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_13",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_14",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_15",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_16",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_17",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_18",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_stationary_19",
+      "expected": "non_unique_stationary",
+      "actual": "non_unique_stationary",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_0",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_1",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_2",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_3",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_4",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_5",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_6",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_7",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_8",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_9",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_10",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_11",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_12",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_13",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_14",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_15",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_16",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_17",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_18",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "vertex_order_mismatch_19",
+      "expected": "incompatible_semantics",
+      "actual": "incompatible_semantics",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    }
+  ]
+}

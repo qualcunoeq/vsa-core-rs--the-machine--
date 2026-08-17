@@ -1,0 +1,22 @@
+{
+  "schema": "stage205-current-manifest-memory-after-mobius-v1",
+  "manifest_sha256": "138e6a901d465b30795bac500c307820d93e6a223ada8f8b2d90334e961ec118",
+  "validated_packs": 33,
+  "descriptors": 122,
+  "records": 100000,
+  "segments": 391,
+  "exact_queries": 600,
+  "exact_complete": 600,
+  "ambiguous_queries": 150,
+  "ambiguous_detected": 150,
+  "stale_queries": 125,
+  "stale_refused": 125,
+  "unknown_queries": 125,
+  "unknown_refused": 125,
+  "replay_verified": 100000,
+  "tamper_sample": 1000,
+  "tamper_rejected": 1000,
+  "contamination": 0,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0
+}

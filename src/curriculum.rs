@@ -500,6 +500,13 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "source-attributed finite arithmetic functions with explicit trial-factorization bounds",
         ),
         (
+            "source_derived_mobius",
+            "Source-derived finite Möbius inversion",
+            vec!["elementary_number_theory", "combinatorics", "bounded_arithmetic_functions"],
+            vec!["mobius_inversion_sequence", "divisor_convolution_sequence"],
+            "source-derived finite divisor convolution; asymptotic number theory remains separate",
+        ),
+        (
             "number_theory",
             "Number theory",
             vec!["real_complex_analysis", "abstract_algebra"],
@@ -541,6 +548,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "topology"
                 | "bounded_dirichlet_characters"
                 | "bounded_arithmetic_functions"
+                | "source_derived_mobius"
         ) {
             (
                 CurriculumStatus::ShadowValidated,
@@ -587,7 +595,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 33);
+        assert_eq!(manifest.packs.len(), 34);
         assert!(manifest
             .packs
             .iter()

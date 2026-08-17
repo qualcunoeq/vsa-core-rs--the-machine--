@@ -936,6 +936,35 @@
         "selection_reason": "source-attributed finite arithmetic functions with explicit trial-factorization bounds"
       },
       {
+        "id": "source_derived_mobius",
+        "title": "Source-derived finite Möbius inversion",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "elementary_number_theory",
+          "combinatorics",
+          "bounded_arithmetic_functions"
+        ],
+        "reusable_artifacts": [
+          "mobius_inversion_sequence",
+          "divisor_convolution_sequence"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-derived finite divisor convolution; asymptotic number theory remains separate"
+      },
+      {
         "id": "number_theory",
         "title": "Number theory",
         "status": "planned",
@@ -966,7 +995,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "0c060ea0aa93e49767c0cd8d890ab950ee799bdf284a6e12b343c12e450088b4",
+  "manifest_replay_hash": "138e6a901d465b30795bac500c307820d93e6a223ada8f8b2d90334e961ec118",
   "validation_errors": [],
   "production_authorizations": 0
 }

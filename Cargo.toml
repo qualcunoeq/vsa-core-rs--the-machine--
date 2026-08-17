@@ -624,6 +624,10 @@ name = "stage148_visual_biology_probability"
 path = "src/bin/stage148_visual_biology_probability.rs"
 
 [[bin]]
+name = "stage149_visual_chemistry_linear"
+path = "src/bin/stage149_visual_chemistry_linear.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

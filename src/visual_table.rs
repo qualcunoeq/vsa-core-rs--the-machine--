@@ -15,6 +15,9 @@ pub mod visual_probability_bridge;
 #[path = "visual_biology_bridge.rs"]
 pub mod visual_biology_bridge;
 
+#[path = "visual_chemistry_bridge.rs"]
+pub mod visual_chemistry_bridge;
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum TableStatus {

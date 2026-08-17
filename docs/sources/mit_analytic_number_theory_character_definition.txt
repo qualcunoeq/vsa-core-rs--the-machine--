@@ -1,0 +1,10 @@
+# Source boundary for the bounded finite-character curriculum node.
+
+SOURCE_ID: mit-ocw-18-785:finite-dirichlet-characters
+TITLE: Analytic Number Theory, MIT OpenCourseWare 18.785
+SECTION: characters of the finite multiplicative group modulo a prime
+URL: https://ocw.mit.edu/courses/18-785-number-theory-i-fall-2012/
+LICENSE: MIT OpenCourseWare attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: finite multiplicative characters and orthogonality
+SCOPE: prime modulus at most 31; exact roots of unity; no asymptotics

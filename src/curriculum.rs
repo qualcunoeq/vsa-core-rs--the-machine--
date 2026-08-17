@@ -443,6 +443,18 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "validated finite simplicial extension with explicit F_2 and dimension bounds",
         ),
         (
+            "bounded_dirichlet_characters",
+            "Bounded finite Dirichlet characters",
+            vec!["elementary_number_theory", "abstract_algebra"],
+            vec![
+                "finite_character",
+                "root_of_unity_value",
+                "character_partial_sum",
+                "orthogonality_certificate",
+            ],
+            "finite exact character foundation; asymptotic number theory remains separate",
+        ),
+        (
             "number_theory",
             "Number theory",
             vec!["real_complex_analysis", "abstract_algebra"],
@@ -479,6 +491,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_finite_topology"
                 | "source_derived_finite_metric"
                 | "topology"
+                | "bounded_dirichlet_characters"
         ) {
             (
                 CurriculumStatus::ShadowValidated,
@@ -525,7 +538,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 28);
+        assert_eq!(manifest.packs.len(), 29);
         assert!(manifest
             .packs
             .iter()

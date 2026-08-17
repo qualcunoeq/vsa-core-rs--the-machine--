@@ -790,6 +790,36 @@
         "selection_reason": "validated finite simplicial extension with explicit F_2 and dimension bounds"
       },
       {
+        "id": "bounded_dirichlet_characters",
+        "title": "Bounded finite Dirichlet characters",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "elementary_number_theory",
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "finite_character",
+          "root_of_unity_value",
+          "character_partial_sum",
+          "orthogonality_certificate"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "finite exact character foundation; asymptotic number theory remains separate"
+      },
+      {
         "id": "number_theory",
         "title": "Number theory",
         "status": "planned",
@@ -820,7 +850,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "91b53e24c925bfd9ba6c5a087f19ab21a575029536b24d70527e0872c80a8194",
+  "manifest_replay_hash": "37675d40f8291d9abc007547a34fc0aa9e01830ac68e3fdcd057a11aeb5d07eb",
   "validation_errors": [],
   "production_authorizations": 0
 }

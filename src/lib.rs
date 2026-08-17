@@ -45,6 +45,7 @@ pub mod curriculum_memory;
 pub mod defense;
 pub mod development;
 pub mod diagnostic;
+pub mod dirichlet_character_pack;
 pub mod discrete_dynamics;
 pub mod drift;
 pub mod drives;

@@ -1,0 +1,21 @@
+{
+  "schema": "stage128-dirichlet-character-pack-v1",
+  "source_sha256": "2ccc8479144cc4b2cc962ea5abc4e5545923535aefcc68ea3c0e1aea5d3cceb3",
+  "corpus_sha256": "92abe30ffab539992c38a79f04fafea6bfe068c471d419fec43afc52d64f5496",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "supported_artifacts": 120,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "statuses": {
+    "ambiguous": 40,
+    "complete": 120,
+    "inconsistent": 20,
+    "unsupported": 60
+  }
+}

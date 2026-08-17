@@ -1,0 +1,15 @@
+{
+  "schema": "stage129-number-theory-curriculum-checkpoint-v1",
+  "previous_manifest_sha256": "91b53e24c925bfd9ba6c5a087f19ab21a575029536b24d70527e0872c80a8194",
+  "current_manifest_sha256": "37675d40f8291d9abc007547a34fc0aa9e01830ac68e3fdcd057a11aeb5d07eb",
+  "finite_character_status": "shadow_validated",
+  "advanced_number_theory_status": "planned",
+  "pack_cases": 240,
+  "exact_decisions": 240,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_registry_mutations": 0,
+  "hle_routing_mutated": false
+}

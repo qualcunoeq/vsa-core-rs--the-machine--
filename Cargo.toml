@@ -556,6 +556,10 @@ name = "stage126_simplicial_language_frontend"
 path = "src/bin/stage126_simplicial_language_frontend.rs"
 
 [[bin]]
+name = "stage128_dirichlet_character_pack"
+path = "src/bin/stage128_dirichlet_character_pack.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

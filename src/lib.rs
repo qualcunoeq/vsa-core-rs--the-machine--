@@ -16,6 +16,7 @@ pub mod algebra_island;
 pub mod analogy;
 pub mod autonomy;
 pub mod battery_realization;
+pub mod bounded_arithmetic_functions_pack;
 pub mod bond_feeder;
 pub mod bridge;
 pub mod broker;

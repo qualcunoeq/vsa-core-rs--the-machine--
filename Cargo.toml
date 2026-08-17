@@ -576,6 +576,10 @@ name = "stage133_mixed_math_sealed_exam"
 path = "src/bin/stage133_mixed_math_sealed_exam.rs"
 
 [[bin]]
+name = "stage134_bounded_arithmetic_functions"
+path = "src/bin/stage134_bounded_arithmetic_functions.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

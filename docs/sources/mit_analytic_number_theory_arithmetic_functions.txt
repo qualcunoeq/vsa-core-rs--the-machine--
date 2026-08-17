@@ -1,0 +1,11 @@
+SOURCE_ID: mit-ocw-18-781:bounded-arithmetic-functions
+TITLE: Theory of Numbers, MIT OpenCourseWare 18.781
+SECTION: Multiplicative arithmetic functions, divisor functions, and Mobius-function prerequisites
+URL: https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/
+LICENSE: MIT OpenCourseWare attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE_SPAN: divisor functions, Mobius inversion prerequisites, and prime-counting notation
+
+This source record supports only finite definitions and bounded exact
+evaluation. It does not authorize asymptotic estimates, analytic continuation,
+Dirichlet-series bounds, or unbounded factorization.

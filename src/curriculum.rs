@@ -455,6 +455,17 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "finite exact character foundation; asymptotic number theory remains separate",
         ),
         (
+            "bounded_arithmetic_functions",
+            "Bounded arithmetic functions",
+            vec!["elementary_number_theory", "real_complex_analysis"],
+            vec![
+                "divisor_certificate",
+                "mobius_value",
+                "prime_counting_value",
+            ],
+            "source-attributed finite arithmetic functions with explicit trial-factorization bounds",
+        ),
+        (
             "number_theory",
             "Number theory",
             vec!["real_complex_analysis", "abstract_algebra"],
@@ -492,6 +503,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_finite_metric"
                 | "topology"
                 | "bounded_dirichlet_characters"
+                | "bounded_arithmetic_functions"
         ) {
             (
                 CurriculumStatus::ShadowValidated,
@@ -538,7 +550,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 29);
+        assert_eq!(manifest.packs.len(), 30);
         assert!(manifest
             .packs
             .iter()

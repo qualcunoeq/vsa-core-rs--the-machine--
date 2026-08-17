@@ -820,6 +820,35 @@
         "selection_reason": "finite exact character foundation; asymptotic number theory remains separate"
       },
       {
+        "id": "bounded_arithmetic_functions",
+        "title": "Bounded arithmetic functions",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "elementary_number_theory",
+          "real_complex_analysis"
+        ],
+        "reusable_artifacts": [
+          "divisor_certificate",
+          "mobius_value",
+          "prime_counting_value"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-attributed finite arithmetic functions with explicit trial-factorization bounds"
+      },
+      {
         "id": "number_theory",
         "title": "Number theory",
         "status": "planned",
@@ -850,7 +879,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "37675d40f8291d9abc007547a34fc0aa9e01830ac68e3fdcd057a11aeb5d07eb",
+  "manifest_replay_hash": "e252a0d7e1632815efde3dd5d6044e4e4aa3b9d697485b215e4269450943cb31",
   "validation_errors": [],
   "production_authorizations": 0
 }

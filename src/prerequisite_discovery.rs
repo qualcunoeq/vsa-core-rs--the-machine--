@@ -6,6 +6,7 @@
 
 use crate::curriculum::{CurriculumManifest, CurriculumPack};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -22,6 +23,127 @@ pub struct DiscoveryResult {
     pub packs: Vec<String>,
     pub missing_prerequisites: Vec<String>,
     pub reasons: Vec<String>,
+}
+
+/// Classification of a bounded failure that can be carried into curriculum
+/// planning.  A proposal is diagnostic only; it never authorizes execution or
+/// mutates the curriculum manifest.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(rename_all = "snake_case")]
+pub enum CapabilityGapStatus {
+    MissingPrerequisite,
+    AmbiguousBoundary,
+    UnsupportedBoundary,
+}
+
+/// A replayable proposal describing what an observed failure appears to need.
+/// The fields intentionally separate method, knowledge, and representation so
+/// a planner cannot hide a missing semantic bridge inside a vague method name.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct CapabilityGap {
+    pub failure_gate: String,
+    pub status: CapabilityGapStatus,
+    pub desired_transformation: String,
+    pub missing_prerequisite: String,
+    pub nearest_available_capability: String,
+    pub external_knowledge_needed: String,
+    pub representation_needed: String,
+    pub suggested_dependency: String,
+    pub triggering_case_ids: Vec<String>,
+    pub replay_hash: String,
+}
+
+fn capability_gap_hash(gap: &CapabilityGap) -> String {
+    let payload = (
+        &gap.failure_gate,
+        gap.status,
+        &gap.desired_transformation,
+        &gap.missing_prerequisite,
+        &gap.nearest_available_capability,
+        &gap.external_knowledge_needed,
+        &gap.representation_needed,
+        &gap.suggested_dependency,
+        &gap.triggering_case_ids,
+    );
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(&payload).unwrap())
+    )
+}
+
+/// Convert an exact failure gate into a bounded diagnostic proposal.
+/// Unknown gates are rejected instead of being assigned a broad catch-all
+/// capability, preserving the semantic-coherence rule.
+pub fn propose_capability_gap(
+    failure_gate: &str,
+    status: CapabilityGapStatus,
+    triggering_case_ids: Vec<String>,
+) -> Option<CapabilityGap> {
+    let (desired, prerequisite, nearest, knowledge, representation, dependency) = match failure_gate
+    {
+        "combinatorics" => (
+            "typed finite count to downstream arithmetic or dynamics",
+            "explicit counting-model and operand scope",
+            "combinatorics_frontend",
+            "finite counting identities and labeled/unlabeled conventions",
+            "exact bounded scalar count",
+            "combinatorics",
+        ),
+        "graph" => (
+            "typed finite graph to adjacency and stochastic evolution",
+            "stable vertex identity, ordering, and edge semantics",
+            "graph_pack",
+            "finite graph and transition-convention definitions",
+            "vertex-ordered adjacency matrix",
+            "graph_theory",
+        ),
+        "probability" => (
+            "finite distribution to exact expectation and algebraic representation",
+            "normalized probabilities and value binding",
+            "finite_probability_pack",
+            "finite random-variable and expectation definitions",
+            "rational probability vector with outcome ordering",
+            "finite_probability",
+        ),
+        "ode" => (
+            "continuous-time scalar equation to exact solution and derivative",
+            "ODE form, initial condition, and time-domain semantics",
+            "ode_pack",
+            "bounded exact ODE solution contract",
+            "typed scalar ODE artifact",
+            "ordinary_differential_equations",
+        ),
+        "dynamics" => (
+            "finite state update to bounded replayable trajectory",
+            "explicit transition, horizon, and state representation",
+            "discrete_dynamics",
+            "finite-horizon recurrence semantics",
+            "typed state trace",
+            "discrete_dynamics",
+        ),
+        _ => return None,
+    };
+    let mut gap = CapabilityGap {
+        failure_gate: failure_gate.into(),
+        status,
+        desired_transformation: desired.into(),
+        missing_prerequisite: prerequisite.into(),
+        nearest_available_capability: nearest.into(),
+        external_knowledge_needed: knowledge.into(),
+        representation_needed: representation.into(),
+        suggested_dependency: dependency.into(),
+        triggering_case_ids,
+        replay_hash: String::new(),
+    };
+    gap.replay_hash = capability_gap_hash(&gap);
+    Some(gap)
+}
+
+/// Verify a proposal independently of its source failure record.
+pub fn capability_gap_replay_verified(gap: &CapabilityGap) -> bool {
+    gap.replay_hash == capability_gap_hash(gap)
+        && !gap.triggering_case_ids.is_empty()
+        && !gap.missing_prerequisite.is_empty()
 }
 
 fn pack_map(manifest: &CurriculumManifest) -> BTreeMap<String, &CurriculumPack> {
@@ -131,4 +253,30 @@ pub fn proposed_edge_is_acyclic(
         .validate()
         .iter()
         .any(|error| error.contains("cycle"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn capability_gap_proposals_are_typed_and_tamper_evident() {
+        let gap = propose_capability_gap(
+            "graph",
+            CapabilityGapStatus::MissingPrerequisite,
+            vec!["case-1".into(), "case-2".into()],
+        )
+        .expect("known gate has a bounded proposal");
+        assert_eq!(gap.suggested_dependency, "graph_theory");
+        assert!(capability_gap_replay_verified(&gap));
+        let mut tampered = gap.clone();
+        tampered.representation_needed.push_str("-tampered");
+        assert!(!capability_gap_replay_verified(&tampered));
+        assert!(propose_capability_gap(
+            "unknown_gate",
+            CapabilityGapStatus::MissingPrerequisite,
+            vec!["case-3".into()]
+        )
+        .is_none());
+    }
 }

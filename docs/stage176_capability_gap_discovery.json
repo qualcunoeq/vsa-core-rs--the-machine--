@@ -1,0 +1,7529 @@
+{
+  "schema": "stage176-capability-gap-discovery-v1",
+  "parent_report_sha256": "331e2c5e457654c494e0ed0a2aa71d49be8495e26f73c5959e3e7c17b45495c9",
+  "corpus_sha256": "8679dc10515db44acbf1823b11425c226853574e10e43e27e3c31d6b98b61cfc",
+  "cases": 500,
+  "exact_decisions": 500,
+  "proposals_emitted": 450,
+  "unknown_gates_refused": 50,
+  "replay_verified": 500,
+  "tamper_rejected": 500,
+  "false_authorizations": 0,
+  "promotion_attempts": 0,
+  "real_failure_receipts": 1000,
+  "real_failure_proposals": 10,
+  "real_failure_replay_verified": 10,
+  "real_failure_tamper_rejected": 10,
+  "failure_gate_counts": {
+    "combinatorics": 80,
+    "dynamics": 80,
+    "graph": 80,
+    "none": 600,
+    "ode": 80,
+    "probability": 80
+  },
+  "receipts": [
+    {
+      "id": "stage176-0000",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0001",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0002",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0003",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0004",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0005",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0006",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0007",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0008",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0009",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0010",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0011",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0012",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0013",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0014",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0015",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0016",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0017",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0018",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0019",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0020",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0021",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0022",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0023",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0024",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0025",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0026",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0027",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0028",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0029",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0030",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0031",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0032",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0033",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0034",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0035",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0036",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0037",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0038",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0039",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0040",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0041",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0042",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0043",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0044",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0045",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0046",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0047",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0048",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0049",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0050",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0051",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0052",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0053",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0054",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0055",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0056",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0057",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0058",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0059",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0060",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0061",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0062",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0063",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0064",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0065",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0066",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0067",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0068",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0069",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0070",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0071",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0072",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0073",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0074",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0075",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0076",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0077",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0078",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0079",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0080",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0081",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0082",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0083",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0084",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0085",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0086",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0087",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0088",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0089",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0090",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0091",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0092",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0093",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0094",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0095",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0096",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0097",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0098",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0099",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0100",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0101",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0102",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0103",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0104",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0105",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0106",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0107",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0108",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0109",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0110",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0111",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0112",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0113",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0114",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0115",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0116",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0117",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0118",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0119",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0120",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0121",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0122",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0123",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0124",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0125",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0126",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0127",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0128",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0129",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0130",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0131",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0132",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0133",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0134",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0135",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0136",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0137",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0138",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0139",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0140",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0141",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0142",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0143",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0144",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0145",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0146",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0147",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0148",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0149",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0150",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0151",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0152",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0153",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0154",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0155",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0156",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0157",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0158",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0159",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0160",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0161",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0162",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0163",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0164",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0165",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0166",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0167",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0168",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0169",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0170",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0171",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0172",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0173",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0174",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0175",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0176",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0177",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0178",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0179",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0180",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0181",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0182",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0183",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0184",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0185",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0186",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0187",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0188",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0189",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0190",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0191",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0192",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0193",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0194",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0195",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0196",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0197",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0198",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0199",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0200",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0201",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0202",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0203",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0204",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0205",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0206",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0207",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0208",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0209",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0210",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0211",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0212",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0213",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0214",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0215",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0216",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0217",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0218",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0219",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0220",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0221",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0222",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0223",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0224",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0225",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0226",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0227",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0228",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0229",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0230",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0231",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0232",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0233",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0234",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0235",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0236",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0237",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0238",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0239",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0240",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0241",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0242",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0243",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0244",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0245",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0246",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0247",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0248",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0249",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0250",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0251",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0252",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0253",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0254",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0255",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0256",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0257",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0258",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0259",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0260",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0261",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0262",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0263",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0264",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0265",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0266",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0267",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0268",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0269",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0270",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0271",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0272",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0273",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0274",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0275",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0276",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0277",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0278",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0279",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0280",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0281",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0282",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0283",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0284",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0285",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0286",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0287",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0288",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0289",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0290",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0291",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0292",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0293",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0294",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0295",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0296",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0297",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0298",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0299",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0300",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0301",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0302",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0303",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0304",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0305",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0306",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0307",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0308",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0309",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0310",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0311",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0312",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0313",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0314",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0315",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0316",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0317",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0318",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0319",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0320",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0321",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0322",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0323",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0324",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0325",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0326",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0327",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0328",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0329",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0330",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0331",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0332",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0333",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0334",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0335",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0336",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0337",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0338",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0339",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0340",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0341",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0342",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0343",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0344",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0345",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0346",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0347",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0348",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0349",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0350",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0351",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0352",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0353",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0354",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0355",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0356",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0357",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0358",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0359",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0360",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0361",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0362",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0363",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0364",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0365",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0366",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0367",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0368",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0369",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0370",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0371",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0372",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0373",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0374",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0375",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0376",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0377",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0378",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0379",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0380",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0381",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0382",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0383",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0384",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0385",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0386",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0387",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0388",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0389",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0390",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0391",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0392",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0393",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0394",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0395",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0396",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0397",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0398",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0399",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0400",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0401",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0402",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0403",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0404",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0405",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0406",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0407",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0408",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0409",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0410",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0411",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0412",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0413",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0414",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0415",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0416",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0417",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0418",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0419",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0420",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0421",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0422",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0423",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0424",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0425",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0426",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0427",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0428",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0429",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0430",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0431",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0432",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0433",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0434",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0435",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0436",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0437",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0438",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0439",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0440",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0441",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0442",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0443",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0444",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0445",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0446",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0447",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0448",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0449",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary",
+      "proposal_emitted": true,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0450",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0451",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0452",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0453",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0454",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0455",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0456",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0457",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0458",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0459",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0460",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0461",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0462",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0463",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0464",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0465",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0466",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0467",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0468",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0469",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0470",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0471",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0472",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0473",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0474",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0475",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0476",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0477",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0478",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0479",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0480",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0481",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0482",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0483",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0484",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0485",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0486",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0487",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0488",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0489",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0490",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0491",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0492",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0493",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0494",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0495",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0496",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0497",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "ambiguous_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0498",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    },
+    {
+      "id": "stage176-0499",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "unsupported_boundary",
+      "proposal_emitted": false,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "promotion_attempts": 0
+    }
+  ],
+  "corpus": [
+    {
+      "id": "stage176-0000",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0001",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0002",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0003",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0004",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0005",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0006",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0007",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0008",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0009",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0010",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0011",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0012",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0013",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0014",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0015",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0016",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0017",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0018",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0019",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0020",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0021",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0022",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0023",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0024",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0025",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0026",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0027",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0028",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0029",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0030",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0031",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0032",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0033",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0034",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0035",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0036",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0037",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0038",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0039",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0040",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0041",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0042",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0043",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0044",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0045",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0046",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0047",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0048",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0049",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0050",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0051",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0052",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0053",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0054",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0055",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0056",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0057",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0058",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0059",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0060",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0061",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0062",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0063",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0064",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0065",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0066",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0067",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0068",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0069",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0070",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0071",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0072",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0073",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0074",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0075",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0076",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0077",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0078",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0079",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0080",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0081",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0082",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0083",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0084",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0085",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0086",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0087",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0088",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0089",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0090",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0091",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0092",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0093",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0094",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0095",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0096",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0097",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0098",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0099",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0100",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0101",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0102",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0103",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0104",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0105",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0106",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0107",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0108",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0109",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0110",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0111",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0112",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0113",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0114",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0115",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0116",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0117",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0118",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0119",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0120",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0121",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0122",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0123",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0124",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0125",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0126",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0127",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0128",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0129",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0130",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0131",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0132",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0133",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0134",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0135",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0136",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0137",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0138",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0139",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0140",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0141",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0142",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0143",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0144",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0145",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0146",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0147",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0148",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0149",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0150",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0151",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0152",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0153",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0154",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0155",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0156",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0157",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0158",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0159",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0160",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0161",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0162",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0163",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0164",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0165",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0166",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0167",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0168",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0169",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0170",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0171",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0172",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0173",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0174",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0175",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0176",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0177",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0178",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0179",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0180",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0181",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0182",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0183",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0184",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0185",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0186",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0187",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0188",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0189",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0190",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0191",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0192",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0193",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0194",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0195",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0196",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0197",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0198",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0199",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0200",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0201",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0202",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0203",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0204",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0205",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0206",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0207",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0208",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0209",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0210",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0211",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0212",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0213",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0214",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0215",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0216",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0217",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0218",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0219",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0220",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0221",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0222",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0223",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0224",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0225",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0226",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0227",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0228",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0229",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0230",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0231",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0232",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0233",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0234",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0235",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0236",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0237",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0238",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0239",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0240",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0241",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0242",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0243",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0244",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0245",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0246",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0247",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0248",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0249",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0250",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0251",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0252",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0253",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0254",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0255",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0256",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0257",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0258",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0259",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0260",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0261",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0262",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0263",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0264",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0265",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0266",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0267",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0268",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0269",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0270",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0271",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0272",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0273",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0274",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0275",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0276",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0277",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0278",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0279",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0280",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0281",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0282",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0283",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0284",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0285",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0286",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0287",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0288",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0289",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0290",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0291",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0292",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0293",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0294",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0295",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0296",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0297",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0298",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0299",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0300",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0301",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0302",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0303",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0304",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0305",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0306",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0307",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0308",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0309",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0310",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0311",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0312",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0313",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0314",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0315",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0316",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0317",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0318",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0319",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0320",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0321",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0322",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0323",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0324",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0325",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0326",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0327",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0328",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0329",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0330",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0331",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0332",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0333",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0334",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0335",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0336",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0337",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0338",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0339",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0340",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0341",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0342",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0343",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0344",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0345",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0346",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0347",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0348",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0349",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0350",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0351",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0352",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0353",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0354",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0355",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0356",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0357",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0358",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0359",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0360",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0361",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0362",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0363",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0364",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0365",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0366",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0367",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0368",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0369",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0370",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0371",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0372",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0373",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0374",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0375",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0376",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0377",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0378",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0379",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0380",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0381",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0382",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0383",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0384",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0385",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0386",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0387",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0388",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0389",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0390",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0391",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0392",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0393",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0394",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0395",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0396",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0397",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0398",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0399",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0400",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0401",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0402",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0403",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0404",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0405",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0406",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0407",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0408",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0409",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0410",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0411",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0412",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0413",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0414",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0415",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0416",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0417",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0418",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0419",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0420",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0421",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0422",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0423",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0424",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0425",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0426",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0427",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0428",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0429",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0430",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0431",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0432",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0433",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0434",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0435",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0436",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0437",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0438",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0439",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0440",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0441",
+      "failure_gate": "graph",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0442",
+      "failure_gate": "probability",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0443",
+      "failure_gate": "ode",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0444",
+      "failure_gate": "dynamics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0445",
+      "failure_gate": "combinatorics",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0446",
+      "failure_gate": "graph",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0447",
+      "failure_gate": "probability",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0448",
+      "failure_gate": "ode",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0449",
+      "failure_gate": "dynamics",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0450",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0451",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0452",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0453",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0454",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0455",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0456",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0457",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0458",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0459",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0460",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0461",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0462",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0463",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0464",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0465",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0466",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0467",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0468",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0469",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0470",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0471",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0472",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0473",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0474",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0475",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0476",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0477",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0478",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0479",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0480",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0481",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0482",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0483",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0484",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0485",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0486",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0487",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0488",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0489",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0490",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0491",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0492",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0493",
+      "failure_gate": "unmodeled_gate_3",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0494",
+      "failure_gate": "unmodeled_gate_4",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0495",
+      "failure_gate": "unmodeled_gate_5",
+      "status": "missing_prerequisite"
+    },
+    {
+      "id": "stage176-0496",
+      "failure_gate": "unmodeled_gate_6",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0497",
+      "failure_gate": "unmodeled_gate_0",
+      "status": "ambiguous_boundary"
+    },
+    {
+      "id": "stage176-0498",
+      "failure_gate": "unmodeled_gate_1",
+      "status": "unsupported_boundary"
+    },
+    {
+      "id": "stage176-0499",
+      "failure_gate": "unmodeled_gate_2",
+      "status": "unsupported_boundary"
+    }
+  ]
+}

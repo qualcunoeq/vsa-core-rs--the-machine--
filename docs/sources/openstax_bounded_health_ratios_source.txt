@@ -1,0 +1,78 @@
+# Source transcription: bounded introductory health-statistics ratios.
+# Records are declarative source claims; execution is delegated to the generic
+# rational-expression runtime and has no health-specific evaluator branch.
+
+BEGIN FORMULA incidence_rate
+ALIASES: incidence rate | new-case rate
+EXPRESSION: new_cases / population
+INPUTS: new_cases, population
+ASSUMPTIONS: population is positive; counts and population use compatible units
+CONSTRAINTS: positive:new_cases; positive:population
+SOURCE_ID: openstax-introductory-statistics-2e:health:incidence
+TITLE: Introductory Statistics 2e
+SECTION: Ratios, rates, and population measures
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: section review: a rate is a count divided by the relevant population
+END FORMULA
+
+BEGIN FORMULA mortality_rate
+ALIASES: mortality rate | death rate
+EXPRESSION: deaths / population
+INPUTS: deaths, population
+ASSUMPTIONS: population is positive; deaths and population use compatible units
+CONSTRAINTS: positive:deaths; positive:population
+SOURCE_ID: openstax-introductory-statistics-2e:health:mortality
+TITLE: Introductory Statistics 2e
+SECTION: Ratios, rates, and population measures
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: section review: a mortality rate divides deaths by the population at risk
+END FORMULA
+
+BEGIN FORMULA prevalence
+ALIASES: prevalence | existing-case proportion
+EXPRESSION: existing_cases / population
+INPUTS: existing_cases, population
+ASSUMPTIONS: population is positive; existing cases do not exceed the population
+CONSTRAINTS: positive:existing_cases; positive:population
+SOURCE_ID: openstax-introductory-statistics-2e:health:prevalence
+TITLE: Introductory Statistics 2e
+SECTION: Ratios, rates, and population measures
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: section review: prevalence is the proportion of a population with an existing condition
+END FORMULA
+
+BEGIN FORMULA case_fatality_ratio
+ALIASES: case fatality ratio | fatality proportion
+EXPRESSION: deaths / cases
+INPUTS: deaths, cases
+ASSUMPTIONS: cases are positive; deaths are a subset of cases
+CONSTRAINTS: positive:deaths; positive:cases
+SOURCE_ID: openstax-introductory-statistics-2e:health:fatality
+TITLE: Introductory Statistics 2e
+SECTION: Ratios, rates, and population measures
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: section review: a case-fatality ratio divides deaths among cases by total cases
+END FORMULA
+
+BEGIN FORMULA odds_ratio
+ALIASES: odds ratio | cross-product ratio
+EXPRESSION: exposed_cases * unexposed_non_cases / (exposed_non_cases * unexposed_cases)
+INPUTS: exposed_cases, unexposed_non_cases, exposed_non_cases, unexposed_cases
+ASSUMPTIONS: all four cell counts are positive; the two-by-two table is fixed
+CONSTRAINTS: positive:exposed_cases; positive:unexposed_non_cases; positive:exposed_non_cases; positive:unexposed_cases
+SOURCE_ID: openstax-introductory-statistics-2e:health:odds-ratio
+TITLE: Introductory Statistics 2e
+SECTION: Ratios, rates, and population measures
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: section review: the odds ratio is the cross-product ratio of a two-by-two table
+END FORMULA

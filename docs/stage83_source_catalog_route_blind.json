@@ -1,0 +1,22 @@
+{
+  "schema": "stage83-source-catalog-route-blind-v1",
+  "source_document_sha256": "4db72e73eb0029908ea8bb2b7d274d4b4f525abadb8c8310f222b0a57e2d173c",
+  "catalog_records": 4,
+  "catalog_valid": true,
+  "cases": 1000,
+  "supported": 600,
+  "ambiguous": 200,
+  "refused": 200,
+  "exact_decisions": 1000,
+  "value_correct": 1000,
+  "replay_verified": 1000,
+  "tamper_rejections": 1000,
+  "source_provenance_preserved": 950,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "holdout_cases": 200,
+  "holdout_exact_decisions": 200,
+  "holdout_value_correct": 200,
+  "holdout_replays": 200,
+  "holdout_tamper_rejections": 200
+}

@@ -194,11 +194,35 @@ impl SourceExpressionParser {
         let mut expression = self.parse_primary()?;
         if matches!(self.peek(), Some(SourceExprToken::Caret)) {
             self.consume();
-            let exponent = match self.consume() {
-                Some(SourceExprToken::Integer(value)) if value >= 0 => value as u32,
-                _ => return Err("only a nonnegative integer exponent is supported".into()),
+            expression = match self.consume() {
+                Some(SourceExprToken::Integer(value)) if value >= 0 => {
+                    Expr::PowNatural(Box::new(expression), value as u32)
+                }
+                Some(SourceExprToken::Identifier(name)) => {
+                    Expr::PowInput(Box::new(expression), name)
+                }
+                Some(SourceExprToken::LeftParen) => {
+                    let name = match self.consume() {
+                        Some(SourceExprToken::Identifier(name)) => name,
+                        _ => return Err("variable exponent must name an input".into()),
+                    };
+                    match self.consume() {
+                        Some(SourceExprToken::RightParen) => {
+                            Expr::PowInput(Box::new(expression), name)
+                        }
+                        Some(SourceExprToken::Minus) => {
+                            if !matches!(self.consume(), Some(SourceExprToken::Integer(1)))
+                                || !matches!(self.consume(), Some(SourceExprToken::RightParen))
+                            {
+                                return Err("only variable exponent n or n-1 is supported".into());
+                            }
+                            Expr::PowInputMinusOne(Box::new(expression), name)
+                        }
+                        _ => return Err("only variable exponent n or n-1 is supported".into()),
+                    }
+                }
+                _ => return Err("only a nonnegative or variable exponent is supported".into()),
             };
-            expression = Expr::PowNatural(Box::new(expression), exponent);
         }
         Ok(expression)
     }
@@ -958,6 +982,14 @@ END FORMULA
                 Box::new(Expr::Constant(0)),
                 Box::new(Expr::PowNatural(Box::new(Expr::Input("a".into())), 2)),
             )
+        );
+        assert_eq!(
+            parse_source_expression("r^(n-1)").unwrap(),
+            Expr::PowInputMinusOne(Box::new(Expr::Input("r".into())), "n".into()),
+        );
+        assert_eq!(
+            parse_source_expression("r^n").unwrap(),
+            Expr::PowInput(Box::new(Expr::Input("r".into())), "n".into()),
         );
         let result = evaluate_formula_records(
             &FormulaRequest {

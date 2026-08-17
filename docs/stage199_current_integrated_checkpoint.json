@@ -1,0 +1,26 @@
+{
+  "schema": "stage199-current-integrated-checkpoint-v1",
+  "parent_file_sha256": {
+    "docs/stage194_expanded_cross_domain_synthesis.json": "e7130bd1980377335612b7dbb0eb550a6f1e1a569b35eab2e19d36b857b2cc81",
+    "docs/stage195_markov_frontend_shifted.json": "94362ccb980f45676f79f728823ee67f77211c082134f7bdc4aa1c60d37a667c",
+    "docs/stage196_curriculum_memory_current_manifest.json": "0775d2ce3f8d8d20c84ad96decba03112476b23c966313473a8ab1330d986baf",
+    "docs/stage197_markov_prerequisite_discovery.json": "004d554f65cc27296038127ae60f781534c3fcb0ac57cfcb10249e91a8befd6b",
+    "docs/stage198_markov_self_directed_education.json": "24100b003f5e598ce573824f709e720122d59c1911d1a38a44b146bcb0c7730c"
+  },
+  "independent_cases": 105000,
+  "exact_decisions": 3000,
+  "replay_verified": 104800,
+  "tamper_rejected": 4800,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "sealed_cases": 700,
+  "sealed_exact": 700,
+  "sealed_authorized": 470,
+  "memory_records": 100000,
+  "memory_replay": 100000,
+  "education_resolved": 800,
+  "education_remaining": 200,
+  "prerequisite_proposals": 800,
+  "unknown_gates_refused": 200,
+  "manifest_or_registry_mutations": 0
+}

@@ -420,6 +420,10 @@ name = "stage_k_sealed_curriculum_exam_5000"
 path = "src/bin/stage_k_sealed_curriculum_exam_5000.rs"
 
 [[bin]]
+name = "stage92_interpolation_sealed_transfer"
+path = "src/bin/stage92_interpolation_sealed_transfer.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

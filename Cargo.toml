@@ -628,6 +628,10 @@ name = "stage149_visual_chemistry_linear"
 path = "src/bin/stage149_visual_chemistry_linear.rs"
 
 [[bin]]
+name = "stage150_source_multimodal_composition"
+path = "src/bin/stage150_source_multimodal_composition.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

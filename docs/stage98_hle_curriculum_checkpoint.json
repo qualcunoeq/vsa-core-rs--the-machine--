@@ -1,0 +1,22 @@
+{
+  "schema": "stage98-hle-curriculum-checkpoint-v1",
+  "checkpoint": "post-expanded-source-curriculum",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "manifest_sha256": "fea4b52d2425a1cdd5d06f3719c9a817b2fb1bb9162d2ce5dd9e4f93a10dd6f6",
+  "cases": 2500,
+  "correct_authorized": 2,
+  "incorrect_authorized": 0,
+  "false_authorizations": 0,
+  "curriculum_signals": 498,
+  "pack_invocations": 0,
+  "replay_compatibility_verified": 2,
+  "replay_not_applicable": 2498,
+  "replay_not_recorded": 0,
+  "terminal_counts": {
+    "correct_authorized": 2,
+    "visual_required": 260,
+    "no_curriculum_signal": 1782,
+    "unresolved": 456
+  },
+  "registry_mutated": false
+}

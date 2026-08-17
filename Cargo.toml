@@ -444,6 +444,10 @@ name = "stage97_self_directed_source_extension"
 path = "src/bin/stage97_self_directed_source_extension.rs"
 
 [[bin]]
+name = "stage98_hle_curriculum_checkpoint"
+path = "src/bin/stage98_hle_curriculum_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

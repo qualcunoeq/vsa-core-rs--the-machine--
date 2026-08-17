@@ -903,6 +903,10 @@ path = "src/bin/stage164_source_geometry_language_transfer.rs"
 name = "stage165_geometry_measurement_composition"
 path = "src/bin/stage165_geometry_measurement_composition.rs"
 
+[[bin]]
+name = "stage166_route_blind_measurement_composition"
+path = "src/bin/stage166_route_blind_measurement_composition.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

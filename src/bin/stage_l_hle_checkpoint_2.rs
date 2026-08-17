@@ -17,6 +17,8 @@ use the_machine::router::{AbstentionReason, QuestionRouter};
 const DATASET: &str = "data/hle.jsonl";
 const TRACE: &str = "/tmp/hle_curriculum_checkpoint_2.jsonl";
 const SUMMARY: &str = "docs/stage_l_hle_checkpoint_2.json";
+const TRACE_AFTER_EDUCATION: &str = "docs/stage146_hle_checkpoint_after_education.trace.jsonl";
+const SUMMARY_AFTER_EDUCATION: &str = "docs/stage146_hle_checkpoint_after_education.json";
 const REGISTRY: &str = "shadow-only-no-production-mutation";
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, PartialOrd, Ord)]
@@ -194,6 +196,17 @@ fn replay_status(
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let after_education = std::env::var_os("STAGE146_AFTER_EDUCATION").is_some();
+    let trace_path = if after_education {
+        TRACE_AFTER_EDUCATION
+    } else {
+        TRACE
+    };
+    let summary_path = if after_education {
+        SUMMARY_AFTER_EDUCATION
+    } else {
+        SUMMARY
+    };
     let dataset_bytes = fs::read(DATASET)?;
     let dataset_sha256 = digest_bytes(&dataset_bytes);
     let manifest_sha256 = the_machine::curriculum::breadth_first_manifest().replay_hash();
@@ -204,7 +217,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|output| output.status.success())
         .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_string())
         .unwrap_or_else(|| "unknown".into());
-    let mut trace = File::create(TRACE)?;
+    let mut trace = File::create(trace_path)?;
     let mut terminal_counts = BTreeMap::new();
     let mut cases = 0;
     let mut correct = 0;
@@ -278,9 +291,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         cases += 1;
     }
     trace.flush()?;
-    let trace_sha256 = digest_bytes(&fs::read(TRACE)?);
+    let trace_sha256 = digest_bytes(&fs::read(trace_path)?);
     let summary_without_hash = json!({
-        "checkpoint": "stage-l-hle-checkpoint-2",
+        "checkpoint": if after_education { "stage146-hle-checkpoint-after-education" } else { "stage-l-hle-checkpoint-2" },
         "producer_commit": producer_commit,
         "dataset_sha256": dataset_sha256,
         "manifest_sha256": manifest_sha256,
@@ -300,8 +313,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
     let summary_sha256 = digest(&summary_without_hash);
     let report = SummaryReport {
-        schema: "stage-l-hle-checkpoint-2-v1",
-        checkpoint: "stage-l-hle-checkpoint-2",
+        schema: if after_education {
+            "stage146-hle-checkpoint-after-education-v1"
+        } else {
+            "stage-l-hle-checkpoint-2-v1"
+        },
+        checkpoint: if after_education {
+            "stage146-hle-checkpoint-after-education"
+        } else {
+            "stage-l-hle-checkpoint-2"
+        },
         producer_commit,
         dataset: DATASET,
         dataset_sha256,
@@ -322,12 +343,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         total_execution_time_ms: total_ms,
         max_execution_time_ms: max_ms,
         terminal_counts,
-        trace_path: TRACE,
+        trace_path,
         trace_sha256,
         summary_sha256,
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    fs::write(SUMMARY, format!("{serialized}\n"))?;
+    fs::write(summary_path, format!("{serialized}\n"))?;
     println!("{serialized}");
     Ok(())
 }

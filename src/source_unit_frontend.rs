@@ -43,12 +43,36 @@ pub fn replay_verified(result: &UnitFrontendResult) -> bool {
     hash == digest(&copy) && !result.provenance.is_empty()
 }
 
-fn amount_and_units(text: &str) -> Option<(i128, String, String)> {
+fn parse_amount(token: &str) -> Option<crate::probability_pack::Rational> {
+    if let Ok(value) = token.parse::<i128>() {
+        return Some(crate::probability_pack::Rational::new(value, 1).unwrap());
+    }
+    if let Some((numerator, denominator)) = token.split_once('/') {
+        let numerator = numerator.parse::<i128>().ok()?;
+        let denominator = denominator.parse::<i128>().ok()?;
+        return crate::probability_pack::Rational::new(numerator, denominator);
+    }
+    if let Some((whole, fraction)) = token.split_once('.') {
+        let whole = whole.parse::<i128>().ok()?;
+        let digits = fraction.len() as u32;
+        let scale = 10_i128.checked_pow(digits)?;
+        let fractional = fraction.parse::<i128>().ok()?;
+        let numerator = if whole < 0 {
+            whole * scale - fractional
+        } else {
+            whole * scale + fractional
+        };
+        return crate::probability_pack::Rational::new(numerator, scale);
+    }
+    None
+}
+
+fn amount_and_units(text: &str) -> Option<(crate::probability_pack::Rational, String, String)> {
     let tokens: Vec<&str> = text.split_whitespace().collect();
     let amount_index = tokens
         .iter()
-        .position(|token| token.parse::<i128>().is_ok())?;
-    let amount = tokens[amount_index].parse::<i128>().ok()?;
+        .position(|token| parse_amount(token).is_some())?;
+    let amount = parse_amount(tokens[amount_index])?;
     let source_index = amount_index + 1;
     let source = tokens
         .get(source_index)?
@@ -145,10 +169,7 @@ pub fn formalize_unit_text(
         status: UnitFrontendStatus::Complete,
         request: Some(FormulaRequest {
             formula: record.formula_id.clone(),
-            inputs: BTreeMap::from([(
-                "amount".into(),
-                crate::probability_pack::Rational::new(amount, 1).unwrap(),
-            )]),
+            inputs: BTreeMap::from([("amount".into(), amount)]),
             domain: "source_catalog_unit_conversion".into(),
             ambiguity: None,
             provenance: provenance.clone(),
@@ -174,5 +195,21 @@ mod tests {
         let result = formalize_unit_text("Convert 3 meters to centimeters.", "test", &records);
         assert_eq!(result.status, UnitFrontendStatus::Complete);
         assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn preserves_exact_fractional_amounts() {
+        let source = include_str!("../docs/sources/openstax_unit_conversion_catalog.txt");
+        let records = extract_formula_records(source).unwrap();
+        let result = formalize_unit_text(
+            "Convert 3.5 meters to centimeters.",
+            "test-decimal",
+            &records,
+        );
+        assert_eq!(result.status, UnitFrontendStatus::Complete);
+        assert_eq!(
+            result.request.unwrap().inputs["amount"],
+            crate::probability_pack::Rational::new(7, 2).unwrap()
+        );
     }
 }

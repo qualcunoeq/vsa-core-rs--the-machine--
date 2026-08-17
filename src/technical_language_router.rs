@@ -16,6 +16,12 @@ use crate::combinatorics_frontend::{
     CombinatoricsFrontendStatus,
 };
 use crate::combinatorics_pack::{evaluate_combinatorics, CombinatoricsStatus};
+use crate::finite_markov_frontend::{
+    formalize as formalize_markov, replay_verified as markov_frontend_replay,
+    MarkovFrontendRequest, MarkovFrontendStatus,
+};
+use crate::finite_markov_hitting_pack::{evaluate as evaluate_hitting, HittingStatus};
+use crate::finite_markov_stationary_pack::{evaluate as evaluate_stationary, StationaryStatus};
 use crate::number_theory_frontend::{
     formalize_number_theory_text, replay_verified as number_frontend_replay,
     NumberTheoryFrontendStatus,
@@ -29,6 +35,8 @@ use sha2::{Digest, Sha256};
 pub enum RouteDomain {
     ComplexAnalysis,
     Combinatorics,
+    MarkovHitting,
+    MarkovStationary,
     NumberTheory,
 }
 
@@ -105,6 +113,7 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
     let complex = formalize_complex(text, case_id);
     let combinatorics = formalize_combinatorics(text, case_id);
     let number = formalize_number_theory_text(text, case_id);
+    let markov = formalize_markov(text, case_id);
     let mut authorized = Vec::new();
     let mut ambiguous = Vec::new();
     if complex.status == ComplexFrontendStatus::Complete
@@ -139,6 +148,25 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
         authorized.push(RouteDomain::NumberTheory);
     } else if number.status == NumberTheoryFrontendStatus::Ambiguous {
         ambiguous.push(RouteDomain::NumberTheory);
+    }
+    if markov.status == MarkovFrontendStatus::Complete && markov_frontend_replay(&markov) {
+        match markov.request.as_ref() {
+            Some(MarkovFrontendRequest::Stationary(request)) => {
+                let result = evaluate_stationary(request);
+                if result.status == StationaryStatus::Complete && result.replay_verified() {
+                    authorized.push(RouteDomain::MarkovStationary);
+                }
+            }
+            Some(MarkovFrontendRequest::Hitting(request)) => {
+                let result = evaluate_hitting(request);
+                if result.status == HittingStatus::Complete && result.replay_verified() {
+                    authorized.push(RouteDomain::MarkovHitting);
+                }
+            }
+            None => {}
+        }
+    } else if markov.status == MarkovFrontendStatus::Ambiguous {
+        ambiguous.extend([RouteDomain::MarkovHitting, RouteDomain::MarkovStationary]);
     }
     authorized.sort();
     ambiguous.sort();
@@ -204,5 +232,21 @@ mod tests {
         assert_eq!(unsupported.status, RouteStatus::Unsupported);
         assert!(replay_verified(&ambiguous));
         assert!(replay_verified(&unsupported));
+    }
+
+    #[test]
+    fn markov_frontend_requires_unique_explicit_operation() {
+        let stationary = route(
+            "Find the stationary distribution for a row-stochastic transition=[[3/4,1/4],[1/2,1/2]].",
+            "stationary",
+        );
+        assert_eq!(stationary.status, RouteStatus::Authorized);
+        assert_eq!(stationary.selected, Some(RouteDomain::MarkovStationary));
+        let ambiguous = route(
+            "Find a stationary distribution for transition=[[3/4,1/4],[1/2,1/2]].",
+            "missing-convention",
+        );
+        assert_eq!(ambiguous.status, RouteStatus::Ambiguous);
+        assert!(replay_verified(&ambiguous));
     }
 }

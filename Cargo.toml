@@ -456,6 +456,10 @@ name = "stage100_set_composition"
 path = "src/bin/stage100_set_composition.rs"
 
 [[bin]]
+name = "stage101_source_counting_bench"
+path = "src/bin/stage101_source_counting_bench.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

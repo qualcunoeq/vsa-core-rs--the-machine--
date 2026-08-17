@@ -1,0 +1,8 @@
+SOURCE_ID: openstax-contemporary-mathematics:counting-principles
+TITLE: Contemporary Mathematics
+SECTION: 7.1 The Multiplication Rule for Counting; 7.2 Permutations; 7.3 Combinations
+URL: https://openstax.org/books/contemporary-mathematics/pages/7-3-combinations
+LICENSE: CC BY-NC-SA 4.0; OpenStax attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: The source distinguishes ordered permutations from unordered combinations, gives factorial formulas, and defines the multiplication rule for independent counting stages.
+OPERATIONS: product, factorial, permutation, combination

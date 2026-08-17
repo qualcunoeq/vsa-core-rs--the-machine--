@@ -1,0 +1,19 @@
+# Source-derived bounded linear-interpolation catalog.
+# Source: OpenStax Precalculus 2e, Ch. 2 key equations and §2.4.
+# The source-backed relation is y = y1 + (x-x1)(y2-y1)/(x2-x1),
+# with distinct x coordinates and an interpolation target between endpoints.
+
+BEGIN FORMULA linear_interpolation
+ALIASES: linear interpolation|interpolate between two points
+EXPRESSION: y1 + (x - x1) * (y2 - y1) / (x2 - x1)
+INPUTS: x, x1, y1, x2, y2
+ASSUMPTIONS: x1 and x2 are distinct; target x lies between the endpoints
+CONSTRAINTS: not_equal_integer:x1=-999999; not_equal_integer:x2=-999999
+SOURCE_ID: openstax-precalculus-2e:linear-functions
+TITLE: Precalculus 2e
+SECTION: 2.1 Linear Functions; 2.4 Fitting Linear Models to Data
+URL: https://openstax.org/books/precalculus-2e/pages/2-1-linear-functions
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: slope and point-slope equations, with interpolation/extrapolation distinction
+END FORMULA

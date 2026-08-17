@@ -1,0 +1,23 @@
+{
+  "schema": "stage197-markov-prerequisite-discovery-v1",
+  "corpus_sha256": "98fc2236196a81f67df9484f7129fe9a30dbae441cbb9da28b6ecc9b97ed90e4",
+  "cases": 1000,
+  "known_gate_cases": 800,
+  "unknown_gate_cases": 200,
+  "proposals": 800,
+  "proposal_replay_verified": 800,
+  "tamper_rejected": 800,
+  "unknown_refused": 200,
+  "acyclic_edge_checks": 800,
+  "acyclic_edges": 800,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "gate_counts": {
+    "frontend_ambiguity": 200,
+    "frontend_missing_required_field": 200,
+    "hitting_graph_boundary": 200,
+    "stationary_graph_boundary": 200,
+    "unknown_markov_semantics": 200
+  }
+}

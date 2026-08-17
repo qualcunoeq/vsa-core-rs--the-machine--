@@ -121,6 +121,38 @@ pub fn propose_capability_gap(
             "typed state trace",
             "discrete_dynamics",
         ),
+        "stationary_graph_boundary" => (
+            "typed graph plus row-stochastic transition to stationary distribution",
+            "stable vertex identity, state ordering, and explicit transition semantics",
+            "finite_markov_stationary_general",
+            "finite stationary-distribution definitions and uniqueness conditions",
+            "vertex-ordered graph and exact stationary request",
+            "finite_markov_stationary_general",
+        ),
+        "hitting_graph_boundary" => (
+            "typed graph plus target/avoid transition to hitting probability",
+            "explicit target, avoid, initial distribution, and transition support",
+            "finite_markov_hitting",
+            "finite target-before-avoid semantics and transient-state equations",
+            "vertex-ordered graph and exact hitting request",
+            "finite_markov_hitting",
+        ),
+        "frontend_missing_required_field" => (
+            "technical text to a complete finite Markov request",
+            "explicit operation, transition convention, and required state bindings",
+            "finite_markov_frontend",
+            "bounded stationary and hitting problem forms",
+            "replayable typed Markov request",
+            "finite_markov",
+        ),
+        "frontend_ambiguity" => (
+            "technical text to a uniquely identified Markov operation",
+            "operation and row/column convention evidence",
+            "finite_markov_frontend",
+            "stationary versus hitting interpretation boundaries",
+            "alternative typed requests with provenance",
+            "finite_markov",
+        ),
         _ => return None,
     };
     let mut gap = CapabilityGap {
@@ -278,5 +310,13 @@ mod tests {
             vec!["case-3".into()]
         )
         .is_none());
+        let markov = propose_capability_gap(
+            "hitting_graph_boundary",
+            CapabilityGapStatus::MissingPrerequisite,
+            vec!["case-markov".into()],
+        )
+        .expect("Markov boundary has a bounded proposal");
+        assert!(markov.desired_transformation.contains("hitting"));
+        assert!(capability_gap_replay_verified(&markov));
     }
 }

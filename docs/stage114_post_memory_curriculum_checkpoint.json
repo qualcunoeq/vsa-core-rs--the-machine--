@@ -1,0 +1,32 @@
+{
+  "schema": "stage114-post-memory-curriculum-checkpoint-v1",
+  "curriculum_cases": 10400,
+  "curriculum_authorized": 6204,
+  "curriculum_safe_refusals_or_ambiguities": 4196,
+  "curriculum_replay_verified": 10400,
+  "curriculum_tamper_rejections": 10400,
+  "curriculum_false_authorizations": 0,
+  "curriculum_false_denials": 0,
+  "source_catalogs": 3,
+  "memory_records": 100000,
+  "memory_replay_verified": 100000,
+  "memory_tamper_rejected": 100000,
+  "retrieval_queries": 2000,
+  "retrieval_receipt_replays": 2000,
+  "retrieval_receipt_tamper_rejections": 2000,
+  "retrieval_contamination": 0,
+  "manifest_unchanged": true,
+  "frozen_hle_cases": 2500,
+  "frozen_hle_correct_authorized": 2,
+  "frozen_hle_false_authorizations": 0,
+  "parent_report_sha256": [
+    "6bc0e79a61be7796bf726cdbc419fab1170084ab2bac9211510cf2c1c6688751",
+    "175094886a184a24fe56af7ba2f95dc08ea1b3c7cdbe9bc20807ac8eddd68aed",
+    "359d9c83655a9d1941d52f4aa94252c9eb2f9e5d6d231b8eaf68c580983fa22d",
+    "b24839941264c9433b2ec41877f3e395cf13cc38c84789c504f518b696236741",
+    "b5a3bc2ad4207925e7d448ca6f193296002b4aed76c625e94bba8162610f0959",
+    "0e7ad50415ca5988fa026d18d25db749b3026cf911f5ac6dd14d225b856f5ff3",
+    "f73eb00ce3e3b5c26a92738c5379d48eabbdba498f1a6a0964da9a0b3991071c",
+    "6f2f99419108dfa7d37f17a4e94fdc0ed6db98eff963ced92da6edbe1a3e731c"
+  ]
+}

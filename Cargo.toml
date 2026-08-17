@@ -600,6 +600,10 @@ name = "stage139_hle_shadow_frontend_audit"
 path = "src/bin/stage139_hle_shadow_frontend_audit.rs"
 
 [[bin]]
+name = "stage140_frontend_scope_pressure"
+path = "src/bin/stage140_frontend_scope_pressure.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

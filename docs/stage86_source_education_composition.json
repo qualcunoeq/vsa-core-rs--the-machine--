@@ -1,0 +1,18 @@
+{
+  "schema": "stage86-source-education-composition-v1",
+  "cases": 1000,
+  "sequence_supported": 350,
+  "unit_supported": 350,
+  "ambiguous": 150,
+  "unsupported": 150,
+  "exact_routes": 1000,
+  "frontend_replays": 1000,
+  "frontend_tamper_rejections": 1000,
+  "execution_replays": 1000,
+  "execution_tamper_rejections": 1000,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "route_leakage": 0,
+  "sequence_catalog_sha256": "0e9df6ac84c6e24c0c80a9ba19e44191b2039fcd915d4dec126f88b7aafff1b4",
+  "unit_catalog_sha256": "5e0720eba605609d3d3b77b485f147f7300a58a87569c37150beafb353e4b0e4"
+}

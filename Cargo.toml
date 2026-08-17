@@ -879,6 +879,10 @@ path = "src/bin/stage158_hle_checkpoint_after_curriculum.rs"
 name = "stage159_source_reasoning_scale"
 path = "src/bin/stage159_source_reasoning_scale.rs"
 
+[[bin]]
+name = "stage160_source_epistemic_integration"
+path = "src/bin/stage160_source_epistemic_integration.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

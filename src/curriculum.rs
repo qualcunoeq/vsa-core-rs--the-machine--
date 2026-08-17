@@ -193,6 +193,17 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "extend finite probability with explicit exact transition semantics",
         ),
         (
+            "finite_markov_stationary_general",
+            "Bounded exact finite stationary distributions",
+            vec!["finite_markov", "linear_algebra_spectral"],
+            vec![
+                "stationary_distribution_up_to_four_states",
+                "exact_rank_uniqueness",
+                "stationary_residual_certificate",
+            ],
+            "separate exact linear-system extension; the historical two-state Markov contract remains immutable",
+        ),
+        (
             "real_complex_analysis",
             "Real and complex analysis",
             vec!["linear_algebra_spectral"],
@@ -494,6 +505,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "combinatorics"
                 | "probability_stochastic"
                 | "finite_markov"
+                | "finite_markov_stationary_general"
                 | "real_complex_analysis"
                 | "graph_theory"
                 | "ordinary_differential_equations"
@@ -563,7 +575,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 31);
+        assert_eq!(manifest.packs.len(), 32);
         assert!(manifest
             .packs
             .iter()

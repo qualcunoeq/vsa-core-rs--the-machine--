@@ -1,0 +1,8 @@
+SOURCE_ID: openstax-introductory-statistics-2e:finite-markov-stationary-extension
+TITLE: Introductory Statistics 2e — finite transition matrices and long-run distributions
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: A finite transition matrix has a declared state ordering and normalized rows; a stationary distribution is a probability vector preserved by the transition operator.
+SCOPE: This implementation adds only exact rational row-stochastic matrices with at most four states and an exact rank/zero-residual certificate.
+BOUNDARY: Continuous-time chains, approximate numerics, undisclosed row/column conventions, larger systems, and non-unique stationary sets remain unsupported.

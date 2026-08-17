@@ -111,6 +111,35 @@
         "selection_reason": "extend finite probability with explicit exact transition semantics"
       },
       {
+        "id": "finite_markov_stationary_general",
+        "title": "Bounded exact finite stationary distributions",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "finite_markov",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "stationary_distribution_up_to_four_states",
+          "exact_rank_uniqueness",
+          "stationary_residual_certificate"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "separate exact linear-system extension; the historical two-state Markov contract remains immutable"
+      },
+      {
         "id": "real_complex_analysis",
         "title": "Real and complex analysis",
         "status": "shadow_validated",
@@ -701,6 +730,36 @@
         "selection_reason": "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution"
       },
       {
+        "id": "bounded_complex_analysis",
+        "title": "Bounded exact complex-analysis theorem contracts",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_complex_arithmetic",
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "complex_polynomial_value",
+          "complex_polynomial_derivative",
+          "cauchy_riemann_certificate",
+          "affine_holomorphic_derivative"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-attributed rectangular theorem boundary; polar, contour, and infinite semantics remain separate"
+      },
+      {
         "id": "source_derived_finite_topology",
         "title": "Source-derived bounded finite topology",
         "status": "shadow_validated",
@@ -879,7 +938,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "e252a0d7e1632815efde3dd5d6044e4e4aa3b9d697485b215e4269450943cb31",
+  "manifest_replay_hash": "bc10dc2efe09da530b005be4466c9d7e430d3cb2572a838b6a7c4781e290b3f1",
   "validation_errors": [],
   "production_authorizations": 0
 }

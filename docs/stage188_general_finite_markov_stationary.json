@@ -1,0 +1,7937 @@
+{
+  "schema": "stage188-general-finite-markov-stationary-v1",
+  "manifest_sha256": "bc10dc2efe09da530b005be4466c9d7e430d3cb2572a838b6a7c4781e290b3f1",
+  "corpus_sha256": "3be193ef439deb6ad4aa3eba270dc47c5ae27524a3bbc930660b17eefe1ddada",
+  "source": "docs/sources/openstax_finite_markov_stationary_source.txt",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "receipts": [
+    {
+      "id": "two_state_0",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_1",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_2",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_3",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_4",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_5",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_6",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_7",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_8",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_9",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_10",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_11",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_12",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_13",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_14",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_15",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_16",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_17",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_18",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_19",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_20",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_21",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_22",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_23",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_24",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_25",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_26",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_27",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_28",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "two_state_29",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 2,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_0",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_1",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_2",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_3",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_4",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_5",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_6",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_7",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_8",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_9",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_10",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_11",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_12",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_13",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_14",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_15",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_16",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_17",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_18",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_19",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_20",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_21",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_22",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_23",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_24",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_25",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_26",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_27",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_28",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_cycle_29",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_0",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_1",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_2",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_3",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_4",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_5",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_6",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_7",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_8",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_9",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_10",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_11",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_12",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_13",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_14",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_15",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_16",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_17",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_18",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_19",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_20",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_21",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_22",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_23",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_24",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_25",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_26",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_27",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_28",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "three_mixing_29",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 2
+          },
+          {
+            "numerator": 1,
+            "denominator": 3
+          },
+          {
+            "numerator": 1,
+            "denominator": 6
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_0",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_1",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_2",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_3",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_4",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_5",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_6",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_7",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_8",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_9",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_10",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_11",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_12",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_13",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_14",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_15",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_16",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_17",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_18",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_19",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_20",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_21",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_22",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_23",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_24",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_25",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_26",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_27",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_28",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "four_mixing_29",
+      "expected_status": "complete",
+      "actual_status": "complete",
+      "expected_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "actual_artifact": {
+        "distribution": [
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          },
+          {
+            "numerator": 1,
+            "denominator": 4
+          }
+        ],
+        "state_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "residual_verified": true
+      },
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_0",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_1",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_2",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_3",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_4",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_5",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_6",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_7",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_8",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_9",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_10",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_11",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_12",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_13",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_14",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_15",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_16",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_17",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_18",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_19",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_20",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_21",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_22",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_23",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_24",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_25",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_26",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_27",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_28",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_29",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_30",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_31",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_32",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_33",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_34",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_35",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_36",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_37",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_38",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "ambiguous_convention_39",
+      "expected_status": "ambiguous",
+      "actual_status": "ambiguous",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_0",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_1",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_2",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_3",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_4",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_5",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_6",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_7",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_8",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_9",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_10",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_11",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_12",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_13",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_14",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_15",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_16",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_17",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_18",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_19",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_20",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_21",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_22",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_23",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_24",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_25",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_26",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_27",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_28",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_29",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_30",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_31",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_32",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_33",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_34",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_35",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_36",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_37",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_38",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "non_unique_39",
+      "expected_status": "non_unique",
+      "actual_status": "non_unique",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_0",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_1",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_2",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_3",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_4",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_5",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_6",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_7",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_8",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_9",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_10",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_11",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_12",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_13",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_14",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_15",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_16",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_17",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_18",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "invalid_row_19",
+      "expected_status": "invalid_transition",
+      "actual_status": "invalid_transition",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_0",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_1",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_2",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_3",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_4",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_5",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_6",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_7",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_8",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_9",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_10",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_11",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_12",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_13",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_14",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_15",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_16",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_17",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_18",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "over_dimension_19",
+      "expected_status": "dimension_mismatch",
+      "actual_status": "dimension_mismatch",
+      "expected_artifact": null,
+      "actual_artifact": null,
+      "exact": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    }
+  ]
+}

@@ -588,6 +588,10 @@ name = "stage136_arithmetic_functions_composition"
 path = "src/bin/stage136_arithmetic_functions_composition.rs"
 
 [[bin]]
+name = "stage137_arithmetic_route_blind_language"
+path = "src/bin/stage137_arithmetic_route_blind_language.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

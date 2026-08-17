@@ -472,6 +472,10 @@ name = "stage104_self_directed_set_counting"
 path = "src/bin/stage104_self_directed_set_counting.rs"
 
 [[bin]]
+name = "stage105_source_language_set_counting"
+path = "src/bin/stage105_source_language_set_counting.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

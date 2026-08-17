@@ -1,0 +1,21 @@
+{
+  "schema": "stage121-source-transfer-sealed-exam-checkpoint-v1",
+  "source_transfer_number_language_cases": 1200,
+  "source_transfer_false_authorizations": 0,
+  "source_transfer_live_mutations": 0,
+  "exam_cases": 5000,
+  "exam_supported_authorized": 3000,
+  "exam_ambiguities_preserved": 1000,
+  "exam_unsupported_refused": 1000,
+  "exam_replay_verified": 5000,
+  "exam_tamper_rejections": 5000,
+  "exam_false_authorizations": 0,
+  "exam_false_denials": 0,
+  "exam_manifest_mutated": false,
+  "sealed_holdout_cases": 1000,
+  "sealed_holdout_authorized": 600,
+  "parent_report_sha256": [
+    "612ed6d1f973f27032e85017b1f83851a396bb3eb40c497360e709109fee2217",
+    "560a7513169f88791db7990ac2bd90e53a9a0d1d2e310fbaf739f9ca7706e56c"
+  ]
+}

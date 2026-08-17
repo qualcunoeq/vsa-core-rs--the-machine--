@@ -572,6 +572,10 @@ name = "stage132_mixed_math_frontend_route_blind"
 path = "src/bin/stage132_mixed_math_frontend_route_blind.rs"
 
 [[bin]]
+name = "stage133_mixed_math_sealed_exam"
+path = "src/bin/stage133_mixed_math_sealed_exam.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

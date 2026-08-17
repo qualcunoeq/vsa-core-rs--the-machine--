@@ -420,6 +420,10 @@ name = "stage83_source_catalog_route_blind"
 path = "src/bin/stage83_source_catalog_route_blind.rs"
 
 [[bin]]
+name = "stage84_sequence_frontend_bench"
+path = "src/bin/stage84_sequence_frontend_bench.rs"
+
+[[bin]]
 name = "combinatorics_pack_bench"
 path = "src/bin/combinatorics_pack_bench.rs"
 

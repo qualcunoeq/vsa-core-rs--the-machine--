@@ -663,6 +663,13 @@ fn formulas() -> Vec<FormulaRecord> {
     ]
 }
 
+/// Return the validated source-derived catalog for generic consumers such as
+/// language frontends.  The records remain data; callers must still select an
+/// expected domain and pass them through `evaluate_formula_records`.
+pub fn source_formula_records() -> Vec<FormulaRecord> {
+    formulas()
+}
+
 fn digest<T: Serialize>(value: &T) -> String {
     format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap()))
 }

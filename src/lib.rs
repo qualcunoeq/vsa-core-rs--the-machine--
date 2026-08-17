@@ -153,6 +153,7 @@ pub mod socket;
 pub mod solution_verification;
 pub mod source_complex_pack;
 pub mod source_formula_pack;
+pub mod source_sequence_frontend;
 pub mod source_formula_frontend;
 pub mod source_probability_bridge;
 pub mod spectral_linear_algebra_pack;

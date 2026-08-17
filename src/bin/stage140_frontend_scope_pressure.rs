@@ -140,6 +140,7 @@ fn corpus() -> Vec<Case> {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let repair_mode = std::env::var_os("STAGE140_REPAIRED").is_some();
     let cases = corpus();
     assert_eq!(cases.len(), 240);
     let corpus_sha256 = digest(&cases);
@@ -249,13 +250,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ),
         (60, 60, 80, 40)
     );
-    assert_eq!(exact_decisions, 200);
+    assert_eq!(exact_decisions, if repair_mode { 240 } else { 200 });
     assert_eq!(replay_verified, cases);
     assert_eq!(tamper_rejections, cases);
-    assert_eq!(false_authorizations, 40);
+    assert_eq!(false_authorizations, if repair_mode { 0 } else { 40 });
     assert_eq!(false_denials, 0);
+    if repair_mode {
+        assert_eq!(overbroad_completions, 0);
+    }
     let report = Report {
-        schema: "stage140-frontend-scope-pressure-v1",
+        schema: if repair_mode {
+            "stage141-frontend-scope-repair-v1"
+        } else {
+            "stage140-frontend-scope-pressure-v1"
+        },
         source: "independently authored embedded-notation and multi-scope corpus",
         corpus_sha256,
         cases,
@@ -273,7 +281,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         receipts,
     };
     let json = serde_json::to_vec_pretty(&report)?;
-    std::fs::write("docs/stage140_frontend_scope_pressure.json", &json)?;
+    let output = if repair_mode {
+        "docs/stage141_frontend_scope_repair.json"
+    } else {
+        "docs/stage140_frontend_scope_pressure.json"
+    };
+    std::fs::write(output, &json)?;
     println!("{}", String::from_utf8(json)?);
     Ok(())
 }

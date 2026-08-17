@@ -57,6 +57,10 @@ fn integer_after(text: &str, labels: &[&str]) -> Option<u64> {
     })
 }
 
+fn marker_count(text: &str, marker: &str) -> usize {
+    text.match_indices(marker).count()
+}
+
 fn output(
     status: ArithmeticFrontendStatus,
     request: Option<ArithmeticFunctionRequest>,
@@ -96,6 +100,43 @@ pub fn formalize(text: &str, case_id: &str) -> ArithmeticFrontendResult {
             ArithmeticFrontendStatus::Unsupported,
             None,
             vec!["analytic or unbounded semantics exceed the finite arithmetic contract".into()],
+            provenance,
+        );
+    }
+    let operation_families: &[&[&str]] = &[
+        &["number of divisors", "divisor count", "tau(", "τ("],
+        &["sum of divisors", "divisor sum", "sigma(", "σ("],
+        &["möbius", "mobius", "mu(", "μ("],
+        &[
+            "prime-counting",
+            "prime counting",
+            "number of primes up to",
+            "pi(",
+            "π(",
+        ],
+        &["phi(", "φ(", "totient"],
+    ];
+    if operation_families
+        .iter()
+        .filter(|family| family.iter().any(|marker| lower.contains(marker)))
+        .count()
+        > 1
+    {
+        return output(
+            ArithmeticFrontendStatus::Ambiguous,
+            None,
+            vec!["multiple arithmetic-function operations or scoped formulas are present".into()],
+            provenance,
+        );
+    }
+    if ["n=", "n =", "value=", "value "]
+        .iter()
+        .any(|marker| marker_count(&lower, marker) > 1)
+    {
+        return output(
+            ArithmeticFrontendStatus::Ambiguous,
+            None,
+            vec!["the arithmetic-function input appears in multiple local scopes".into()],
             provenance,
         );
     }
@@ -210,5 +251,10 @@ mod tests {
             "unsupported",
         );
         assert_eq!(unsupported.status, ArithmeticFrontendStatus::Unsupported);
+        let scoped = formalize(
+            "A quoted formula contains μ(n=12) and μ(n=36); select neither scope.",
+            "scoped",
+        );
+        assert_eq!(scoped.status, ArithmeticFrontendStatus::Ambiguous);
     }
 }

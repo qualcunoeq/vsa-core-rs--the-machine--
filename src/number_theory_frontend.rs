@@ -62,6 +62,10 @@ fn integer_after(text: &str, labels: &[&str]) -> Option<i64> {
     })
 }
 
+fn marker_count(text: &str, marker: &str) -> usize {
+    text.match_indices(marker).count()
+}
+
 fn request(
     operation: NumberTheoryOperation,
     a: Option<i64>,
@@ -109,6 +113,65 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
             status: NumberTheoryFrontendStatus::Unsupported,
             request: None,
             unresolved: vec!["request exceeds bounded elementary number theory".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+    let operation_families: &[&[&str]] = &[
+        &["gcd", "greatest common divisor", "bezout", "bézout"],
+        &["modular inverse", "inverse modulo"],
+        &[
+            "chinese remainder",
+            "simultaneous congruence",
+            "simultaneous congruences",
+        ],
+        &["linear congruence", "congruence", "≡"],
+        &["totient", "phi(", "φ("],
+        &["diophantine"],
+        // A visible arithmetic-function formula is not a number-theory
+        // operation merely because it contains a familiar symbol.  Keep it
+        // as a competing semantic scope when it occurs beside a supported
+        // number-theory request.
+        &[
+            "mu(",
+            "μ(",
+            "möbius",
+            "mobius",
+            "divisor sum",
+            "divisor count",
+            "sigma(",
+            "σ(",
+        ],
+    ];
+    if operation_families
+        .iter()
+        .filter(|family| family.iter().any(|marker| lower.contains(marker)))
+        .count()
+        > 1
+    {
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Ambiguous,
+            request: None,
+            unresolved: vec![
+                "multiple number-theory operations or scoped formulas are present".into(),
+            ],
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+    let binding_markers = [
+        "a=", "a =", "b=", "b =", "c=", "c =", "m=", "m =", "n=", "n =",
+    ];
+    if binding_markers
+        .iter()
+        .any(|marker| marker_count(&lower, marker) > 1)
+    {
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Ambiguous,
+            request: None,
+            unresolved: vec![
+                "a required number-theory binding appears in multiple local scopes".into(),
+            ],
             provenance,
             replay_hash: String::new(),
         });
@@ -232,5 +295,10 @@ mod tests {
             "unsupported",
         );
         assert_eq!(unsupported.status, NumberTheoryFrontendStatus::Unsupported);
+        let scoped = formalize_number_theory_text(
+            "A quoted example uses a=7 modulo m=20, while another scope uses a=11 modulo m=20; choose neither inverse.",
+            "scoped",
+        );
+        assert_eq!(scoped.status, NumberTheoryFrontendStatus::Ambiguous);
     }
 }

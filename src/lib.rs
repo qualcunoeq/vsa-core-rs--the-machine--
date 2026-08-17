@@ -68,6 +68,7 @@ pub mod failure_taxonomy;
 pub mod finite_markov_pack;
 pub mod finite_markov_stationary_pack;
 pub mod finite_markov_stationary_composition;
+pub mod finite_markov_hitting_pack;
 pub mod finite_state_contract;
 pub mod forager;
 pub mod formalization;

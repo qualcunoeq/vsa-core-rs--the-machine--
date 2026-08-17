@@ -204,6 +204,17 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "separate exact linear-system extension; the historical two-state Markov contract remains immutable",
         ),
         (
+            "finite_markov_hitting",
+            "Bounded exact finite hitting probabilities",
+            vec!["finite_markov_stationary_general"],
+            vec![
+                "target_before_avoid_probability",
+                "statewise_hitting_certificate",
+                "initial_hitting_probability",
+            ],
+            "explicit target/avoid boundary with exact transient-state equations",
+        ),
+        (
             "real_complex_analysis",
             "Real and complex analysis",
             vec!["linear_algebra_spectral"],
@@ -506,6 +517,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "probability_stochastic"
                 | "finite_markov"
                 | "finite_markov_stationary_general"
+                | "finite_markov_hitting"
                 | "real_complex_analysis"
                 | "graph_theory"
                 | "ordinary_differential_equations"
@@ -575,7 +587,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 32);
+        assert_eq!(manifest.packs.len(), 33);
         assert!(manifest
             .packs
             .iter()

@@ -1,0 +1,8 @@
+SOURCE_ID: openstax-introductory-statistics-2e:finite-markov-hitting-extension
+TITLE: Introductory Statistics 2e — finite transition probabilities and absorbing boundaries
+URL: https://openstax.org/details/books/introductory-statistics-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED_UTC: 2026-08-17
+EVIDENCE: A finite row-stochastic transition matrix defines one-step state probabilities; explicitly absorbing target and avoid states define a bounded event whose probability satisfies exact transient-state equations.
+SCOPE: This implementation supports exact rational chains with at most four states, explicit target and avoid sets, and a unique statewise solution.
+BOUNDARY: Expected hitting times, unbounded state spaces, asymptotic limits, continuous-time chains, implicit absorbing policies, and non-unique transient equations remain unsupported.

@@ -1,0 +1,21 @@
+{
+  "schema": "stage126-simplicial-language-frontend-v1",
+  "corpus_sha256": "02c9b36fb2bcc4fd9d227ad51916445ca92a218993692e2b8ae0e6f82ca94b03",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_frontend_decisions": 240,
+  "frontend_replay_verified": 240,
+  "frontend_tamper_rejected": 240,
+  "downstream_authorized": 120,
+  "downstream_replay_verified": 120,
+  "downstream_tamper_rejected": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "statuses": {
+    "ambiguous": 40,
+    "complete": 120,
+    "unsupported": 80
+  }
+}

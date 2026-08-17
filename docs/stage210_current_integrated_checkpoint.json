@@ -1,0 +1,27 @@
+{
+  "schema": "stage210-current-integrated-checkpoint-v1",
+  "parent_file_sha256": {
+    "docs/stage207_current_integrated_checkpoint.json": "ab2736a456fe2dee8fbc8231e7f2dc2993e508826b73212e92fba5d3d416010e",
+    "docs/stage208_mobius_frontend_shifted.json": "e35547ba9b7dd0ad68788f752f1554868726750b7dbf50fbd61abee1c7619642",
+    "docs/stage209_curriculum_memory_after_mobius_frontend.json": "2523407a7d69f32f38842953c977374a6d10483df9c0934657e997c7d005e85d"
+  },
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "manifest_packs": 34,
+  "manifest_validated_packs": 33,
+  "frontend_cases": 2000,
+  "frontend_exact": 2000,
+  "frontend_replay": 2000,
+  "frontend_tamper": 2000,
+  "frontend_downstream_replay": 1200,
+  "frontend_artifacts": 1200,
+  "synthesis_cases": 3720,
+  "exact_decisions": 4020,
+  "replay_verified": 105300,
+  "tamper_rejected": 5860,
+  "memory_records": 100000,
+  "memory_replay": 100000,
+  "memory_tamper": 1000,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_mutations": 0
+}

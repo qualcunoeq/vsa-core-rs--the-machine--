@@ -652,6 +652,10 @@ name = "stage155_sealed_source_multimodal_exam"
 path = "src/bin/stage155_sealed_source_multimodal_exam.rs"
 
 [[bin]]
+name = "stage156_source_route_memory_scale"
+path = "src/bin/stage156_source_route_memory_scale.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

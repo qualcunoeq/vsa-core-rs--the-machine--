@@ -1,0 +1,28 @@
+{
+  "duplicate_rejections": 1,
+  "exact_retrieval_contamination": 0,
+  "exact_visual_typed_receipts": 8334,
+  "invalid_rejections": 1,
+  "live_curriculum_mutations": 0,
+  "live_registry_mutations": 0,
+  "reconstructed_records": 100000,
+  "reconstruction_hash_equal": true,
+  "records": 100000,
+  "replay_verified": 100000,
+  "route_counts": {
+    "biology": 16667,
+    "chemistry": 16667,
+    "statistics": 16667,
+    "visual_biology": 16666,
+    "visual_chemistry": 16666,
+    "visual_statistics": 16667
+  },
+  "schema": "stage156-source-route-memory-scale-v1",
+  "segment_capacity": 256,
+  "segments": 391,
+  "source_report": "docs/stage155_sealed_source_multimodal_exam.json",
+  "source_report_sha256": "12f6b76d6db52105cbcd0710864af7ad038755c40e7526b3a3a840ae026584b5",
+  "tamper_rejected": 1000,
+  "tamper_sample": 1000,
+  "unknown_route_records": 0
+}

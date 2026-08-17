@@ -636,6 +636,10 @@ name = "stage151_hle_checkpoint_post_source_multimodal"
 path = "src/bin/stage151_hle_checkpoint_post_source_multimodal.rs"
 
 [[bin]]
+name = "stage152_visual_science_tsv_composition"
+path = "src/bin/stage152_visual_science_tsv_composition.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

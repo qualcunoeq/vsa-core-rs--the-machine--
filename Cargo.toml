@@ -460,6 +460,10 @@ name = "stage101_source_counting_bench"
 path = "src/bin/stage101_source_counting_bench.rs"
 
 [[bin]]
+name = "stage102_set_counting_probability"
+path = "src/bin/stage102_set_counting_probability.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

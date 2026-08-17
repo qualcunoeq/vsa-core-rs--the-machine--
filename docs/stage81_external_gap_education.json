@@ -1,0 +1,125 @@
+{
+  "schema": "stage81-external-gap-education-v1",
+  "config_sha256": "ea4fd6891be8dc785593237eb474f09a8c02ba41c3bc1d112b296b9a7ab9f0c9",
+  "base_release_hash": "c3d288f3ecf5f4bf1bbc6e8160e0edb1cf469e2df0db21f3476caddd330b1374",
+  "cases_read": 100,
+  "residual_observations": 53,
+  "observation_replays": 53,
+  "clusters": {
+    "fractional_quantity": 3,
+    "multi_step_quantity_arithmetic": 16,
+    "percentage_discount_finance": 2,
+    "ratio_rate_proportion": 16,
+    "temporal_or_sequential_reasoning": 6,
+    "unit_measurement_conversion": 10
+  },
+  "plans": [
+    {
+      "module_id": "source_formula_sequences",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "multi_step_quantity_arithmetic"
+      ],
+      "covered_case_count": 16,
+      "prerequisite_packs": [
+        "abstract_algebra",
+        "bounded_calculus",
+        "combinatorics",
+        "elementary_number_theory",
+        "graph_theory",
+        "linear_algebra_spectral",
+        "probability_stochastic",
+        "real_complex_analysis",
+        "source_formula_sequences"
+      ],
+      "source_ids": [
+        "openstax-precalculus-2e:sequences-series"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 16 observed cases"
+      ],
+      "replay_hash": "0da71599a7b514b7d5dc1678ef865d87f6752cc10a18d83362c2e8b9e4aeb62e"
+    },
+    {
+      "module_id": "unproven_ratio_shortcut",
+      "status": "Blocked",
+      "covered_artifacts": [
+        "ratio_rate_proportion"
+      ],
+      "covered_case_count": 16,
+      "prerequisite_packs": [],
+      "source_ids": [],
+      "independent_exercise_count": 0,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 16 observed cases",
+        "source provenance and independent exercise evidence are incomplete"
+      ],
+      "replay_hash": "e13fffdb446129424a9e628cd6ca643dce71742f38af4a451301892697fb3b45"
+    },
+    {
+      "module_id": "source_derived_unit_conversion",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "unit_measurement_conversion"
+      ],
+      "covered_case_count": 10,
+      "prerequisite_packs": [],
+      "source_ids": [
+        "docs:phase23-unit-aware-quantity"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 10 observed cases"
+      ],
+      "replay_hash": "98affc1b907f72dda49877cfc25afef1c21ba6113ddf4d0dea202f3d651394a4"
+    },
+    {
+      "module_id": "source_derived_fractional_quantity",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "fractional_quantity"
+      ],
+      "covered_case_count": 3,
+      "prerequisite_packs": [],
+      "source_ids": [
+        "docs:phase25-fractional-quantity"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 3 observed cases"
+      ],
+      "replay_hash": "5ab047752a0ec1c7402be43cd959b6cd5197578b3cfd7529f159c8697385db4f"
+    },
+    {
+      "module_id": "unproven_percentage_shortcut",
+      "status": "Blocked",
+      "covered_artifacts": [
+        "percentage_discount_finance"
+      ],
+      "covered_case_count": 2,
+      "prerequisite_packs": [],
+      "source_ids": [],
+      "independent_exercise_count": 0,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 2 observed cases",
+        "source provenance and independent exercise evidence are incomplete"
+      ],
+      "replay_hash": "639cccca83f79776b72e9a991855a27e0d83c7d1e210fb5737d0b08fba67b716"
+    }
+  ],
+  "selected_module": "source_formula_sequences",
+  "selected_coverage": 16,
+  "selected_promotable_in_sandbox": true,
+  "selected_plan_replay": true,
+  "selected_plan_tamper_rejected": true,
+  "blocked_shortcuts": 2,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "live_mutations": 0
+}

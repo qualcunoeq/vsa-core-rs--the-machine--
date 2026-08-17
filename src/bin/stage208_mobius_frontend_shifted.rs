@@ -133,6 +133,12 @@ fn oracle_inversion(values: &[i128]) -> Vec<i128> {
     }).collect()
 }
 
+fn oracle_convolution(left: &[i128], right: &[i128]) -> Vec<i128> {
+    (1..=left.len()).map(|n| {
+        (1..=n).filter(|d| n % d == 0).map(|d| left[d - 1] * right[n / d - 1]).sum()
+    }).collect()
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let corpus = (0..CASES).map(case).collect::<Vec<_>>();
     let mut receipts = Vec::with_capacity(CASES);
@@ -155,7 +161,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         artifact_correct = evaluated.artifact == Some(MobiusArtifact::InvertedSequence { values: oracle_inversion(values), index_origin: 1 });
                     }
                 } else {
-                    artifact_correct = matches!(evaluated.status, MobiusStatus::Complete) && evaluated.artifact.is_some();
+                    if let (Some(left), Some(right)) = (&request.values, &request.second_values) {
+                        artifact_correct = matches!(evaluated.status, MobiusStatus::Complete)
+                            && evaluated.artifact == Some(MobiusArtifact::ConvolutionSequence {
+                                values: oracle_convolution(left, right), index_origin: 1,
+                            });
+                    }
                 }
             }
         }

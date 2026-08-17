@@ -608,6 +608,10 @@ name = "stage143_combinatorics_language_frontend"
 path = "src/bin/stage143_combinatorics_language_frontend.rs"
 
 [[bin]]
+name = "stage144_mixed_frontend_route_blind"
+path = "src/bin/stage144_mixed_frontend_route_blind.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

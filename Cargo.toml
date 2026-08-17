@@ -488,6 +488,10 @@ name = "stage109_cross_domain_failure_localization"
 path = "src/bin/stage109_cross_domain_failure_localization.rs"
 
 [[bin]]
+name = "stage110_technical_language_2000"
+path = "src/bin/stage110_technical_language_2000.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

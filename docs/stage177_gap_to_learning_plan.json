@@ -1,0 +1,138 @@
+{
+  "schema": "stage177-gap-to-learning-plan-v1",
+  "parent_report_sha256": "f8adf0e0fe685ac1d0e20bc12142f79ff4b9c97b5ad973e646f75225ef646f6b",
+  "independent_gap_cases": 500,
+  "gap_observations_replay_verified": 500,
+  "plans_emitted": 5,
+  "plans_replay_verified": 5,
+  "plans_tamper_rejected": 5,
+  "plans_with_exact_coverage": 5,
+  "covered_gap_cases": 500,
+  "eligible_plan_candidates": 5,
+  "blocked_plan_candidates": 0,
+  "real_gap_proposals": 10,
+  "real_gap_replay_verified": 10,
+  "manifest_unchanged": true,
+  "promotion_attempts": 0,
+  "false_authorizations": 0,
+  "plan_coverage": {
+    "candidate_combinatorics_bridge": 100,
+    "candidate_dynamics_bridge": 100,
+    "candidate_graph_bridge": 100,
+    "candidate_ode_bridge": 100,
+    "candidate_probability_bridge": 100
+  },
+  "plans": [
+    {
+      "module_id": "candidate_combinatorics_bridge",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "combinatorics"
+      ],
+      "covered_case_count": 100,
+      "prerequisite_packs": [
+        "abstract_algebra",
+        "combinatorics",
+        "elementary_number_theory",
+        "graph_theory",
+        "linear_algebra_spectral",
+        "probability_stochastic"
+      ],
+      "source_ids": [
+        "openstax-counting-principles"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 100 observed cases"
+      ],
+      "replay_hash": "ea76f1c0545804bd13cf408165ad6c24d0a9e79d813773c5a2cca511a9904bd8"
+    },
+    {
+      "module_id": "candidate_dynamics_bridge",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "discrete_dynamics"
+      ],
+      "covered_case_count": 100,
+      "prerequisite_packs": [
+        "finite_markov",
+        "linear_algebra_spectral",
+        "probability_stochastic"
+      ],
+      "source_ids": [
+        "validated-finite-dynamics"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 100 observed cases"
+      ],
+      "replay_hash": "86146c1087b4a40de57837f8f32eebbdef0cfb9fdaa851417359a98b0af3a051"
+    },
+    {
+      "module_id": "candidate_graph_bridge",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "graph_theory"
+      ],
+      "covered_case_count": 100,
+      "prerequisite_packs": [
+        "graph_theory",
+        "linear_algebra_spectral"
+      ],
+      "source_ids": [
+        "mit-ocw-finite-graphs"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 100 observed cases"
+      ],
+      "replay_hash": "1d6b4267f06dc1caba7be8dfb159a3b70bf3978f0f97b348339f12837ddcffae"
+    },
+    {
+      "module_id": "candidate_ode_bridge",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "ordinary_differential_equations"
+      ],
+      "covered_case_count": 100,
+      "prerequisite_packs": [
+        "linear_algebra_spectral",
+        "ordinary_differential_equations",
+        "real_complex_analysis"
+      ],
+      "source_ids": [
+        "openstax-ode-foundations"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 100 observed cases"
+      ],
+      "replay_hash": "42fdcb944e6429cd669fb01df9b1e49488529992440b88c0786e49f507886108"
+    },
+    {
+      "module_id": "candidate_probability_bridge",
+      "status": "Proposed",
+      "covered_artifacts": [
+        "finite_probability"
+      ],
+      "covered_case_count": 100,
+      "prerequisite_packs": [
+        "linear_algebra_spectral",
+        "probability_stochastic"
+      ],
+      "source_ids": [
+        "openstax-finite-probability"
+      ],
+      "independent_exercise_count": 240,
+      "reasons": [
+        "all declared prerequisites are present in the immutable manifest",
+        "exactly covers 100 observed cases"
+      ],
+      "replay_hash": "40db430c595297e8840f7f18d873b50fba50a8860f87c3545a5868df37e55252"
+    }
+  ]
+}

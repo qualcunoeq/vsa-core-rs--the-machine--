@@ -34,6 +34,8 @@ use the_machine::simplicial_homology_pack::{evaluate as evaluate_homology, Homol
 const DATASET: &str = "data/hle.jsonl";
 const SUMMARY: &str = "docs/stage139_hle_shadow_frontend_audit.json";
 const TRACE: &str = "docs/stage139_hle_shadow_frontend_audit.trace.jsonl";
+const SUMMARY_REPAIRED: &str = "docs/stage142_hle_shadow_frontend_repair.json";
+const TRACE_REPAIRED: &str = "docs/stage142_hle_shadow_frontend_repair.trace.jsonl";
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "snake_case")]
@@ -225,8 +227,11 @@ fn observe_homology(text: &str) -> (Observation, String) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let repaired = std::env::var_os("STAGE142_REPAIRED").is_some();
     let dataset = fs::read(DATASET)?;
-    let mut trace_file = File::create(TRACE)?;
+    let trace_path = if repaired { TRACE_REPAIRED } else { TRACE };
+    let summary_path = if repaired { SUMMARY_REPAIRED } else { SUMMARY };
+    let mut trace_file = File::create(trace_path)?;
     let mut cases = 0usize;
     let mut no_complete_candidate = 0usize;
     let mut unique_complete_candidate = 0usize;
@@ -327,9 +332,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         cases += 1;
     }
     trace_file.flush()?;
-    let trace = fs::read(TRACE)?;
+    let trace = fs::read(trace_path)?;
     let summary = Summary {
-        schema: "stage139-hle-shadow-frontend-audit-v1",
+        schema: if repaired {
+            "stage142-hle-shadow-frontend-repair-v1"
+        } else {
+            "stage139-hle-shadow-frontend-audit-v1"
+        },
         source: "answer-key-blind HLE text offered to four validated shadow frontends",
         dataset_sha256: digest_bytes(&dataset),
         trace_sha256: digest_bytes(&trace),
@@ -345,7 +354,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         candidate_tamper_rejected,
         production_authorizations: 0,
         registry_mutated: false,
-        trace_path: TRACE,
+        trace_path,
     };
     assert_eq!(summary.cases, 2500);
     assert_eq!(summary.frontend_invocations, 10_000);
@@ -353,7 +362,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(summary.frontend_tamper_rejected, summary.cases);
     assert_eq!(summary.production_authorizations, 0);
     assert!(!summary.trace_sha256.is_empty());
-    fs::write(SUMMARY, serde_json::to_vec_pretty(&summary)?)?;
+    fs::write(summary_path, serde_json::to_vec_pretty(&summary)?)?;
     println!("{}", serde_json::to_string_pretty(&summary)?);
     Ok(())
 }

@@ -1,0 +1,19 @@
+{
+  "schema": "stage142-hle-shadow-frontend-repair-v1",
+  "source": "answer-key-blind HLE text offered to four validated shadow frontends",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "trace_sha256": "d5198b701a34f71057cb77fdcacfc482c10d052970311abe3220efb255fc9c96",
+  "cases": 2500,
+  "frontend_invocations": 10000,
+  "no_complete_candidate": 2500,
+  "unique_complete_candidate": 0,
+  "multiple_complete_candidates": 0,
+  "candidate_shadow_authorizations": 0,
+  "frontend_replay_verified": 2500,
+  "frontend_tamper_rejected": 2500,
+  "candidate_replay_verified": 0,
+  "candidate_tamper_rejected": 0,
+  "production_authorizations": 0,
+  "registry_mutated": false,
+  "trace_path": "docs/stage142_hle_shadow_frontend_repair.trace.jsonl"
+}

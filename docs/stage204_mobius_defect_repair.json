@@ -1,0 +1,1284 @@
+{
+  "schema": "stage204-mobius-defect-repair-v1",
+  "corpus_sha256": "7318211e04cd8978ac4a3b7db2acff6f8325366c21116f1fc1c788c675a0e692",
+  "cases": 140,
+  "defect_classes": 7,
+  "counterexamples": 140,
+  "repairs": 140,
+  "parent_unchanged": 140,
+  "replay_verified": 140,
+  "tamper_rejected": 140,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "defect_counts": {
+    "omit_indexing": 20,
+    "wrong_mobius_sign": 20,
+    "skip_divisor": 20,
+    "off_by_one": 20,
+    "wrong_convolution_orientation": 20,
+    "overrun_bound": 20,
+    "bypass_provenance": 20
+  },
+  "receipts": [
+    {
+      "id": "stage204-OmitIndexing-00",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-01",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-02",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-03",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-04",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-05",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-06",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-07",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-08",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-09",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-10",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-11",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-12",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-13",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-14",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-15",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-16",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-17",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-18",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OmitIndexing-19",
+      "defect": "omit_indexing",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-00",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-01",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-02",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-03",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-04",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-05",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-06",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-07",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-08",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-09",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-10",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-11",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-12",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-13",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-14",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-15",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-16",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-17",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-18",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongMobiusSign-19",
+      "defect": "wrong_mobius_sign",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-00",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-01",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-02",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-03",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-04",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-05",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-06",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-07",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-08",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-09",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-10",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-11",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-12",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-13",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-14",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-15",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-16",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-17",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-18",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-SkipDivisor-19",
+      "defect": "skip_divisor",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-00",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-01",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-02",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-03",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-04",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-05",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-06",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-07",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-08",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-09",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-10",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-11",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-12",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-13",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-14",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-15",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-16",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-17",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-18",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OffByOne-19",
+      "defect": "off_by_one",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-00",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-01",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-02",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-03",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-04",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-05",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-06",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-07",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-08",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-09",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-10",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-11",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-12",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-13",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-14",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-15",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-16",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-17",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-18",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-WrongConvolutionOrientation-19",
+      "defect": "wrong_convolution_orientation",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-00",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-01",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-02",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-03",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-04",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-05",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-06",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-07",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-08",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-09",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-10",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-11",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-12",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-13",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-14",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-15",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-16",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-17",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-18",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-OverrunBound-19",
+      "defect": "overrun_bound",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-00",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-01",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-02",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-03",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-04",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-05",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-06",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-07",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-08",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-09",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-10",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-11",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-12",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-13",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-14",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-15",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-16",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-17",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-18",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "stage204-BypassProvenance-19",
+      "defect": "bypass_provenance",
+      "counterexample_found": true,
+      "repaired": true,
+      "parent_unchanged": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    }
+  ]
+}

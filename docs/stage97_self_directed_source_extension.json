@@ -1,0 +1,46 @@
+{
+  "schema": "stage97-self-directed-source-extension-v1",
+  "gap_cases": 240,
+  "actionable_gap_cases": 200,
+  "non_actionable_gap_cases": 40,
+  "validated_candidates": 2,
+  "admitted_candidates": 2,
+  "selected_modules": [
+    "source_derived_linear_interpolation",
+    "source_derived_bayes_rule"
+  ],
+  "resolved_case_count": 200,
+  "remaining_case_count": 40,
+  "campaign_replay_verified": true,
+  "campaign_tamper_rejected": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "source_report_hashes": [
+    "35b1f0b5e8bef0f0613f0c65ab1e69679074adacf060fbb97fbc05923caecd31",
+    "155bad757377ab986b29c74048669e5d96be5d77e16fcbd65d99b572951dded1"
+  ],
+  "corpus_sha256": "e8a6fd08c05786064fbb89f347a172fd99064c1ae264218d3e7ce84fc0843cde",
+  "candidates": [
+    {
+      "module_id": "source_derived_bayes_rule",
+      "validation_status": "validated",
+      "replay_verified": true,
+      "admitted": true,
+      "source_hash": "35b1f0b5e8bef0f0613f0c65ab1e69679074adacf060fbb97fbc05923caecd31"
+    },
+    {
+      "module_id": "source_derived_linear_interpolation",
+      "validation_status": "validated",
+      "replay_verified": true,
+      "admitted": true,
+      "source_hash": "155bad757377ab986b29c74048669e5d96be5d77e16fcbd65d99b572951dded1"
+    },
+    {
+      "module_id": "untrusted_bayes_candidate",
+      "validation_status": "rejected",
+      "replay_verified": true,
+      "admitted": false,
+      "source_hash": "untrusted"
+    }
+  ]
+}

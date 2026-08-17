@@ -416,6 +416,10 @@ name = "stage90_source_linear_interpolation"
 path = "src/bin/stage90_source_interpolation_bench.rs"
 
 [[bin]]
+name = "stage_k_sealed_curriculum_exam_5000"
+path = "src/bin/stage_k_sealed_curriculum_exam_5000.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

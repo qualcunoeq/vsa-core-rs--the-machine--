@@ -1,0 +1,16 @@
+{
+  "schema": "stage209-current-manifest-memory-after-mobius-frontend-v1",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "validated_packs": 33,
+  "descriptors": 123,
+  "records": 100000,
+  "segments": 391,
+  "exact_complete": 600,
+  "ambiguous_detected": 150,
+  "stale_refused": 125,
+  "unknown_refused": 125,
+  "replay_verified": 100000,
+  "tamper_rejected": 1000,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0
+}

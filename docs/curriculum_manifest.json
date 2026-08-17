@@ -946,7 +946,8 @@
         ],
         "reusable_artifacts": [
           "mobius_inversion_sequence",
-          "divisor_convolution_sequence"
+          "divisor_convolution_sequence",
+          "mobius_frontend_request"
         ],
         "source_requirements": [
           "independently selected authoritative sources",
@@ -962,7 +963,7 @@
           "frozen_hle_holdout": true
         },
         "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
-        "selection_reason": "source-derived finite divisor convolution; asymptotic number theory remains separate"
+        "selection_reason": "source-derived finite divisor convolution with bounded technical-language lowering; asymptotic number theory remains separate"
       },
       {
         "id": "number_theory",
@@ -995,7 +996,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "138e6a901d465b30795bac500c307820d93e6a223ada8f8b2d90334e961ec118",
+  "manifest_replay_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
   "validation_errors": [],
   "production_authorizations": 0
 }

@@ -503,8 +503,8 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "source_derived_mobius",
             "Source-derived finite Möbius inversion",
             vec!["elementary_number_theory", "combinatorics", "bounded_arithmetic_functions"],
-            vec!["mobius_inversion_sequence", "divisor_convolution_sequence"],
-            "source-derived finite divisor convolution; asymptotic number theory remains separate",
+            vec!["mobius_inversion_sequence", "divisor_convolution_sequence", "mobius_frontend_request"],
+            "source-derived finite divisor convolution with bounded technical-language lowering; asymptotic number theory remains separate",
         ),
         (
             "number_theory",

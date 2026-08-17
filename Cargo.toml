@@ -520,6 +520,10 @@ name = "stage117_number_theory_language_transfer"
 path = "src/bin/stage117_number_theory_language_transfer.rs"
 
 [[bin]]
+name = "stage118_source_domain_manifest_admission"
+path = "src/bin/stage118_source_domain_manifest_admission.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

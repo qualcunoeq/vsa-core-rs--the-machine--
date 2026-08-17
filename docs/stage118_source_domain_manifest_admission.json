@@ -1,0 +1,26 @@
+{
+  "schema": "stage118-source-domain-manifest-admission-v1",
+  "source_sha256": "ea3784eb2a722ccdef75d6a0d4b986bc9005f9cb823345f8f86b198aa2711427",
+  "source_records": 5,
+  "source_records_validated": true,
+  "generic_runtime_branches": 0,
+  "development_cases": 240,
+  "development_exact": 240,
+  "holdout_cases": 60,
+  "holdout_exact": 60,
+  "source_mutations_rejected": 6,
+  "promotion_cases": 240,
+  "rollback_cases": 50,
+  "historical_replays": 50,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "proposed_pack_id": "source_derived_bounded_economics",
+  "proposal_prerequisites_complete": true,
+  "proposal_manifest_valid": true,
+  "production_manifest_unchanged": true,
+  "live_route_mutations": 0,
+  "parent_report_sha256": [
+    "6e34880a4725def7b6ee1133d6583784f05a5cc63cdd53f5d18475e3b914c05a",
+    "48c30a2d309ba10aa80c14183d63eacbde8997c839b7f68576df0ff68566fffe"
+  ]
+}

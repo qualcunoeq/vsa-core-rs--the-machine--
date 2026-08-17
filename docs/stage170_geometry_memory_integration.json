@@ -1,0 +1,20 @@
+{
+  "schema": "stage170-geometry-memory-integration-v1",
+  "source_report_sha256": "6604e472871e49010b8fe4fbf5d9367c2cae24a4b47546c9f7ed7854b4dac359",
+  "append_cases": 1000,
+  "valid_appends": 700,
+  "duplicate_rejections": 100,
+  "invalid_rejections": 100,
+  "memory_records": 700,
+  "memory_segments": 3,
+  "exact_v1_records": 600,
+  "exact_v2_records": 100,
+  "version_queries": 100,
+  "version_isolation": 100,
+  "replay_verified": 700,
+  "tamper_rejected": 700,
+  "parent_memory_unchanged": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_memory_mutations": 0
+}

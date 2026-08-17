@@ -640,6 +640,10 @@ name = "stage152_visual_science_tsv_composition"
 path = "src/bin/stage152_visual_science_tsv_composition.rs"
 
 [[bin]]
+name = "stage153_visual_source_promotion"
+path = "src/bin/stage153_visual_source_promotion.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

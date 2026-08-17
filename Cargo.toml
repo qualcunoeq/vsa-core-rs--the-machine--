@@ -424,6 +424,10 @@ name = "stage92_interpolation_sealed_transfer"
 path = "src/bin/stage92_interpolation_sealed_transfer.rs"
 
 [[bin]]
+name = "stage93_source_bayes_bench"
+path = "src/bin/stage93_source_bayes_bench.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

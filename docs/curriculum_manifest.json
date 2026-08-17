@@ -492,6 +492,62 @@
         "selection_reason": "source-derived regression relations executed by the generic formula catalog runtime"
       },
       {
+        "id": "source_derived_linear_interpolation",
+        "title": "Source-derived bounded linear interpolation",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "linear_interpolation",
+          "bounded_affine_formula"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived interpolation domain validated on an untouched transfer partition"
+      },
+      {
+        "id": "source_derived_bayes_rule",
+        "title": "Source-derived bounded Bayes rule",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic"
+        ],
+        "reusable_artifacts": [
+          "prior_probability",
+          "likelihood",
+          "evidence",
+          "posterior_probability"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "second independent source-derived domain with an exact finite-probability bridge"
+      },
+      {
         "id": "polynomial_algebra",
         "title": "Bounded polynomial algebra over prime fields",
         "status": "shadow_validated",
@@ -670,7 +726,7 @@
       }
     ]
   },
-  "manifest_replay_hash": "c99fea9200db643958fad69e017ed8879f958345f2fc509973e9ecc266c015cd",
+  "manifest_replay_hash": "fea4b52d2425a1cdd5d06f3719c9a817b2fb1bb9162d2ce5dd9e4f93a10dd6f6",
   "validation_errors": [],
   "production_authorizations": 0
 }

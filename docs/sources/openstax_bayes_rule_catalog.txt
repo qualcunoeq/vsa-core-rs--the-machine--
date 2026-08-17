@@ -1,0 +1,18 @@
+# Bounded source transcription for the finite Bayes-rule catalog.
+# The record is deliberately narrower than general Bayesian inference: exact
+# finite probabilities only, with an explicit prior, likelihood, and evidence.
+
+BEGIN FORMULA bayes_posterior
+ALIASES: Bayes posterior | posterior probability from prior likelihood and evidence
+EXPRESSION: prior * likelihood / evidence
+INPUTS: prior, likelihood, evidence
+ASSUMPTIONS: prior, likelihood, and evidence are probabilities; evidence is positive; finite exact probability semantics
+CONSTRAINTS: probability:prior; probability:likelihood; probability:evidence; positive:evidence
+SOURCE_ID: openstax-principles-data-science:probability-theory
+TITLE: Principles of Data Science
+SECTION: 3.4 Probability Theory — Bayes' Theorem
+URL: https://openstax.org/books/principles-data-science/pages/3-4-probability-theory
+LICENSE: CC BY-NC-SA 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-17
+EVIDENCE: lines 204-209: P(A|B) = P(A)·P(B|A)/P(B); lines 213-234: worked posterior example
+END FORMULA

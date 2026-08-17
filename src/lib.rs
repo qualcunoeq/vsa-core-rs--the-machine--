@@ -154,6 +154,8 @@ pub mod solution_verification;
 pub mod source_complex_pack;
 pub mod source_formula_pack;
 pub mod source_interpolation_frontend;
+pub mod source_bayes_frontend;
+pub mod source_bayes_pack;
 pub mod source_sequence_frontend;
 pub mod source_unit_frontend;
 pub mod source_formula_frontend;

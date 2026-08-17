@@ -185,7 +185,11 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "finite_markov",
             "Bounded finite Markov chains",
             vec!["probability_stochastic", "linear_algebra_spectral"],
-            vec!["row_stochastic_transition", "finite_horizon_trace", "two_state_stationary"],
+            vec![
+                "row_stochastic_transition",
+                "finite_horizon_trace",
+                "two_state_stationary",
+            ],
             "extend finite probability with explicit exact transition semantics",
         ),
         (
@@ -266,8 +270,17 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
         (
             "source_derived_science",
             "Source-derived bounded classical science laws",
-            vec!["classical_mechanics", "ordinary_differential_equations", "bounded_calculus"],
-            vec!["ideal_gas_pressure", "first_law_delta_u", "kinetic_energy", "hooke_force"],
+            vec![
+                "classical_mechanics",
+                "ordinary_differential_equations",
+                "bounded_calculus",
+            ],
+            vec![
+                "ideal_gas_pressure",
+                "first_law_delta_u",
+                "kinetic_energy",
+                "hooke_force",
+            ],
             "source-cited law records with generic exact rational execution",
         ),
         (
@@ -316,9 +329,27 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "source-derived regression relations executed by the generic formula catalog runtime",
         ),
         (
+            "source_derived_linear_interpolation",
+            "Source-derived bounded linear interpolation",
+            vec!["bounded_calculus"],
+            vec!["linear_interpolation", "bounded_affine_formula"],
+            "first source-derived interpolation domain validated on an untouched transfer partition",
+        ),
+        (
+            "source_derived_bayes_rule",
+            "Source-derived bounded Bayes rule",
+            vec!["probability_stochastic"],
+            vec!["prior_probability", "likelihood", "evidence", "posterior_probability"],
+            "second independent source-derived domain with an exact finite-probability bridge",
+        ),
+        (
             "polynomial_algebra",
             "Bounded polynomial algebra over prime fields",
-            vec!["abstract_algebra", "elementary_number_theory", "linear_algebra_spectral"],
+            vec![
+                "abstract_algebra",
+                "elementary_number_theory",
+                "linear_algebra_spectral",
+            ],
             vec![
                 "polynomial_arithmetic",
                 "polynomial_division",
@@ -394,6 +425,8 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_biology"
                 | "source_derived_finite_statistics"
                 | "source_derived_finite_regression"
+                | "source_derived_linear_interpolation"
+                | "source_derived_bayes_rule"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
                 | "source_derived_finite_topology"
@@ -444,7 +477,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 23);
+        assert_eq!(manifest.packs.len(), 25);
         assert!(manifest
             .packs
             .iter()

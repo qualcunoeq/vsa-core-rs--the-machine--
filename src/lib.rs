@@ -194,6 +194,7 @@ pub mod system_encoder;
 pub mod tactics;
 pub mod target_context;
 pub mod target_grounding;
+pub mod technical_language_router;
 pub mod temporal;
 pub mod text_encoder;
 pub mod third_party_corpus_benchmark;

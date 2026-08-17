@@ -1,0 +1,19 @@
+{
+  "schema": "stage139-hle-shadow-frontend-audit-v1",
+  "source": "answer-key-blind HLE text offered to four validated shadow frontends",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "trace_sha256": "338f6ad4cc1cea7e8cff28d87dfcd846c5fd8b77c3b3c2089444c89459ffaef9",
+  "cases": 2500,
+  "frontend_invocations": 10000,
+  "no_complete_candidate": 2498,
+  "unique_complete_candidate": 1,
+  "multiple_complete_candidates": 1,
+  "candidate_shadow_authorizations": 1,
+  "frontend_replay_verified": 2500,
+  "frontend_tamper_rejected": 2500,
+  "candidate_replay_verified": 1,
+  "candidate_tamper_rejected": 1,
+  "production_authorizations": 0,
+  "registry_mutated": false,
+  "trace_path": "docs/stage139_hle_shadow_frontend_audit.trace.jsonl"
+}

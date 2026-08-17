@@ -596,6 +596,10 @@ name = "stage138_hle_curriculum_checkpoint"
 path = "src/bin/stage138_hle_curriculum_checkpoint.rs"
 
 [[bin]]
+name = "stage139_hle_shadow_frontend_audit"
+path = "src/bin/stage139_hle_shadow_frontend_audit.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

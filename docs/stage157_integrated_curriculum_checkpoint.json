@@ -1,0 +1,57 @@
+{
+  "schema": "stage157-integrated-curriculum-checkpoint-v1",
+  "core_report": "docs/stage_k_sealed_curriculum_exam_5000.json",
+  "source_report": "docs/stage155_sealed_source_multimodal_exam.json",
+  "memory_report": "docs/stage156_source_route_memory_scale.json",
+  "core_report_sha256": "f5480f37ae8ec20c3b26df71432e9c47bbb4c70521f44e861d2cecab2b2ac1d9",
+  "source_report_sha256": "cc78803adbaeb84dc3d26ac5aeac0c7dcc3c5401deb2ee7c10a680e4b324cffa",
+  "memory_report_sha256": "eecc32e1d1aa193afbd520a7821b9b8cc37c930424102136e9cf583d37833019",
+  "cases": 7400,
+  "supported": 4440,
+  "ambiguous": 1480,
+  "unsupported": 1480,
+  "exact_decisions": 7400,
+  "authorized": 4440,
+  "replay_verified": 7400,
+  "tamper_rejected": 7400,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "source_memory_records": 100000,
+  "source_memory_reconstructed": true,
+  "production_mutations": 0,
+  "partitions": {
+    "development": {
+      "cases": 4440,
+      "supported": 2664,
+      "ambiguous": 888,
+      "unsupported": 888,
+      "authorized": 2664,
+      "replay_verified": 4440,
+      "tamper_rejected": 4440,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    "sealed": {
+      "cases": 1480,
+      "supported": 888,
+      "ambiguous": 296,
+      "unsupported": 296,
+      "authorized": 888,
+      "replay_verified": 1480,
+      "tamper_rejected": 1480,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    "validation": {
+      "cases": 1480,
+      "supported": 888,
+      "ambiguous": 296,
+      "unsupported": 296,
+      "authorized": 888,
+      "replay_verified": 1480,
+      "tamper_rejected": 1480,
+      "false_authorizations": 0,
+      "false_denials": 0
+    }
+  }
+}

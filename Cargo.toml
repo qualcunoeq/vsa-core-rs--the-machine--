@@ -656,6 +656,10 @@ name = "stage156_source_route_memory_scale"
 path = "src/bin/stage156_source_route_memory_scale.rs"
 
 [[bin]]
+name = "stage157_integrated_curriculum_checkpoint"
+path = "src/bin/stage157_integrated_curriculum_checkpoint.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

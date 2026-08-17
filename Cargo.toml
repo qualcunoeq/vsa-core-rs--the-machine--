@@ -568,6 +568,10 @@ name = "stage131_dirichlet_character_language_frontend"
 path = "src/bin/stage131_dirichlet_character_language_frontend.rs"
 
 [[bin]]
+name = "stage132_mixed_math_frontend_route_blind"
+path = "src/bin/stage132_mixed_math_frontend_route_blind.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

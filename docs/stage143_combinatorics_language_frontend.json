@@ -1,0 +1,2182 @@
+{
+  "schema": "stage143-combinatorics-language-frontend-v1",
+  "source": "independently authored bounded counting language corpus",
+  "corpus_sha256": "1f25bcccb6cc7e79382e4ecdc73c0744dfb9509aeba2ff08831f9dda9410cf3b",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 60,
+  "unsupported": 60,
+  "exact_decisions": 240,
+  "supported_authorizations": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "status_counts": {
+    "Ambiguous": 60,
+    "Complete": 120,
+    "Unsupported": 60
+  },
+  "receipts": [
+    {
+      "id": "supported_000",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_001",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_002",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_003",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_004",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_005",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_006",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_007",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_008",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_009",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_010",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_011",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_012",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_013",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_014",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_015",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_016",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_017",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_018",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_019",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_020",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_021",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_022",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_023",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_024",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_025",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_026",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_027",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_028",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_029",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_030",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_031",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_032",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_033",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_034",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_035",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_036",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_037",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_038",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_039",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_040",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_041",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_042",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_043",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_044",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_045",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_046",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_047",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_048",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_049",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_050",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_051",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_052",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_053",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_054",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_055",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_056",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_057",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_058",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_059",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_060",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_061",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_062",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_063",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_064",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_065",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_066",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_067",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_068",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_069",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_070",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_071",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_072",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_073",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_074",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_075",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_076",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_077",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_078",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_079",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_080",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_081",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_082",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_083",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_084",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_085",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_086",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_087",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_088",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_089",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_090",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_091",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_092",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_093",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_094",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_095",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_096",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_097",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_098",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_099",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_100",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_101",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_102",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_103",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_104",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_105",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_106",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_107",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_108",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_109",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_110",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_111",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_112",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_113",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_114",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_115",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_116",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_117",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_118",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "supported_119",
+      "expected": "supported",
+      "status": "complete",
+      "exact": true,
+      "authorized": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_000",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_001",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_002",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_003",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_004",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_005",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_006",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_007",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_008",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_009",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_010",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_011",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_012",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_013",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_014",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_015",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_016",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_017",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_018",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_019",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_020",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_021",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_022",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_023",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_024",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_025",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_026",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_027",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_028",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_029",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_030",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_031",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_032",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_033",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_034",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_035",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_036",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_037",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_038",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_039",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_040",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_041",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_042",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_043",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_044",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_045",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_046",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_047",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_048",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_049",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_050",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_051",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_052",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_053",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_054",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_055",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_056",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_057",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_058",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "ambiguous_059",
+      "expected": "ambiguous",
+      "status": "ambiguous",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_000",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_001",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_002",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_003",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_004",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_005",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_006",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_007",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_008",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_009",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_010",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_011",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_012",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_013",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_014",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_015",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_016",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_017",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_018",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_019",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_020",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_021",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_022",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_023",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_024",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_025",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_026",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_027",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_028",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_029",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_030",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_031",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_032",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_033",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_034",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_035",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_036",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_037",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_038",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_039",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_040",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_041",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_042",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_043",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_044",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_045",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_046",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_047",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_048",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_049",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_050",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_051",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_052",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_053",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_054",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_055",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_056",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_057",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_058",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "unsupported_059",
+      "expected": "unsupported",
+      "status": "unsupported",
+      "exact": true,
+      "authorized": false,
+      "replay_verified": true,
+      "tamper_rejected": true
+    }
+  ]
+}

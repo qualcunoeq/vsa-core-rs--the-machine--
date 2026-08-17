@@ -31,6 +31,7 @@ pub mod classical_mechanics_pack;
 pub mod clock_time_contract;
 pub mod code_bridge;
 pub mod cognition;
+pub mod combinatorics_frontend;
 pub mod combinatorics_pack;
 pub mod compositional_planner_benchmark;
 pub mod compression;

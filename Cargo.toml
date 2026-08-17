@@ -604,6 +604,10 @@ name = "stage140_frontend_scope_pressure"
 path = "src/bin/stage140_frontend_scope_pressure.rs"
 
 [[bin]]
+name = "stage143_combinatorics_language_frontend"
+path = "src/bin/stage143_combinatorics_language_frontend.rs"
+
+[[bin]]
 name = "stage81_external_gap_education"
 path = "src/bin/stage81_external_gap_education.rs"
 

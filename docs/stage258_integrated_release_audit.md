@@ -1,8 +1,8 @@
 # Stage 258 — integrated release audit
 
-Audited 39 immutable evidence manifests across composition, source acquisition, self-directed education, sealed curriculum, and the frozen HLE checkpoint.
+Audited 40 immutable evidence manifests across composition, source acquisition, self-directed education, sealed curriculum, and the frozen HLE checkpoint.
 
-* checks: 365/365 passed
+* checks: 376/376 passed
 * false authorizations / denials: 0 / 0
 * production mutations: 0
 * HLE answers read during audit: 0

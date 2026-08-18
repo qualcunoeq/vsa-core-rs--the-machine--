@@ -124,6 +124,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage264_hle_geometry_shadow_probe.json",
         "docs/stage265_source_candidate_utility_ranking.json",
         "docs/stage266_economics_shadow_manifest.json",
+        "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
@@ -633,6 +634,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage235_hle_shadow_source_probe.json" => {
+                check_number(&mut checks, path, value, "cases", 2500);
+                check_number(&mut checks, path, value, "source_modules", 6);
+                check_number(&mut checks, path, value, "frontend_replays", 15000);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "frontend_tamper_rejections",
+                    15000,
+                );
+                check_number(&mut checks, path, value, "unique_shadow_candidates", 0);
+                check_number(&mut checks, path, value, "correct_shadow_candidates", 0);
+                check_number(&mut checks, path, value, "ambiguous_or_missing", 2500);
+                check_number(&mut checks, path, value, "production_authorizations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "source_memory_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
             }
             "source_provenance_integrity.json" => {
                 check_number(&mut checks, path, value, "valid_citations", 240);

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 39,
-  "checks": 365,
-  "passed_checks": 365,
+  "artifacts": 40,
+  "checks": 376,
+  "passed_checks": 376,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1536,6 +1536,61 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "source_modules == 6",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "frontend_replays == 15000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "frontend_tamper_rejections == 15000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "unique_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "correct_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "ambiguous_or_missing == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "source_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage235_hle_shadow_source_probe.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -1960,6 +2015,10 @@
     [
       "docs/stage266_economics_shadow_manifest.json",
       "76daf8d4fc5835ddd5911eaf6b5b57b18e3ffd60d3e0088e432eabe3271cc1fc"
+    ],
+    [
+      "docs/stage235_hle_shadow_source_probe.json",
+      "9544db2ddf6af98a2689126725d0e56fe772e72d305955e7bb0d26e19418e273"
     ],
     [
       "docs/source_provenance_integrity.json",

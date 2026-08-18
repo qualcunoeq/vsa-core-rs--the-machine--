@@ -47,6 +47,7 @@ pub mod cross_vertical_benchmark;
 pub mod curriculum;
 pub mod curriculum_campaign;
 pub mod curriculum_memory;
+pub mod curriculum_utility;
 pub mod defense;
 pub mod development;
 pub mod diagnostic;

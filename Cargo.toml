@@ -416,6 +416,10 @@ name = "stage304_retrieval_environment_memory"
 path = "src/bin/stage304_retrieval_environment_memory.rs"
 
 [[bin]]
+name = "stage305_curriculum_utility_portfolio"
+path = "src/bin/stage305_curriculum_utility_portfolio.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

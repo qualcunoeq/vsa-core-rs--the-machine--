@@ -7,8 +7,8 @@
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use the_machine::curriculum::CurriculumManifest;
-use the_machine::curriculum_campaign::{
+use crate::curriculum::CurriculumManifest;
+use crate::curriculum_campaign::{
     propose_learning_plans, GapObservation, PlanStatus, SourceModuleCandidate,
 };
 

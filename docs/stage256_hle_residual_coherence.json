@@ -1,0 +1,4621 @@
+{
+  "schema": "stage256-hle-residual-coherence-v1",
+  "input_report": "docs/stage255_hle_residual_census.json",
+  "dataset": "data/hle.jsonl",
+  "input_dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "input_trace_sha256": "9e17ecc815ba872da13373d7389b16c57c63028d02f7bc8856259a69588cb929",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "residual_cases": 386,
+  "joined_cases": 386,
+  "answer_keys_read": 0,
+  "families": [
+    {
+      "key": "calculus::analysis::derivative::classification",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "derivative",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::derivative::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "derivative",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::integral::exact_count",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "integral",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::integral::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "integral",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::unresolved_operator::classification",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 9,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::unresolved_operator::exact_count",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 15,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::unresolved_operator::probability",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 2,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::unresolved_operator::proof_or_derivation",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::analysis::unresolved_operator::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 21,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::applied_statistics::unresolved_operator::classification",
+      "domain": "calculus",
+      "semantic_family": "applied_statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::applied_statistics::unresolved_operator::probability",
+      "domain": "calculus",
+      "semantic_family": "applied_statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::applied_statistics::unresolved_operator::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "applied_statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::calculus_other::expectation::classification",
+      "domain": "calculus",
+      "semantic_family": "calculus_other",
+      "operator_signature": "expectation",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::calculus_other::expectation::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "calculus_other",
+      "operator_signature": "expectation",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::calculus_other::unresolved_operator::classification",
+      "domain": "calculus",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::calculus_other::unresolved_operator::exact_count",
+      "domain": "calculus",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 5,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::calculus_other::unresolved_operator::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 6,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::geometry::chromatic_number::exact_count",
+      "domain": "calculus",
+      "semantic_family": "geometry",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::geometry::expectation::classification",
+      "domain": "calculus",
+      "semantic_family": "geometry",
+      "operator_signature": "expectation",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "calculus::geometry::unresolved_operator::structured_or_scalar",
+      "domain": "calculus",
+      "semantic_family": "geometry",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "discrete_dynamics::other::unresolved_operator::classification",
+      "domain": "discrete_dynamics",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "discrete_dynamics::other::unresolved_operator::structured_or_scalar",
+      "domain": "discrete_dynamics",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 2,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::geometric_graph_or_polytope::unresolved_operator::classification",
+      "domain": "graph_theory",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::geometric_graph_or_polytope::unresolved_operator::exact_count",
+      "domain": "graph_theory",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::geometric_graph_or_polytope::unresolved_operator::polynomial",
+      "domain": "graph_theory",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::geometric_graph_or_polytope::unresolved_operator::structured_or_scalar",
+      "domain": "graph_theory",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 8,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::graph_coloring_or_extremal::chromatic_number::classification",
+      "domain": "graph_theory",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::graph_coloring_or_extremal::chromatic_number::exact_count",
+      "domain": "graph_theory",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::graph_coloring_or_extremal::chromatic_number::structured_or_scalar",
+      "domain": "graph_theory",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::graph_coloring_or_extremal::unresolved_operator::classification",
+      "domain": "graph_theory",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::graph_coloring_or_extremal::unresolved_operator::exact_count",
+      "domain": "graph_theory",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 5,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::graph_enumeration::graph_enumeration::exact_count",
+      "domain": "graph_theory",
+      "semantic_family": "graph_enumeration",
+      "operator_signature": "graph_enumeration",
+      "output_artifact": "exact-output-in-key",
+      "cases": 2,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::other_graph::unresolved_operator::classification",
+      "domain": "graph_theory",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 26,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::other_graph::unresolved_operator::exact_count",
+      "domain": "graph_theory",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 41,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::other_graph::unresolved_operator::polynomial",
+      "domain": "graph_theory",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "graph_theory::other_graph::unresolved_operator::structured_or_scalar",
+      "domain": "graph_theory",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 40,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::algebraic_structure::determinant::exact_count",
+      "domain": "linear_algebra",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "determinant",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::algebraic_structure::unresolved_operator::classification",
+      "domain": "linear_algebra",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::algebraic_structure::unresolved_operator::exact_count",
+      "domain": "linear_algebra",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::algebraic_structure::unresolved_operator::probability",
+      "domain": "linear_algebra",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::algebraic_structure::unresolved_operator::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 4,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::linear_algebra_other::determinant::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "determinant",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::linear_algebra_other::unresolved_operator::classification",
+      "domain": "linear_algebra",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 5,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::linear_algebra_other::unresolved_operator::exact_count",
+      "domain": "linear_algebra",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 8,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::linear_algebra_other::unresolved_operator::probability",
+      "domain": "linear_algebra",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::linear_algebra_other::unresolved_operator::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 23,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::ml_linear::unresolved_operator::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "ml_linear",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::quantum::determinant::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "quantum",
+      "operator_signature": "determinant",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::quantum::unresolved_operator::classification",
+      "domain": "linear_algebra",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 4,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::quantum::unresolved_operator::exact_count",
+      "domain": "linear_algebra",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 2,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::quantum::unresolved_operator::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 7,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::spectral::eigenvalue::exact_count",
+      "domain": "linear_algebra",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact-output-in-key",
+      "cases": 7,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::spectral::eigenvalue::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact-output-in-key",
+      "cases": 4,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::spectral::unresolved_operator::classification",
+      "domain": "linear_algebra",
+      "semantic_family": "spectral",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::spectral::unresolved_operator::proof_or_derivation",
+      "domain": "linear_algebra",
+      "semantic_family": "spectral",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "linear_algebra::spectral::unresolved_operator::structured_or_scalar",
+      "domain": "linear_algebra",
+      "semantic_family": "spectral",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::information_theory::unresolved_operator::classification",
+      "domain": "probability",
+      "semantic_family": "information_theory",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::information_theory::unresolved_operator::probability",
+      "domain": "probability",
+      "semantic_family": "information_theory",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::probability_other::expectation::structured_or_scalar",
+      "domain": "probability",
+      "semantic_family": "probability_other",
+      "operator_signature": "expectation",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::probability_other::unresolved_operator::classification",
+      "domain": "probability",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::probability_other::unresolved_operator::exact_count",
+      "domain": "probability",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 15,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::probability_other::unresolved_operator::probability",
+      "domain": "probability",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 38,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::probability_other::unresolved_operator::proof_or_derivation",
+      "domain": "probability",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::probability_other::unresolved_operator::structured_or_scalar",
+      "domain": "probability",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 13,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::statistics::unresolved_operator::classification",
+      "domain": "probability",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 2,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::statistics::unresolved_operator::probability",
+      "domain": "probability",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::statistics::unresolved_operator::structured_or_scalar",
+      "domain": "probability",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::stochastic_process::unresolved_operator::classification",
+      "domain": "probability",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::stochastic_process::unresolved_operator::exact_count",
+      "domain": "probability",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "probability::stochastic_process::unresolved_operator::probability",
+      "domain": "probability",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 6,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "real_analysis::other::unresolved_operator::classification",
+      "domain": "real_analysis",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 4,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "real_analysis::other::unresolved_operator::exact_count",
+      "domain": "real_analysis",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 3,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "real_analysis::other::unresolved_operator::probability",
+      "domain": "real_analysis",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    },
+    {
+      "key": "real_analysis::other::unresolved_operator::structured_or_scalar",
+      "domain": "real_analysis",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact-output-in-key",
+      "cases": 1,
+      "status": "split_or_singleton",
+      "reason": "shared vocabulary does not establish a reusable typed transformation"
+    }
+  ],
+  "coherent_families": 0,
+  "contracts_proposed": 0,
+  "cases": [
+    {
+      "question_id": "66b827b9b64deaedfbb997a2",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "c9d14e41ca996b3403cea78c1333b2be5b41880981b97c088a7df6960deb1b57"
+    },
+    {
+      "question_id": "66e89ebe7361982cbfbc5952",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "4e607992e25364c8a192860a5d868921d8174ec51acccc0a8089485ee654cc5d"
+    },
+    {
+      "question_id": "66e8ae603aa94517d4573b32",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "99a96ec9dcf0f5dbf4d5acb88fe03d4ce630f81ef738c7f556a7d1870efc8d83"
+    },
+    {
+      "question_id": "66e8cfa03add731d7fce4352",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "653d15fe991d6d5a813b819327cf5e526d3b6c2659f5f4f1e70af31c7f7469cb"
+    },
+    {
+      "question_id": "66e8d3ed713a83e8aeddc2f5",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "949aa7d6879c7288ce1cd309a742b1aa45c67a8b80dd1c52f1cc6c9bd1512a3d"
+    },
+    {
+      "question_id": "66e8e473f59e5564daf565b6",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "a4762ea84a9544dca4310e4c7297b66a0e00a3abaf31e54be46a298d964c2a1f"
+    },
+    {
+      "question_id": "66e9249c953867e04c273db7",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "0c811f61db0f8bdc226a7e7cad6fa5e3032b1f32a866796b785b431bc2bdd071"
+    },
+    {
+      "question_id": "66e949664ea2c791558f8620",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "1825b74c596cf4ff0d42d56053aa9ae19ebb022a453ec8744ad4155e68ace101"
+    },
+    {
+      "question_id": "66e94bf0d61a79cca258c675",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "5b7a699b2ca694722f90773cf03b14274fbbd19cf9d934ed9e729fc864b9e8b4"
+    },
+    {
+      "question_id": "66e991ec2dad0e536fb92ece",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ac5fe3f65602a243653ec0cf7edac37566bf121bcd03012e6b20e09b154d4483"
+    },
+    {
+      "question_id": "66e9b92578e89514d9ab6093",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "ae4b496ecbacf1e43c73db68a190458bfed40fde43e39f099f30296e73698493"
+    },
+    {
+      "question_id": "66e9d06a420b60a0ede79e8e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "4c727de3fb6ffc9de3d540c4d1fcc3501bfe4401be89f55a000ca91520457600"
+    },
+    {
+      "question_id": "66ea1dd348eb93c2aef1c735",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "288731351afcfaa8dce81ed3e3badc3bc36252dff0d4eebba82f1cdb22b11558"
+    },
+    {
+      "question_id": "66ea29ab7131229007ccbd9d",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "a2ee6aab5620fe1d5a0b2366429f81a0890fb5ff12f9d5ea66853aeb05c56962"
+    },
+    {
+      "question_id": "66ea3ba5444b8f31ef575799",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b4979fa7a91a01b1f42b8d65166a075e572eb21857af26e96b51b46df88aef5a"
+    },
+    {
+      "question_id": "66ea534258a0968d95583cd8",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "f52fbeef081887fabce163e72b60eca4be7506a6e6b98ab1c5d98f71d73ef7fd"
+    },
+    {
+      "question_id": "66ea63837c49faf4e570535e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "80ab8813d6325390acf4bb99b36e84a9d8a0183b8d48051ad46dc7b08fc296e4"
+    },
+    {
+      "question_id": "66eadaf22b7de7dec0a046bd",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "47b3f414a14d53bc9fe4a7918781786ab688a6d31b0185ac1a4d544161471895"
+    },
+    {
+      "question_id": "66eaeaa8afe364e4f477b777",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "applied_statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "cb363965a0ac11f8c9dadbfc76a5b463544603b17fa96856a0269fe8c1f7e7ae"
+    },
+    {
+      "question_id": "66eaf0ba5e31c19691fe73b1",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "applied_statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "8055835741cfcab1b71325e1b1222792b1ea1bc02ca0781529a46b00dafd3762"
+    },
+    {
+      "question_id": "66eb0883f3acd11c70662aff",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "b1cfa01404415266bfe78e47f00d67a051939e856f421ea1c7ac430f6e680a85"
+    },
+    {
+      "question_id": "66eb2d7378d12ffd1e4d123d",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "c76acd0afe767c542ac8f378cd7bb8fafde4a1b8964d19c9664201a5c63c6da3"
+    },
+    {
+      "question_id": "66eb35e9e3d7202c68806272",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "e72384f9de71c039f61f5be2cbfeb84c2e73b0db7c0c525e2efb7119fcf53cb0"
+    },
+    {
+      "question_id": "66eb3cfb2b3ac1255c97d92a",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "27808c212fc1270ed9554b3be8aa1829c0224aa470228122c38b49cfe951d85f"
+    },
+    {
+      "question_id": "66eb894e6feeaea27b557782",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f853f76623b410c782fad4d4607c116ea8b07a6a2d23392af1bf3bbdb01cce9a"
+    },
+    {
+      "question_id": "66ebefa090db075818df99a9",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "8b674d4f933189660da422ad168e7b35800a027e066054254b6c61c740e8d9e9"
+    },
+    {
+      "question_id": "66ec0ed8b0ae7f67e365a163",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "cdb63178c9a341657747cb12a1b3c1c2f06e21945cca6225ce06b95f707bccec"
+    },
+    {
+      "question_id": "66ec6ad7b64b08f801db4fde",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "determinant",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "4784985efa29e371e0d65ff61a7b841a2cf91cdadd1fda255f9251a62efdab14"
+    },
+    {
+      "question_id": "66ecb2eb54baa602e636a457",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "17aeca10c959aeda940945bc30e10ed4824dbe0ce2aa9bd23133f5c50a0274c0"
+    },
+    {
+      "question_id": "66ed3c5dae789e6253eedddd",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "3ae4c5675382aa5dc792eb5739e6dacfa95304124aa8b2e82142e8043812592e"
+    },
+    {
+      "question_id": "66ed5611d94c2fb87ded8826",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "1e20700724806872abbc75fab2900118c4dca9ed51d73abe835a745e40035708"
+    },
+    {
+      "question_id": "66ed80da7c4ab15ec9270e94",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_enumeration",
+      "operator_signature": "graph_enumeration",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e4a6731475c96130b5fcb3dd1da49b5c3e3c0e8b981a1be7f8d1090126ceb0ab"
+    },
+    {
+      "question_id": "66ed97d1c2becb9452e4d7b4",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "1bb516040c3e1667738288e4fd10cc352b0a4842e6e880ed69613c4bdd81b6bd"
+    },
+    {
+      "question_id": "66edb74f98f720a96783bd0e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "9715dcd07fd090d55a238fd030007374fec40abe2a2dbb0e49a3f4ebe5d5c4dc"
+    },
+    {
+      "question_id": "66edd3dc1ee489494038d9eb",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "e038e36cd91b67eece1630ae1a00bed4b1acd57249aeaf4bffe662fb8d5bda8d"
+    },
+    {
+      "question_id": "66edd857a0ffa4c025458242",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "3132fd8f2f2444a4779eb09da4bd9b99046529d5d0927f80dfddd7b49c9be2ef"
+    },
+    {
+      "question_id": "66ee3918d7b2b78925bd20b6",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "a66639e4fea95aa9433bcbfa004b97202447e4e8f210cd79e3dd07518bcf4583"
+    },
+    {
+      "question_id": "66eeea0187ec4a6a04092e78",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "362d1f3a539e882fdd94cefe8eef4d6b29f5d39dd334e7a5285fac86666c5856"
+    },
+    {
+      "question_id": "66ef3de8b8a1ba6e0ba23498",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "dc2be746f9213c4442ab515481d5782505c5cfa0e89b7f5815ba6c7334ac71b1"
+    },
+    {
+      "question_id": "66ef5b2ee2bec3c64e8e4415",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "3f6f8a83127db21c04fb71ca2cffbed39c5286fe014a3ea66c988f147a66ea94"
+    },
+    {
+      "question_id": "66ef5e39a57b7ef1047d2f58",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "d2f8f05bfe3a02681fb7286491c9e8dd954ea29e48151c3e2e0c9fc4a7fffb42"
+    },
+    {
+      "question_id": "66ef7b798ec4c5bfcdb205fc",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "polynomial",
+      "coherent_candidate": false,
+      "question_sha256": "571d21f4ac4fdff296a1197e06cff99f4a47b44a3f88529de85fb0cd2eef7eb6"
+    },
+    {
+      "question_id": "66efbf654a006318b6b4e256",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "1b99e29602ad871e21f2858b0acd52f74345337cd49bcdd28eccdd7915cfe0d5"
+    },
+    {
+      "question_id": "66f02d3f022a2fa8918f215c",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "8cfa26b03f6dcca07b8649d9b5a0ce7310414878f9f90f8b9bbdbadf328880de"
+    },
+    {
+      "question_id": "66f02e237e0e9c9b46db0db3",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f7cd75601b197dce3a439ade9f93f2bd3866d6d3cfb2345fb0e240dcdc3da288"
+    },
+    {
+      "question_id": "66f0bc36c6a29a8fa8010813",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "55ab7a6fc01e0e0efeb7e8a1d52e4fa9a25f61408d7713e65f41fcf14263ec88"
+    },
+    {
+      "question_id": "66f1ce25cd6a2b9d36fe8ea2",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ce32081ddec99394cdf997d93cbf2512804ee85eab295d53c99fabcbf9c5c98c"
+    },
+    {
+      "question_id": "66f1d0828fa08a4717238167",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "727d5d94372359bab3a68e444af6a31fa94105ff91eddbdee9f7d53f06ce43c5"
+    },
+    {
+      "question_id": "66f25c95da5074d064015c54",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "integral",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ebb2671185c3e1b0ad164697759c55ddf4e161723fbffba35d82190e2293081b"
+    },
+    {
+      "question_id": "66f2cda3b508188b6e7328a8",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "c4d44b9289f4bf517a9fce032b0274d7b62308352396fdfc14fb996cdffeca36"
+    },
+    {
+      "question_id": "66f319f205629941be821347",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "1dac67117847b12e77feb363af3916f4fd3edd6ec9ce26fccf9b8a7d1c40d984"
+    },
+    {
+      "question_id": "66f330fc96e593d9e020e95a",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "39926463bfeb717648820c2361812b89822f4fc002d52f60ae0f502f5bd86236"
+    },
+    {
+      "question_id": "66f3cf8fb5184675d867ef6a",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "690e1cb73fde43d235c38df8d914f87e231576c4e2d1e348d576ed1379a14a6e"
+    },
+    {
+      "question_id": "66f472d2e4b80835fd2a01bb",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "fb1aaf67bdd59cf12400169a5937b1b15b06ae0216df77e6282d075190d94586"
+    },
+    {
+      "question_id": "66f579027a2ac7b4fffe1740",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "446c8b5fc78903505e4e830bf1f3fb24a69c2237c18001f6d79d70b44e2cf21e"
+    },
+    {
+      "question_id": "66f57e187a2ac7b4fffe174e",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "daf24941da66afd8e722a278843d90ae29a44a3f4d3c736c4f6c5562804231d7"
+    },
+    {
+      "question_id": "66f5f12b7d734fba2ce800d6",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "6770fc129f489e72c5a0e6d05bcadbe38c234cdd2e63a0a490524f21c325572f"
+    },
+    {
+      "question_id": "66f684db71131a41ff244fb9",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "c1a3f654fa1a671bd91549cc7ef9507cefc8301b184c13e1c91bdc09cbd1666d"
+    },
+    {
+      "question_id": "66f6d6bb851e7fd5e8e5e5eb",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "944e77e333c47b5dcf0628400b946df5ea5c31be24c85ba68a2288172d4c599f"
+    },
+    {
+      "question_id": "66f7292f3f4622b6ce24b961",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ac64739171949e50f5dc939843b609d6d326b3387720386b8a6bcd5bc5a16412"
+    },
+    {
+      "question_id": "66f760ebf206a49e129c7ed9",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "a62877a2b77f42607bc67e34e9ea7d0f9520b80ee822d767c55db9b4220e72ae"
+    },
+    {
+      "question_id": "66f788502fd8c4ffcf2ab3fa",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "b839aa7d323af21c6d07be03e2c9a724c41aadf1b9b2eab8020daa250f93194d"
+    },
+    {
+      "question_id": "66f820bb7ea359a842b73398",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "515d0f9de9972ddd6187c383825a9e0092a805ef31125ebe9975b2988cb327c3"
+    },
+    {
+      "question_id": "66f8ab9c89c09a99da336b5b",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "c1ab3669ea569b7f138b19bb3fca5cb7802960cb939c1938eb6e458c73b3abb8"
+    },
+    {
+      "question_id": "66f9a8a4e613d5c62b6c0d22",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "9568b9b6f59e925de3e912cb335a18706a788559e626a5650932286b1c68638b"
+    },
+    {
+      "question_id": "66fa0dffda3403394e6b9996",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "e3731fcc84cd8a58c1b080af7892f7b0d8e852c3e009c72d82db33d80a5a178d"
+    },
+    {
+      "question_id": "66faf88b01b2c4f27ab6c742",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b7de09f466bc9d70b6871bfb8e447c931c41668dbc78a3f4b22c368d6cfb4727"
+    },
+    {
+      "question_id": "66fb60f0fce3673bfc606f35",
+      "domain": "calculus",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "expectation",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "7dafed41ec6471f2f41ed22098fcf0e18168719fb5b70cb0b5ade5d57598b5fd"
+    },
+    {
+      "question_id": "66fb8135483861eb2d0252a3",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "12111599ae83649fc63014f993de55bfb610cf09fddd4591e17f8c84e37c3736"
+    },
+    {
+      "question_id": "66fbcca4a177ae967e470415",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "c242b4521e6a049fba3bd6d53be8a0ae074d109b696103a66c4e0de77adf6896"
+    },
+    {
+      "question_id": "66fbe64df560b62458a7b6a1",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "1141facf17ab26428b8dc3ffed13b9a42d0fa3d45517f32221e643f97cd0c839"
+    },
+    {
+      "question_id": "66fc2559876b283872e52acc",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "01b211bf9cc9951c7b4d08195faac88372937ef7e37107a8637d32a1fbe574f1"
+    },
+    {
+      "question_id": "66fc4dc04293a9638d7e0f65",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "0e538cc94dbef7c6829a4addd388420e25c9b269427943ab2ec8fabe2c212c6e"
+    },
+    {
+      "question_id": "66fc539cfb0c1cf50794a0e2",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "547ea18739dd39c1044912664c9051d3c36bdd4ee7cbb524a4ef22c1d7a6585a"
+    },
+    {
+      "question_id": "66fc56f5d90ebe461bfd0c9c",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "492c51d9847d50f7b43ce885aa238b6d03954e88f280a72d6436967745ca058d"
+    },
+    {
+      "question_id": "66fc82b2bb24336da864daef",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "d086342eec6f3a58296c395cc18340be56bf7089453db3f7290d7d4e71d1d362"
+    },
+    {
+      "question_id": "66fc9bdb1dbb3f522c0ee579",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "2af8bd196c2dea760e702620cdabd3bb616f6414c765e3a2877a3da8dd78d95e"
+    },
+    {
+      "question_id": "66fcbc3e2c2f679cc7959864",
+      "domain": "calculus",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "derivative",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "8628567383ae559d62c230cf9a33d756a587c84c6bd3947ed6aa48f0135dc958"
+    },
+    {
+      "question_id": "66fcbe5b68476a89da553c97",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "af27102089cf9459b3cb02ec8516b9b3809958216a35726290df8e1f8f9c40f8"
+    },
+    {
+      "question_id": "66fd4055654e577c714fb716",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "0186f982e5ca3224c7d81834540298e5f80c0f73b0424ea3cfffe3ebae4a8143"
+    },
+    {
+      "question_id": "66fd469e7a33ca69ccc69729",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "b10bb0728efd8c253d0a5816b131f2baf5cbd1290f3a20357b0c81dfa2e8260c"
+    },
+    {
+      "question_id": "66fd6e4007a5eeb48898d67b",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "c5055d971edfcc7846dbed5d4958feb6c9900f671c31d93c8fa30e0784f8d8e5"
+    },
+    {
+      "question_id": "66fdaf20d1e0bb15b8fc1eb6",
+      "domain": "probability",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "22d2cb3d3195985d1b7412b33686cf3ac136bc39385eb2d751d8fb3ad212e929"
+    },
+    {
+      "question_id": "66fddfcfb3108418b8a5566a",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "7e3bcbe91ce5f91db888bdf22c54e99c6d3d0a5e2d8c76c96724473b7bbbf67a"
+    },
+    {
+      "question_id": "66fde2de0b21f205c121aca7",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "ea1b09a567fcff815104abddab3bd0473b6d7f3072a1494c42ca5ce58526622a"
+    },
+    {
+      "question_id": "66fe75a349254a4aef6f5f25",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "d3e140600ec8969a7a232db1e171fb128b9f85022cc8f294c8776c2af05bb36e"
+    },
+    {
+      "question_id": "66fe796bc12cbe6aeaa26e69",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "115d68beab3c4b9234ccd6aeea02e9f50317add6c70d93d47a87e9f8909d61c6"
+    },
+    {
+      "question_id": "66fe97540fe93ab7e9405c9b",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "derivative",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f9d0b8e7e69bd6938528aaf192770b7b8f572d7adb9efabd7e560ebcc5eb8e99"
+    },
+    {
+      "question_id": "66fec5fbe0072219a732f0e2",
+      "domain": "calculus",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "expectation",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "a4ec31eaeb6a9e90969c266d684099c2374b589c18af2f73762ec0d2139ea069"
+    },
+    {
+      "question_id": "66fee1187183fdf40d11cb69",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "945557fc35caf907d8ab21afaf943bbf1cfff20044af3b1c2979462781be0f08"
+    },
+    {
+      "question_id": "66ff1bba3046dadaa8fd8a15",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "a182bea9a0e54578d69ef506f54d2d680b182ce3538b293796a143c449ebbb5a"
+    },
+    {
+      "question_id": "66ffaae1068d942d32104650",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "8c3dc8910e0cd7f028ce990809ef8d1864fcea6da183a4999763a109041b1304"
+    },
+    {
+      "question_id": "66ffcfa0864258b2f971a80c",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "79e8b796755f929b953f4d5c3f9f75e592a881c960f678f01af2201aca87f222"
+    },
+    {
+      "question_id": "670043f1cc1f72ec327be033",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "f33806678114ddb7d8e7672b31a89b7b60ee4440c68cb373c59b627a54b55f38"
+    },
+    {
+      "question_id": "6700b20cfa64315ed5204e5d",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f3be37f1d66cce7dab7e247885b7030d40cbb072cfc465a28e3baae3c10b80ff"
+    },
+    {
+      "question_id": "6700fe18dcd877e17dbc6c26",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "94c5b4143718f93bfcdc8856cb543dcd45254e88a50449545d617a3f5d9d42d1"
+    },
+    {
+      "question_id": "67016d95a2a4300e274de8be",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "integral",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "87f54e8d8d841625eff07f9a8f21de0322ee01506d1ab0e775ae381f3e15a869"
+    },
+    {
+      "question_id": "6701ca6bb773dec162bde23c",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "789e8718b6f6931e924f7f614e649cfb7642a8b7718029bfde8f5faafc9e9c74"
+    },
+    {
+      "question_id": "6701d2675f6691877f264511",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "8f1fb2b3a73a84e495578c7072bc7fdb6e1ba36ecf4a1c870b84b13cc3cd45c8"
+    },
+    {
+      "question_id": "6702b8bebb1c7fc12ef340a6",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "067e29b6348da97ec05161f1fbad903bac62a08691ac13b76d55c534a6b86c60"
+    },
+    {
+      "question_id": "6702c6251454b2a5a3a4b0a9",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "70c8ef033006fc57efb6cfa54ff117c663bc3efa87b3c6657aa3a36fd68b618c"
+    },
+    {
+      "question_id": "6702d00cabe0b372f85108c7",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e35b284749c0019b74f211f69d03b5d3e6e6a9a7988b40f2cf2fd9185102746e"
+    },
+    {
+      "question_id": "6703a3c04a760324b0e15a30",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ff3996ae18b3d1fdba02aaf20fb48619b59abd77fb536a4b4dd16d7122da55a7"
+    },
+    {
+      "question_id": "67048697ca361120eef4ae56",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "56bfb032a5015926076d1cfd38e570ca3be64fcb815958699545f060185e8d5c"
+    },
+    {
+      "question_id": "67050ddbf6e4beb1922a29b2",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "0dc5d22c478de2687580614765f8559e2fead6eaa418e6bb03d830224fea694e"
+    },
+    {
+      "question_id": "6705cd5f1a7f538792ca73ee",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "69b84df2fc749d6f5c41876ba38cfdc58c7365bdb7909e9317d0f80946336e53"
+    },
+    {
+      "question_id": "6705cf04905b3d0e4113372b",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "1de4705e612c6fc493f5e60c7cd15ec60d1567a865e34e7cbd12930279a63e64"
+    },
+    {
+      "question_id": "6707b8b6700263d6945e7b18",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f03e762dd1f4c4c02ca680adc75b141e19354f278ad26960a97dd8b37548757c"
+    },
+    {
+      "question_id": "67082afe09cbab4e7c6f62aa",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "4a3fc1741afb1dea8be28786554cd4d7bc83d897a2ec63ac3a4e51ccc90fe922"
+    },
+    {
+      "question_id": "67099b940109535a956a14ab",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "88afe27915ea942fa4cc487c04d381b5cfbbd0520d0b7379dc527f52ef4bdc2d"
+    },
+    {
+      "question_id": "6709d59a03c4fbe8446679d9",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "2557a695a22d93cda1f3bb9cc517ae4e6ab28419fa6da16598a6d64c3bfdd9e4"
+    },
+    {
+      "question_id": "670c064227c257620553cc04",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "33aabde069d4db3f529912ebbd3c7f66547f3a035d6c58af1ab2c1ea9e292efa"
+    },
+    {
+      "question_id": "670c23124d86f843dc5efa7e",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f83148ba364eb21078049a411265378c63453f0de3176f53d4412593aa1f4a95"
+    },
+    {
+      "question_id": "670d51eaa783dd0bc83b1da7",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "4282271e1e725a3bd3609df2f938d94765023c951f41b7f44892b1d533a50cc4"
+    },
+    {
+      "question_id": "670d72c4940c45ae0e301c02",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "464d15ab9b5deef028d3b36aee316cb9dac1415f08f58e542e45c2b5ab241817"
+    },
+    {
+      "question_id": "670d85d1a2a7f62c1a339bc7",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "19e2f3c26ed870638a3606dde61bf5e0aeedd26688a18179cd4be89d11d84a25"
+    },
+    {
+      "question_id": "670dab3f29ad02fff2ae1d9a",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "5175d88cd00d732fc50afc75461b6cc2adaa04447c02b2e8d4f7bddad2dee7b5"
+    },
+    {
+      "question_id": "670dc5bf47457fb431224bbc",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "fe144d9b92c9eab4720aebc7e919876ed32220901508b9aef021b9092fa2350c"
+    },
+    {
+      "question_id": "670dc75dcfd3fc87a109a929",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "96bf0421b5628377d52000e5cccc0ba132ea7a6a25594ea8a4fff356bbb3a8fd"
+    },
+    {
+      "question_id": "670e5c2720bb63b6da63b879",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "13df957c79c7736cbac378f695e0926f56ff39b3cde57fbf1826dbaff0791cc9"
+    },
+    {
+      "question_id": "670e9b885d472377f6c572a2",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "35452500f2e4b4daa2be5d20a6a78f11d63951ccdfb7793f5c22740a64900e65"
+    },
+    {
+      "question_id": "670e9d6f5c8f745d79e8d8d1",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "068d9a067bb8c964c41357f07211c9f4828d45e409917faf55f544ed662f62c2"
+    },
+    {
+      "question_id": "670eb085078b44f4766922a9",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "fb32808db4fb7c2b5944e0ad149bd4b7897b241084fbcc5322d3b4445668c336"
+    },
+    {
+      "question_id": "670eb27fd2f45b1198c87766",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f3e809717a81ebd6cb6dc0d1fc764cd1aa7d5d011a04220ce6517728f61c068c"
+    },
+    {
+      "question_id": "670fe03ef99389b3c7942186",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "bc90139957c647f50b02a23b3e4ac8f9939dbaa5f196a9cfe36aa5d91ae7b94d"
+    },
+    {
+      "question_id": "670fe86a7e294dc6ad20c1ba",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "c654cba10a30495f178d292d618397365131569c0b33bbd703f77006fb4ff994"
+    },
+    {
+      "question_id": "6710251d73c9583c25138ff0",
+      "domain": "real_analysis",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "3787137864d24f98ff6508221743ba5db6c818421d0fefa58b25ea6f429afda7"
+    },
+    {
+      "question_id": "67116d1350b8e9f375ac3136",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "c4fe8254f064c17d8219f970a15918f7da7bda248f33343d004df82f154a846c"
+    },
+    {
+      "question_id": "6711751e42ab43fd77c2507b",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "3d3c3f7d6273874d3994cb2140687aaa675401b4c4c881aad24ac9fa23b041aa"
+    },
+    {
+      "question_id": "671257a8df2820fcc29acc37",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "7d66e0f4814aea04c03c72f16652b8ec102cc5a51108d3a86172254187128d4e"
+    },
+    {
+      "question_id": "67126745df2820fcc29acc5f",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "6cd788602052d71ae03aaf0932f065928893cf6ac8c9abd0cd5062a5c97ebba4"
+    },
+    {
+      "question_id": "671360871b12bd5183fec91a",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "36dcdd33856f9dc2a9efca96b95c98729aa91e1811d32c74e3fb066163789e24"
+    },
+    {
+      "question_id": "67149db7352d3701e7171a01",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "8b91c1d62d730723c7fe47434e0ca7fba689e62048b7fbfea00deb794fad7af1"
+    },
+    {
+      "question_id": "6714e9dacbabe50aa0256711",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "2b5c23d17af2206418469afec3e5ba57b2f7b51c3d64f92e36f838939dc799b2"
+    },
+    {
+      "question_id": "67152ee0953411f24cd994f0",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "8473d126df142c1228ce13386d237360756cdf8a3625370b397a6cc651b0ca77"
+    },
+    {
+      "question_id": "67153bd7f588f3f15b038f5b",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "derivative",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "30cdcca045c62fa5fa99cd19c006eeb6d1db7059770316289ca7b502381d31b0"
+    },
+    {
+      "question_id": "67155ca2675b57d8bbc9144d",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "fada5752c99ce05cc85f08d385ee330bb7a2f065b3a8a8a5b708232328b7f1c3"
+    },
+    {
+      "question_id": "671567cd87cd585dc9f613db",
+      "domain": "linear_algebra",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "spectral",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "72a223facdfae7913520ddadfd95a897c647fd53b0509d0d4050b3f32bc77a02"
+    },
+    {
+      "question_id": "6715beb7b3287d3dd4db03e6",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "87c812e9010603ea9acabbac7dd4ce8825e2aac911482952d27ab36c737903d2"
+    },
+    {
+      "question_id": "6715f373a35b028a9e88c09f",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "5f70623b5437f67290f1cc93ecffae0e4079445364cdf2cd60d917dafa69aae5"
+    },
+    {
+      "question_id": "67161976e6487fdf13596bdc",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ab70824d72ad86c2a69f2290d463a8ce9ec0b496084a3452b11073a35c1207df"
+    },
+    {
+      "question_id": "67164d0b4c922006e9e93a8d",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "b733ee6a71b91392761e5699f0dcf8a27d785aff98c897dfb67c0ed7892413a1"
+    },
+    {
+      "question_id": "67169465a4566d624a446240",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "ae5190997be85c143c79af4a85230ddff1911a68857f068cf46c6f512302eba4"
+    },
+    {
+      "question_id": "6716d9d79a515af7907b768b",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "ml_linear",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "a820047300460fd5da2d9f8538abe979d10b0dd7e7bf28af2c7211d2935f4c99"
+    },
+    {
+      "question_id": "6716e28929a01505aba1ddb5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "576c6454eac72020aeaf38f44ca41ce0290d62095ef57ad0845212082a35de76"
+    },
+    {
+      "question_id": "67173a11ffe2e8bed48b717f",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "3a79f821d586efe218b2ef23596ebf351b65a4964a4c4155741bf89ff7b49b3f"
+    },
+    {
+      "question_id": "67175c6d4b3fa6d2c1eb66dd",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "dfa7351c6567047f89d146f3e0c76e3a700d5402264e9eabcdbaf09c35ab94ea"
+    },
+    {
+      "question_id": "671766f3eec0ae58685ae23f",
+      "domain": "real_analysis",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "9aa20d197219bb1bf40a1d6f4113da1fa442a8cf44e601e2e21cc76eb2206d4a"
+    },
+    {
+      "question_id": "6717a17cd1f6e4b18387d6c9",
+      "domain": "linear_algebra",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "88a9e9dca26f31f338ecc9d6bda0fcb9364ab30a789508bf6905f436df85a9b7"
+    },
+    {
+      "question_id": "6717a999128b7480180c79f8",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "f89b2960fdade27418e9dd65b3032990ebe66484dff2c71cd895ce85f8da2242"
+    },
+    {
+      "question_id": "6717bd1d443232c907a31720",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "20eccd18fdcaead950f70634863e695053da9ee784c3278e8a0110d442508c0d"
+    },
+    {
+      "question_id": "6717eeddd6c14a5dd1563e7c",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "26f2d08fb3638ab03918bc31f5c24c56b6025fc52bdc3dfe77e9673364f6e356"
+    },
+    {
+      "question_id": "671800b68b88f01935b5824f",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "101ee33dc3ea850aa0c5b8a05b5a1dcdc6a906ecb50ac408cd7b039986b1f024"
+    },
+    {
+      "question_id": "67180e9b814516d5f513eb3c",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "6fbf72af56cf722a0c2aaff97c7d203c59ad1048bbcccb5f1d1a4b86e5b47b7a"
+    },
+    {
+      "question_id": "6718577ca88093a75026b186",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "d2e9f2615f867305a058f033e5bef1f175144225f21a67fcdc9c5f2b9aedaffd"
+    },
+    {
+      "question_id": "6718bf9c58bc11dea7f3be13",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "7d548eb8af895adacaebe0b18ce5d9b7ad55fed8e041072ded95ea57e4a9cb9a"
+    },
+    {
+      "question_id": "671906908b9cbfc7b2fd972c",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "de24ec99c9aa4267ea086409278f523bca1cfc263be1222683269009f0f37788"
+    },
+    {
+      "question_id": "67190f1eee94d36fc7734311",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "749231cea6d20eeee22467c5331ad6a0394759451ff5dbfaa9f5c5291c976bc5"
+    },
+    {
+      "question_id": "67191b3025b51504c14dd870",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "ea8fc81c0b1e97f189d97eaf762b905e0217902d8cf34b713cfaf8988e421099"
+    },
+    {
+      "question_id": "671aaca917615f09eab6fe37",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e11205f6686947d75e8d17b104acf8baf2119d93a17455b181c8a19f6c7ddf88"
+    },
+    {
+      "question_id": "671aad23ce6e97a55a4d0d47",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "83c90273d619a9d6396b1a97663514ad2c214f6cee723a4963662d6a21bc977c"
+    },
+    {
+      "question_id": "671ab139554dabfda724ef23",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "d7fd8f897b9c609983a16fdd9692c923945731f74166efd2ca1c6d3c091cd1f0"
+    },
+    {
+      "question_id": "671ab3b9bc29484bff69fc98",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "b142cc6d19b33f6b5381ade42142292e3614ff859449ac29fa2f8a5919d201c6"
+    },
+    {
+      "question_id": "671ad24cba986fde0d401865",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "c57b159961b8a6ea717bcd14dca3237e0423889c253f2c5e595b6cbcbe7e316b"
+    },
+    {
+      "question_id": "671ad37634dde826ba049e91",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e8668dedf8d57da981232c091d53d0789f699fd79965a123b202f4df904672ee"
+    },
+    {
+      "question_id": "671adfc8fa568baec778580e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "3a706a80b554dbadbef9be8014e836851ba68dc5d68e2d34211c24910b212c7d"
+    },
+    {
+      "question_id": "671aee77ed3d54e87368bc9a",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "02f1c6c7b4569ea3e4c316e72cdd481881b58f87ca2a0c8103d290132ef0077e"
+    },
+    {
+      "question_id": "671b7f4458b64c53882ad080",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "1fd3f05bc820c08662b0158f85ae3d99ea000acdd88c6e607f83835d6c447e08"
+    },
+    {
+      "question_id": "671be3853529bee9e3097b92",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f708be18ca7669c1e2256b40fb86c0d9b91f8d5103224f1f3277a29409aaf5c2"
+    },
+    {
+      "question_id": "671be6027aa97b5c9f77d90e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "5f5f8f4374c2703bc7923328db4378769ce8f6104d6d5e1395071aab1438dd84"
+    },
+    {
+      "question_id": "671cb22b71eb9febef83bcde",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ac92bfc8dce790725fb210fb465d924cb090d0d8982bd84198cb1ea272ec24c4"
+    },
+    {
+      "question_id": "671d36032f9273fe1d43c047",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "1f932e3fda15e64cc076336764b3ee5fbf6bd28b541d263c6b5c62dc69d9b869"
+    },
+    {
+      "question_id": "671d3ffb3e2d1926f04e94f0",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "b2dc2b2c0967a6e8af43ee715597894f098fdeba9b956e3ffe369d3be1437d41"
+    },
+    {
+      "question_id": "671d4bf79eff7434a89d98e0",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "85e62b1ea7e31087e4af88120400a350112ae31a539a31011d33bafff0a04093"
+    },
+    {
+      "question_id": "671d56738411174e64735f59",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e540696f742e34eacc686b4c53e84df6d434bf986f9a2849c77633ea755212aa"
+    },
+    {
+      "question_id": "671d9c62355c956ce7de5a89",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "2995ebae263240d6c8671a97af3d992395ba888411870d473a123a138b9520d0"
+    },
+    {
+      "question_id": "671dea179a50e5f7394157de",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "9437de37a1e82ac3a4be5a6c3662534d28f31b0a0e0da216f7993c339a731312"
+    },
+    {
+      "question_id": "671df94021be7c0de0c698e8",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "4a0451ec504a82328178249c71cc21d0715eeca7d651077b07d47424e9dcf890"
+    },
+    {
+      "question_id": "671e4ade104e72d40d15ae51",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "4fcee49f6421942646df24765f633675b017e3fcaa4bb8c20232f77030772128"
+    },
+    {
+      "question_id": "671ebbf35cc535d3e94216ac",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "06ed7620ae470752c3c71682495265ec592a19b25cb294c705066f51d8e5b033"
+    },
+    {
+      "question_id": "671f7f334db66145d9e41f1f",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ad71edde0994f71abf4939d9a27b2ff31c138060b53b5e752236cc07e31924fb"
+    },
+    {
+      "question_id": "671f8a4e7e8f160452726c81",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "bb8e1b86690466f7c004e158a98ed9857a4780ba4bad9e5ad9cf6becea827f58"
+    },
+    {
+      "question_id": "671fb0b7298c0d11670fc561",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "9f3d1286fcedd8b8ec2ab523c13b5c0853980a3d062744079dc370c56374bde7"
+    },
+    {
+      "question_id": "671fbb0cc6abf8266c1892ca",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "7759475ffd7ede418a8ef020507c3003f5803958cb58a6b3c767eb2187a50765"
+    },
+    {
+      "question_id": "671fcbe9f0bea11129a5ed0a",
+      "domain": "calculus",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "a39b01bb3831d7a1a9897cdfd8c130f051c3aa42afce84d5172e1186c14bf0be"
+    },
+    {
+      "question_id": "672059fc2ea5966e3eddd835",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "dd7e0e32063080a3abe964c9d47d9555cef58cf38373e9e9b44e3ca6e2ed96b5"
+    },
+    {
+      "question_id": "67205ffef58a25138266a364",
+      "domain": "calculus",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "applied_statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "458c756f3ca5341fd38cf95e062a8abbf1c61cc495dd1d900974b4c35483ac7e"
+    },
+    {
+      "question_id": "67206ac2f58a25138266a375",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "900b59c263ec4c777bd6122dec574b387967e197e8277d4eab550a919518a913"
+    },
+    {
+      "question_id": "67208fc7a002d6ecbf05e8ed",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "986894b1a5d16206b576bac39f23bc749388cf9b7d48abd2b168eea8f4984872"
+    },
+    {
+      "question_id": "6720bc27c749322fd52d6cc1",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "0c7a435b6335efd0b60d9614418bda91c1fc16f1c2a26fe364ab5d2a8b88aca6"
+    },
+    {
+      "question_id": "6720c10ac6e0d9a4953b636f",
+      "domain": "real_analysis",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "d6ab2e8a51adf4e21b51f94ece1c375d5844fa9702f8f0fd18fb972b4836f85c"
+    },
+    {
+      "question_id": "6720c7d9831d6450ba886ff0",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "97b602d8a1225b1ff6e3ad543b8e1d8dd994a26d92f6c5d432888c8cc3b02eb3"
+    },
+    {
+      "question_id": "6720ca4b696f86db458bcfe9",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "52b3c6aca434b243371d2cef29776cc4ffe981218a51978645d89d35c20bc4e8"
+    },
+    {
+      "question_id": "6720fcd2198910fd26b01218",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "488334f06e6babe1aaac688415b6bd561521407cab972057b8ba4dca9123745b"
+    },
+    {
+      "question_id": "6720feb00d9c62225dd12bd5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "2c5b012d324ec73390109d0875f6ec7f39ec52743b0787c41f97ea875dc8d6a6"
+    },
+    {
+      "question_id": "6721044c137d5f8ca61261a5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "f76f76688a95f1043e5c0e08effc36c50150743a7266247c94482a845b823040"
+    },
+    {
+      "question_id": "67210e0b44a741b2fde3c609",
+      "domain": "probability",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "fd1f11854b79a3b6fc55df191ab7adba4ec2ab14bbf3d1b9f481465da4500db9"
+    },
+    {
+      "question_id": "6721154d5968ddcc0df3a25c",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "f9a0cc213228dcd66a3458c8524f10f8f855edd93a75c484d313d926fed4407c"
+    },
+    {
+      "question_id": "6721176ed9397a0c64dba826",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "expectation",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "1ef7ab2d60144435e1c3fc075aa4ba43d351e1008363a7015403c88185641098"
+    },
+    {
+      "question_id": "67216f0abddbccdce9955e93",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "fca173b853e41de33e8efcf985c63f608ab43deb1bd7358862eb65b862431fbc"
+    },
+    {
+      "question_id": "67217d44c98941f2d2d343f6",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f71bfdd6930f137f1906f2621ee7829a5247f573f5f0f5a2ff7579e170791766"
+    },
+    {
+      "question_id": "672182f55e4a5b8416a1ccbe",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "d128c80a056ca8628007cad05ed51546b563fb847d4ee3db4650745ba58726e3"
+    },
+    {
+      "question_id": "672189d1c98941f2d2d34400",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "4019c03d26e43a6d17819a32f6755e94f11490c9b82dfa462383e293d0a6453c"
+    },
+    {
+      "question_id": "6721f74cffe59043e1a1a35e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "06eb891267173c214a55d0b4b367bcef4930e01b30a6a25232cc0ef28f1ef8c2"
+    },
+    {
+      "question_id": "672200467408db93b36cfd02",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "f8ed649dbab4d81c717cffeb684556e8f8c33b755caabf5de750b06891fe6d68"
+    },
+    {
+      "question_id": "67220ac44337b6721108bf83",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "d75ec6ea55666c65e6d44c52fdb4b7118842c33b0c56f4742405be8ace509de1"
+    },
+    {
+      "question_id": "672218b79933312b4b187805",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "7e4690359d3951f03d64689577e3d116941b524579a351e4fdf8572df09ff57f"
+    },
+    {
+      "question_id": "6722198c0628f6647e3d591e",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "5568fe8df620ac07fcd51c9da77ec4af332951e190f71d01577a6f391259aa21"
+    },
+    {
+      "question_id": "67223f9b0f0526aefdf4421b",
+      "domain": "calculus",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "f487ba3b38a881aa14cb581d3177433c1998b887e12459576d983fb10837b13b"
+    },
+    {
+      "question_id": "672286b45e3a74191871c1dc",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "521928670bfe1f9bef3b3db74bcc27157d7d922af3d3a86c6fc97a4f70f2706c"
+    },
+    {
+      "question_id": "6722870ef7bda9406bc723ac",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "2629bec8248fa2c24ebe56027823f8bb4f00698aa5dbda2a26c2e7d4d27e3a7b"
+    },
+    {
+      "question_id": "67228eb808748295331b3dfb",
+      "domain": "discrete_dynamics",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "2b27de7e35bb201a1bcd3cb28217a32df80bc60d031eacade264a11cdf60a12c"
+    },
+    {
+      "question_id": "6722c2c066e4416e650d9032",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "polynomial",
+      "coherent_candidate": false,
+      "question_sha256": "c5bfd0f3a5d85c8c40461644263caa370a854c7a7d9450118aad9374d173b484"
+    },
+    {
+      "question_id": "6722e21ca33cee8da62128a4",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ffe59826b45e230468804d81ff649054f48f63f652dd037ea2e2e6b1066664a6"
+    },
+    {
+      "question_id": "6722e2aa59f0f83e64e054ed",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "8966a6032421ee404869a9ac1ac8252a5c379145766810573b226b94501719a4"
+    },
+    {
+      "question_id": "672302bdbc9e7202ad89ccd3",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "determinant",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "8a199272beb2ae1984ebb9cbde5e0840870aa8e5f7e099fc1dc6cc0e8dabeab5"
+    },
+    {
+      "question_id": "67232241f19eb2a69ee319fc",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "0e873d5f6a0c75fe93e5fa1fdec50ccaa2316c7275f4eaaad9ba3c1a3fb7f85c"
+    },
+    {
+      "question_id": "672338c7348c6cb89bd6a7a4",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "4cbc030b019b369422beb8c26a6bb66360ee493a9d086663cab5cbd200c04d6e"
+    },
+    {
+      "question_id": "67234ef248728bb7e8175bf2",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "d04f514116a43267924b81fece8df12a4ef10be9e5959ddeaad9bc95b69f1017"
+    },
+    {
+      "question_id": "6723daed271ddeec8bacb9be",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "2a3a3df0a4241ba5d55965cb2f3abffeb0b2b95392b428f3b4f3b49cd7abb962"
+    },
+    {
+      "question_id": "6723ebefcf4ea65226eb6f9c",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "5ffa6a66fb2fd4d8d06c656b73014f3613c7e259c5e7b8fe82b5b9b02bebe6ec"
+    },
+    {
+      "question_id": "672403fa5461772b24b2e651",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "678de98b032931cbb14ad78a6740c5c2e2f4f7c1874d8e95afe8d622a3930b68"
+    },
+    {
+      "question_id": "6724134c03192a89cb2296c0",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "4d3ac9a0a91f6053db46feb5c2fa94165e8a514b8ee137cda02e9704ee9c34a6"
+    },
+    {
+      "question_id": "67243887a7c5f8f463109d82",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "24184837bed10e0ea2e29eda86d4119cf10ca7bec78a422b845821213b3178e0"
+    },
+    {
+      "question_id": "672473c50c7275f41d6d1e63",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "fd86e90177e5e331617922d3309efba90a393cdc9ed684846d97720d4423d294"
+    },
+    {
+      "question_id": "6724900ad8246a7af6d54ff3",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "94c26384d34c8459cd7c2314a40554fedf15f0d960fa11dbb1358320c2815bd2"
+    },
+    {
+      "question_id": "67249d57d91756473725533a",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "865946f611b837e861a756bf77c41b96b08f446b771ffdc795a1448dba845a87"
+    },
+    {
+      "question_id": "67249dc1d8246a7af6d5500d",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "5e5b17562cc2ae79d7f264347c1d48794951a36142f84883452b137dd0450784"
+    },
+    {
+      "question_id": "67249fe6d917564737255342",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "16c20fc61a6d36d7a9b4badeba15152888d0a90b6d18b87aab286ed2d0daeb45"
+    },
+    {
+      "question_id": "6724a047d917564737255345",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "af242b16e4968cf70df7e119f711b5c8a810d51019d1c9c49cc232442d15db0e"
+    },
+    {
+      "question_id": "6724aecb2bfc260d444bc385",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "36835c7429499057392a47993f175406011e4acce29f280762205f65ed2ca30d"
+    },
+    {
+      "question_id": "6724ea8ca36a8ef783edc2e3",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e0587d323acbead555af053e776efc661438f504d68d9ac744f2290f92b88363"
+    },
+    {
+      "question_id": "6724ea8fef7ca78ae041e22d",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "e0a6c2cbc3e152a76f312ddeffa399a4d552150476a94ce9f167f75aa9241b82"
+    },
+    {
+      "question_id": "6724fa4d8a668910353a6c75",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ffe2af58ced44a461ee2d84f022a7ffd968c9085120ed21195198f4fc7604352"
+    },
+    {
+      "question_id": "6724fe91ea5926938a631b9c",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "3819fce1fbb980568f864f65771d6f9f0ef4af5ab1d78bf39ef0c6588a01e572"
+    },
+    {
+      "question_id": "67252fe0825d7a624838317d",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "cd69b0d8e27206e0c4986874b3d7e996da529eb9bf9b1f913dcd4555169c9f52"
+    },
+    {
+      "question_id": "6725349f3e9860a3b615ce40",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "e53fad3680f67a7039e38b393a67f7de31d80f24fd190d408281fb8381693f3c"
+    },
+    {
+      "question_id": "67253a6aab5670ae51f28912",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "9b2ecbd73555186e2baeee8f610318a9fc339aae1a5dfdf5d986977ce8a66aaf"
+    },
+    {
+      "question_id": "6725562814a5e4119e612733",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "determinant",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "3d09749f858ef6f46a40c52d14e505b7e42041e552f949a8114bc7ae5222db47"
+    },
+    {
+      "question_id": "67255df04c0e045943574e41",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "7f1a6067aa70a716dbd8b397c7c0c9ac6b1c804f6c4092f26cfa029faa7ceb9b"
+    },
+    {
+      "question_id": "6725999445be7410f926c964",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "ddec8717180e10392b45a45be0ac18725bb26546751b7f205672e07fe34fc2e9"
+    },
+    {
+      "question_id": "6725c1e0eac3991069717fda",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "bc4d081a16acaef4b458b312488ac9a44631caa251ad91f2a7d5bb7e75952b1a"
+    },
+    {
+      "question_id": "6725cc85569cf0c62da64d29",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "1f1495fe61f88a3e110a66c869f2c2f2ab52eb9625bdffa85a1180df16ffef2e"
+    },
+    {
+      "question_id": "6725e204e46049e7f2d2a192",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "8261b1a3244de7435872a811d35b8de885de00737896c5e08f7d31696372b324"
+    },
+    {
+      "question_id": "6725e3f8603864c505f3a69a",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "602b0b036c43caa2a5b34d45eede72ee48733ec3123391923f0e093d26bc57f2"
+    },
+    {
+      "question_id": "6725ee9126992c47ce3a7eb5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b307743d643785fe9bc30d213d9829e7e93cf926abe0ea5c6d8bd8bbc4ac5b5e"
+    },
+    {
+      "question_id": "6725f64785e54acc9a6323ed",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "061a0548a4b39adff2374e90d06c7e90bf087220a7b7c731145d0e2df40f2d3f"
+    },
+    {
+      "question_id": "6725f6cebbcb646b2076e64b",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "5441387c424630e5859e0ec1a73db83f3b0f4ea39257291372a5e90c87de7a02"
+    },
+    {
+      "question_id": "6725f8e6aaf7cd419fd01ade",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "32536dc4ed1a4b87b24fab44c85a545fb55e0f2a07dbdc2542dd9fb27298274c"
+    },
+    {
+      "question_id": "6725fe6b26992c47ce3a7ef5",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "56bebe7c860de96eba429059f90e25c9b141aa976643b7c42931b9e4bd53577a"
+    },
+    {
+      "question_id": "6726012526992c47ce3a7f00",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "86298362a08ca5651c5dd37d20cb768f1c8956913ecbdfccc19aed61a0ab040b"
+    },
+    {
+      "question_id": "6726140e196c3daaab906acc",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "c39bea9082123b3ad32e32533d2f1b49f4cddd15dd80667bb24bc52168ae2f3b"
+    },
+    {
+      "question_id": "67264341699c78200b0177e5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "d2f1e3f68e5cbc0ab12bcd643cce331b895bd7c0033785388a85c46ec06af6bc"
+    },
+    {
+      "question_id": "672656a3fd560b1526278952",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ad991e573c965727d1f1df0be9899374f749e5be3950ea06116b41a5890fc10f"
+    },
+    {
+      "question_id": "6726b934d4553efaee99c556",
+      "domain": "real_analysis",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "d57ded97f5f49fcf77983757d7bdb87cac576901662bd47d37747d826a57c1d5"
+    },
+    {
+      "question_id": "6726bc54d4553efaee99c558",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "d69c24e51daf7ceaf9a07f06128af99d849202e20fafadd7849cf6efd0409ad6"
+    },
+    {
+      "question_id": "6726dc196cd52b493ac990e4",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "59ef369cd90bbdab6c7367eb7f673f3f97646e46b6eedd03ff7fe6aa93f91632"
+    },
+    {
+      "question_id": "6726ecf08825660211cd8a68",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "648473e2db9e55e10d4d664f1a94cbabb79e729c8fa290a17077132278a8950b"
+    },
+    {
+      "question_id": "6726ee5f8825660211cd8a70",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "09f2ac8aaaec895b308797d12942e87629e2cff03c14f3ca83b1d9d242562d7e"
+    },
+    {
+      "question_id": "6727716f45a3c3a9020e2732",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "aaf47968d5b0d374708dc1ed468335b72c7afeed4bec6fe0acaaf4859cc73e5a"
+    },
+    {
+      "question_id": "672825849044c8a4cbd271a5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_enumeration",
+      "operator_signature": "graph_enumeration",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "4eb398ec01b78b5ec92342156ddce976f636b93db840e0d72c0d73bc589c853c"
+    },
+    {
+      "question_id": "67299bb057f14fa7ce3fe4fd",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "848a29ebf380c6992a351203fd2a1297089d5dc1ff605017118993ae088df658"
+    },
+    {
+      "question_id": "672a32576547c905a6e6ad2c",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e58f2c2583a9a386dc7d386f0a11c5c028ffe6c0013622abfbc99b5d7b320cc8"
+    },
+    {
+      "question_id": "672a79431629c5c3d6933ca7",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "5d09a53b4960ee49271349eae05117947ad53b04466f788bd03f1a827d770e6f"
+    },
+    {
+      "question_id": "672bf01199b43edbc86d142e",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "76afed11c7d007a2885c798f541216822365773ab4e8d8acca57afca45fa51cc"
+    },
+    {
+      "question_id": "672c82f6cf35e2d3ab488e6f",
+      "domain": "real_analysis",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "7e714722cbf06b1798e6466146e0d35704f93fa66eb5714b0656b68661d3828b"
+    },
+    {
+      "question_id": "672c91122372b4061411e111",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "28706c8399c18f05742ba7ab79ddd1daeeb69083436bc0d1d079e22508778e07"
+    },
+    {
+      "question_id": "672ca51e99e1076f34973c18",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "69df36951343b3257fe7803b79f6902b4bb17b0044cfa7c14c16c59949d6a486"
+    },
+    {
+      "question_id": "672cb7f9040d34d0d0aaff61",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "3f80112dd806b7a15e19949f04d6d2624a737c24d5470aebbd9fd1a7d5c084c4"
+    },
+    {
+      "question_id": "672cd664551c643c6fca4e28",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "49416fc84818e5b1cf0cb5b2afc409a03fd5d3766ff41e962e06a12810b180ea"
+    },
+    {
+      "question_id": "672ce9226c70a3cd8f9e441b",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometry",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "4cd404f30d038363c6f47520208b9e9f898f5609113c58ea70076cc086039932"
+    },
+    {
+      "question_id": "672cfee1db7c79384524d9b2",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "293541dc0b23a90ca78d23efad0dfb48d7ba05a8da8a0db33335e1712e3528bc"
+    },
+    {
+      "question_id": "672d2195841ae6e83ce51e18",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "cad4fbdf0db934e89acca99dfa60d44aebbc9658a12de4cbb2def91977832d97"
+    },
+    {
+      "question_id": "672d5a80f1800d2d85750a71",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "539d1eaf248e88f58137499b625f4545be15e45e55d85db6ed9f0d4129211908"
+    },
+    {
+      "question_id": "672d6478802a6a4e9525e893",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "1883c51858f8526ee73d187513a0ec9b029fcc22a4fecff74fe163ad3122dfdc"
+    },
+    {
+      "question_id": "672d8366f97c3b404d90f3d3",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "cc909fda56c2caf03a4d3949caee094469ef733d6578863708ff6ca614bc47cd"
+    },
+    {
+      "question_id": "672dbb7dca434e751d8c2a83",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "62aefb3bd57ad0bd3b3c2cf6e07751b6c14eef4bb7b506cf6450e56101dd79e5"
+    },
+    {
+      "question_id": "672e05610a85795d0ed2d363",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "9d3d6acdb0a1505e56313a87f952b9011c1ad9c44dc8ee984f7fa8a977cad6d4"
+    },
+    {
+      "question_id": "672e09b50a85795d0ed2d36e",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "0393ac4708e7decac69a96e35906a40839091564060cdc8523cb850155530e9b"
+    },
+    {
+      "question_id": "672f8cf367988656535c9b1a",
+      "domain": "discrete_dynamics",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "905de2feff52eaec2644b6de2a2216814b7973a2687f6ba0de968c1d9cc93050"
+    },
+    {
+      "question_id": "672f903de8305894b6cfdc7e",
+      "domain": "discrete_dynamics",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f2cdb32eb274dfbee62a894e98989cfcadac8b0e0b79d32bd5df23deba79dc40"
+    },
+    {
+      "question_id": "672faa45c5a8bce51676ee01",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "403cdd92db5304fd15f255f5bab25b788eba100a202955685b8dc4ce8a89a180"
+    },
+    {
+      "question_id": "672fec044673df044daa1f34",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "105a50bdcc53ed4d2bace340f64b5610a4343303e98ab63f489cd88a7cc93f47"
+    },
+    {
+      "question_id": "672ff8317b5ea0144d26c82d",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "aafd6e9bd4175f5f66bd25bc5829035258b0de87a4b05885891f0a269cb09f03"
+    },
+    {
+      "question_id": "67300670a8a3b9c5fe76c0b8",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "8dd532856c9e91ac4376409dd4c2ea27de6aac071e2025e48c91015984991db8"
+    },
+    {
+      "question_id": "67300f2e4524fef4d81b65c2",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "c9e4cc5c70416b045ba65757526b76b6a405cc321a8dd0c2de4f04fa56d2accd"
+    },
+    {
+      "question_id": "6730ab9b1c5695f59ab6a5e8",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "stochastic_process",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "a1a516b41ba4cbc5cc5d0b7c2dd3b1f38da98fc4e60b4c61a00f3fcd2b1cc0b9"
+    },
+    {
+      "question_id": "67320e338f6d9d8c50dca222",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "cb38405188cf2da5119140b6c6c912767fa3fac4b8493720996ccdfc4ef0db9e"
+    },
+    {
+      "question_id": "673277a6b33b7d6a440fecdf",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "58f9d74180353f27b734403a9e4c31ccab6c262995b807a120b6daa7e3e1fe6b"
+    },
+    {
+      "question_id": "6732a2af28fef5271839ac29",
+      "domain": "real_analysis",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "1e70430a86ab1715dd2b05fcc4e61b5b5409f4021d520a59ed5499a5ca72aecd"
+    },
+    {
+      "question_id": "6732ca5730bf2e525136b688",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "bcd5a1fa6544501de20bbc0ac5857665838406e0d15793c45f1f3bc20e11662e"
+    },
+    {
+      "question_id": "673347de7c5871632811feec",
+      "domain": "calculus",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "geometry",
+      "operator_signature": "expectation",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "173c1ff8091c8825ab6f11f7f922b9aac712837246776a971e1e6867c095cd7f"
+    },
+    {
+      "question_id": "67335820c7d8c66591e6dfc7",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "statistics",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "a06814affaee3525ed41d9035fc44e585121d3dfa5891f081870c047c8bfd226"
+    },
+    {
+      "question_id": "6733f31c4b8994c57e7160aa",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "5309f72b090c0fccab280818e8c55f615e2ab4c4b76dfb99595cc5ef935e5a65"
+    },
+    {
+      "question_id": "673412c46358d5eb2b766533",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "66767f725c188ca238b1e818e02a05c5deca7573dff69f72a5ca1e14fcbc3fec"
+    },
+    {
+      "question_id": "6734b2fec14270a5b42323f5",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "derivative",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "39326e8d06b702ace46c009bf31de168a5977efaae47d02ffac09727ebb9928d"
+    },
+    {
+      "question_id": "6734d9c868c0043c3c23a8dd",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ccf1e5d2dc6e79be78da736acd07051d20d372095037df037d0b1e746d2d11e5"
+    },
+    {
+      "question_id": "67350ad443f1d86ec88ce396",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "f8c452ed5f04d0179142291451c36e40de62d689a8fa66c9ca1196bf9b2e3781"
+    },
+    {
+      "question_id": "67350e81673a2dca558d3cf0",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "68d2cca205503dbab995de32865dc6f3b1eea21b5e555bc39eee8e5af5671728"
+    },
+    {
+      "question_id": "6735268e5a2fa2eb62ee48c0",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "71fe0694e3d1b373ba9fec3bcae5280586d5b4e6888ed3b501862036b1ef798c"
+    },
+    {
+      "question_id": "67359d62d473013adeed83e0",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "d84be4f6f9db7e8f9bc9882d5337e3415b97aa77ee622c03f5fbe9d5cc805ce2"
+    },
+    {
+      "question_id": "6735bc5bd86155d1e57160e8",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "calculus_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "8236b8664cb389aba360e6184c5ceb10640e017e15ba489ee2e4726bf568f159"
+    },
+    {
+      "question_id": "6735cd220c703cedb6f1646a",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "aa275e7593df4ace3c7b40b37942324559dd335c88c099d5ac74ffcbe00a1810"
+    },
+    {
+      "question_id": "67361730dba36cc0d595f422",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "6610753528b7df5a9217f6ecc55b5a4f3a083ece0cd232c9b862c2b53d818387"
+    },
+    {
+      "question_id": "67365419b7341a55d7dc1229",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "ba2f0b5d8214015e555bd0c8a29fae15fb8c0dfe3414baf378e46045a0f2d550"
+    },
+    {
+      "question_id": "6736667eb5eda7e01fa935b2",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ed344b0bbe9e9eae8407eba28b43db6f046ed6b6a35316ef8392b9c7df73e2ce"
+    },
+    {
+      "question_id": "67367227d9ae2dd73efeded6",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "information_theory",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "37a33b2e681a477a92a95b40392ed3350e3f4409af3f7c7dd9dd858b26f80f7b"
+    },
+    {
+      "question_id": "67367c1af50c5f8bfc321f34",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "0e4032ed925c1020374eedf6357daff3c19de80e53925dff8f2e21c7a1e13745"
+    },
+    {
+      "question_id": "6736ab1af0b1f35585e14f7d",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "7f13587652e2d6a2bbc5336f75358410858c105a98fc5c96f2efbee30f119fd8"
+    },
+    {
+      "question_id": "6736b24a58f461953a97e874",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b21dbf645beec9ebd9c40c6ae0eaa61ac772f60b6bd3a38a16895b5bfb8b58d2"
+    },
+    {
+      "question_id": "6736bf617cb0499c96e427da",
+      "domain": "calculus",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "f71cc033cf8e2f806e79fc9561cb82307abb0188eda2e4b29d3106156a8d9be4"
+    },
+    {
+      "question_id": "6736c1646828e4a0cd54d756",
+      "domain": "calculus",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "a719c042e6056dcfa756b74d6b0d97884ab845ab96e71b4ce0a7e13a93760fe0"
+    },
+    {
+      "question_id": "6736d46462d883a670c09b5d",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "86b6295080ac4f812b4ff2e0ebd8ced6817ab46f4773f31274d97854304d7d03"
+    },
+    {
+      "question_id": "6736df63b0bb13ba4f29c594",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "0bccdfea503477cfe89e3b440e0141ead2a504df1f37a6cc1b897e3a2c8df3e2"
+    },
+    {
+      "question_id": "6736edefe41312420acd05a0",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "47f616795386c6d29ed8f2fcef55d8fecd9b4e09d20a5c61e46796c08e6c16f3"
+    },
+    {
+      "question_id": "673709de3f0517b6e8a60764",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "chromatic_number",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "d88c97349c51d09c450736c273a31265ea14de0e6304d2744859c5e0d849d6bc"
+    },
+    {
+      "question_id": "67370a1b980211368f0f9531",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "9dd18bf7b8be44c70f0160feb1fd4d50c419e8924435b09d8a500fea34d8104e"
+    },
+    {
+      "question_id": "6737155919fe786391fedd08",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "9ae9f3b63b13f1a950767a4bc856563368b1efa0615875a64c4657f544000de3"
+    },
+    {
+      "question_id": "67372559fb093fc159cc790f",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "13bfa971b67c97da0595a40e7323c3f6cca98e41d688a2c6b1c8aae63c9fa570"
+    },
+    {
+      "question_id": "6737259f2c11cb057c97911b",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e689d9025c62e139d8a563345f46a569d6b4f164f2203383d3886eaaf2e50502"
+    },
+    {
+      "question_id": "6737328119fe786391fedd8a",
+      "domain": "real_analysis",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "8ed79a27750171e16614f2fabe304eb756cf4e3de5e39a6676952bf3cefd668a"
+    },
+    {
+      "question_id": "673735ce90a20eb348edbe16",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "f34dcbd8d8bc8dbd72b3d3f7f496f4fa887db3be08787fd9963c715cdea75b1e"
+    },
+    {
+      "question_id": "6737b422d3949406f1ed580b",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f1c8a0028a104a9e3ec33643bb1de734ee9d4d4a8f7c759aa03b7de6e3815a8a"
+    },
+    {
+      "question_id": "6737ccee8ebd5a3e08cacd39",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "16c60be8c31c8d415e3748f418cf21f15febbcb5c859b737088a31e2f22fb040"
+    },
+    {
+      "question_id": "6737d23a6a364decc45cc7ee",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "122789e783d01802ef8396c2c58acf1635b34483311d8c9ddb8c4fc593494f8c"
+    },
+    {
+      "question_id": "673814e333f92b33fc5d4ef6",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "3b239e8b68245a23f6ce451f047030ea1180a7685e56cf26146b3e752cf2425c"
+    },
+    {
+      "question_id": "673818e39b3842b34824240d",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "df1eeb893549d7f11d6f4a713b9672cb30f4b4f4a49efcb289b56dee3b779e84"
+    },
+    {
+      "question_id": "67381b2862660a32c77bfe3d",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "3395b1e366b2be0fca7a0ccd1e7261b2cc9786b485725444fe50d8000a5356d6"
+    },
+    {
+      "question_id": "67381ce26a5242a22fe4681f",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "61d4288a8d47d498b7ce06e5bf90ec3da730dcbcbd2dc276d8f604e401ed1ddd"
+    },
+    {
+      "question_id": "67382954b12bd45429d6c0d1",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "591bcb5a2ffd35bcc1c2f9e8261b83b1e098181df09758bfe32a5b638a661c56"
+    },
+    {
+      "question_id": "67384618f50a1fb083fa3eea",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "fe0898fa660b11fa2b8ad06c542f12fa766b2f333cae1c0a82510eefbfa6fdb2"
+    },
+    {
+      "question_id": "6738925a88684584d13d4d44",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "3ae29fe491c4985377bb9bc2bef3233e676b02f9b138e949c79401b6921e92d9"
+    },
+    {
+      "question_id": "6738d6a4475748524584b23c",
+      "domain": "calculus",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "1ccd4c7fae3e051b07832c71c5a3887a36f2ad86469634fa02aabec79a834969"
+    },
+    {
+      "question_id": "6738da53028ebe6f5c2ae07a",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f504e326d4b185fbb76b4aefd34085e0663b6f9b8b3fec8aceb4fc5b8198be9b"
+    },
+    {
+      "question_id": "6738e0e90afc5078575438a9",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "782af1ed9d4a2d6295c79fa4b4ef760e8d2c77df2c9b4de29aec00e345a8485c"
+    },
+    {
+      "question_id": "6738f07b851b80b033aa8633",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "d426cbea013db2c5473b981101a8600813605102dc8763ae33cd3b71368d2c28"
+    },
+    {
+      "question_id": "6739374caf97ceab210adc21",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "051180af51a11de019676617a9f0c16c79ef23840dffa81a0616c03576ac6973"
+    },
+    {
+      "question_id": "67394a709625ee6d891838e2",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "be18092c5cdd38c92f795319d5fdf0d7e84e38338f9631f4282275efa7b40afa"
+    },
+    {
+      "question_id": "67396490173834c134fbaceb",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "509c4ae972fcf328973b2a503cb173166e78c23a6ca92f1fb7cf8204095f2fa7"
+    },
+    {
+      "question_id": "673966c85558387c37dd7b7d",
+      "domain": "probability",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "5da9a35176335c0de3f55448d448b1b2e095b61896ce24e87478dacb4f0b2985"
+    },
+    {
+      "question_id": "6739691ecea30e65e1f96876",
+      "domain": "real_analysis",
+      "coarse_shape": "fact_lookup_or_specialist_object",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "6d6ed70d23e3982773974918915bbf630986234b8b6269bc7fb83fdda321410a"
+    },
+    {
+      "question_id": "6739a952fa7e2dea8ccd9bfe",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "46d0a99b40b2bdedfa9714e5f6544e2dc5d6926406ef3c5c5ce054e014824ecc"
+    },
+    {
+      "question_id": "673a2e0e1832025ec235f9aa",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "a3c186f15f1fc04ed6af40b7714cac20c21f427e526851050193f10835b81ab2"
+    },
+    {
+      "question_id": "673a32a842a12c80ec5f8012",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "6d3d61621bc5a0984e93b0004459a19b895c93bee83730e719fd96d867420cec"
+    },
+    {
+      "question_id": "673a33fb2d5ce2b6500f4b48",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "606a541d1b47481b79770e3f4ac2b219c4dc6a8878ceb238dbbb6cae91fb4717"
+    },
+    {
+      "question_id": "673a5fa4329d98c7d4b69d60",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b9c2ef55d3f0b2fe1093a70138ce6f605f0cdfffaed8f8d4ed45c7197d60b06b"
+    },
+    {
+      "question_id": "673a6a6c4c465c371379b670",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "08c1baecc7c9dcaaac31ebad6a413f2f1f54c95ca255ac79c08fc7923d21d11a"
+    },
+    {
+      "question_id": "673a76559e89466aa6433f66",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "af9b9f4cbc99493167003d3cf66a0cf23236a1ee11e6e9c7fdcb8d1594964754"
+    },
+    {
+      "question_id": "673b026a4fa2c1cad72e2e28",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "7aaf33679f9a5498e35a50c5e168b7c3ad256252c49faf717c67cf835ade7b6e"
+    },
+    {
+      "question_id": "673b2e9f614800adcd937382",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "30ccfc8d8efe7c5210144e8c965670abffdf3d4ae0616a552712a8cf0adcdfa4"
+    },
+    {
+      "question_id": "673b865227d07a53a7b0ec48",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "926180d4cf598c90f36f195a51fc6442a466306b4401bad83c5726c359b9da20"
+    },
+    {
+      "question_id": "673cbc315c871b3f9e026cf8",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "ef95438e11f9b01850bdeb9af140584e8fc195f744198a2d1718655bd53275ac"
+    },
+    {
+      "question_id": "673dda11d3981c54a42874ef",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "a1b3d24db3528410cf3435cb3a32d3caec5e6799438c9974a63d8f0c220f01f6"
+    },
+    {
+      "question_id": "673e64979c1787f33fd0b983",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "215a33e1bf1db034f32f2b7ea7a38b286596d08ca7b2ad549aa2dff706977d57"
+    },
+    {
+      "question_id": "673e66f59f77eeca0292a3b8",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometric_graph_or_polytope",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "7859e890394f03704af9a7bf66f9aa58fd41201fd28f1a39afb3aa56257a7a45"
+    },
+    {
+      "question_id": "673f8934ccb23d2ccc360e4e",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "25e586eab6a0834acc96093f591f2a70a8c11f5028a899497216785e7dc08159"
+    },
+    {
+      "question_id": "673fb49e9c9d0a5bc88bf8be",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "c8cf0397903e88a1d6116dd590ef436ed00a42ccd2b3ffe7c06ba7e15d6d46b2"
+    },
+    {
+      "question_id": "673ffbd26fcd58c71515bdee",
+      "domain": "real_analysis",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e0679339d0f5f9aa0993910d2f80f99401530cc45c04aa3d4f54f81b5f9f3db6"
+    },
+    {
+      "question_id": "6741218b9b244ee15c8f6db4",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "671c8cc38e14611962ce5a783e7935098f3e8e854749669c28ff515885b5e7dc"
+    },
+    {
+      "question_id": "6742c352b716c03a202313a3",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "ee78cfa2eb51d0c28522156da52cd3c8320f9f92bae3442290a21760439ab641"
+    },
+    {
+      "question_id": "67455cd07df215d3effe4f4e",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "23dbcbcf19a9b63e66ca292b54bbbb2ef298cdf84385a3de47d3e3e2781c6040"
+    },
+    {
+      "question_id": "67455f379dbdcf3802abd8f6",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "quantum",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "4b00a06b932a53e25af6b669e339e5122ad53216636e1498dbc65a7c3c916580"
+    },
+    {
+      "question_id": "67466b3e9f0add5aaf50aa8a",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "e92e7c111df2c863c1351b6dd69b87bb212df90beb75369a70542392cbcdb398"
+    },
+    {
+      "question_id": "67483a7928f6e886b0c6be8b",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "f6bd514e74d71a6ce5ed86e247c73453b717303d93094ef431e67d0dad0a6340"
+    },
+    {
+      "question_id": "674c4930f8787d3114abcdd0",
+      "domain": "calculus",
+      "coarse_shape": "proof_or_derivation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "proof_or_derivation",
+      "coherent_candidate": false,
+      "question_sha256": "6661bb8a7d66704568edf61ae3a898a2885b6ad8ee10e0236f00b33db9b122eb"
+    },
+    {
+      "question_id": "674d5d4980a9a6adc4f86bc6",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "linear_algebra_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "948ecddecf26f9eb5ad271f15b2e6ddd449ab1f0579dcfabaf4569c947c9324e"
+    },
+    {
+      "question_id": "674f23d73cc400e10645fbe3",
+      "domain": "graph_theory",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "9a3ad30754716da28b52880b818c284001ecffd0ad52dca3bfe1c4289fd3d9bf"
+    },
+    {
+      "question_id": "67607764fd6487bd2bb7e271",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b676a743e90fa5f0831e6a7942e64660899795f0ed82dc94c9d868a98c3bf2ad"
+    },
+    {
+      "question_id": "6761a307c12ca815b1c97374",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "925184281863ad514162ca5cabbacf574ee8248db331d394243dfe6a07d16fcd"
+    },
+    {
+      "question_id": "6769bce8a4435c3c69035510",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "2a5c5d7945adcdf83ae2a72f144a5cf39bb02d93954a29a4d94c70efe058ada3"
+    },
+    {
+      "question_id": "676d4db9cd83de685f85ed01",
+      "domain": "calculus",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "geometry",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "38a67647a7c63202d24895fac3ac85b0f2031500cd8c876b7e7436f5cf8304e8"
+    },
+    {
+      "question_id": "676d5438cd83de685f85ed0e",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "68eb30943c4cad2badd8b4e244f66b083bb44cedae17039aa22801ad93ffb8ac"
+    },
+    {
+      "question_id": "676d66a775870eef1bf0f9ce",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "0d050e8cc27f887a88f030aa12a89133c39d22b5de932efa1be31eebf9a78c7b"
+    },
+    {
+      "question_id": "676df4158b07cdbcd761e9f2",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "algebraic_structure",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "02e02c5003a23257669f68eeb915f31ca01239173bbd51b5f3fcbbd66bb9cb1c"
+    },
+    {
+      "question_id": "677296942ebbac6133a1d618",
+      "domain": "calculus",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "161ed7e84a6b792d432360fb5b65dee7ae742511f4095d3a3d98bceacff3ac09"
+    },
+    {
+      "question_id": "6779ae1580fdd61994c0c14e",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "6bf2b586c58b4bc4fd2a105f36f02ff1fd01e5ffa8773bbb5fadea083dcee097"
+    },
+    {
+      "question_id": "677bcc2af80fce832e66a075",
+      "domain": "calculus",
+      "coarse_shape": "calculus_or_ode_operation",
+      "semantic_family": "analysis",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "c1a4be85deb86d8bad77d9cf30e94bd1dc257128f5a931dadbc0bf656b03362d"
+    },
+    {
+      "question_id": "677e6a6841ef4b6937c21b7c",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "information_theory",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "probability",
+      "coherent_candidate": false,
+      "question_sha256": "22fd517d93debb9ef018980a4b1b4c2690f83251a0df70a93252f90f26d0fc61"
+    },
+    {
+      "question_id": "678591c5156d7fb9f7cd171a",
+      "domain": "linear_algebra",
+      "coarse_shape": "linear_algebra_operation",
+      "semantic_family": "spectral",
+      "operator_signature": "eigenvalue",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "5bad047e3c9ad58388bc7be38a53e45c17dabf85d6ed1bde024c791abad14488"
+    },
+    {
+      "question_id": "67884c06637d9e8c9d4e5ea4",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "0b744c6def0c5e4abda3ba1fc2967ff6ac4dd8a37ab08b728f8c12d74120f3a1"
+    },
+    {
+      "question_id": "678ed6acd3b675111409b815",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "classification",
+      "coherent_candidate": false,
+      "question_sha256": "0f324642a1c87276f6583088b3c7d2281c2f0f2d82d3b293edb0c9bf5c03083f"
+    },
+    {
+      "question_id": "67955d8d28dc0cc835a5c3c1",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "f7066f999e3fcd117cce778fd70136b758bfd918c2b1ebebd4b2d777f4b840bc"
+    },
+    {
+      "question_id": "67aa35520fe6cda9046f7f54",
+      "domain": "probability",
+      "coarse_shape": "probability_operation",
+      "semantic_family": "probability_other",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "6bedab509db44221a9870dd5d3e7a7e1f6dd44ad2bc91e53279215a1dc2dfef3"
+    },
+    {
+      "question_id": "67c9a321f82a928bdecec2a5",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "graph_coloring_or_extremal",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "468e237e5f5a1044e2371988dbc021915c95a83732cc5b34be1e36e8a1b48854"
+    },
+    {
+      "question_id": "67d49da91dfc5429adf8e0fc",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "exact_count",
+      "coherent_candidate": false,
+      "question_sha256": "8b93287d7f312c3113aaaee01d5204045ffedf68c34311243d6527476a818f2c"
+    },
+    {
+      "question_id": "67d52597f7120a10b39abc74",
+      "domain": "graph_theory",
+      "coarse_shape": "graph_operation",
+      "semantic_family": "other_graph",
+      "operator_signature": "unresolved_operator",
+      "output_artifact": "structured_or_scalar",
+      "coherent_candidate": false,
+      "question_sha256": "b525c0e601e1a6aa2378322cc6014bf5f48980a6cdbfed122e6f107a30f8bd9b"
+    }
+  ],
+  "replay_verified": true,
+  "tamper_rejected": true,
+  "manifest_mutations": 0,
+  "false_authorizations": 0
+}

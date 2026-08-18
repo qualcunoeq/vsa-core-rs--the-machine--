@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 8,
-  "checks": 50,
-  "passed_checks": 50,
+  "artifacts": 9,
+  "checks": 58,
+  "passed_checks": 58,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -231,6 +231,46 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "exact_decisions == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "retrieval_replays == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "belief_replays == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "tamper_rejections == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_ab_retrieval_investigation.json",
+      "requirement": "world_model_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
       "requirement": "cases == 2500",
       "passed": true
@@ -289,6 +329,10 @@
     [
       "docs/stage_k_sealed_curriculum_exam_5000.json",
       "560a7513169f88791db7990ac2bd90e53a9a0d1d2e310fbaf739f9ca7706e56c"
+    ],
+    [
+      "docs/stage_ab_retrieval_investigation.json",
+      "7d9f55cfc6cbb3c983eaa23505761e38e49d48449d2d976897c1027bb4a50296"
     ],
     [
       "docs/stage254_hle_checkpoint_post_portfolio.json",

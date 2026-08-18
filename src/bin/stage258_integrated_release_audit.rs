@@ -81,6 +81,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage_n_curriculum_learning_curve.json",
         "docs/stage_o_autonomous_breadth_campaign.json",
         "docs/stage_k_sealed_curriculum_exam_5000.json",
+        "docs/stage_ab_retrieval_investigation.json",
         "docs/stage254_hle_checkpoint_post_portfolio.json",
     ];
     for path in paths {
@@ -186,6 +187,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_bool(&mut checks, path, value, "manifest_mutated", false);
+            }
+            "stage_ab_retrieval_investigation.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 500);
+                check_number(&mut checks, path, value, "retrieval_replays", 500);
+                check_number(&mut checks, path, value, "belief_replays", 500);
+                check_number(&mut checks, path, value, "tamper_rejections", 500);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+                check_number(&mut checks, path, value, "world_model_mutations", 0);
             }
             "stage254_hle_checkpoint_post_portfolio.json" => {
                 check_number(&mut checks, path, value, "cases", 2500);

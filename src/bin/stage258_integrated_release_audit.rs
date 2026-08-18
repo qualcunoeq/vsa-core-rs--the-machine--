@@ -148,6 +148,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage271_three_candidate_shadow_manifest.json",
         "docs/stage272_three_candidate_sealed_benchmark.json",
         "docs/stage273_staged_portfolio_exam_5000.json",
+        "docs/stage274_hle_staged_portfolio_probe.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -809,6 +810,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "manifest_mutations", 0);
                 check_number(&mut checks, path, value, "registry_mutations", 0);
+            }
+            "stage274_hle_staged_portfolio_probe.json" => {
+                check_nonempty_string(&mut checks, path, value, "dataset_sha256");
+                check_nonempty_string(&mut checks, path, value, "shadow_manifest_sha256");
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "cases", 2500);
+                check_number(&mut checks, path, value, "source_modules", 3);
+                check_number(&mut checks, path, value, "source_records", 15);
+                check_number(&mut checks, path, value, "frontend_replays", 7500);
+                check_number(&mut checks, path, value, "frontend_tamper_rejections", 7500);
+                check_number(&mut checks, path, value, "unique_shadow_candidates", 0);
+                check_number(&mut checks, path, value, "correct_shadow_candidates", 0);
+                check_number(&mut checks, path, value, "production_authorizations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "live_manifest_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

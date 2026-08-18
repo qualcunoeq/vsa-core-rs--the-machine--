@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 48,
-  "checks": 524,
-  "passed_checks": 524,
+  "artifacts": 49,
+  "checks": 538,
+  "passed_checks": 538,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2186,6 +2186,76 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "dataset_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "shadow_manifest_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "source_modules == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "source_records == 15",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "frontend_replays == 7500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "frontend_tamper_rejections == 7500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "unique_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "correct_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage274_hle_staged_portfolio_probe.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -2783,6 +2853,10 @@
     [
       "docs/stage273_staged_portfolio_exam_5000.json",
       "e7f0f6ac4801a328204f8218b288d933f8065894e8b063e0a357842c7d0c549b"
+    ],
+    [
+      "docs/stage274_hle_staged_portfolio_probe.json",
+      "bc04aefeecf8f427dc77b21824ec5b843102e423975f7e7073a4d4448b827276"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

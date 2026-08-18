@@ -1,0 +1,20 @@
+{
+  "schema": "stage274-hle-staged-portfolio-probe-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "shadow_manifest_sha256": "23b478ea1d75f9fb59ef0da5450090f94e8178e353c91541c9164094529a23f0",
+  "cases": 2500,
+  "source_modules": 3,
+  "source_records": 15,
+  "frontend_replays": 7500,
+  "frontend_tamper_rejections": 7500,
+  "unique_shadow_candidates": 0,
+  "correct_shadow_candidates": 0,
+  "incorrect_shadow_candidates_rejected": 0,
+  "ambiguous_or_missing": 2500,
+  "unsupported": 162,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "live_manifest_mutations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "83c0d53912401aa67d58e47eb9c6af5a0286a1be523aa3fea6c7276ef7fdb9b6"
+}

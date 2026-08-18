@@ -163,6 +163,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage286_self_directed_unit_learning_curve.json",
         "docs/stage287_expanded_curriculum_memory_scale.json",
         "docs/stage288_versioned_source_retrieval.json",
+        "docs/stage289_retrieval_guided_investigation.json",
         "docs/stage179_five_domain_math_synthesis.json",
         "docs/stage245_science_relation_ingestion.json",
         "docs/stage247_multimodal_science_routes.json",
@@ -1382,6 +1383,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "policy_replays", 800);
                 check_number(&mut checks, path, value, "policy_tamper_rejections", 800);
                 check_number(&mut checks, path, value, "provenance_complete", 800);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "source_memory_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+                check_number(&mut checks, path, value, "world_model_mutations", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+            }
+            "stage289_retrieval_guided_investigation.json" => {
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "recommendation_exact", 1000);
+                check_number(&mut checks, path, value, "query_q0_selected", 1000);
+                check_number(&mut checks, path, value, "authorized_retrievals", 300);
+                check_number(&mut checks, path, value, "resolved_cases", 300);
+                check_number(&mut checks, path, value, "ambiguous_cases", 700);
+                check_number(&mut checks, path, value, "exact_decisions", 1000);
+                check_number(&mut checks, path, value, "retrieval_replays", 1000);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "retrieval_tamper_rejections",
+                    1000,
+                );
+                check_number(&mut checks, path, value, "belief_replays", 1000);
+                check_number(&mut checks, path, value, "belief_tamper_rejections", 1000);
+                check_number(&mut checks, path, value, "policy_replays", 1000);
+                check_number(&mut checks, path, value, "policy_tamper_rejections", 1000);
+                check_number(&mut checks, path, value, "source_provenance_complete", 1000);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "source_memory_mutations", 0);

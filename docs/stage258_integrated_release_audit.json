@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 66,
-  "checks": 844,
-  "passed_checks": 844,
+  "artifacts": 67,
+  "checks": 864,
+  "passed_checks": 864,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3516,6 +3516,106 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "recommendation_exact == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "query_q0_selected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "authorized_retrievals == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "resolved_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "ambiguous_cases == 700",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "exact_decisions == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "retrieval_replays == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "retrieval_tamper_rejections == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "belief_replays == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "belief_tamper_rejections == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "policy_replays == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "policy_tamper_rejections == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "source_provenance_complete == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "source_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "world_model_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage289_retrieval_guided_investigation.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4443,6 +4543,10 @@
     [
       "docs/stage288_versioned_source_retrieval.json",
       "ddeb2eecf0cda4485c6b551b3e05f4a04588584b177765e75aa09f558b53c202"
+    ],
+    [
+      "docs/stage289_retrieval_guided_investigation.json",
+      "cb2471d22776cd2ca3b16837d75eea7e4798c70aeee55fbe7ff8975293a1cf36"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

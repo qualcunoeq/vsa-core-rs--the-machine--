@@ -428,6 +428,10 @@ name = "stage307_multicycle_utility_education"
 path = "src/bin/stage307_multicycle_utility_education.rs"
 
 [[bin]]
+name = "stage308_algebra_number_theory_certificates"
+path = "src/bin/stage308_algebra_number_theory_certificates.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

@@ -146,6 +146,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage269_staged_source_portfolio_benchmark.json",
         "docs/stage270_health_ratio_shadow_validation.json",
         "docs/stage271_three_candidate_shadow_manifest.json",
+        "docs/stage272_three_candidate_sealed_benchmark.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -762,6 +763,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage272_three_candidate_sealed_benchmark.json" => {
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "source_modules", 3);
+                check_number(&mut checks, path, value, "source_records", 15);
+                check_number(&mut checks, path, value, "selected_modules", 3);
+                check_number(&mut checks, path, value, "development_cases", 300);
+                check_number(&mut checks, path, value, "validation_cases", 300);
+                check_number(&mut checks, path, value, "sealed_cases", 300);
+                check_number(&mut checks, path, value, "boundary_cases", 300);
+                check_number(&mut checks, path, value, "exact_decisions", 1200);
+                check_number(&mut checks, path, value, "authorized", 900);
+                check_number(&mut checks, path, value, "sealed_exact", 300);
+                check_number(&mut checks, path, value, "sealed_authorized", 300);
+                check_number(&mut checks, path, value, "boundary_refusals", 300);
+                check_number(&mut checks, path, value, "frontend_replays", 3600);
+                check_number(&mut checks, path, value, "tamper_rejections", 3600);
+                check_number(&mut checks, path, value, "route_leakage", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "manifest_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

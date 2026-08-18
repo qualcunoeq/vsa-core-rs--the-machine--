@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 46,
-  "checks": 483,
-  "passed_checks": 483,
+  "artifacts": 47,
+  "checks": 503,
+  "passed_checks": 503,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1981,6 +1981,106 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "source_modules == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "source_records == 15",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "selected_modules == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "development_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "validation_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "sealed_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "boundary_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "exact_decisions == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "authorized == 900",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "sealed_exact == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "sealed_authorized == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "boundary_refusals == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "frontend_replays == 3600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "tamper_rejections == 3600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage272_three_candidate_sealed_benchmark.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -2570,6 +2670,10 @@
     [
       "docs/stage271_three_candidate_shadow_manifest.json",
       "23b478ea1d75f9fb59ef0da5450090f94e8178e353c91541c9164094529a23f0"
+    ],
+    [
+      "docs/stage272_three_candidate_sealed_benchmark.json",
+      "86d8701f69a0900b71c61550ed1209cf6084b7040ba6a3f27725f0264fb396ee"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

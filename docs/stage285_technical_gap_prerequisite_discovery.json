@@ -1,0 +1,28 @@
+{
+  "schema": "stage285-technical-gap-prerequisite-discovery-v1",
+  "language_report_sha256": "46d7a304fd70b5ae00ae11c03c5a706b9210fdd8c44853a380a2c0c8dc0ed1b3",
+  "source_report_sha256": "68c0675139052dc82596bfbd1fdd18fbd374256ef29dd694b5d78491e28ba106",
+  "language_corpus_sha256": "0e058ec5aa8bccc74f799b10b118a276db7e7c54126e766cc42daebcfb143fb0",
+  "source_sha256": "c69295d239b6149cf514bec1a3269fcd6244ec533829cf645e0f82a32a679d1e",
+  "observed_cases": 2000,
+  "observed_exact": 2000,
+  "observed_false_authorizations": 0,
+  "proposed_gaps": 551,
+  "proposal_replays": 551,
+  "proposal_tamper_rejections": 551,
+  "unknown_gate_refusals": 1449,
+  "known_artifact_discoveries": 551,
+  "unknown_artifact_refusals": 0,
+  "acyclic_dependency_checks": 551,
+  "cycle_rejections": 0,
+  "manifest_unchanged": true,
+  "live_mutations": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "gate_counts": {
+    "frontend_ambiguity": 290,
+    "frontend_missing_required_field": 116,
+    "mobius_source_boundary": 145,
+    "unknown_semantic_residual": 1449
+  }
+}

@@ -159,6 +159,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage282_four_candidate_shadow_manifest.json",
         "docs/stage283_hle_four_candidate_probe.json",
         "docs/stage284_curriculum_technical_language_benchmark.json",
+        "docs/stage285_technical_gap_prerequisite_discovery.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -1044,6 +1045,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "route_leakage", 0);
                 check_number(&mut checks, path, value, "hle_questions_read", 0);
                 check_number(&mut checks, path, value, "production_mutations", 0);
+            }
+            "stage285_technical_gap_prerequisite_discovery.json" => {
+                check_nonempty_string(&mut checks, path, value, "language_report_sha256");
+                check_nonempty_string(&mut checks, path, value, "source_report_sha256");
+                check_nonempty_string(&mut checks, path, value, "language_corpus_sha256");
+                check_nonempty_string(&mut checks, path, value, "source_sha256");
+                check_number(&mut checks, path, value, "observed_cases", 2000);
+                check_number(&mut checks, path, value, "observed_exact", 2000);
+                check_number(&mut checks, path, value, "observed_false_authorizations", 0);
+                check_number(&mut checks, path, value, "proposed_gaps", 551);
+                check_number(&mut checks, path, value, "proposal_replays", 551);
+                check_number(&mut checks, path, value, "proposal_tamper_rejections", 551);
+                check_number(&mut checks, path, value, "unknown_gate_refusals", 1449);
+                check_number(&mut checks, path, value, "known_artifact_discoveries", 551);
+                check_number(&mut checks, path, value, "unknown_artifact_refusals", 0);
+                check_number(&mut checks, path, value, "acyclic_dependency_checks", 551);
+                check_number(&mut checks, path, value, "cycle_rejections", 0);
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+                check_number(&mut checks, path, value, "live_mutations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

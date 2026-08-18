@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 59,
-  "checks": 702,
-  "passed_checks": 702,
+  "artifacts": 60,
+  "checks": 721,
+  "passed_checks": 721,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3076,6 +3076,101 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "language_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "source_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "language_corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "source_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "observed_cases == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "observed_exact == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "observed_false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "proposed_gaps == 551",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "proposal_replays == 551",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "proposal_tamper_rejections == 551",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "unknown_gate_refusals == 1449",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "known_artifact_discoveries == 551",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "unknown_artifact_refusals == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "acyclic_dependency_checks == 551",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "cycle_rejections == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "live_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3717,6 +3812,10 @@
     [
       "docs/stage284_curriculum_technical_language_benchmark.json",
       "46d7a304fd70b5ae00ae11c03c5a706b9210fdd8c44853a380a2c0c8dc0ed1b3"
+    ],
+    [
+      "docs/stage285_technical_gap_prerequisite_discovery.json",
+      "a02175db42b95055c9e184e0f40d1b26ec04620acdc4610303a20a2552cc0b80"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

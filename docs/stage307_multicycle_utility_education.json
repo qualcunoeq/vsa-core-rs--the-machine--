@@ -1,0 +1,82 @@
+{
+  "schema": "stage307-multicycle-utility-education-v1",
+  "source": "three-cycle residual-gap campaign over validated source modules",
+  "stage305_report_sha256": "1bd734fc2c617002125a66426b8dd81570043e63ad3b905be14e46b89f5ee286",
+  "stage306_report_sha256": "d5257af67d9c0900efd996c561f492a629af26e03bd37a25b97b16eedbde6ccf",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "initial_gaps": 160,
+  "resolved_gaps": 120,
+  "remaining_gaps": 40,
+  "cycles": 3,
+  "selected_modules": [
+    "source_derived_finite_regression",
+    "source_formula_sequences",
+    "source_derived_finite_statistics"
+  ],
+  "source_exercises": 60,
+  "source_exercises_correct": 60,
+  "source_exercises_replayed": 60,
+  "source_exercises_tamper_rejected": 60,
+  "boundary_cases": 15,
+  "boundary_refusals": 15,
+  "cycle_replays": 3,
+  "portfolio_tamper_rejections": 3,
+  "parent_memory_records": 120000,
+  "clone_memory_records": 120063,
+  "memory_replays": 63,
+  "memory_tamper_rejections": 63,
+  "parent_memory_unchanged": true,
+  "manifest_unchanged": true,
+  "source_mutations": 0,
+  "registry_mutations": 0,
+  "production_router_mutations": 0,
+  "hle_questions_read": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "cycle_reports": [
+    {
+      "round": 1,
+      "input_gaps": 120,
+      "selected_modules": [
+        "source_derived_finite_regression",
+        "source_formula_sequences"
+      ],
+      "acquisition_cost": 12,
+      "expected_utility": 200,
+      "supported_exercises": 40,
+      "boundary_refusals": 10,
+      "resolved_gaps": 80,
+      "remaining_gaps": 40,
+      "plan_replay_verified": true,
+      "portfolio_tamper_rejected": true
+    },
+    {
+      "round": 2,
+      "input_gaps": 80,
+      "selected_modules": [
+        "source_derived_finite_statistics"
+      ],
+      "acquisition_cost": 5,
+      "expected_utility": 80,
+      "supported_exercises": 20,
+      "boundary_refusals": 5,
+      "resolved_gaps": 40,
+      "remaining_gaps": 40,
+      "plan_replay_verified": true,
+      "portfolio_tamper_rejected": true
+    },
+    {
+      "round": 3,
+      "input_gaps": 40,
+      "selected_modules": [],
+      "acquisition_cost": 0,
+      "expected_utility": 0,
+      "supported_exercises": 0,
+      "boundary_refusals": 0,
+      "resolved_gaps": 0,
+      "remaining_gaps": 40,
+      "plan_replay_verified": true,
+      "portfolio_tamper_rejected": true
+    }
+  ]
+}

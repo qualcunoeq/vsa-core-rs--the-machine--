@@ -1,0 +1,11 @@
+{
+  "schema": "stage216-hle-checkpoint-artifact-manifest-v1",
+  "producer_commit": "03d6359",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "summary_path": "docs/stage216_hle_curriculum_checkpoint.json",
+  "summary_sha256": "e21387a4ced5307acc1f490f50d583969fe206580613c6c10dd3efea4d0efbda",
+  "trace_path": "docs/stage216_hle_curriculum_checkpoint.trace.jsonl",
+  "trace_sha256": "c3da954c1c551c5e427f296ea9f07c56b48eb7b339c44f96f32a5aede74fd53e",
+  "trace_records": 2500,
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8"
+}

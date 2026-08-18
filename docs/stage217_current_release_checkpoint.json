@@ -1,0 +1,20 @@
+{
+  "schema": "stage217-current-release-checkpoint-v1",
+  "parent_file_sha256": {
+    "docs/stage213_production_arithmetic_route_checkpoint.json": "445f5b4ce244579e1f54b4bc3e3f44ef213a1564aab9b8f013cea7da4763fe53",
+    "docs/stage216_hle_curriculum_checkpoint.json": "e21387a4ced5307acc1f490f50d583969fe206580613c6c10dd3efea4d0efbda"
+  },
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "manifest_packs": 34,
+  "validated_packs": 33,
+  "frontend_cases": 2000,
+  "production_route_cases": 1200,
+  "production_route_authorized": 780,
+  "hle_cases": 2500,
+  "hle_correct_authorized": 2,
+  "hle_false_authorizations": 0,
+  "hle_replay_verified": 2,
+  "hle_replay_not_recorded": 0,
+  "hle_trace_records": 2500,
+  "production_mutations": 0
+}

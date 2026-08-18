@@ -150,6 +150,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage273_staged_portfolio_exam_5000.json",
         "docs/stage274_hle_staged_portfolio_probe.json",
         "docs/stage275_health_ratio_promotion_rollback.json",
+        "docs/stage276_three_candidate_release_candidate.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -845,6 +846,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "live_manifest_mutations", 0);
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage276_three_candidate_release_candidate.json" => {
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "parent_manifest_hash",
+                    &manifest.replay_hash(),
+                );
+                check_nonempty_string(&mut checks, path, value, "release_manifest_hash");
+                check_number(&mut checks, path, value, "parent_pack_count", 34);
+                check_number(&mut checks, path, value, "release_pack_count", 37);
+                check_array_len(&mut checks, path, value, "candidate_ids", 3);
+                check_number(&mut checks, path, value, "evidence_artifacts", 8);
+                check_bool(&mut checks, path, value, "source_validation_gates", true);
+                check_bool(&mut checks, path, value, "portfolio_exam_gate", true);
+                check_bool(&mut checks, path, value, "transfer_probe_gate", true);
+                check_bool(&mut checks, path, value, "rollback_gate", true);
+                check_bool(&mut checks, path, value, "prerequisite_closure", true);
+                check_bool(&mut checks, path, value, "release_manifest_valid", true);
+                check_bool(&mut checks, path, value, "parent_unchanged", true);
+                check_bool(&mut checks, path, value, "release_candidate_only", true);
+                check_number(&mut checks, path, value, "live_manifest_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

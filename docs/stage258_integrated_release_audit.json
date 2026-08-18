@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 50,
-  "checks": 554,
-  "passed_checks": 554,
+  "artifacts": 51,
+  "checks": 572,
+  "passed_checks": 572,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2336,6 +2336,96 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "parent_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "release_manifest_hash is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "parent_pack_count == 34",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "release_pack_count == 37",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "candidate_ids length == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "evidence_artifacts == 8",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "source_validation_gates == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "portfolio_exam_gate == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "transfer_probe_gate == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "rollback_gate == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "prerequisite_closure == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "release_manifest_valid == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "parent_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "release_candidate_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage276_three_candidate_release_candidate.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -2941,6 +3031,10 @@
     [
       "docs/stage275_health_ratio_promotion_rollback.json",
       "90d340e645087e9e0b3b393e99711b36a8e786d36996e1d764425489bba8ce2c"
+    ],
+    [
+      "docs/stage276_three_candidate_release_candidate.json",
+      "c3b1c8bf5daae1d60cd5ad6df8b02292f5c0ddd8d63be93dc5bad454bc86e16a"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

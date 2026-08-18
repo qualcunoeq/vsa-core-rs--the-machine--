@@ -420,6 +420,10 @@ name = "stage305_curriculum_utility_portfolio"
 path = "src/bin/stage305_curriculum_utility_portfolio.rs"
 
 [[bin]]
+name = "stage306_portfolio_source_execution"
+path = "src/bin/stage306_portfolio_source_execution.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

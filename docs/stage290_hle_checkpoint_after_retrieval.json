@@ -1,7 +1,7 @@
 {
   "schema": "stage290-hle-checkpoint-after-retrieval-v1",
   "checkpoint": "post-stage289-retrieval-guided-investigation",
-  "producer_commit": "e7df87c",
+  "producer_commit": "6abc6b7",
   "worktree_clean": true,
   "dataset": "data/hle.jsonl",
   "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
@@ -10,6 +10,8 @@
   "curriculum_exam_sha256": "0813b69c8c6371b5374aaa63a12545267672b07035335a9da90e68cd1ebc1e05",
   "runtime_math_cache_present": true,
   "runtime_math_cache_sha256": "0d2ccd02ca9fd0a8d5a963defd89fe3947cf0c73d6dcc878164dc81d6408be12",
+  "runtime_stockfish_present": false,
+  "runtime_stockfish_sha256": null,
   "cases": 2500,
   "correct_authorized": 0,
   "incorrect_authorized": 0,

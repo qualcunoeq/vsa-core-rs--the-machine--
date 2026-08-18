@@ -1431,6 +1431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_bool(&mut checks, path, value, "worktree_clean", true);
                 check_bool(&mut checks, path, value, "runtime_math_cache_present", true);
                 check_nonempty_string(&mut checks, path, value, "runtime_math_cache_sha256");
+                check_bool(&mut checks, path, value, "runtime_stockfish_present", false);
                 check_bool(&mut checks, path, value, "registry_mutated", false);
                 check_bool(&mut checks, path, value, "curriculum_mutated", false);
                 check_bool(

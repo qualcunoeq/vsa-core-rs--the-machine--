@@ -2,8 +2,8 @@
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
   "artifacts": 68,
-  "checks": 878,
-  "passed_checks": 878,
+  "checks": 879,
+  "passed_checks": 879,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3672,6 +3672,11 @@
     },
     {
       "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "runtime_stockfish_present == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
       "requirement": "registry_mutated == false",
       "passed": true
     },
@@ -4620,7 +4625,7 @@
     ],
     [
       "docs/stage290_hle_checkpoint_after_retrieval.json",
-      "dc2694b3007d47ef8ea344618a47d9f72aa98dca85dec1c1e6272cc4f9840236"
+      "6ddb80d514329fb82641c8a0ffb3162220ac791ae722b8e36a7d405fd50be9a3"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

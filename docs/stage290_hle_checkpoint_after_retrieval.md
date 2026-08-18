@@ -9,6 +9,7 @@ A clean release-candidate evaluation after Stage 289 retrieval-guided investigat
 * replay compatibility / not applicable / not recorded: 0 / 2500 / 0
 * worktree clean: true
 * runtime math cache present / SHA-256: true / Some("0d2ccd02ca9fd0a8d5a963defd89fe3947cf0c73d6dcc878164dc81d6408be12")
+* runtime Stockfish present / SHA-256: false / None
 * registry / curriculum mutation: false / false
 * HLE outcomes used for routing: false
 * trace: `/home/shiba/the-machine/docs/stage290_hle_checkpoint_after_retrieval.trace.jsonl`

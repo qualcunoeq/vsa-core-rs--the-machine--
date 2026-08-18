@@ -106,7 +106,7 @@ fn matching_records<'a>(text: &str, records: &'a [FormulaRecord]) -> Vec<&'a For
 pub fn formalize_source_formula_text(text: &str, domain: &str, records: &[FormulaRecord]) -> SourceFormulaFrontendResult {
     let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
     let base_spans = vec![format!("source-formula-text:0..{}", text.len())];
-    if ["asymptotic", "infinite", "approximate", "continuous", "regression"].iter().any(|marker| lower.contains(marker)) {
+    if ["asymptotic", "infinite", "approximate", "continuous"].iter().any(|marker| lower.contains(marker)) {
         return output(FrontendStatus::Unsupported, None, None, base_spans, Vec::new(), vec!["request is outside the finite source-formula boundary".into()]);
     }
     let matches = matching_records(text, records);
@@ -153,6 +153,7 @@ impl SourceFormulaFrontendResult {
 mod tests {
     use super::*;
     use crate::source_formula_pack::extract_formula_records;
+    use crate::source_regression_pack;
     use crate::source_statistics_pack::{records, DOMAIN};
 
     #[test]
@@ -180,5 +181,16 @@ mod tests {
         assert_eq!(result.status, FormulaFrontendStatus::Complete);
         assert_eq!(result.formula.as_deref(), Some("ratio"));
         assert!(result.replay_verified());
+    }
+
+    #[test]
+    fn catalog_domain_is_not_rejected_by_subject_word() {
+        let result = formalize_source_formula_text(
+            "Apply regression_slope: covariance_sum=3 and x_variance_sum=1.",
+            source_regression_pack::DOMAIN,
+            &source_regression_pack::records(),
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        assert!(replay_verified(&result));
     }
 }

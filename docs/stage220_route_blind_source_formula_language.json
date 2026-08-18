@@ -1,0 +1,30 @@
+{
+  "schema": "stage220-route-blind-source-formula-language-v1",
+  "catalogs": [
+    "source_derived_bounded_economics",
+    "source_derived_finite_statistics",
+    "source_derived_finite_regression",
+    "source_derived_complex_arithmetic",
+    "source_derived_sequences_series"
+  ],
+  "cases": 2000,
+  "supported": 1200,
+  "ambiguous": 400,
+  "unsupported": 400,
+  "exact_route_decisions": 2000,
+  "authorized_routes": 1200,
+  "frontend_invocations": 10000,
+  "frontend_replays": 2000,
+  "frontend_tamper_rejections": 2000,
+  "downstream_artifacts": 1200,
+  "downstream_replays": 1200,
+  "downstream_tamper_rejections": 1200,
+  "provenance_preserved": 2000,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "b50f7013081728a4b3902025828de33cd907643235a887e950fa9a23b69de1e8",
+  "production_routing": "unchanged",
+  "hle_questions_read": 0,
+  "run": "cargo run --quiet --bin stage220_route_blind_source_formula_language"
+}

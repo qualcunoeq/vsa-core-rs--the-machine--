@@ -1,0 +1,20 @@
+{
+  "schema": "stage252-portfolio-language-shift-v1",
+  "corpus_sha256": "91eb799e0ae0b8c52c3eed40ab5a73605a473406e01a8cd25ed8ff16ca4a0a5c",
+  "cases": 800,
+  "supported_cases": 400,
+  "ambiguous_cases": 200,
+  "unsupported_cases": 200,
+  "exact_decisions": 800,
+  "authorized": 400,
+  "offered_frontends": 3200,
+  "frontend_replay_verified": 3200,
+  "frontend_tamper_rejections": 3200,
+  "downstream_replay_verified": 400,
+  "downstream_tamper_rejections": 400,
+  "route_leakage": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "parent_portfolio_unchanged": true,
+  "live_mutations": 0
+}

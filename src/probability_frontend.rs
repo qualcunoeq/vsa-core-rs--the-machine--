@@ -42,21 +42,19 @@ pub fn replay_verified(result: &ProbabilityFrontendResult) -> bool {
     hash == digest(&copy) && !result.provenance.is_empty()
 }
 
-fn list_after<'a>(text: &'a str, marker: &str) -> Option<&'a str> {
+fn bracket_body<'a>(text: &'a str, marker: &str) -> Option<&'a str> {
     let lower = text.to_ascii_lowercase();
-    let start = lower.find(marker)? + marker.len();
-    let tail =
-        text[start..].trim_start_matches(|c: char| c == ':' || c == '=' || c.is_whitespace());
-    Some(tail.split([';', '.']).next().unwrap_or(tail))
+    let marker_start = lower.find(marker)? + marker.len();
+    let start = text[marker_start..].find('[')? + marker_start + 1;
+    let end = text[start..].find(']')? + start;
+    Some(&text[start..end])
 }
 
 fn parse_outcomes(text: &str) -> Vec<String> {
-    let Some(body) = list_after(text, "outcomes") else {
+    let Some(body) = bracket_body(text, "outcomes") else {
         return Vec::new();
     };
-    let body = body.split("probabilities").next().unwrap_or(body);
-    body.trim_matches(|c: char| c == '[' || c == ']' || c == '(' || c == ')')
-        .split(',')
+    body.split(',')
         .map(|value| value.trim().trim_matches(['[', ']', '(', ')']).to_string())
         .filter(|value| !value.is_empty())
         .collect()
@@ -74,13 +72,10 @@ fn parse_rational(token: &str) -> Option<Rational> {
 }
 
 fn parse_probabilities(text: &str) -> Vec<Rational> {
-    let Some(body) = list_after(text, "probabilities") else {
+    let Some(body) = bracket_body(text, "probabilities") else {
         return Vec::new();
     };
-    body.trim_matches(|c: char| c == '[' || c == ']' || c == '(' || c == ')')
-        .split(',')
-        .filter_map(parse_rational)
-        .collect()
+    body.split(',').filter_map(parse_rational).collect()
 }
 
 /// Parse one explicit finite distribution request from controlled text.
@@ -184,6 +179,16 @@ mod tests {
     fn explicit_distribution_is_typed_and_replayable() {
         let result = formalize(
             "Construct a finite distribution with outcomes=[a,b] probabilities=[1/2,1/2].",
+            "test",
+        );
+        assert_eq!(result.status, ProbabilityFrontendStatus::Complete);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn reordered_parenthesized_lists_remain_typed() {
+        let result = formalize(
+            "Construct an exact finite distribution (outcomes=[a,b], probabilities=[1/2,1/2]).",
             "test",
         );
         assert_eq!(result.status, ProbabilityFrontendStatus::Complete);

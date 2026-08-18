@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 71,
-  "checks": 909,
-  "passed_checks": 909,
+  "artifacts": 72,
+  "checks": 919,
+  "passed_checks": 919,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3841,6 +3841,56 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "supported_artifacts == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "provenance_preserved == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage294_visual_circuit_frontend.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4788,6 +4838,10 @@
     [
       "docs/stage293_multimodal_visual_route_blind.json",
       "0f2f6713a7a039f7fe29cabd87527ac2e5e52e0aa45b244cb761b0a3cf163943"
+    ],
+    [
+      "docs/stage294_visual_circuit_frontend.json",
+      "48d71793fc5ee6519b988a0f5669e054ff2b66c7e67e37389c0bf3895c923e9c"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

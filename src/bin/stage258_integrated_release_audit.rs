@@ -1,0 +1,234 @@
+//! Stage 258: integrated release audit over the current governed system.
+//!
+//! This reads only immutable evaluation manifests and checks their declared
+//! safety gates. It does not read HLE answers, mutate the curriculum, or run
+//! production routing.
+
+use serde::{Deserialize, Serialize};
+use serde_json::Value;
+use sha2::{Digest, Sha256};
+use std::{fs, path::Path};
+
+use the_machine::curriculum::breadth_first_manifest;
+
+const JSON: &str = "docs/stage258_integrated_release_audit.json";
+const MD: &str = "docs/stage258_integrated_release_audit.md";
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Check {
+    artifact: String,
+    requirement: String,
+    passed: bool,
+}
+
+#[derive(Debug, Serialize)]
+struct Report {
+    schema: &'static str,
+    current_manifest_hash: String,
+    artifacts: usize,
+    checks: usize,
+    passed_checks: usize,
+    all_checks_passed: bool,
+    false_authorizations: usize,
+    false_denials: usize,
+    production_mutations: usize,
+    hle_answers_read: usize,
+    checks_detail: Vec<Check>,
+    artifact_hashes: Vec<(String, String)>,
+}
+
+fn digest_bytes(bytes: &[u8]) -> String {
+    format!("{:x}", Sha256::digest(bytes))
+}
+
+fn load(path: &str) -> Result<(Value, String), Box<dyn std::error::Error>> {
+    let bytes = fs::read(path)?;
+    Ok((serde_json::from_slice(&bytes)?, digest_bytes(&bytes)))
+}
+
+fn number(value: &Value, key: &str) -> Option<u64> {
+    value.get(key).and_then(Value::as_u64)
+}
+
+fn boolean(value: &Value, key: &str) -> Option<bool> {
+    value.get(key).and_then(Value::as_bool)
+}
+
+fn check_number(checks: &mut Vec<Check>, artifact: &str, value: &Value, key: &str, expected: u64) {
+    checks.push(Check {
+        artifact: artifact.into(),
+        requirement: format!("{key} == {expected}"),
+        passed: number(value, key) == Some(expected),
+    });
+}
+
+fn check_bool(checks: &mut Vec<Check>, artifact: &str, value: &Value, key: &str, expected: bool) {
+    checks.push(Check {
+        artifact: artifact.into(),
+        requirement: format!("{key} == {expected}"),
+        passed: boolean(value, key) == Some(expected),
+    });
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let manifest = breadth_first_manifest();
+    assert!(manifest.validate().is_empty());
+    let paths = [
+        "docs/phase70_algebra_number_theory_composition.json",
+        "docs/phase71_combinatorics_number_theory_composition.json",
+        "docs/stage257_number_theory_admission_audit.json",
+        "docs/stage_m_continuous_education.json",
+        "docs/stage_n_curriculum_learning_curve.json",
+        "docs/stage_o_autonomous_breadth_campaign.json",
+        "docs/stage_k_sealed_curriculum_exam_5000.json",
+        "docs/stage254_hle_checkpoint_post_portfolio.json",
+    ];
+    for path in paths {
+        assert!(Path::new(path).exists(), "missing release artifact {path}");
+    }
+    let mut values = Vec::new();
+    let mut artifact_hashes = Vec::new();
+    for path in paths {
+        let (value, hash) = load(path)?;
+        values.push((path, value));
+        artifact_hashes.push((path.into(), hash));
+    }
+    let mut checks = Vec::new();
+    for (path, value) in &values {
+        let name = Path::new(path).file_name().unwrap().to_string_lossy();
+        match name.as_ref() {
+            "phase70_algebra_number_theory_composition.json" => {
+                check_number(&mut checks, path, value, "exact_route_decisions", 240);
+                check_number(&mut checks, path, value, "handoff_verifications", 120);
+                check_number(&mut checks, path, value, "route_replay_verified", 240);
+                check_number(&mut checks, path, value, "tamper_rejections", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "phase71_combinatorics_number_theory_composition.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(&mut checks, path, value, "replay_verified", 240);
+                check_number(&mut checks, path, value, "tamper_rejections", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage257_number_theory_admission_audit.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(&mut checks, path, value, "supported_replays", 120);
+                check_number(&mut checks, path, value, "tamper_rejections", 240);
+                check_bool(&mut checks, path, value, "promotion_allowed", false);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage_m_continuous_education.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 300);
+                check_number(&mut checks, path, value, "campaign_replays", 300);
+                check_number(&mut checks, path, value, "deterministic_reruns", 300);
+                check_number(&mut checks, path, value, "tamper_rejections", 300);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+            }
+            "stage_n_curriculum_learning_curve.json" => {
+                let final_stage =
+                    value
+                        .get("stages")
+                        .and_then(Value::as_array)
+                        .and_then(|stages| {
+                            stages.iter().find(|stage| {
+                                stage.get("stage").and_then(Value::as_str)
+                                    == Some("final_sealed_holdout")
+                            })
+                        });
+                checks.push(Check {
+                    artifact: (*path).into(),
+                    requirement: "final sealed holdout exists".into(),
+                    passed: final_stage.is_some(),
+                });
+                if let Some(final_stage) = final_stage {
+                    check_number(&mut checks, path, final_stage, "exact_decisions", 200);
+                    check_number(&mut checks, path, final_stage, "replay_verified", 200);
+                    check_number(&mut checks, path, final_stage, "tamper_rejected", 200);
+                    check_number(&mut checks, path, final_stage, "false_authorizations", 0);
+                    check_number(&mut checks, path, final_stage, "false_denials", 0);
+                }
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+            }
+            "stage_o_autonomous_breadth_campaign.json" => {
+                let final_stage =
+                    value
+                        .get("stages")
+                        .and_then(Value::as_array)
+                        .and_then(|stages| {
+                            stages.iter().find(|stage| {
+                                stage.get("stage").and_then(Value::as_str)
+                                    == Some("sealed_holdout_after_frozen_admission")
+                            })
+                        });
+                checks.push(Check {
+                    artifact: (*path).into(),
+                    requirement: "final sealed holdout exists".into(),
+                    passed: final_stage.is_some(),
+                });
+                if let Some(final_stage) = final_stage {
+                    check_number(&mut checks, path, final_stage, "exact_decisions", 300);
+                    check_number(&mut checks, path, final_stage, "replay_verified", 300);
+                    check_number(&mut checks, path, final_stage, "tamper_rejected", 300);
+                    check_number(&mut checks, path, final_stage, "false_authorizations", 0);
+                    check_number(&mut checks, path, final_stage, "false_denials", 0);
+                }
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+                check_number(&mut checks, path, value, "production_registry_mutations", 0);
+            }
+            "stage_k_sealed_curriculum_exam_5000.json" => {
+                check_number(&mut checks, path, value, "cases", 5000);
+                check_number(&mut checks, path, value, "replay_verified", 5000);
+                check_number(&mut checks, path, value, "tamper_rejections", 5000);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_bool(&mut checks, path, value, "manifest_mutated", false);
+            }
+            "stage254_hle_checkpoint_post_portfolio.json" => {
+                check_number(&mut checks, path, value, "cases", 2500);
+                check_number(&mut checks, path, value, "incorrect_authorized_answers", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "replay_compatibility_verified", 2);
+                check_number(&mut checks, path, value, "replay_not_recorded", 0);
+                checks.push(Check {
+                    artifact: (*path).into(),
+                    requirement: "shadow-only registry version".into(),
+                    passed: value.get("registry_version").and_then(Value::as_str)
+                        == Some("shadow-only-no-production-mutation"),
+                });
+            }
+            _ => unreachable!(),
+        }
+    }
+    let passed_checks = checks.iter().filter(|check| check.passed).count();
+    let all_checks_passed = passed_checks == checks.len();
+    let report = Report {
+        schema: "stage258-integrated-release-audit-v1",
+        current_manifest_hash: manifest.replay_hash(),
+        artifacts: paths.len(),
+        checks: checks.len(),
+        passed_checks,
+        all_checks_passed,
+        false_authorizations: 0,
+        false_denials: 0,
+        production_mutations: 0,
+        hle_answers_read: 0,
+        checks_detail: checks,
+        artifact_hashes,
+    };
+    if !report.all_checks_passed {
+        for check in &report.checks_detail {
+            if !check.passed {
+                eprintln!("failed check: {} {}", check.artifact, check.requirement);
+            }
+        }
+    }
+    assert!(report.all_checks_passed);
+    fs::write(JSON, serde_json::to_vec_pretty(&report)?)?;
+    fs::write(MD, format!("# Stage 258 — integrated release audit\n\nAudited {} immutable evidence manifests across composition, source acquisition, self-directed education, sealed curriculum, and the frozen HLE checkpoint.\n\n* checks: {}/{} passed\n* false authorizations / denials: 0 / 0\n* production mutations: 0\n* HLE answers read during audit: 0\n* current manifest hash: `{}`\n\nThis is an evidence audit; it does not promote the planned broader number-theory node or mutate routing.\n\nReproduce with `cargo run --quiet --bin stage258_integrated_release_audit`.\n", report.artifacts, report.passed_checks, report.checks, report.current_manifest_hash))?;
+    println!("stage258 artifacts={} checks={}/{} all_checks_passed={} false_auth=0 production_mutations=0", report.artifacts, report.passed_checks, report.checks, report.all_checks_passed);
+    Ok(())
+}

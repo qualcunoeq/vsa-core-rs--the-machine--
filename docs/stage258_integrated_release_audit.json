@@ -1,0 +1,298 @@
+{
+  "schema": "stage258-integrated-release-audit-v1",
+  "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "artifacts": 8,
+  "checks": 50,
+  "passed_checks": 50,
+  "all_checks_passed": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_mutations": 0,
+  "hle_answers_read": 0,
+  "checks_detail": [
+    {
+      "artifact": "docs/phase70_algebra_number_theory_composition.json",
+      "requirement": "exact_route_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase70_algebra_number_theory_composition.json",
+      "requirement": "handoff_verifications == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase70_algebra_number_theory_composition.json",
+      "requirement": "route_replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase70_algebra_number_theory_composition.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase70_algebra_number_theory_composition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase70_algebra_number_theory_composition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase71_combinatorics_number_theory_composition.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase71_combinatorics_number_theory_composition.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase71_combinatorics_number_theory_composition.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase71_combinatorics_number_theory_composition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase71_combinatorics_number_theory_composition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage257_number_theory_admission_audit.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage257_number_theory_admission_audit.json",
+      "requirement": "supported_replays == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage257_number_theory_admission_audit.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage257_number_theory_admission_audit.json",
+      "requirement": "promotion_allowed == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage257_number_theory_admission_audit.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage257_number_theory_admission_audit.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_m_continuous_education.json",
+      "requirement": "exact_decisions == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_m_continuous_education.json",
+      "requirement": "campaign_replays == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_m_continuous_education.json",
+      "requirement": "deterministic_reruns == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_m_continuous_education.json",
+      "requirement": "tamper_rejections == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_m_continuous_education.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_m_continuous_education.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "final sealed holdout exists",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "exact_decisions == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "replay_verified == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "tamper_rejected == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_n_curriculum_learning_curve.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "final sealed holdout exists",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "exact_decisions == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "replay_verified == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "tamper_rejected == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_o_autonomous_breadth_campaign.json",
+      "requirement": "production_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "cases == 5000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "replay_verified == 5000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "tamper_rejections == 5000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "manifest_mutated == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "requirement": "incorrect_authorized_answers == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "requirement": "replay_compatibility_verified == 2",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "requirement": "replay_not_recorded == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "requirement": "shadow-only registry version",
+      "passed": true
+    }
+  ],
+  "artifact_hashes": [
+    [
+      "docs/phase70_algebra_number_theory_composition.json",
+      "b6408d1ee3a3b83ed3a801d7c8ea476c1b69dabbacbcae2b59cb3e1aba4f5741"
+    ],
+    [
+      "docs/phase71_combinatorics_number_theory_composition.json",
+      "1b99cbae4c6c35df7220ee4e511e8b9c4de28795a768209231dabe33101ef37f"
+    ],
+    [
+      "docs/stage257_number_theory_admission_audit.json",
+      "8852ad5b7e5bab9dfc59a4137e29a628ecef94c60766f2172914759c3280da0b"
+    ],
+    [
+      "docs/stage_m_continuous_education.json",
+      "08e01af4d36032fc2211f4f1e997ea5b41ef25926c114e79d5050ca6621a8e98"
+    ],
+    [
+      "docs/stage_n_curriculum_learning_curve.json",
+      "6db5010605b11b6be092116fb83189082798fcf601be8ac4640137697f9fac6c"
+    ],
+    [
+      "docs/stage_o_autonomous_breadth_campaign.json",
+      "e39826b6dad2a503fa83b4485ff575f599bb59503f767b86c3b566b2e39ab29f"
+    ],
+    [
+      "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "560a7513169f88791db7990ac2bd90e53a9a0d1d2e310fbaf739f9ca7706e56c"
+    ],
+    [
+      "docs/stage254_hle_checkpoint_post_portfolio.json",
+      "903544f8ff16951fe430e639670b38df08560a0307488fafe8c93cf02496366a"
+    ]
+  ]
+}

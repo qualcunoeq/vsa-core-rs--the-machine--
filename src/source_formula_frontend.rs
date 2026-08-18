@@ -28,6 +28,30 @@ pub struct SourceFormulaFrontendResult {
     pub replay_hash: String,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum FormulaRegionRole {
+    Target,
+    Definition,
+    Context,
+    Incidental,
+    Ambiguous,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct FormulaRegion {
+    pub span: String,
+    pub role: FormulaRegionRole,
+    pub candidates: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SourceFormulaReportResult {
+    pub frontend: SourceFormulaFrontendResult,
+    pub regions: Vec<FormulaRegion>,
+    pub replay_hash: String,
+}
+
 fn digest<T: Serialize>(value: &T) -> String { format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap())) }
 
 fn payload(result: &SourceFormulaFrontendResult) -> impl Serialize + '_ {
@@ -38,6 +62,31 @@ fn output(status: FrontendStatus, formula_id: Option<String>, request: Option<Fo
     let formula = formula_id.clone();
     let replay_hash = digest(&(&status, &formula_id, &formula, &request, &spans, &alternatives, &reasons));
     SourceFormulaFrontendResult { status, formula_id, formula, request, provenance_spans: spans, alternatives, reasons, replay_hash }
+}
+
+fn report_digest(result: &SourceFormulaReportResult) -> String {
+    digest(&(&result.frontend.replay_hash, &result.regions))
+}
+
+fn region_slices(text: &str) -> Vec<(usize, usize, &str)> {
+    let mut slices = Vec::new();
+    let mut start = 0;
+    for (index, character) in text.char_indices() {
+        if matches!(character, '.' | ';' | '\n') {
+            if start < index && !text[start..index].trim().is_empty() {
+                slices.push((start, index, &text[start..index]));
+            }
+            start = index + character.len_utf8();
+        }
+    }
+    if start < text.len() && !text[start..].trim().is_empty() {
+        slices.push((start, text.len(), &text[start..]));
+    }
+    slices
+}
+
+fn has_any_marker(text: &str, markers: &[&str]) -> bool {
+    markers.iter().any(|marker| text.contains(marker))
 }
 
 fn normalize_phrase(value: &str) -> String {
@@ -132,6 +181,98 @@ pub fn formalize_source_formula_text(text: &str, domain: &str, records: &[Formul
     output(FrontendStatus::Complete, Some(record.formula_id.clone()), Some(request), spans, Vec::new(), Vec::new())
 }
 
+/// Ground a multi-region technical report before formula lowering.
+///
+/// Operative clauses are identified only by explicit target verbs. Formula
+/// mentions in definitions or incidental context are retained as provenance
+/// but cannot steal the target. If multiple operative formulas remain, the
+/// result is ambiguous; no lexical tie-break is used.
+pub fn formalize_source_formula_report(
+    text: &str,
+    domain: &str,
+    records: &[FormulaRecord],
+) -> SourceFormulaReportResult {
+    let mut regions = Vec::new();
+    let mut target_ids = BTreeMap::new();
+    let target_markers = ["calculate", "compute", "evaluate", "find", "determine", "apply", "use"];
+    let context_markers = ["define", "given", "where", "assume", "reference", "according"];
+    for (start, end, clause) in region_slices(text) {
+        let lower = clause.to_ascii_lowercase().replace(['_', '-'], " ");
+        let candidates = matching_records(clause, records)
+            .into_iter()
+            .map(|record| record.formula_id.clone())
+            .collect::<Vec<_>>();
+        let role = if candidates.is_empty() {
+            FormulaRegionRole::Context
+        } else if has_any_marker(&lower, &target_markers) {
+            for candidate in &candidates {
+                target_ids.insert(candidate.clone(), format!("{start}..{end}"));
+            }
+            if candidates.len() == 1 {
+                FormulaRegionRole::Target
+            } else {
+                FormulaRegionRole::Ambiguous
+            }
+        } else if has_any_marker(&lower, &context_markers) {
+            FormulaRegionRole::Definition
+        } else {
+            FormulaRegionRole::Incidental
+        };
+        regions.push(FormulaRegion {
+            span: format!("source-formula-region:{start}..{end}"),
+            role,
+            candidates,
+        });
+    }
+
+    let target_ids = target_ids.into_iter().collect::<Vec<_>>();
+    let frontend = if target_ids.len() > 1 {
+        output(
+            FrontendStatus::Ambiguous,
+            None,
+            None,
+            regions.iter().map(|region| region.span.clone()).collect(),
+            target_ids.iter().map(|(id, _)| id.clone()).collect(),
+            vec!["multiple operative formula targets remain".into()],
+        )
+    } else if let Some((target_id, _)) = target_ids.first() {
+        let selected = records
+            .iter()
+            .find(|record| record.formula_id == *target_id)
+            .expect("target record exists");
+        formalize_source_formula_text(text, domain, std::slice::from_ref(selected))
+    } else {
+        let unique = regions
+            .iter()
+            .flat_map(|region| region.candidates.iter())
+            .cloned()
+            .collect::<std::collections::BTreeSet<_>>();
+        if unique.len() > 1 {
+            output(
+                FrontendStatus::Ambiguous,
+                None,
+                None,
+                regions.iter().map(|region| region.span.clone()).collect(),
+                unique.into_iter().collect(),
+                vec!["formula mentions lack a unique operative target".into()],
+            )
+        } else {
+            formalize_source_formula_text(text, domain, records)
+        }
+    };
+    let mut result = SourceFormulaReportResult {
+        frontend,
+        regions,
+        replay_hash: String::new(),
+    };
+    result.replay_hash = report_digest(&result);
+    result
+}
+
+pub fn report_replay_verified(result: &SourceFormulaReportResult) -> bool {
+    result.frontend.replay_verified() && result.replay_hash == report_digest(result)
+}
+
 pub fn replay_verified(result: &SourceFormulaFrontendResult) -> bool {
     result.replay_hash == digest(&payload(result)) && !result.provenance_spans.is_empty()
 }
@@ -192,5 +333,30 @@ mod tests {
         );
         assert_eq!(result.status, FrontendStatus::Complete);
         assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn report_grounding_prefers_operative_formula_over_definition() {
+        let records = records();
+        let text = "For reference, arithmetic_mean is defined by sum/count. Calculate weighted_mean with weighted_sum=12 and total_weight=3.";
+        let result = formalize_source_formula_report(text, DOMAIN, &records);
+        assert_eq!(result.frontend.status, FrontendStatus::Complete);
+        assert_eq!(result.frontend.formula_id.as_deref(), Some("weighted_mean"));
+        assert!(result.regions.iter().any(|region| region.role == FormulaRegionRole::Definition));
+        assert!(result.regions.iter().any(|region| region.role == FormulaRegionRole::Target));
+        assert!(report_replay_verified(&result));
+    }
+
+    #[test]
+    fn report_grounding_preserves_multiple_operative_targets() {
+        let records = records();
+        let result = formalize_source_formula_report(
+            "Calculate arithmetic_mean or weighted_mean with sum=12 and count=3.",
+            DOMAIN,
+            &records,
+        );
+        assert_eq!(result.frontend.status, FrontendStatus::Ambiguous);
+        assert!(result.frontend.request.is_none());
+        assert!(report_replay_verified(&result));
     }
 }

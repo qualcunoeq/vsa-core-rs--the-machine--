@@ -1,0 +1,23 @@
+{
+  "schema": "stage221-operative-formula-report-language-v1",
+  "cases": 2000,
+  "supported": 1200,
+  "ambiguous": 400,
+  "unsupported": 400,
+  "exact_route_decisions": 2000,
+  "authorized_routes": 1200,
+  "report_invocations": 10000,
+  "report_replays": 2000,
+  "report_tamper_rejections": 2000,
+  "target_regions_preserved": 1200,
+  "excluded_regions_preserved": 1600,
+  "downstream_replays": 1200,
+  "downstream_tamper_rejections": 1200,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "5936d7b49a1cdd0e2159f792cd9b70c3879b36184e1135e9a9ca7f7eb964cca6",
+  "production_routing": "unchanged",
+  "hle_questions_read": 0,
+  "run": "cargo run --quiet --bin stage221_operative_formula_report_language"
+}

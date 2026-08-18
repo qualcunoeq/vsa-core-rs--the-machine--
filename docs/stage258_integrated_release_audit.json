@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 73,
-  "checks": 929,
-  "passed_checks": 929,
+  "artifacts": 74,
+  "checks": 939,
+  "passed_checks": 939,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3941,6 +3941,56 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "exact_values == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "source_records == 4",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage296_bounded_electromagnetism.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4896,6 +4946,10 @@
     [
       "docs/stage295_multimodal_visual_five_route_blind.json",
       "a43cb943674aa204e9c2fccc954d6ab3f26866bd0ab48b15fc1c2081a7258229"
+    ],
+    [
+      "docs/stage296_bounded_electromagnetism.json",
+      "b74a3c2740c74a9ef94377cb9d6c5e7693d3508e821f1e0197122adf104943c2"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

@@ -1,0 +1,66 @@
+[
+  {
+    "law_id": "ohms_law_voltage",
+    "aliases": ["ohm law voltage", "voltage from current and resistance"],
+    "expression": {"Mul": [{"Input": "I"}, {"Input": "R"}]},
+    "required_inputs": ["I", "R"],
+    "assumptions": ["lumped linear resistor", "SI-consistent current and resistance"],
+    "source": {
+      "source_id": "openstax-university-physics-2:ohms-law",
+      "title": "University Physics Volume 2",
+      "section": "Ohm's Law",
+      "url": "https://openstax.org/details/books/university-physics-volume-2",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-18",
+      "evidence_span": "section 10.4: potential difference equals current times resistance"
+    }
+  },
+  {
+    "law_id": "electric_power",
+    "aliases": ["electrical power", "power from voltage and current"],
+    "expression": {"Mul": [{"Input": "V"}, {"Input": "I"}]},
+    "required_inputs": ["V", "I"],
+    "assumptions": ["power sign convention is explicit", "SI-consistent voltage and current"],
+    "source": {
+      "source_id": "openstax-university-physics-2:electric-power",
+      "title": "University Physics Volume 2",
+      "section": "Electric Power",
+      "url": "https://openstax.org/details/books/university-physics-volume-2",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-18",
+      "evidence_span": "section 10.5: electric power is the product of potential difference and current"
+    }
+  },
+  {
+    "law_id": "charge_from_current",
+    "aliases": ["charge from constant current", "current time charge"],
+    "expression": {"Mul": [{"Input": "I"}, {"Input": "t"}]},
+    "required_inputs": ["I", "t"],
+    "assumptions": ["current is constant over the stated interval", "SI-consistent current and time"],
+    "source": {
+      "source_id": "openstax-university-physics-2:current-charge",
+      "title": "University Physics Volume 2",
+      "section": "Electric Current",
+      "url": "https://openstax.org/details/books/university-physics-volume-2",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-18",
+      "evidence_span": "section 9.2: current is charge transferred per unit time"
+    }
+  },
+  {
+    "law_id": "capacitor_charge",
+    "aliases": ["capacitor charge voltage", "charge on a capacitor"],
+    "expression": {"Mul": [{"Input": "C"}, {"Input": "V"}]},
+    "required_inputs": ["C", "V"],
+    "assumptions": ["linear capacitor", "capacitance and voltage use a common SI convention"],
+    "source": {
+      "source_id": "openstax-university-physics-2:capacitance",
+      "title": "University Physics Volume 2",
+      "section": "Capacitors and Capacitance",
+      "url": "https://openstax.org/details/books/university-physics-volume-2",
+      "license": "CC BY 4.0; OpenStax attribution required",
+      "retrieved_utc": "2026-08-18",
+      "evidence_span": "section 8.1: charge equals capacitance times potential difference"
+    }
+  }
+]

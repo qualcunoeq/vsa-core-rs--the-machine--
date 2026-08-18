@@ -1,0 +1,17 @@
+{
+  "schema": "stage-h-bounded-electromagnetism-v1",
+  "corpus_sha256": "1bfedc429a0e44c6c12721d2e8acdacdea09c89a929615a741b485e4e0353a6c",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "refused": 80,
+  "exact_decisions": 240,
+  "exact_values": 120,
+  "replay_verified": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "source_records": 4,
+  "hle_questions_read": 0,
+  "registry_mutations": 0
+}

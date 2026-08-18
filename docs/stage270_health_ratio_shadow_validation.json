@@ -1,0 +1,23 @@
+{
+  "schema": "stage270-health-ratio-shadow-validation-v1",
+  "source_sha256": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
+  "corpus_sha256": "31422131fd6ef442c8feacbeb294bc325b88732b9966a27d49bb24e3ec5fb27c",
+  "source_records": 5,
+  "cases": 600,
+  "supported_cases": 360,
+  "ambiguous_cases": 120,
+  "unsupported_cases": 120,
+  "exact_decisions": 600,
+  "supported_authorized": 360,
+  "supported_replays": 360,
+  "supported_tamper_rejections": 360,
+  "all_replays": 600,
+  "all_tamper_rejections": 600,
+  "provenance_preserved": 600,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_mutations": 0,
+  "registry_mutations": 0,
+  "production_authorizations": 0,
+  "hle_questions_read": 0
+}

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 44,
-  "checks": 450,
-  "passed_checks": 450,
+  "artifacts": 46,
+  "checks": 483,
+  "passed_checks": 483,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1816,6 +1816,171 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "source_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "source_records == 5",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "supported_cases == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "ambiguous_cases == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "unsupported_cases == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "exact_decisions == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "supported_authorized == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "supported_replays == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "supported_tamper_rejections == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "all_replays == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "all_tamper_rejections == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "provenance_preserved == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage270_health_ratio_shadow_validation.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "parent_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "shadow_manifest_hash is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "parent_pack_count == 34",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "shadow_pack_count == 37",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "candidate_ids length == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "validation_passed == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "prerequisite_closure == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "parent_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage271_three_candidate_shadow_manifest.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -2397,6 +2562,14 @@
     [
       "docs/stage269_staged_source_portfolio_benchmark.json",
       "7ed08ba4bf261a8ff21c51e4241e159f845b0a06d4f7d45b1bf3062b6016c83d"
+    ],
+    [
+      "docs/stage270_health_ratio_shadow_validation.json",
+      "4dda28f894b054811098f3ebcca1b88469bce98afae43d74246bfff1ed12c47b"
+    ],
+    [
+      "docs/stage271_three_candidate_shadow_manifest.json",
+      "23b478ea1d75f9fb59ef0da5450090f94e8178e353c91541c9164094529a23f0"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 41,
-  "checks": 396,
-  "passed_checks": 396,
+  "artifacts": 42,
+  "checks": 412,
+  "passed_checks": 412,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1636,6 +1636,86 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "validation_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "exact_promotion_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "promotions == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "blocked_or_denied == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "regressions_detected == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "rollbacks_applied == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "promotion_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "promotion_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "historical_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "parent_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "clone_only == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage268_economics_promotion_rollback.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage235_hle_shadow_source_probe.json",
       "requirement": "cases == 2500",
       "passed": true
@@ -2119,6 +2199,10 @@
     [
       "docs/stage267_economics_shadow_validation.json",
       "ee84745180617c136fb01c33e5004a62cca3998a752de1d9b9949f08f35706fc"
+    ],
+    [
+      "docs/stage268_economics_promotion_rollback.json",
+      "ac0e7cc6e048ab7b96629d4bd69fe53450e921e1eeab0b608afbc240da5e8e92"
     ],
     [
       "docs/stage235_hle_shadow_source_probe.json",

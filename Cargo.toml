@@ -404,6 +404,10 @@ name = "stage301_current_memory_education"
 path = "src/bin/stage301_current_memory_education.rs"
 
 [[bin]]
+name = "stage302_multicycle_memory_education"
+path = "src/bin/stage302_multicycle_memory_education.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

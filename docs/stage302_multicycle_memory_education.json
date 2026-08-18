@@ -1,0 +1,63 @@
+{
+  "schema": "stage302-multicycle-memory-education-v1",
+  "stage301_report_sha256": "8e2bbf22197b37d01bd8336f544655cd0c2b40cbd20ea0a1e80a2c0982a420f9",
+  "stage_o_report_sha256": "e39826b6dad2a503fa83b4485ff575f599bb59503f767b86c3b566b2e39ab29f",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "cycles": 3,
+  "source_modules_admitted": 6,
+  "source_receipts": 6,
+  "sealed_receipts": 420,
+  "appended_records": 426,
+  "replay_verified": 426,
+  "tamper_rejected": 426,
+  "parent_memory_records": 120000,
+  "parent_memory_segments": 469,
+  "clone_memory_records": 120426,
+  "parent_memory_unchanged": true,
+  "manifest_unchanged": true,
+  "stage301_sealed_learning_delta": 76,
+  "stage_o_sealed_exact": 300,
+  "stage_o_sealed_correct_authorizations": 200,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_mutations": 0,
+  "hle_questions_read": 0,
+  "cycle_receipts": [
+    {
+      "round": 1,
+      "modules": [
+        "source_derived_finite_regression"
+      ],
+      "source_receipts": 1,
+      "sealed_receipts": 120,
+      "appended_records": 121,
+      "replay_verified": 121,
+      "tamper_rejected": 121
+    },
+    {
+      "round": 2,
+      "modules": [
+        "source_derived_finite_statistics",
+        "source_formula_sequences",
+        "source_derived_complex_arithmetic"
+      ],
+      "source_receipts": 3,
+      "sealed_receipts": 180,
+      "appended_records": 183,
+      "replay_verified": 183,
+      "tamper_rejected": 183
+    },
+    {
+      "round": 3,
+      "modules": [
+        "source_derived_chemistry",
+        "source_derived_biology"
+      ],
+      "source_receipts": 2,
+      "sealed_receipts": 120,
+      "appended_records": 122,
+      "replay_verified": 122,
+      "tamper_rejected": 122
+    }
+  ]
+}

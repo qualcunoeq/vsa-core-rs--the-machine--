@@ -172,6 +172,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage295_multimodal_visual_five_route_blind.json",
         "docs/stage296_bounded_electromagnetism.json",
         "docs/stage297_visual_circuit_electromagnetism.json",
+        "docs/stage298_visual_chemical_structure.json",
         "docs/stage179_five_domain_math_synthesis.json",
         "docs/stage245_science_relation_ingestion.json",
         "docs/stage247_multimodal_science_routes.json",
@@ -1528,6 +1529,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "visual_frontend_replays", 240);
                 check_number(&mut checks, path, value, "bridge_replays", 240);
                 check_number(&mut checks, path, value, "source_replays", 240);
+                check_number(&mut checks, path, value, "visual_tamper_rejections", 240);
+                check_number(&mut checks, path, value, "bridge_tamper_rejections", 240);
+                check_number(&mut checks, path, value, "provenance_preserved", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+            }
+            "stage298_visual_chemical_structure.json" => {
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(&mut checks, path, value, "supported_formulas_correct", 120);
+                check_number(&mut checks, path, value, "visual_replays", 240);
+                check_number(&mut checks, path, value, "bridge_replays", 240);
+                check_number(&mut checks, path, value, "chemistry_replays", 240);
                 check_number(&mut checks, path, value, "visual_tamper_rejections", 240);
                 check_number(&mut checks, path, value, "bridge_tamper_rejections", 240);
                 check_number(&mut checks, path, value, "provenance_preserved", 240);

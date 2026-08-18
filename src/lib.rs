@@ -213,6 +213,7 @@ pub mod third_party_corpus_benchmark;
 pub mod unit_aware_quantity;
 pub mod unit_quantity_composition;
 pub mod vision;
+pub mod visual_chemical_chemistry_bridge;
 pub mod visual_circuit_em_bridge;
 pub mod workspace;
 pub mod world_model;

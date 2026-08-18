@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 75,
-  "checks": 952,
-  "passed_checks": 952,
+  "artifacts": 76,
+  "checks": 965,
+  "passed_checks": 965,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -4056,6 +4056,71 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "supported_formulas_correct == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "visual_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "bridge_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "chemistry_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "visual_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "bridge_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "provenance_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage298_visual_chemical_structure.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -5019,6 +5084,10 @@
     [
       "docs/stage297_visual_circuit_electromagnetism.json",
       "a609ac22b300633a468d8d32e66cb9c51da5fc763ed802f0736936dc11cd8f7e"
+    ],
+    [
+      "docs/stage298_visual_chemical_structure.json",
+      "0c7291dd8a02eb095ed7610acf1b55284ab448bf5a15ee561819f21bc33f712f"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

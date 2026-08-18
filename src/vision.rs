@@ -26,6 +26,9 @@ pub mod visual_geometry;
 #[path = "visual_circuit.rs"]
 pub mod visual_circuit;
 
+#[path = "visual_chemical.rs"]
+pub mod visual_chemical;
+
 #[path = "visual_source_statistics_bridge.rs"]
 pub mod visual_source_statistics_bridge;
 

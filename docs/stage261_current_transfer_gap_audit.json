@@ -1,0 +1,162 @@
+{
+  "schema": "stage261-current-transfer-gap-audit-v1",
+  "trace_path": "/tmp/stage260_hle_current.jsonl",
+  "trace_sha256": "31a44892af3f8c9eae58ecf08a776f71309faaefa3c7fde11f756f12c4be7d11",
+  "checkpoint_summary_sha256": "01bd84399aca4a2ad7ec81d6935c84fda1a46817079a5e194c0d974c2f4f9c61",
+  "cases": 2500,
+  "curriculum_signal_cases": 1347,
+  "pack_invocations": 0,
+  "replay_verified": 0,
+  "first_failure_counts": {
+    "assumptions_not_established": 25,
+    "language_normalization": 135,
+    "missing_factual_prerequisite": 882,
+    "missing_specialist_theorem": 133,
+    "no_curriculum_signal": 1040,
+    "pack_boundary": 1,
+    "unsupported_target_type": 24,
+    "visual_dependency": 260
+  },
+  "signal_counts": {
+    "abstract_algebra": 518,
+    "biology": 282,
+    "calculus": 154,
+    "chemistry": 15,
+    "classical_mechanics": 151,
+    "combinatorics": 2,
+    "complex_arithmetic": 13,
+    "discrete_dynamics": 18,
+    "finite_markov": 9,
+    "finite_metric": 51,
+    "finite_statistics": 32,
+    "finite_topology": 40,
+    "graph_theory": 320,
+    "linear_algebra": 162,
+    "number_theory": 89,
+    "ordinary_differential_equations": 30,
+    "probability": 174,
+    "real_analysis": 20
+  },
+  "signal_first_failures": {
+    "abstract_algebra": {
+      "assumptions_not_established": 12,
+      "language_normalization": 72,
+      "missing_factual_prerequisite": 319,
+      "missing_specialist_theorem": 36,
+      "unsupported_target_type": 11,
+      "visual_dependency": 68
+    },
+    "biology": {
+      "language_normalization": 3,
+      "missing_factual_prerequisite": 232,
+      "missing_specialist_theorem": 1,
+      "unsupported_target_type": 7,
+      "visual_dependency": 39
+    },
+    "calculus": {
+      "assumptions_not_established": 5,
+      "language_normalization": 30,
+      "missing_factual_prerequisite": 76,
+      "missing_specialist_theorem": 19,
+      "pack_boundary": 1,
+      "unsupported_target_type": 5,
+      "visual_dependency": 18
+    },
+    "chemistry": {
+      "missing_factual_prerequisite": 12,
+      "visual_dependency": 3
+    },
+    "classical_mechanics": {
+      "assumptions_not_established": 15,
+      "language_normalization": 31,
+      "missing_factual_prerequisite": 70,
+      "missing_specialist_theorem": 12,
+      "unsupported_target_type": 5,
+      "visual_dependency": 18
+    },
+    "combinatorics": {
+      "missing_factual_prerequisite": 2
+    },
+    "complex_arithmetic": {
+      "missing_factual_prerequisite": 7,
+      "missing_specialist_theorem": 4,
+      "visual_dependency": 2
+    },
+    "discrete_dynamics": {
+      "language_normalization": 4,
+      "missing_factual_prerequisite": 10,
+      "missing_specialist_theorem": 3,
+      "visual_dependency": 1
+    },
+    "finite_markov": {
+      "language_normalization": 1,
+      "missing_factual_prerequisite": 6,
+      "missing_specialist_theorem": 2
+    },
+    "finite_metric": {
+      "assumptions_not_established": 1,
+      "language_normalization": 8,
+      "missing_factual_prerequisite": 35,
+      "missing_specialist_theorem": 2,
+      "visual_dependency": 5
+    },
+    "finite_statistics": {
+      "language_normalization": 1,
+      "missing_factual_prerequisite": 23,
+      "missing_specialist_theorem": 5,
+      "visual_dependency": 3
+    },
+    "finite_topology": {
+      "language_normalization": 1,
+      "missing_factual_prerequisite": 32,
+      "missing_specialist_theorem": 3,
+      "visual_dependency": 4
+    },
+    "graph_theory": {
+      "assumptions_not_established": 2,
+      "language_normalization": 17,
+      "missing_factual_prerequisite": 220,
+      "missing_specialist_theorem": 24,
+      "unsupported_target_type": 8,
+      "visual_dependency": 49
+    },
+    "linear_algebra": {
+      "language_normalization": 7,
+      "missing_factual_prerequisite": 105,
+      "missing_specialist_theorem": 37,
+      "unsupported_target_type": 3,
+      "visual_dependency": 10
+    },
+    "number_theory": {
+      "assumptions_not_established": 2,
+      "language_normalization": 5,
+      "missing_factual_prerequisite": 49,
+      "missing_specialist_theorem": 23,
+      "unsupported_target_type": 1,
+      "visual_dependency": 9
+    },
+    "ordinary_differential_equations": {
+      "assumptions_not_established": 1,
+      "language_normalization": 2,
+      "missing_factual_prerequisite": 16,
+      "missing_specialist_theorem": 7,
+      "visual_dependency": 4
+    },
+    "probability": {
+      "assumptions_not_established": 2,
+      "language_normalization": 21,
+      "missing_factual_prerequisite": 105,
+      "missing_specialist_theorem": 27,
+      "unsupported_target_type": 4,
+      "visual_dependency": 15
+    },
+    "real_analysis": {
+      "language_normalization": 3,
+      "missing_factual_prerequisite": 12,
+      "missing_specialist_theorem": 5
+    }
+  },
+  "complete_formalization_candidates": 1,
+  "false_authorizations": 0,
+  "production_mutations": 0
+}

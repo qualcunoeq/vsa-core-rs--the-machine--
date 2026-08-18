@@ -106,6 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/phase73_source_metric_frontend.json",
         "docs/stage259_self_directed_metric_acquisition.json",
         "docs/stage260_hle_checkpoint_current_curriculum.json",
+        "docs/stage261_current_transfer_gap_audit.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
@@ -276,6 +277,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "curriculum_candidates", 1347);
                 check_number(&mut checks, path, value, "no_signal_short_circuits", 1153);
                 check_bool(&mut checks, path, value, "manifest_mutated", false);
+            }
+            "stage261_current_transfer_gap_audit.json" => {
+                check_number(&mut checks, path, value, "cases", 2500);
+                check_number(&mut checks, path, value, "curriculum_signal_cases", 1347);
+                check_number(&mut checks, path, value, "pack_invocations", 0);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "complete_formalization_candidates",
+                    1,
+                );
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "production_mutations", 0);
             }
             "source_provenance_integrity.json" => {
                 check_number(&mut checks, path, value, "valid_citations", 240);

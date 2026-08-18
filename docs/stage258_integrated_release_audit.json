@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 21,
-  "checks": 164,
-  "passed_checks": 164,
+  "artifacts": 22,
+  "checks": 170,
+  "passed_checks": 170,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -531,6 +531,36 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage261_current_transfer_gap_audit.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage261_current_transfer_gap_audit.json",
+      "requirement": "curriculum_signal_cases == 1347",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage261_current_transfer_gap_audit.json",
+      "requirement": "pack_invocations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage261_current_transfer_gap_audit.json",
+      "requirement": "complete_formalization_candidates == 1",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage261_current_transfer_gap_audit.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage261_current_transfer_gap_audit.json",
+      "requirement": "production_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -883,6 +913,10 @@
     [
       "docs/stage260_hle_checkpoint_current_curriculum.json",
       "01bd84399aca4a2ad7ec81d6935c84fda1a46817079a5e194c0d974c2f4f9c61"
+    ],
+    [
+      "docs/stage261_current_transfer_gap_audit.json",
+      "3bb9f9149df945e8cb949b3de97c0d640d85b6cda457b45d9592d3561c20c1d9"
     ],
     [
       "docs/source_provenance_integrity.json",

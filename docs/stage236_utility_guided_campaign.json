@@ -1,0 +1,19 @@
+{
+  "schema": "stage236-utility-guided-campaign-v1",
+  "cases": 300,
+  "gap_replays": 300,
+  "clusters": 3,
+  "candidates": 5,
+  "proposals": 5,
+  "proposal_replays": 5,
+  "proposal_tamper_rejections": 5,
+  "blocked_proposals": 3,
+  "selected_module": "count-foundation",
+  "selected_expected_utility": 450,
+  "selected_acquisition_cost": 2,
+  "selected_utility_per_cost": "450/2",
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "live_mutations": 0,
+  "corpus_sha256": "ccf74d3a68734e2065b4992fb7eb81d490122011f996ce6be05e6c41a7655180"
+}

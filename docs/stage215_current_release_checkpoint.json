@@ -1,0 +1,24 @@
+{
+  "schema": "stage215-current-release-checkpoint-v1",
+  "parent_file_sha256": {
+    "docs/stage210_current_integrated_checkpoint.json": "37e2d647006f26dd16c94a8ff857db341f63152d2b2d4f38a53eaca1b13e6c7d",
+    "docs/stage213_production_arithmetic_route_checkpoint.json": "445f5b4ce244579e1f54b4bc3e3f44ef213a1564aab9b8f013cea7da4763fe53",
+    "docs/stage214_hle_curriculum_checkpoint.json": "6eb06682c71096bd62bc5a3635f5a34ede3158e3443af29a93f0d4cd5361e76c"
+  },
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "manifest_packs": 34,
+  "validated_packs": 33,
+  "frontend_cases": 2000,
+  "frontend_exact": 2000,
+  "production_route_cases": 1200,
+  "production_route_exact": 1200,
+  "production_authorized": 780,
+  "hle_cases": 2500,
+  "hle_correct_authorized": 2,
+  "hle_incorrect_authorized": 0,
+  "hle_false_authorizations": 0,
+  "hle_pack_invocations": 0,
+  "hle_trace_records": 2500,
+  "hle_trace_sha256": "f98c7ac6f5d20601bd7a9354aea56e0b025defe7c7fa706e4815b7b494174551",
+  "production_mutations": 0
+}

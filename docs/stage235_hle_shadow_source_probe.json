@@ -1,0 +1,19 @@
+{
+  "schema": "stage235-hle-shadow-source-probe-v1",
+  "source_learning_report_sha256": "b3f27e91b2133d4d70a9b4fbb62db6f8cadcb58a0449947723ee3b891451b991",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "cases": 2500,
+  "source_modules": 6,
+  "frontend_replays": 15000,
+  "frontend_tamper_rejections": 15000,
+  "unique_shadow_candidates": 0,
+  "correct_shadow_candidates": 0,
+  "incorrect_shadow_candidates_rejected": 0,
+  "ambiguous_or_missing": 2500,
+  "unsupported": 162,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "source_memory_mutations": 0,
+  "registry_mutations": 0,
+  "corpus_sha256": "83c0d53912401aa67d58e47eb9c6af5a0286a1be523aa3fea6c7276ef7fdb9b6"
+}

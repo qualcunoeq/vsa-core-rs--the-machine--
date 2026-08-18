@@ -33,6 +33,18 @@ enum PackSignal {
     Probability,
     GraphTheory,
     DiscreteDynamics,
+    Combinatorics,
+    NumberTheory,
+    AbstractAlgebra,
+    OrdinaryDifferentialEquations,
+    FiniteMarkov,
+    ClassicalMechanics,
+    FiniteTopology,
+    FiniteMetric,
+    FiniteStatistics,
+    Chemistry,
+    Biology,
+    ComplexArithmetic,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, PartialOrd, Ord)]
@@ -165,6 +177,110 @@ fn signals(question: &str) -> Vec<PackSignal> {
                 "random walk",
                 "state sequence",
                 "iterates",
+            ],
+        ),
+        (
+            PackSignal::Combinatorics,
+            &[
+                "binomial",
+                "multinomial",
+                "inclusion-exclusion",
+                "pigeonhole",
+                "surjection",
+            ],
+        ),
+        (
+            PackSignal::NumberTheory,
+            &[
+                "modular",
+                "congruence",
+                "gcd",
+                "divisibility",
+                "prime",
+                "totient",
+                "diophantine",
+            ],
+        ),
+        (
+            PackSignal::AbstractAlgebra,
+            &[
+                "group homomorphism",
+                "cyclic group",
+                "ring",
+                "field",
+                "kernel",
+                "quotient group",
+            ],
+        ),
+        (
+            PackSignal::OrdinaryDifferentialEquations,
+            &[
+                "differential equation",
+                "initial value problem",
+                "separable ode",
+                "constant-coefficient",
+            ],
+        ),
+        (
+            PackSignal::FiniteMarkov,
+            &[
+                "markov chain",
+                "stationary distribution",
+                "hitting probability",
+                "transition matrix",
+            ],
+        ),
+        (
+            PackSignal::ClassicalMechanics,
+            &[
+                "force",
+                "mass",
+                "momentum",
+                "kinetic energy",
+                "spring constant",
+                "acceleration",
+            ],
+        ),
+        (
+            PackSignal::FiniteTopology,
+            &["topology", "open set", "closed set", "closure", "interior"],
+        ),
+        (
+            PackSignal::FiniteMetric,
+            &["metric space", "distance function", "open ball", "diameter"],
+        ),
+        (
+            PackSignal::FiniteStatistics,
+            &[
+                "regression",
+                "variance",
+                "covariance",
+                "r-squared",
+                "standard deviation",
+            ],
+        ),
+        (
+            PackSignal::Chemistry,
+            &[
+                "chemical reaction",
+                "stoichiometric",
+                "molecular formula",
+                "moles",
+                "element count",
+            ],
+        ),
+        (
+            PackSignal::Biology,
+            &["dna", "nucleotide", "genome", "gene", "codon", "mutation"],
+        ),
+        (
+            PackSignal::ComplexArithmetic,
+            &[
+                "complex number",
+                "imaginary part",
+                "real part",
+                "complex conjugate",
+                "modulus",
             ],
         ),
     ];

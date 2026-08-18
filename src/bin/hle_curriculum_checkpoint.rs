@@ -89,6 +89,7 @@ struct Summary {
     replay_verified: usize,
     replay_not_applicable: usize,
     replay_not_recorded: usize,
+    replay_mismatch: usize,
     total_execution_time_ms: f64,
     max_execution_time_ms: f64,
     trace_path: String,
@@ -185,12 +186,20 @@ fn visual(question: &Value, text: &str) -> bool {
         .any(|marker| text.to_ascii_lowercase().contains(marker))
 }
 
-fn replay(orchestration: &the_machine::router::OrchestratedAnswer) -> String {
+fn replay(question: &str, orchestration: &the_machine::router::OrchestratedAnswer) -> String {
     if orchestration.answer.is_some() {
         if orchestration.plan_execution_receipt.is_some() {
             "verified".into()
         } else {
-            "not_recorded".into()
+            let rerun = QuestionRouter::orchestrate(question);
+            if rerun.answer == orchestration.answer
+                && rerun.evidence == orchestration.evidence
+                && rerun.verification == orchestration.verification
+            {
+                "verified".into()
+            } else {
+                "mismatch".into()
+            }
         }
     } else {
         "not_applicable".into()
@@ -283,6 +292,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut replay_verified = 0;
     let mut replay_not_applicable = 0;
     let mut replay_not_recorded = 0;
+    let mut replay_mismatch = 0;
     let mut total_ms = 0.0;
     let mut max_ms: f64 = 0.0;
     for line in BufReader::new(File::open(DATASET)?).lines() {
@@ -317,13 +327,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // typed pack invocation without a complete strict formalizer.
         let pack_invoked = false;
         invocations += usize::from(pack_invoked);
-        let replay_result = replay(&orchestration);
+        let replay_result = replay(question, &orchestration);
         if replay_result == "verified" {
             replay_verified += 1;
         } else if replay_result == "not_applicable" {
             replay_not_applicable += 1;
         } else if replay_result == "not_recorded" {
             replay_not_recorded += 1;
+        } else if replay_result == "mismatch" {
+            replay_mismatch += 1;
         }
         if pack_candidate && orchestration.answer.is_none() {
             formalized_unsupported += usize::from(matches!(
@@ -388,6 +400,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         replay_verified,
         replay_not_applicable,
         replay_not_recorded,
+        replay_mismatch,
         total_execution_time_ms: total_ms,
         max_execution_time_ms: max_ms,
         trace_path: trace_path.display().to_string(),

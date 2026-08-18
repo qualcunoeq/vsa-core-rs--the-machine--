@@ -22,6 +22,8 @@ registry.
 The machine-readable report is
 [`stage_k_sealed_curriculum_exam_5000.json`](stage_k_sealed_curriculum_exam_5000.json).
 
+Producer commit for this checkpoint: `48e3567`.
+
 | Metric | Result |
 |---|---:|
 | Total reports | 5,000 |

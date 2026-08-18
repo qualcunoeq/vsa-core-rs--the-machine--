@@ -17,6 +17,9 @@ pub mod visual_table;
 #[path = "visual_graph.rs"]
 pub mod visual_graph;
 
+#[path = "visual_plot.rs"]
+pub mod visual_plot;
+
 #[path = "visual_source_statistics_bridge.rs"]
 pub mod visual_source_statistics_bridge;
 

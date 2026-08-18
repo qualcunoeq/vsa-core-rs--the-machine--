@@ -1,0 +1,20 @@
+{
+  "schema": "stage231-provenance-module-promotion-v1",
+  "source_report": "docs/stage230_source_corpus_discovery.json",
+  "source_report_sha256": "de9ac846e75945122bafb93f1e6229a9c88de1dd800e2119dfde324a39ac0d63",
+  "source_preflight": true,
+  "modules": 6,
+  "cases": 36,
+  "exact_decisions": 36,
+  "promotions": 12,
+  "blocked_or_denied": 24,
+  "discovery_replays": 36,
+  "promotion_replays": 36,
+  "promotion_tamper_rejections": 36,
+  "rollbacks": 6,
+  "historical_replays": 6,
+  "world_states_preserved": 36,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "3350f75224c08dcef8fb71049e87dc79d656df0c496f0097c667989bf0312fae"
+}

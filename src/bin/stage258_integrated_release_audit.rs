@@ -85,6 +85,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage_j_multimodal_route_blind.json",
         "docs/phase72_source_metric_pack.json",
         "docs/phase73_source_metric_frontend.json",
+        "docs/stage259_self_directed_metric_acquisition.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
@@ -215,6 +216,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "tamper_rejected", 240);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage259_self_directed_metric_acquisition.json" => {
+                check_number(&mut checks, path, value, "observed_cases", 240);
+                check_number(&mut checks, path, value, "selected_coverage", 240);
+                check_bool(&mut checks, path, value, "selected_plan_replay", true);
+                check_bool(&mut checks, path, value, "plan_tamper_rejected", true);
+                check_number(&mut checks, path, value, "supported_correct", 120);
+                check_number(&mut checks, path, value, "supported_replays", 120);
+                check_number(&mut checks, path, value, "supported_tamper_rejections", 120);
+                check_number(&mut checks, path, value, "ambiguity_preserved", 40);
+                check_number(&mut checks, path, value, "refusals_preserved", 80);
+                check_number(&mut checks, path, value, "source_mutations_rejected", 6);
+                check_bool(&mut checks, path, value, "shadow_promotable", true);
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+                check_number(&mut checks, path, value, "blocked_shortcuts", 1);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "production_authorizations", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
             }
             "source_provenance_integrity.json" => {
                 check_number(&mut checks, path, value, "valid_citations", 240);

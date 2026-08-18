@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 19,
-  "checks": 132,
-  "passed_checks": 132,
+  "artifacts": 20,
+  "checks": 149,
+  "passed_checks": 149,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -381,6 +381,91 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "observed_cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "selected_coverage == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "selected_plan_replay == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "plan_tamper_rejected == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "supported_correct == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "supported_replays == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "supported_tamper_rejections == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "ambiguity_preserved == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "refusals_preserved == 80",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "source_mutations_rejected == 6",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "shadow_promotable == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "blocked_shortcuts == 1",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage259_self_directed_metric_acquisition.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -715,6 +800,10 @@
     [
       "docs/phase73_source_metric_frontend.json",
       "db76ba7dad6554f308569b3724b2d3e7ff9ad02fff1e9fb1a3b7a3b3807ce312"
+    ],
+    [
+      "docs/stage259_self_directed_metric_acquisition.json",
+      "1ff7f207662aa43df3c1dfbe496d576f3015f2744caae70ff40c67b982c64bf7"
     ],
     [
       "docs/source_provenance_integrity.json",

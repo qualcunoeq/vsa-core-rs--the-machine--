@@ -1,0 +1,18 @@
+{
+  "schema": "stage232-provenance-route-blind-v1",
+  "source_modules": 6,
+  "cases": 240,
+  "supported_cases": 120,
+  "unresolved_cases": 40,
+  "unsupported_cases": 80,
+  "exact_route_decisions": 240,
+  "downstream_authorizations": 120,
+  "frontend_replays": 1440,
+  "frontend_tamper_rejections": 1440,
+  "downstream_replays": 120,
+  "downstream_tamper_rejections": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_mutations": 0,
+  "corpus_sha256": "2c730a528d25ca2c4b9fb53e06235ffbf6d005e53e7d18e4c8cdede971ded2dc"
+}

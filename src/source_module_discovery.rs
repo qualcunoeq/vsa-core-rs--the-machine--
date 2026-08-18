@@ -9,7 +9,7 @@ use crate::curriculum_campaign::SourceModuleCandidate;
 use crate::source_formula_pack::{extract_formula_records, FormulaRecord};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SourceDocument<'a> {
@@ -25,6 +25,89 @@ pub struct DiscoveredSourceModule {
     pub records: Vec<FormulaRecord>,
     pub source_hash: String,
     pub replay_hash: String,
+}
+
+/// Discover source modules from a corpus without a predeclared subject list.
+///
+/// Module boundaries are derived only from the `SOURCE_ID` provenance already
+/// present in each extracted record.  A source document with multiple source
+/// sections therefore yields one candidate per source lineage; no evaluator,
+/// domain label, or curriculum-memory mutation is inferred here.
+pub fn discover_formula_corpus(
+    documents: &[&str],
+    source_hint: &str,
+) -> Result<Vec<DiscoveredSourceModule>, Vec<String>> {
+    let mut grouped: BTreeMap<String, Vec<FormulaRecord>> = BTreeMap::new();
+    let mut errors = Vec::new();
+    for (index, document) in documents.iter().enumerate() {
+        match extract_formula_records(document) {
+            Ok(records) => {
+                for record in records {
+                    if record.source.source_id.trim().is_empty() {
+                        if source_hint.trim().is_empty() {
+                            errors.push(format!("document {index} has a record without SOURCE_ID"));
+                        } else {
+                            errors.push(format!(
+                                "document {index} has provenance-free record; source hint cannot replace SOURCE_ID"
+                            ));
+                        }
+                    } else {
+                        grouped
+                            .entry(record.source.source_id.clone())
+                            .or_default()
+                            .push(record);
+                    }
+                }
+            }
+            Err(document_errors) => errors.extend(
+                document_errors
+                    .into_iter()
+                    .map(|error| format!("document {index}: {error}")),
+            ),
+        }
+    }
+    if !errors.is_empty() {
+        return Err(errors);
+    }
+    if grouped.is_empty() {
+        return Err(vec![
+            "source corpus contains no provenance-bearing records".into()
+        ]);
+    }
+    grouped
+        .into_iter()
+        .map(|(source_id, records)| {
+            let mut formula_ids = BTreeSet::new();
+            if records
+                .iter()
+                .any(|record| !formula_ids.insert(record.formula_id.clone()))
+            {
+                return Err(vec![format!(
+                    "source {source_id} contains duplicate formula_id"
+                )]);
+            }
+            let first = records.first().expect("nonempty provenance group");
+            let candidate = SourceModuleCandidate {
+                module_id: format!("discovered-source::{source_id}"),
+                title: format!("Discovered source catalog: {}", first.source.title),
+                domain: format!("source::{source_id}"),
+                provides: vec![format!("source_catalog::{source_id}")],
+                prerequisite_artifacts: Vec::new(),
+                source_ids: vec![source_id.clone()],
+                independent_exercise_count: records.len() * 40,
+            };
+            let source_hash = digest(&(source_id, &records));
+            let mut module = DiscoveredSourceModule {
+                candidate,
+                records,
+                source_hash,
+                replay_hash: String::new(),
+            };
+            let replay_hash = digest(&payload(&module));
+            module.replay_hash = replay_hash;
+            Ok(module)
+        })
+        .collect()
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
@@ -128,6 +211,28 @@ mod tests {
             source_hint: "source:hint",
             document: &malformed,
         });
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn corpus_discovery_groups_records_by_provenance_without_domain_labels() {
+        let second = SOURCE
+            .replace("ratio", "difference")
+            .replace("a / b", "a - b");
+        let modules = discover_formula_corpus(&[SOURCE, &second], "unused-hint").unwrap();
+        assert_eq!(modules.len(), 1);
+        assert_eq!(modules[0].records.len(), 2);
+        assert_eq!(
+            modules[0].candidate.provides,
+            vec!["source_catalog::source:test"]
+        );
+        assert!(replay_verified(&modules[0]));
+    }
+
+    #[test]
+    fn corpus_discovery_rejects_malformed_input_before_any_module() {
+        let malformed = SOURCE.replace("EXPRESSION:", "EXPRESSION: @");
+        let result = discover_formula_corpus(&[SOURCE, &malformed], "unused-hint");
         assert!(result.is_err());
     }
 }

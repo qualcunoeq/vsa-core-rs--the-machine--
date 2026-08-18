@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 22,
-  "checks": 170,
-  "passed_checks": 170,
+  "artifacts": 34,
+  "checks": 293,
+  "passed_checks": 293,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -561,6 +561,621 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "independent_development_cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "development_exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "holdout_exact_decisions == 60",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "source_mutations_rejected == 6",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage163_source_geometry_acquisition.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "development_exact_decisions == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "holdout_exact_decisions == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "development_frontend_replay == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "holdout_frontend_replay == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "development_downstream_replay == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "holdout_downstream_replay == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage164_source_geometry_language_transfer.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "development_exact == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "holdout_exact == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "development_composition_replay == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "holdout_composition_replay == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage165_geometry_measurement_composition.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "development_exact == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "holdout_exact == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "development_replay == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "holdout_replay == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage166_route_blind_measurement_composition.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "cases == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "development_exact == 1600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "holdout_exact == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "development_replay == 1600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "holdout_replay == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage167_geometry_technical_language_scale.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "exact_admission_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "admitted == 80",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "blocked == 160",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "replay_stable == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "prerequisite_closures == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "parent_manifest_unchanged == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "false_admissions == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "false_rejections == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage168_geometry_curriculum_admission.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "exact_promotion_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "promotions == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "blocked_or_denied == 140",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "promotion_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "promotion_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "regressions_detected == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "rollbacks_applied == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "world_state_preserved == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "historical_replays == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "clone_only == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage169_geometry_promotion_rollback.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "append_cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "valid_appends == 700",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "replay_verified == 700",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "tamper_rejected == 700",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "parent_memory_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage170_geometry_memory_integration.json",
+      "requirement": "live_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "records == 100000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "exact_queries == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "exact_complete == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "replay_verified == 100000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "tamper_sample == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "reconstruction_hash_equal == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "parent_memory_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "live_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage171_curriculum_memory_scale.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "holdout_exact == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "exact_memory_gates == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "memory_replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "composition_replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "tamper_rejections == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "failure_localized == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "live_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage172_memory_backed_geometry_routes.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "cases == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "development_exact == 960",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "holdout_exact == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "frontend_invocations == 4800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "ambiguity_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "unsupported_refusals == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "provenance_preserved == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "replay_verified == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "tamper_rejected == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage173_route_blind_technical_language.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "sealed_learning_delta == 30",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "sealed_baseline_authorized == 90",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "sealed_promoted_authorized == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "baseline_replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "promoted_replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "baseline_tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "promoted_tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "sealed_outcomes_exposed_to_selector == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "corpus_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage174_sealed_curriculum_learning_curve.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -917,6 +1532,54 @@
     [
       "docs/stage261_current_transfer_gap_audit.json",
       "3bb9f9149df945e8cb949b3de97c0d640d85b6cda457b45d9592d3561c20c1d9"
+    ],
+    [
+      "docs/stage163_source_geometry_acquisition.json",
+      "d64dbed2dc612641e6b4a5b5effbda55831055170a8dc2a21ffb641961ef309b"
+    ],
+    [
+      "docs/stage164_source_geometry_language_transfer.json",
+      "2eecfe4e414de860879118dec7415caa4bb0199aca70c85081f45a4262f4d8bb"
+    ],
+    [
+      "docs/stage165_geometry_measurement_composition.json",
+      "b802ece0dc8d0794bd6338a4c88be6c55928871e07775b981abbfc07e187c249"
+    ],
+    [
+      "docs/stage166_route_blind_measurement_composition.json",
+      "ed07c4ff78c7cdb24c73dbbccef1dc2a103b74c5122929b07b40ac75857500e5"
+    ],
+    [
+      "docs/stage167_geometry_technical_language_scale.json",
+      "57a36883dec0375ca6d8cdf91d23cee0571620182fab7fa385ece2ee1a888dab"
+    ],
+    [
+      "docs/stage168_geometry_curriculum_admission.json",
+      "e4aa9fa9262a6ccec8bd108ef3bd2bbd261a98f0896e388a387d68bf1365d914"
+    ],
+    [
+      "docs/stage169_geometry_promotion_rollback.json",
+      "aa188e7014e8f3192c141aaf827ce1de861bb85efceb8d7f47b40e5f5264fc74"
+    ],
+    [
+      "docs/stage170_geometry_memory_integration.json",
+      "723a6da5af927f043f0192807e555b7a49dc6df51475a92a119d8c6c02205509"
+    ],
+    [
+      "docs/stage171_curriculum_memory_scale.json",
+      "7dd6983f09eb9d41f1fff768e2e3043e755ddf09dfcdede07a861ad4318d046d"
+    ],
+    [
+      "docs/stage172_memory_backed_geometry_routes.json",
+      "0210f212114132d68730d7d869f60fe514ded7af7568d92c6cac959bde4dd9ed"
+    ],
+    [
+      "docs/stage173_route_blind_technical_language.json",
+      "7e6749dbf2ba84939b20275f5482648eaf2a1bd22d8af23ef60a24721b9c6feb"
+    ],
+    [
+      "docs/stage174_sealed_curriculum_learning_curve.json",
+      "09dcc39e4cfc0a9c8b8d9b3ce0a811937b1f342240d60c3ac5201b9ccf76f9b9"
     ],
     [
       "docs/source_provenance_integrity.json",

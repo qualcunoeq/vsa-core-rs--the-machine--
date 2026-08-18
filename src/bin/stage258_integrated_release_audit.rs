@@ -107,6 +107,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage259_self_directed_metric_acquisition.json",
         "docs/stage260_hle_checkpoint_current_curriculum.json",
         "docs/stage261_current_transfer_gap_audit.json",
+        "docs/stage163_source_geometry_acquisition.json",
+        "docs/stage164_source_geometry_language_transfer.json",
+        "docs/stage165_geometry_measurement_composition.json",
+        "docs/stage166_route_blind_measurement_composition.json",
+        "docs/stage167_geometry_technical_language_scale.json",
+        "docs/stage168_geometry_curriculum_admission.json",
+        "docs/stage169_geometry_promotion_rollback.json",
+        "docs/stage170_geometry_memory_integration.json",
+        "docs/stage171_curriculum_memory_scale.json",
+        "docs/stage172_memory_backed_geometry_routes.json",
+        "docs/stage173_route_blind_technical_language.json",
+        "docs/stage174_sealed_curriculum_learning_curve.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
@@ -291,6 +303,153 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 );
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "production_mutations", 0);
+            }
+            "stage163_source_geometry_acquisition.json" => {
+                check_number(&mut checks, path, value, "independent_development_cases", 240);
+                check_number(&mut checks, path, value, "development_exact_decisions", 240);
+                check_number(&mut checks, path, value, "holdout_exact_decisions", 60);
+                check_number(&mut checks, path, value, "source_mutations_rejected", 6);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+            }
+            "stage164_source_geometry_language_transfer.json" => {
+                check_number(&mut checks, path, value, "cases", 600);
+                check_number(&mut checks, path, value, "development_exact_decisions", 500);
+                check_number(&mut checks, path, value, "holdout_exact_decisions", 100);
+                check_number(&mut checks, path, value, "development_frontend_replay", 500);
+                check_number(&mut checks, path, value, "holdout_frontend_replay", 100);
+                check_number(&mut checks, path, value, "development_downstream_replay", 500);
+                check_number(&mut checks, path, value, "holdout_downstream_replay", 100);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage165_geometry_measurement_composition.json" => {
+                check_number(&mut checks, path, value, "cases", 400);
+                check_number(&mut checks, path, value, "development_exact", 300);
+                check_number(&mut checks, path, value, "holdout_exact", 100);
+                check_number(&mut checks, path, value, "development_composition_replay", 300);
+                check_number(&mut checks, path, value, "holdout_composition_replay", 100);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage166_route_blind_measurement_composition.json" => {
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "development_exact", 800);
+                check_number(&mut checks, path, value, "holdout_exact", 200);
+                check_number(&mut checks, path, value, "development_replay", 800);
+                check_number(&mut checks, path, value, "holdout_replay", 200);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage167_geometry_technical_language_scale.json" => {
+                check_number(&mut checks, path, value, "cases", 2000);
+                check_number(&mut checks, path, value, "development_exact", 1600);
+                check_number(&mut checks, path, value, "holdout_exact", 400);
+                check_number(&mut checks, path, value, "development_replay", 1600);
+                check_number(&mut checks, path, value, "holdout_replay", 400);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage168_geometry_curriculum_admission.json" => {
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "exact_admission_decisions", 240);
+                check_number(&mut checks, path, value, "admitted", 80);
+                check_number(&mut checks, path, value, "blocked", 160);
+                check_number(&mut checks, path, value, "replay_stable", 240);
+                check_number(&mut checks, path, value, "tamper_rejections", 240);
+                check_number(&mut checks, path, value, "prerequisite_closures", 200);
+                check_number(&mut checks, path, value, "parent_manifest_unchanged", 240);
+                check_number(&mut checks, path, value, "false_admissions", 0);
+                check_number(&mut checks, path, value, "false_rejections", 0);
+                check_number(&mut checks, path, value, "live_manifest_mutations", 0);
+            }
+            "stage169_geometry_promotion_rollback.json" => {
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "exact_promotion_decisions", 240);
+                check_number(&mut checks, path, value, "promotions", 100);
+                check_number(&mut checks, path, value, "blocked_or_denied", 140);
+                check_number(&mut checks, path, value, "promotion_replays", 240);
+                check_number(&mut checks, path, value, "promotion_tamper_rejections", 240);
+                check_number(&mut checks, path, value, "regressions_detected", 40);
+                check_number(&mut checks, path, value, "rollbacks_applied", 40);
+                check_number(&mut checks, path, value, "world_state_preserved", 40);
+                check_number(&mut checks, path, value, "historical_replays", 40);
+                check_number(&mut checks, path, value, "clone_only", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage170_geometry_memory_integration.json" => {
+                check_number(&mut checks, path, value, "append_cases", 1000);
+                check_number(&mut checks, path, value, "valid_appends", 700);
+                check_number(&mut checks, path, value, "replay_verified", 700);
+                check_number(&mut checks, path, value, "tamper_rejected", 700);
+                check_bool(&mut checks, path, value, "parent_memory_unchanged", true);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_memory_mutations", 0);
+            }
+            "stage171_curriculum_memory_scale.json" => {
+                check_number(&mut checks, path, value, "records", 100000);
+                check_number(&mut checks, path, value, "exact_queries", 1200);
+                check_number(&mut checks, path, value, "exact_complete", 1200);
+                check_number(&mut checks, path, value, "replay_verified", 100000);
+                check_number(&mut checks, path, value, "tamper_sample", 1000);
+                check_number(&mut checks, path, value, "tamper_rejected", 1000);
+                check_bool(&mut checks, path, value, "reconstruction_hash_equal", true);
+                check_bool(&mut checks, path, value, "parent_memory_unchanged", true);
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_memory_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage172_memory_backed_geometry_routes.json" => {
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "holdout_exact", 200);
+                check_number(&mut checks, path, value, "exact_memory_gates", 600);
+                check_number(&mut checks, path, value, "memory_replay_verified", 1000);
+                check_number(&mut checks, path, value, "composition_replay_verified", 1000);
+                check_number(&mut checks, path, value, "tamper_rejections", 1000);
+                check_number(&mut checks, path, value, "failure_localized", 1000);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_memory_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage173_route_blind_technical_language.json" => {
+                check_number(&mut checks, path, value, "cases", 1200);
+                check_number(&mut checks, path, value, "development_exact", 960);
+                check_number(&mut checks, path, value, "holdout_exact", 240);
+                check_number(&mut checks, path, value, "frontend_invocations", 4800);
+                check_number(&mut checks, path, value, "ambiguity_preserved", 240);
+                check_number(&mut checks, path, value, "unsupported_refusals", 240);
+                check_number(&mut checks, path, value, "provenance_preserved", 1200);
+                check_number(&mut checks, path, value, "replay_verified", 1200);
+                check_number(&mut checks, path, value, "tamper_rejected", 1200);
+                check_number(&mut checks, path, value, "route_leakage", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage174_sealed_curriculum_learning_curve.json" => {
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "sealed_learning_delta", 30);
+                check_number(&mut checks, path, value, "sealed_baseline_authorized", 90);
+                check_number(&mut checks, path, value, "sealed_promoted_authorized", 120);
+                check_number(&mut checks, path, value, "baseline_replay_verified", 1000);
+                check_number(&mut checks, path, value, "promoted_replay_verified", 1000);
+                check_number(&mut checks, path, value, "baseline_tamper_rejected", 1000);
+                check_number(&mut checks, path, value, "promoted_tamper_rejected", 1000);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "sealed_outcomes_exposed_to_selector", 0);
+                check_number(&mut checks, path, value, "corpus_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
             }
             "source_provenance_integrity.json" => {
                 check_number(&mut checks, path, value, "valid_citations", 240);

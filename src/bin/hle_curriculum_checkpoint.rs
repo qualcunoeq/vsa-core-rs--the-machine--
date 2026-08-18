@@ -13,6 +13,9 @@ use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 use std::process::Command;
+use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
 use std::time::Instant;
 use the_machine::router::{AbstentionReason, QuestionRouter};
 
@@ -70,13 +73,13 @@ struct Record {
 
 #[derive(Debug, Serialize)]
 struct Summary {
-    checkpoint: &'static str,
+    checkpoint: String,
     producer_commit: String,
     dataset: &'static str,
     dataset_sha256: String,
     curriculum_manifest_hash: String,
     registry_version: &'static str,
-    ontology_version: &'static str,
+    ontology_version: String,
     cases: usize,
     correct_authorized_answers: usize,
     incorrect_authorized_answers: usize,
@@ -90,6 +93,11 @@ struct Summary {
     replay_not_applicable: usize,
     replay_not_recorded: usize,
     replay_mismatch: usize,
+    trace_sha256: String,
+    manifest_mutated: bool,
+    execution_budget_ms: u64,
+    timed_out: usize,
+    no_signal_short_circuits: usize,
     total_execution_time_ms: f64,
     max_execution_time_ms: f64,
     trace_path: String,
@@ -206,6 +214,44 @@ fn replay(question: &str, orchestration: &the_machine::router::OrchestratedAnswe
     }
 }
 
+const EXECUTION_BUDGET_MS: u64 = 250;
+
+fn bounded_orchestrate(question: &str) -> Option<the_machine::router::OrchestratedAnswer> {
+    let (sender, receiver) = mpsc::channel();
+    let question = question.to_string();
+    thread::spawn(move || {
+        let _ = sender.send(QuestionRouter::orchestrate(&question));
+    });
+    receiver
+        .recv_timeout(Duration::from_millis(EXECUTION_BUDGET_MS))
+        .ok()
+}
+
+fn timeout_orchestration(question: &str) -> the_machine::router::OrchestratedAnswer {
+    let mut result = QuestionRouter::orchestrate("");
+    result.plan.goal = question.to_string();
+    result.attempts.push(format!(
+        "execution budget exhausted after {EXECUTION_BUDGET_MS} ms"
+    ));
+    result.answer = None;
+    result.evidence.clear();
+    result.verification = "fail-closed execution timeout".into();
+    result.abstention_reason = Some(AbstentionReason::PlanExecutionFailed);
+    result
+}
+
+fn no_signal_orchestration(
+    question: &str,
+    template: &the_machine::router::OrchestratedAnswer,
+) -> the_machine::router::OrchestratedAnswer {
+    let mut result = template.clone();
+    result.plan.goal = question.to_string();
+    result.attempts = vec!["no validated curriculum signal; shadow route skipped".into()];
+    result.verification = "no curriculum route evaluated".into();
+    result.abstention_reason = Some(AbstentionReason::InsufficientEvidence);
+    result
+}
+
 fn first_failure(
     entry: &Value,
     orchestration: &the_machine::router::OrchestratedAnswer,
@@ -270,8 +316,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .nth(2)
             .unwrap_or_else(|| "/tmp/hle_curriculum_checkpoint_63.summary.json".into()),
     );
+    let checkpoint = env::var("MACHINE_CHECKPOINT").unwrap_or_else(|_| CHECKPOINT.to_string());
+    let ontology_version =
+        env::var("MACHINE_ONTOLOGY_VERSION").unwrap_or_else(|_| ONTOLOGY_VERSION.to_string());
     let bytes = fs::read(DATASET)?;
     let dataset_sha256 = sha256(&bytes);
+    let manifest_before = the_machine::curriculum::breadth_first_manifest().replay_hash();
     let producer_commit = Command::new("git")
         .args(["rev-parse", "--short", "HEAD"])
         .output()
@@ -293,6 +343,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut replay_not_applicable = 0;
     let mut replay_not_recorded = 0;
     let mut replay_mismatch = 0;
+    let mut timed_out = 0;
+    let mut no_signal_short_circuits = 0;
+    let no_signal_template = timeout_orchestration("");
     let mut total_ms = 0.0;
     let mut max_ms: f64 = 0.0;
     for line in BufReader::new(File::open(DATASET)?).lines() {
@@ -308,7 +361,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             *pack_signals.entry(*signal).or_insert(0) += 1;
         }
         let started = Instant::now();
-        let orchestration = QuestionRouter::orchestrate(question);
+        let orchestration = if detected.is_empty() {
+            no_signal_short_circuits += 1;
+            no_signal_orchestration(question, &no_signal_template)
+        } else {
+            match bounded_orchestrate(question) {
+                Some(result) => result,
+                None => {
+                    timed_out += 1;
+                    timeout_orchestration(question)
+                }
+            }
+        };
         let elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0;
         let is_correct = orchestration
             .answer
@@ -367,7 +431,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             route_trace: orchestration.attempts.clone(),
             replay_result,
             registry_version: REGISTRY_VERSION.into(),
-            ontology_version: ONTOLOGY_VERSION.into(),
+            ontology_version: ontology_version.clone(),
             receipt: json!({
                 "domain": format!("{:?}", orchestration.plan.domain),
                 "abstention_reason": orchestration.abstention_reason.map(|reason| format!("{reason:?}")),
@@ -380,14 +444,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         writeln!(trace)?;
         cases += 1;
     }
+    drop(trace);
+    let trace_sha256 = sha256(&fs::read(&trace_path)?);
+    let manifest_mutated =
+        the_machine::curriculum::breadth_first_manifest().replay_hash() != manifest_before;
     let summary = Summary {
-        checkpoint: CHECKPOINT,
+        checkpoint,
         producer_commit,
         dataset: DATASET,
         dataset_sha256,
         curriculum_manifest_hash,
         registry_version: REGISTRY_VERSION,
-        ontology_version: ONTOLOGY_VERSION,
+        ontology_version,
         cases,
         correct_authorized_answers: correct,
         incorrect_authorized_answers: incorrect,
@@ -401,6 +469,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         replay_not_applicable,
         replay_not_recorded,
         replay_mismatch,
+        trace_sha256,
+        manifest_mutated,
+        execution_budget_ms: EXECUTION_BUDGET_MS,
+        timed_out,
+        no_signal_short_circuits,
         total_execution_time_ms: total_ms,
         max_execution_time_ms: max_ms,
         trace_path: trace_path.display().to_string(),

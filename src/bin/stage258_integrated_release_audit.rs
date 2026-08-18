@@ -105,6 +105,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/phase72_source_metric_pack.json",
         "docs/phase73_source_metric_frontend.json",
         "docs/stage259_self_directed_metric_acquisition.json",
+        "docs/stage260_hle_checkpoint_current_curriculum.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
@@ -254,6 +255,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "production_authorizations", 0);
                 check_number(&mut checks, path, value, "hle_questions_read", 0);
+            }
+            "stage260_hle_checkpoint_current_curriculum.json" => {
+                check_nonempty_string(&mut checks, path, value, "producer_commit");
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "curriculum_manifest_hash",
+                    &manifest.replay_hash(),
+                );
+                check_number(&mut checks, path, value, "cases", 2500);
+                check_number(&mut checks, path, value, "incorrect_authorized_answers", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "pack_invocations", 0);
+                check_number(&mut checks, path, value, "replay_mismatch", 0);
+                check_number(&mut checks, path, value, "replay_not_applicable", 2500);
+                check_number(&mut checks, path, value, "replay_not_recorded", 0);
+                check_number(&mut checks, path, value, "timed_out", 1);
+                check_number(&mut checks, path, value, "no_signal_short_circuits", 1795);
+                check_bool(&mut checks, path, value, "manifest_mutated", false);
             }
             "source_provenance_integrity.json" => {
                 check_number(&mut checks, path, value, "valid_citations", 240);

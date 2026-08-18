@@ -444,6 +444,10 @@ name = "stage311_sealed_curriculum_learning_curve"
 path = "src/bin/stage311_sealed_curriculum_learning_curve.rs"
 
 [[bin]]
+name = "stage312_integrated_curriculum_checkpoint"
+path = "src/bin/stage312_integrated_curriculum_checkpoint.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

@@ -120,6 +120,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage173_route_blind_technical_language.json",
         "docs/stage174_sealed_curriculum_learning_curve.json",
         "docs/stage262_source_geometry_candidate_selection.json",
+        "docs/stage263_geometry_shadow_manifest.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
@@ -523,6 +524,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "live_manifest_mutations", 0);
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage263_geometry_shadow_manifest.json" => {
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "parent_manifest_hash",
+                    &manifest.replay_hash(),
+                );
+                check_nonempty_string(&mut checks, path, value, "shadow_manifest_hash");
+                check_number(&mut checks, path, value, "parent_pack_count", 34);
+                check_number(&mut checks, path, value, "shadow_pack_count", 35);
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "candidate_id",
+                    "source_derived_bounded_geometry",
+                );
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "candidate_status",
+                    "shadow_validated",
+                );
+                check_bool(&mut checks, path, value, "validation_passed", true);
+                check_bool(&mut checks, path, value, "prerequisite_closure", true);
+                check_bool(&mut checks, path, value, "parent_unchanged", true);
+                check_bool(&mut checks, path, value, "shadow_only", true);
+                check_number(&mut checks, path, value, "live_manifest_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
             }
             "source_provenance_integrity.json" => {
                 check_number(&mut checks, path, value, "valid_citations", 240);

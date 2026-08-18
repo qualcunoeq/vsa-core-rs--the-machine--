@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 35,
-  "checks": 315,
-  "passed_checks": 315,
+  "artifacts": 36,
+  "checks": 329,
+  "passed_checks": 329,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1286,6 +1286,76 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "parent_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "shadow_manifest_hash is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "parent_pack_count == 34",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "shadow_pack_count == 35",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "candidate_id matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "candidate_status matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "validation_passed == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "prerequisite_closure == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "parent_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage263_geometry_shadow_manifest.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -1694,6 +1764,10 @@
     [
       "docs/stage262_source_geometry_candidate_selection.json",
       "3e4ba48a23a92f00548e6273965552ca21cecd69fa8b4a103e4c6c9e8b343086"
+    ],
+    [
+      "docs/stage263_geometry_shadow_manifest.json",
+      "ea0e3aaaa57a660ddc79ad03c196ed93a4c19c85546e871e19bf9afadefb47fa"
     ],
     [
       "docs/source_provenance_integrity.json",

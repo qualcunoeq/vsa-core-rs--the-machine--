@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 76,
-  "checks": 965,
-  "passed_checks": 965,
+  "artifacts": 77,
+  "checks": 993,
+  "passed_checks": 993,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3416,6 +3416,146 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "shadow_manifest_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "source_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "shadow_packs == 38",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "descriptors == 131",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "records == 120000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "exact_queries == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "exact_complete == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "ambiguous_queries == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "ambiguous_detected == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "stale_queries == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "stale_refused == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "unknown_queries == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "unknown_refused == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "provenance_queries == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "provenance_refused == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "prerequisite_queries == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "prerequisite_complete == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "retrieval_contamination == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "replay_verified == 120000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "tamper_rejected == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "reconstruction_records == 120000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "reconstruction_hash_equal == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "parent_memory_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "live_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage300_curriculum_memory_120k.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage288_versioned_source_retrieval.json",
       "requirement": "cases == 800",
       "passed": true
@@ -5044,6 +5184,10 @@
     [
       "docs/stage287_expanded_curriculum_memory_scale.json",
       "e9d5fa1e0695949212d96bef7b0780dbc0b99b8de08439f78dd7ef5f242afbf2"
+    ],
+    [
+      "docs/stage300_curriculum_memory_120k.json",
+      "e4c8bc8c338f45268f2c8e0d3954800ac07d4ef8fbe24f275ea57c749c6dbfec"
     ],
     [
       "docs/stage288_versioned_source_retrieval.json",

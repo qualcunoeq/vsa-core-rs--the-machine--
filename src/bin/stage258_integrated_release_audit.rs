@@ -162,6 +162,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage285_technical_gap_prerequisite_discovery.json",
         "docs/stage286_self_directed_unit_learning_curve.json",
         "docs/stage287_expanded_curriculum_memory_scale.json",
+        "docs/stage300_curriculum_memory_120k.json",
         "docs/stage288_versioned_source_retrieval.json",
         "docs/stage289_retrieval_guided_investigation.json",
         "docs/stage290_hle_checkpoint_after_retrieval.json",
@@ -1134,6 +1135,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "replay_verified", 60000);
                 check_number(&mut checks, path, value, "tamper_rejected", 1000);
                 check_number(&mut checks, path, value, "reconstruction_records", 60000);
+                check_bool(&mut checks, path, value, "reconstruction_hash_equal", true);
+                check_bool(&mut checks, path, value, "parent_memory_unchanged", true);
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_memory_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage300_curriculum_memory_120k.json" => {
+                check_nonempty_string(&mut checks, path, value, "shadow_manifest_sha256");
+                check_nonempty_string(&mut checks, path, value, "source_report_sha256");
+                check_number(&mut checks, path, value, "shadow_packs", 38);
+                check_number(&mut checks, path, value, "descriptors", 131);
+                check_number(&mut checks, path, value, "records", 120000);
+                check_number(&mut checks, path, value, "exact_queries", 1500);
+                check_number(&mut checks, path, value, "exact_complete", 1500);
+                check_number(&mut checks, path, value, "ambiguous_queries", 300);
+                check_number(&mut checks, path, value, "ambiguous_detected", 300);
+                check_number(&mut checks, path, value, "stale_queries", 300);
+                check_number(&mut checks, path, value, "stale_refused", 300);
+                check_number(&mut checks, path, value, "unknown_queries", 200);
+                check_number(&mut checks, path, value, "unknown_refused", 200);
+                check_number(&mut checks, path, value, "provenance_queries", 100);
+                check_number(&mut checks, path, value, "provenance_refused", 100);
+                check_number(&mut checks, path, value, "prerequisite_queries", 1500);
+                check_number(&mut checks, path, value, "prerequisite_complete", 1500);
+                check_number(&mut checks, path, value, "retrieval_contamination", 0);
+                check_number(&mut checks, path, value, "replay_verified", 120000);
+                check_number(&mut checks, path, value, "tamper_rejected", 2000);
+                check_number(&mut checks, path, value, "reconstruction_records", 120000);
                 check_bool(&mut checks, path, value, "reconstruction_hash_equal", true);
                 check_bool(&mut checks, path, value, "parent_memory_unchanged", true);
                 check_bool(&mut checks, path, value, "manifest_unchanged", true);

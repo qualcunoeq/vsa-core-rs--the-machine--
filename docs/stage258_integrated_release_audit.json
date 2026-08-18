@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 10,
-  "checks": 68,
-  "passed_checks": 68,
+  "artifacts": 19,
+  "checks": 132,
+  "passed_checks": 132,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -93,6 +93,326 @@
     {
       "artifact": "docs/stage257_number_theory_admission_audit.json",
       "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "supported_routes == 700",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "tamper_rejections == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "failure_localized == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_b_integrated_synthesis_1000.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_c_technical_language.json",
+      "requirement": "cases == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_c_technical_language.json",
+      "requirement": "target_grounded == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_c_technical_language.json",
+      "requirement": "replay_verified == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_c_technical_language.json",
+      "requirement": "provenance_preserved == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_c_technical_language.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_c_technical_language.json",
+      "requirement": "false_fact_insertions == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_d_source_catalog_ingestion.json",
+      "requirement": "valid_catalogs == 1",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_d_source_catalog_ingestion.json",
+      "requirement": "mutation_rejections == 5",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_d_source_catalog_ingestion.json",
+      "requirement": "generated_exercise_replays == 5",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_d_source_catalog_ingestion.json",
+      "requirement": "replay_stable == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_d_source_catalog_ingestion.json",
+      "requirement": "false_acceptances == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "selected_coverage == 320",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "selected_plan_replay == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "plan_tamper_rejected == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "independent_validation_correct == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_g_self_directed_campaign.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_i_source_retrieval.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_i_source_retrieval.json",
+      "requirement": "lineage_deduplication_verified == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_i_source_retrieval.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_i_source_retrieval.json",
+      "requirement": "tamper_rejected == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_i_source_retrieval.json",
+      "requirement": "registry_mutated == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_i_source_retrieval.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "authorized_supported == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "table_replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "graph_replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "frontend_tamper_rejected == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "downstream_tamper_rejected == 60",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_j_multimodal_route_blind.json",
+      "requirement": "production_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "supported_artifacts == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "source_mutations_rejected == 6",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "tamper_rejected == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "source_provenance_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase72_source_metric_pack.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "supported_artifacts == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "source_provenance_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "tamper_rejected == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/phase73_source_metric_frontend.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "valid_citations == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "tamper_rejected == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "mutation_rejections == 10",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "evaluator_replays == 7",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/source_provenance_integrity.json",
+      "requirement": "production_registry_mutations == 0",
       "passed": true
     },
     {
@@ -363,6 +683,42 @@
     [
       "docs/stage257_number_theory_admission_audit.json",
       "8852ad5b7e5bab9dfc59a4137e29a628ecef94c60766f2172914759c3280da0b"
+    ],
+    [
+      "docs/stage_b_integrated_synthesis_1000.json",
+      "d092b3a647771b3d48a175c9d40658fe58c03728c27ac0a1830c259f4d3e7628"
+    ],
+    [
+      "docs/stage_c_technical_language.json",
+      "97a5f61bc42ef166c1b1fbdce70c142bf859fc072249fb0dff52024e0ef8815a"
+    ],
+    [
+      "docs/stage_d_source_catalog_ingestion.json",
+      "4629c8a3d98700637dd59ff49e0ab200afea7fbafd1b827273131f8fe9e6d6c5"
+    ],
+    [
+      "docs/stage_g_self_directed_campaign.json",
+      "836dfed37a5adbebf4408a8d9d8fc77a5b286c6824882f5ca1e87bfd79fbce6e"
+    ],
+    [
+      "docs/stage_i_source_retrieval.json",
+      "f9cdc581b0d99a9472d0506d86fb795fd31f6fd9dc5a728046c4a3017301de21"
+    ],
+    [
+      "docs/stage_j_multimodal_route_blind.json",
+      "a351c9495c59aceaa32d7065166eed3690b209e7c873e1601b7a010dacb25569"
+    ],
+    [
+      "docs/phase72_source_metric_pack.json",
+      "8e6415359a68d70d3035cfb1695795214cfaadb4d92826a3cf1dfdc1c3b9e691"
+    ],
+    [
+      "docs/phase73_source_metric_frontend.json",
+      "db76ba7dad6554f308569b3724b2d3e7ff9ad02fff1e9fb1a3b7a3b3807ce312"
+    ],
+    [
+      "docs/source_provenance_integrity.json",
+      "3ad18a5cde60563d0154568afdb84cbe125559330f0e68e5f123bedfc9a19a07"
     ],
     [
       "docs/stage_m_continuous_education.json",

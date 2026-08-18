@@ -77,6 +77,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/phase70_algebra_number_theory_composition.json",
         "docs/phase71_combinatorics_number_theory_composition.json",
         "docs/stage257_number_theory_admission_audit.json",
+        "docs/stage_b_integrated_synthesis_1000.json",
+        "docs/stage_c_technical_language.json",
+        "docs/stage_d_source_catalog_ingestion.json",
+        "docs/stage_g_self_directed_campaign.json",
+        "docs/stage_i_source_retrieval.json",
+        "docs/stage_j_multimodal_route_blind.json",
+        "docs/phase72_source_metric_pack.json",
+        "docs/phase73_source_metric_frontend.json",
+        "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
         "docs/stage_o_autonomous_breadth_campaign.json",
@@ -121,6 +130,100 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_bool(&mut checks, path, value, "promotion_allowed", false);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage_b_integrated_synthesis_1000.json" => {
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "supported_routes", 700);
+                check_number(&mut checks, path, value, "replay_verified", 1000);
+                check_number(&mut checks, path, value, "tamper_rejections", 1000);
+                check_number(&mut checks, path, value, "failure_localized", 300);
+                check_number(&mut checks, path, value, "route_leakage", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage_c_technical_language.json" => {
+                check_number(&mut checks, path, value, "cases", 2000);
+                check_number(&mut checks, path, value, "target_grounded", 2000);
+                check_number(&mut checks, path, value, "replay_verified", 2000);
+                check_number(&mut checks, path, value, "provenance_preserved", 2000);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_fact_insertions", 0);
+            }
+            "stage_d_source_catalog_ingestion.json" => {
+                check_number(&mut checks, path, value, "valid_catalogs", 1);
+                check_number(&mut checks, path, value, "mutation_rejections", 5);
+                check_number(&mut checks, path, value, "generated_exercise_replays", 5);
+                check_bool(&mut checks, path, value, "replay_stable", true);
+                check_number(&mut checks, path, value, "false_acceptances", 0);
+            }
+            "stage_g_self_directed_campaign.json" => {
+                check_number(&mut checks, path, value, "selected_coverage", 320);
+                check_bool(&mut checks, path, value, "selected_plan_replay", true);
+                check_bool(&mut checks, path, value, "plan_tamper_rejected", true);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "independent_validation_correct",
+                    120,
+                );
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "production_authorizations", 0);
+            }
+            "stage_i_source_retrieval.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "lineage_deduplication_verified",
+                    120,
+                );
+                check_number(&mut checks, path, value, "replay_verified", 240);
+                check_number(&mut checks, path, value, "tamper_rejected", 240);
+                check_bool(&mut checks, path, value, "registry_mutated", false);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+            }
+            "stage_j_multimodal_route_blind.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(&mut checks, path, value, "authorized_supported", 120);
+                check_number(&mut checks, path, value, "table_replay_verified", 240);
+                check_number(&mut checks, path, value, "graph_replay_verified", 240);
+                check_number(&mut checks, path, value, "frontend_tamper_rejected", 240);
+                check_number(&mut checks, path, value, "downstream_tamper_rejected", 60);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+                check_number(&mut checks, path, value, "production_registry_mutations", 0);
+            }
+            "phase72_source_metric_pack.json" => {
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "supported_artifacts", 120);
+                check_number(&mut checks, path, value, "source_mutations_rejected", 6);
+                check_number(&mut checks, path, value, "replay_verified", 240);
+                check_number(&mut checks, path, value, "tamper_rejected", 240);
+                check_number(&mut checks, path, value, "source_provenance_preserved", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "phase73_source_metric_frontend.json" => {
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "supported_artifacts", 120);
+                check_number(&mut checks, path, value, "source_provenance_preserved", 240);
+                check_number(&mut checks, path, value, "replay_verified", 240);
+                check_number(&mut checks, path, value, "tamper_rejected", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "source_provenance_integrity.json" => {
+                check_number(&mut checks, path, value, "valid_citations", 240);
+                check_number(&mut checks, path, value, "replay_verified", 240);
+                check_number(&mut checks, path, value, "tamper_rejected", 240);
+                check_number(&mut checks, path, value, "mutation_rejections", 10);
+                check_number(&mut checks, path, value, "evaluator_replays", 7);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "production_registry_mutations", 0);
             }
             "stage_m_continuous_education.json" => {
                 check_number(&mut checks, path, value, "exact_decisions", 300);

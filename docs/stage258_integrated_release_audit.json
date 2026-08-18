@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 70,
-  "checks": 899,
-  "passed_checks": 899,
+  "artifacts": 71,
+  "checks": 909,
+  "passed_checks": 909,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3791,6 +3791,56 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "authorized_routes == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "frontend_replays == 960",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "frontend_tamper_rejections == 960",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage293_multimodal_visual_route_blind.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4734,6 +4784,10 @@
     [
       "docs/stage292_visual_geometry_frontend.json",
       "66a17bfb24626f15de1d960687858c7071b2f3294ee9412a2b087111c9848702"
+    ],
+    [
+      "docs/stage293_multimodal_visual_route_blind.json",
+      "0f2f6713a7a039f7fe29cabd87527ac2e5e52e0aa45b244cb761b0a3cf163943"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

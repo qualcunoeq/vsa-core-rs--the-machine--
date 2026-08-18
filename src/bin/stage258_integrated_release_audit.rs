@@ -167,6 +167,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage290_hle_checkpoint_after_retrieval.json",
         "docs/stage291_visual_plot_frontend.json",
         "docs/stage292_visual_geometry_frontend.json",
+        "docs/stage293_multimodal_visual_route_blind.json",
         "docs/stage179_five_domain_math_synthesis.json",
         "docs/stage245_science_relation_ingestion.json",
         "docs/stage247_multimodal_science_routes.json",
@@ -1463,6 +1464,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "provenance_preserved", 120);
                 check_number(&mut checks, path, value, "replay_verified", 240);
                 check_number(&mut checks, path, value, "tamper_rejections", 240);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+            }
+            "stage293_multimodal_visual_route_blind.json" => {
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(&mut checks, path, value, "authorized_routes", 120);
+                check_number(&mut checks, path, value, "frontend_replays", 960);
+                check_number(&mut checks, path, value, "frontend_tamper_rejections", 960);
+                check_number(&mut checks, path, value, "route_leakage", 0);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "hle_questions_read", 0);

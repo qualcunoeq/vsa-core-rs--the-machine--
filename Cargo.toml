@@ -412,6 +412,10 @@ name = "stage303_retrieval_memory_bridge"
 path = "src/bin/stage303_retrieval_memory_bridge.rs"
 
 [[bin]]
+name = "stage304_retrieval_environment_memory"
+path = "src/bin/stage304_retrieval_environment_memory.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 74,
-  "checks": 939,
-  "passed_checks": 939,
+  "artifacts": 75,
+  "checks": 952,
+  "passed_checks": 952,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3991,6 +3991,71 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "supported_values_correct == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "visual_frontend_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "bridge_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "source_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "visual_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "bridge_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "provenance_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage297_visual_circuit_electromagnetism.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4950,6 +5015,10 @@
     [
       "docs/stage296_bounded_electromagnetism.json",
       "b74a3c2740c74a9ef94377cb9d6c5e7693d3508e821f1e0197122adf104943c2"
+    ],
+    [
+      "docs/stage297_visual_circuit_electromagnetism.json",
+      "a609ac22b300633a468d8d32e66cb9c51da5fc763ed802f0736936dc11cd8f7e"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

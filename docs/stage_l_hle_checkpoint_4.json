@@ -1,0 +1,35 @@
+{
+  "schema": "stage-l-hle-checkpoint-4-v1",
+  "checkpoint": "post-stage300-multimodal-curriculum",
+  "producer_commit": "eba2851",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "trace_sha256": "865c7ca14825a2e6a3e29b2dda670ba1ad92546a881c83f14be2df24ee3f5fa7",
+  "cases": 2500,
+  "correct_authorized_answers": 2,
+  "incorrect_authorized_answers": 0,
+  "false_authorizations": 0,
+  "terminal_counts": {
+    "correct_authorized_answer": 2,
+    "visual_input_required": 151,
+    "language_normalization_failure": 236,
+    "missing_factual_knowledge": 1815,
+    "missing_reasoning_method": 217,
+    "unsupported_or_ambiguous": 79
+  },
+  "route_counts": {
+    "Chess": 44,
+    "Code": 6,
+    "FactualQA": 1376,
+    "LifeScience": 556,
+    "Math": 402,
+    "Physics": 116
+  },
+  "pack_receipt_invocations": 0,
+  "replay_verified": 2,
+  "replay_not_applicable": 2498,
+  "replay_failed": 0,
+  "total_execution_time_ms": 49686.58625099988,
+  "max_execution_time_ms": 548.909478,
+  "registry_mutated": false
+}

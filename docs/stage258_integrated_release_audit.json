@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 37,
-  "checks": 341,
-  "passed_checks": 341,
+  "artifacts": 39,
+  "checks": 365,
+  "passed_checks": 365,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1416,6 +1416,126 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "current_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "candidate_count == 2",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "eligible_candidates == 2",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "selected_candidate matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage265_source_candidate_utility_ranking.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "parent_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "shadow_manifest_hash is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "parent_pack_count == 34",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "shadow_pack_count == 35",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "candidate_id matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "candidate_status matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "validation_passed == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "prerequisite_closure == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "parent_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage266_economics_shadow_manifest.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -1832,6 +1952,14 @@
     [
       "docs/stage264_hle_geometry_shadow_probe.json",
       "cfa6422b4336b37ed9257461843af5f87abed51d61453ba211ef05266e837a1f"
+    ],
+    [
+      "docs/stage265_source_candidate_utility_ranking.json",
+      "2d1ce18cd724388d4f03831e02f03ec37dd5ded1a97b453d3dd7374d68dc3864"
+    ],
+    [
+      "docs/stage266_economics_shadow_manifest.json",
+      "76daf8d4fc5835ddd5911eaf6b5b57b18e3ffd60d3e0088e432eabe3271cc1fc"
     ],
     [
       "docs/source_provenance_integrity.json",

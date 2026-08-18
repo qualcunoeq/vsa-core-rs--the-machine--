@@ -1,0 +1,50 @@
+{
+  "schema": "stage265-source-candidate-utility-ranking-v1",
+  "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "candidate_count": 2,
+  "eligible_candidates": 2,
+  "selected_candidate": "source_derived_bounded_economics",
+  "selection_policy": "eligible candidates maximize sealed learning delta, then sealed authorization, then independent evidence cases, then lower acquisition cost",
+  "candidates": [
+    {
+      "candidate_id": "source_derived_bounded_economics",
+      "evidence_report": "docs/stage178_self_directed_source_learning_curve.json",
+      "eligible": true,
+      "sealed_learning_delta": 60,
+      "sealed_authorized": 60,
+      "evidence_cases": 500,
+      "evidence_artifacts": 1,
+      "acquisition_cost": 1,
+      "rank": 1,
+      "score_key": [
+        60,
+        60,
+        500,
+        18446744073709551614
+      ]
+    },
+    {
+      "candidate_id": "source_derived_bounded_geometry",
+      "evidence_report": "docs/stage262_source_geometry_candidate_selection.json",
+      "eligible": true,
+      "sealed_learning_delta": 30,
+      "sealed_authorized": 30,
+      "evidence_cases": 3600,
+      "evidence_artifacts": 12,
+      "acquisition_cost": 12,
+      "rank": 2,
+      "score_key": [
+        30,
+        30,
+        3600,
+        18446744073709551603
+      ]
+    }
+  ],
+  "shadow_only": true,
+  "hle_questions_read": 0,
+  "manifest_mutations": 0,
+  "registry_mutations": 0,
+  "false_authorizations": 0,
+  "false_denials": 0
+}

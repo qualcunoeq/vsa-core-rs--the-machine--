@@ -162,6 +162,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage285_technical_gap_prerequisite_discovery.json",
         "docs/stage286_self_directed_unit_learning_curve.json",
         "docs/stage287_expanded_curriculum_memory_scale.json",
+        "docs/stage288_versioned_source_retrieval.json",
         "docs/stage179_five_domain_math_synthesis.json",
         "docs/stage245_science_relation_ingestion.json",
         "docs/stage247_multimodal_science_routes.json",
@@ -1024,7 +1025,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "source_modules", 4);
                 check_number(&mut checks, path, value, "source_records", 19);
                 check_number(&mut checks, path, value, "frontend_replays", 10000);
-                check_number(&mut checks, path, value, "frontend_tamper_rejections", 10000);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "frontend_tamper_rejections",
+                    10000,
+                );
                 check_number(&mut checks, path, value, "unique_shadow_candidates", 0);
                 check_number(&mut checks, path, value, "correct_shadow_candidates", 0);
                 check_number(&mut checks, path, value, "production_authorizations", 0);
@@ -1138,10 +1145,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "authorized_answers", 600);
                 check_number(&mut checks, path, value, "replay_verified", 1000);
                 check_number(&mut checks, path, value, "tamper_rejected", 1000);
-                check_number(&mut checks, path, value, "emitted_intermediate_artifacts", 4120);
-                check_number(&mut checks, path, value, "replayed_intermediate_artifacts", 4120);
-                check_number(&mut checks, path, value, "tamper_rejected_intermediate_artifacts", 4120);
-                check_number(&mut checks, path, value, "alternative_routes_applicable", 600);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "emitted_intermediate_artifacts",
+                    4120,
+                );
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "replayed_intermediate_artifacts",
+                    4120,
+                );
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "tamper_rejected_intermediate_artifacts",
+                    4120,
+                );
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "alternative_routes_applicable",
+                    600,
+                );
                 check_number(&mut checks, path, value, "alternative_routes_agreed", 600);
                 check_number(&mut checks, path, value, "sealed_exact_decisions", 200);
                 check_number(&mut checks, path, value, "sealed_authorized_answers", 120);
@@ -1149,7 +1180,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "production_registry_mutations", 0);
                 check_number(&mut checks, path, value, "curriculum_manifest_mutations", 0);
-                check_number(&mut checks, path, value, "sealed_outcomes_exposed_to_selector", 0);
+                check_number(
+                    &mut checks,
+                    path,
+                    value,
+                    "sealed_outcomes_exposed_to_selector",
+                    0,
+                );
             }
             "stage245_science_relation_ingestion.json" => {
                 check_nonempty_string(&mut checks, path, value, "source_sha256");
@@ -1329,6 +1366,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "registry_mutations", 0);
                 check_number(&mut checks, path, value, "world_model_mutations", 0);
+            }
+            "stage288_versioned_source_retrieval.json" => {
+                check_number(&mut checks, path, value, "cases", 800);
+                check_number(&mut checks, path, value, "exact_decisions", 800);
+                check_number(&mut checks, path, value, "authorized_current_claims", 160);
+                check_number(&mut checks, path, value, "copied_lineages_refused", 120);
+                check_number(&mut checks, path, value, "stale_claims_refused", 120);
+                check_number(&mut checks, path, value, "conflicts_refused", 120);
+                check_number(&mut checks, path, value, "missing_refused", 120);
+                check_number(&mut checks, path, value, "budget_refused", 80);
+                check_number(&mut checks, path, value, "scope_refused", 80);
+                check_number(&mut checks, path, value, "retrieval_replays", 800);
+                check_number(&mut checks, path, value, "retrieval_tamper_rejections", 800);
+                check_number(&mut checks, path, value, "policy_replays", 800);
+                check_number(&mut checks, path, value, "policy_tamper_rejections", 800);
+                check_number(&mut checks, path, value, "provenance_complete", 800);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "source_memory_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+                check_number(&mut checks, path, value, "world_model_mutations", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
             }
             "stage254_hle_checkpoint_post_portfolio.json" => {
                 check_number(&mut checks, path, value, "cases", 2500);

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 65,
-  "checks": 824,
-  "passed_checks": 824,
+  "artifacts": 66,
+  "checks": 844,
+  "passed_checks": 844,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3416,6 +3416,106 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "cases == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "exact_decisions == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "authorized_current_claims == 160",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "copied_lineages_refused == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "stale_claims_refused == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "conflicts_refused == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "missing_refused == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "budget_refused == 80",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "scope_refused == 80",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "retrieval_replays == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "retrieval_tamper_rejections == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "policy_replays == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "policy_tamper_rejections == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "provenance_complete == 800",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "source_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "world_model_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage288_versioned_source_retrieval.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4339,6 +4439,10 @@
     [
       "docs/stage287_expanded_curriculum_memory_scale.json",
       "e9d5fa1e0695949212d96bef7b0780dbc0b99b8de08439f78dd7ef5f242afbf2"
+    ],
+    [
+      "docs/stage288_versioned_source_retrieval.json",
+      "ddeb2eecf0cda4485c6b551b3e05f4a04588584b177765e75aa09f558b53c202"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

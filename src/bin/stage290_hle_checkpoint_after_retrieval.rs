@@ -64,6 +64,8 @@ struct Report {
     curriculum_exam_sha256: String,
     runtime_math_cache_present: bool,
     runtime_math_cache_sha256: Option<String>,
+    runtime_stockfish_present: bool,
+    runtime_stockfish_sha256: Option<String>,
     cases: usize,
     correct_authorized: usize,
     incorrect_authorized: usize,
@@ -95,6 +97,25 @@ fn output_dir() -> String {
 
 fn dataset_path() -> String {
     env::var("STAGE290_DATASET").unwrap_or_else(|_| "data/hle.jsonl".into())
+}
+
+fn stockfish_path() -> Option<std::path::PathBuf> {
+    if let Ok(path) = env::var("STAGE290_STOCKFISH") {
+        let path = std::path::PathBuf::from(path);
+        if path.is_file() {
+            return Some(path);
+        }
+    }
+    if let Ok(output) = Command::new("which").arg("stockfish").output() {
+        if output.status.success() {
+            let path = String::from_utf8_lossy(&output.stdout).trim().to_owned();
+            if !path.is_empty() && Path::new(&path).is_file() {
+                return Some(path.into());
+            }
+        }
+    }
+    let local = Path::new(env!("CARGO_MANIFEST_DIR")).join("stockfish");
+    local.is_file().then_some(local)
 }
 
 fn source_hash(path: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -158,6 +179,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let runtime_math_cache_sha256 = runtime_math_cache_present
         .then(|| fs::read(MATH_CACHE).map(|bytes| digest_bytes(&bytes)))
         .transpose()?;
+    let runtime_stockfish = stockfish_path();
+    let runtime_stockfish_present = runtime_stockfish.is_some();
+    let runtime_stockfish_sha256 = runtime_stockfish
+        .as_ref()
+        .map(fs::read)
+        .transpose()?
+        .map(|bytes| digest_bytes(&bytes));
     let producer_commit = Command::new("git")
         .args(["rev-parse", "--short", "HEAD"])
         .output()
@@ -269,6 +297,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         curriculum_exam_sha256,
         runtime_math_cache_present,
         runtime_math_cache_sha256,
+        runtime_stockfish_present,
+        runtime_stockfish_sha256,
         cases,
         correct_authorized,
         incorrect_authorized,
@@ -299,7 +329,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(
         format!("{output}/{MARKDOWN_NAME}"),
         format!(
-            "# Stage 290 — post-retrieval HLE checkpoint\n\nA clean release-candidate evaluation after Stage 289 retrieval-guided investigation. HLE outcomes are used only by the terminal scorer, never by routing or curriculum selection.\n\n* cases: {}\n* correct authorized: {}\n* incorrect authorized / false authorization: {} / {}\n* curriculum signals / pack invocations: {} / {}\n* replay compatibility / not applicable / not recorded: {} / {} / {}\n* worktree clean: {}\n* runtime math cache present / SHA-256: {} / {:?}\n* registry / curriculum mutation: {} / {}\n* HLE outcomes used for routing: {}\n* trace: `{}`\n\nDataset SHA-256: `{}`\nCurriculum manifest SHA-256: `{}`\nStage 289 retrieval report SHA-256: `{}`\n\nReproduce with `cargo run --quiet --bin stage290_hle_checkpoint_after_retrieval`.\n",
+            "# Stage 290 — post-retrieval HLE checkpoint\n\nA clean release-candidate evaluation after Stage 289 retrieval-guided investigation. HLE outcomes are used only by the terminal scorer, never by routing or curriculum selection.\n\n* cases: {}\n* correct authorized: {}\n* incorrect authorized / false authorization: {} / {}\n* curriculum signals / pack invocations: {} / {}\n* replay compatibility / not applicable / not recorded: {} / {} / {}\n* worktree clean: {}\n* runtime math cache present / SHA-256: {} / {:?}\n* runtime Stockfish present / SHA-256: {} / {:?}\n* registry / curriculum mutation: {} / {}\n* HLE outcomes used for routing: {}\n* trace: `{}`\n\nDataset SHA-256: `{}`\nCurriculum manifest SHA-256: `{}`\nStage 289 retrieval report SHA-256: `{}`\n\nReproduce with `cargo run --quiet --bin stage290_hle_checkpoint_after_retrieval`.\n",
             report.cases,
             report.correct_authorized,
             report.incorrect_authorized,
@@ -312,6 +342,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report.worktree_clean,
             report.runtime_math_cache_present,
             report.runtime_math_cache_sha256,
+            report.runtime_stockfish_present,
+            report.runtime_stockfish_sha256,
             report.registry_mutated,
             report.curriculum_mutated,
             report.hle_outcomes_used_for_routing,

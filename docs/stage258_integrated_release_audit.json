@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 67,
-  "checks": 864,
-  "passed_checks": 864,
+  "artifacts": 68,
+  "checks": 878,
+  "passed_checks": 878,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3616,6 +3616,76 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "correct_authorized == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "incorrect_authorized == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "pack_invocations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "replay_compatibility_verified == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "replay_not_applicable == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "replay_not_recorded == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "worktree_clean == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "runtime_math_cache_present == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "runtime_math_cache_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "registry_mutated == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "curriculum_mutated == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "requirement": "hle_outcomes_used_for_routing == false",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4547,6 +4617,10 @@
     [
       "docs/stage289_retrieval_guided_investigation.json",
       "cb2471d22776cd2ca3b16837d75eea7e4798c70aeee55fbe7ff8975293a1cf36"
+    ],
+    [
+      "docs/stage290_hle_checkpoint_after_retrieval.json",
+      "dc2694b3007d47ef8ea344618a47d9f72aa98dca85dec1c1e6272cc4f9840236"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

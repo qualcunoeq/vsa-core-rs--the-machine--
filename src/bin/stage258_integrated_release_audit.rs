@@ -164,6 +164,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage287_expanded_curriculum_memory_scale.json",
         "docs/stage288_versioned_source_retrieval.json",
         "docs/stage289_retrieval_guided_investigation.json",
+        "docs/stage290_hle_checkpoint_after_retrieval.json",
         "docs/stage179_five_domain_math_synthesis.json",
         "docs/stage245_science_relation_ingestion.json",
         "docs/stage247_multimodal_science_routes.json",
@@ -1417,6 +1418,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "registry_mutations", 0);
                 check_number(&mut checks, path, value, "world_model_mutations", 0);
                 check_number(&mut checks, path, value, "hle_questions_read", 0);
+            }
+            "stage290_hle_checkpoint_after_retrieval.json" => {
+                check_number(&mut checks, path, value, "cases", 2500);
+                check_number(&mut checks, path, value, "correct_authorized", 0);
+                check_number(&mut checks, path, value, "incorrect_authorized", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "pack_invocations", 0);
+                check_number(&mut checks, path, value, "replay_compatibility_verified", 0);
+                check_number(&mut checks, path, value, "replay_not_applicable", 2500);
+                check_number(&mut checks, path, value, "replay_not_recorded", 0);
+                check_bool(&mut checks, path, value, "worktree_clean", true);
+                check_bool(&mut checks, path, value, "runtime_math_cache_present", true);
+                check_nonempty_string(&mut checks, path, value, "runtime_math_cache_sha256");
+                check_bool(&mut checks, path, value, "registry_mutated", false);
+                check_bool(&mut checks, path, value, "curriculum_mutated", false);
+                check_bool(
+                    &mut checks,
+                    path,
+                    value,
+                    "hle_outcomes_used_for_routing",
+                    false,
+                );
             }
             "stage254_hle_checkpoint_post_portfolio.json" => {
                 check_number(&mut checks, path, value, "cases", 2500);

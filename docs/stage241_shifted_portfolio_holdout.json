@@ -1,0 +1,21 @@
+{
+  "schema": "stage241-shifted-portfolio-holdout-v1",
+  "corpus_sha256": "8f0994361fb9a495e31752049564723f2e27f9a8b0292c18e62111de56eb62bf",
+  "selected_modules": 3,
+  "selected_utility": 200,
+  "selected_cost": 10,
+  "shifted_cases": 180,
+  "shifted_authorizations": 180,
+  "shifted_exact_decisions": 180,
+  "shifted_replays": 540,
+  "shifted_tamper_rejections": 540,
+  "boundary_cases": 9,
+  "boundary_refusals": 9,
+  "boundary_replays": 27,
+  "boundary_tamper_rejections": 27,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "route_leakage": 0,
+  "manifest_unchanged": true,
+  "live_mutations": 0
+}

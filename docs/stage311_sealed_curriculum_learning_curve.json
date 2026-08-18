@@ -1,0 +1,4051 @@
+{
+  "schema": "stage311-sealed-curriculum-learning-curve-v1",
+  "corpus_sha256": "503ed55fa592a4ee53ae823903c2cdff4830fa859c64c002ca1f780385f77154",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "cases": 500,
+  "development_cases": 280,
+  "validation_cases": 120,
+  "sealed_cases": 100,
+  "supported_cases": 340,
+  "ambiguous_cases": 100,
+  "unsupported_cases": 60,
+  "baseline_authorized": 0,
+  "baseline_sealed_authorized": 0,
+  "post_exact_decisions": 500,
+  "post_authorized": 340,
+  "post_ambiguous_preserved": 100,
+  "post_unsupported_refused": 60,
+  "sealed_exact_decisions": 100,
+  "sealed_authorized": 60,
+  "sealed_ambiguous_preserved": 20,
+  "sealed_unsupported_refused": 20,
+  "selected_modules": [
+    "stage311-economics",
+    "stage311-regression",
+    "stage311-sequences",
+    "stage311-statistics"
+  ],
+  "portfolio_replay_verified": true,
+  "portfolio_tamper_rejected": true,
+  "source_validation_exercises": 80,
+  "source_validation_correct": 80,
+  "source_validation_replays": 80,
+  "source_validation_tamper_rejections": 80,
+  "post_replays": 400,
+  "post_tamper_rejections": 400,
+  "sealed_replays": 100,
+  "sealed_tamper_rejections": 100,
+  "memory_records_appended": 500,
+  "memory_replays": 500,
+  "memory_tamper_rejections": 500,
+  "parent_memory_records": 120000,
+  "clone_memory_records": 120500,
+  "parent_memory_unchanged": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "hle_questions_read": 0,
+  "production_mutations": 0,
+  "exam_cases": [
+    {
+      "id": "stage311-statistics-development-000",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-001",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-002",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-003",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-004",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-005",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-006",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-007",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-008",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-009",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-010",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-011",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-012",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-013",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-014",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-015",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-016",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-017",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-018",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-019",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-020",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 20,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-021",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 21,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-022",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 22,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-023",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 23,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-024",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 24,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-025",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 25,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-026",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 26,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-027",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 27,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-028",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 28,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-029",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 29,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-030",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 30,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-031",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 31,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-032",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 32,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-033",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 33,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-034",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 34,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-035",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 35,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-036",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 36,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-037",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 37,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-038",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 38,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-039",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 39,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-040",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 40,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-041",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 41,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-042",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 42,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-043",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 43,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-044",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 44,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-045",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 45,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-046",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 46,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-047",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 47,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-048",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 48,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-049",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 49,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-development-050",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 50,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-051",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 51,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-052",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 52,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-053",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 53,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-054",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 54,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-055",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 55,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-056",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 56,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-057",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 57,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-058",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 58,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-059",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 59,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-060",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 60,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-061",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 61,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-062",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 62,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-063",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 63,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-064",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 64,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-development-065",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 65,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-development-066",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 66,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-development-067",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 67,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-development-068",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 68,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-development-069",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "development",
+      "local_index": 69,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-validation-000",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-001",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-002",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-003",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-004",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-005",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-006",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-007",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-008",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-009",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-010",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-011",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-012",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-013",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-014",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-015",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-016",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-017",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-018",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-019",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-validation-020",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 20,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-validation-021",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 21,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-validation-022",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 22,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-validation-023",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 23,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-validation-024",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 24,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-validation-025",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 25,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-validation-026",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 26,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-validation-027",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 27,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-validation-028",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 28,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-validation-029",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "validation",
+      "local_index": 29,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-sealed-000",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-001",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-002",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-003",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-004",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-005",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-006",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-007",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-008",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-009",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-010",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-011",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-012",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-013",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-014",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-statistics-sealed-015",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 15,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-sealed-016",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 16,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-sealed-017",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 17,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-sealed-018",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 18,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-sealed-019",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 19,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-statistics-sealed-020",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 20,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-sealed-021",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 21,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-sealed-022",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 22,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-sealed-023",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 23,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-statistics-sealed-024",
+      "module": "statistics",
+      "formula": "arithmetic_mean",
+      "partition": "sealed",
+      "local_index": 24,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-development-000",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-001",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-002",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-003",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-004",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-005",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-006",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-007",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-008",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-009",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-010",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-011",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-012",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-013",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-014",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-015",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-016",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-017",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-018",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-019",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-020",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 20,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-021",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 21,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-022",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 22,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-023",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 23,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-024",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 24,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-025",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 25,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-026",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 26,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-027",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 27,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-028",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 28,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-029",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 29,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-030",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 30,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-031",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 31,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-032",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 32,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-033",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 33,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-034",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 34,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-035",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 35,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-036",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 36,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-037",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 37,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-038",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 38,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-039",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 39,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-040",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 40,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-041",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 41,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-042",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 42,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-043",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 43,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-044",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 44,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-045",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 45,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-046",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 46,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-047",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 47,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-048",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 48,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-049",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 49,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-development-050",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 50,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-051",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 51,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-052",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 52,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-053",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 53,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-054",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 54,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-055",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 55,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-056",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 56,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-057",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 57,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-058",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 58,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-059",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 59,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-060",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 60,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-061",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 61,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-062",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 62,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-063",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 63,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-064",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 64,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-development-065",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 65,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-development-066",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 66,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-development-067",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 67,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-development-068",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 68,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-development-069",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "development",
+      "local_index": 69,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-validation-000",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-001",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-002",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-003",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-004",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-005",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-006",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-007",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-008",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-009",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-010",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-011",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-012",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-013",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-014",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-015",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-016",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-017",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-018",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-019",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-validation-020",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 20,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-validation-021",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 21,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-validation-022",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 22,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-validation-023",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 23,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-validation-024",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 24,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-validation-025",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 25,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-validation-026",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 26,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-validation-027",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 27,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-validation-028",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 28,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-validation-029",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "validation",
+      "local_index": 29,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-sealed-000",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-001",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-002",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-003",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-004",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-005",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-006",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-007",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-008",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-009",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-010",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-011",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-012",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-013",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-014",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-economics-sealed-015",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 15,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-sealed-016",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 16,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-sealed-017",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 17,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-sealed-018",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 18,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-sealed-019",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 19,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-economics-sealed-020",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 20,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-sealed-021",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 21,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-sealed-022",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 22,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-sealed-023",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 23,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-economics-sealed-024",
+      "module": "economics",
+      "formula": "total_revenue",
+      "partition": "sealed",
+      "local_index": 24,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-development-000",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-001",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-002",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-003",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-004",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-005",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-006",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-007",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-008",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-009",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-010",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-011",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-012",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-013",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-014",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-015",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-016",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-017",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-018",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-019",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-020",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 20,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-021",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 21,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-022",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 22,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-023",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 23,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-024",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 24,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-025",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 25,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-026",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 26,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-027",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 27,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-028",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 28,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-029",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 29,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-030",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 30,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-031",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 31,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-032",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 32,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-033",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 33,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-034",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 34,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-035",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 35,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-036",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 36,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-037",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 37,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-038",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 38,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-039",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 39,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-040",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 40,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-041",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 41,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-042",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 42,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-043",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 43,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-044",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 44,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-045",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 45,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-046",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 46,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-047",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 47,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-048",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 48,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-049",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 49,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-development-050",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 50,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-051",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 51,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-052",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 52,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-053",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 53,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-054",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 54,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-055",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 55,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-056",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 56,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-057",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 57,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-058",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 58,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-059",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 59,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-060",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 60,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-061",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 61,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-062",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 62,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-063",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 63,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-064",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 64,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-development-065",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 65,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-development-066",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 66,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-development-067",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 67,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-development-068",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 68,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-development-069",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "development",
+      "local_index": 69,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-validation-000",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-001",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-002",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-003",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-004",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-005",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-006",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-007",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-008",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-009",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-010",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-011",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-012",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-013",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-014",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-015",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-016",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-017",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-018",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-019",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-validation-020",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 20,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-validation-021",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 21,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-validation-022",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 22,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-validation-023",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 23,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-validation-024",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 24,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-validation-025",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 25,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-validation-026",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 26,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-validation-027",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 27,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-validation-028",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 28,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-validation-029",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "validation",
+      "local_index": 29,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-sealed-000",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-001",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-002",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-003",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-004",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-005",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-006",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-007",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-008",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-009",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-010",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-011",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-012",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-013",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-014",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-sequences-sealed-015",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 15,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-sealed-016",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 16,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-sealed-017",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 17,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-sealed-018",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 18,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-sealed-019",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 19,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-sequences-sealed-020",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 20,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-sealed-021",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 21,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-sealed-022",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 22,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-sealed-023",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 23,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-sequences-sealed-024",
+      "module": "sequences",
+      "formula": "arithmetic_nth_term",
+      "partition": "sealed",
+      "local_index": 24,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-development-000",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-001",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-002",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-003",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-004",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-005",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-006",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-007",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-008",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-009",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-010",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-011",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-012",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-013",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-014",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-015",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-016",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-017",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-018",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-019",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-020",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 20,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-021",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 21,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-022",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 22,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-023",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 23,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-024",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 24,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-025",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 25,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-026",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 26,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-027",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 27,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-028",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 28,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-029",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 29,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-030",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 30,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-031",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 31,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-032",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 32,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-033",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 33,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-034",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 34,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-035",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 35,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-036",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 36,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-037",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 37,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-038",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 38,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-039",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 39,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-040",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 40,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-041",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 41,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-042",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 42,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-043",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 43,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-044",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 44,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-045",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 45,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-046",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 46,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-047",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 47,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-048",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 48,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-049",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 49,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-development-050",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 50,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-051",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 51,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-052",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 52,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-053",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 53,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-054",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 54,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-055",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 55,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-056",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 56,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-057",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 57,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-058",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 58,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-059",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 59,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-060",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 60,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-061",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 61,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-062",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 62,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-063",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 63,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-064",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 64,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-development-065",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 65,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-development-066",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 66,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-development-067",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 67,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-development-068",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 68,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-development-069",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "development",
+      "local_index": 69,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-validation-000",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-001",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-002",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-003",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-004",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-005",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-006",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-007",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-008",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-009",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-010",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-011",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-012",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-013",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-014",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-015",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 15,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-016",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 16,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-017",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 17,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-018",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 18,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-019",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 19,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-validation-020",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 20,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-validation-021",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 21,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-validation-022",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 22,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-validation-023",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 23,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-validation-024",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 24,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-validation-025",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 25,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-validation-026",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 26,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-validation-027",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 27,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-validation-028",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 28,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-validation-029",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "validation",
+      "local_index": 29,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-sealed-000",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 0,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-001",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 1,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-002",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 2,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-003",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 3,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-004",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 4,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-005",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 5,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-006",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 6,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-007",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 7,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-008",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 8,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-009",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 9,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-010",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 10,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-011",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 11,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-012",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 12,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-013",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 13,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-014",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 14,
+      "expected": "supported"
+    },
+    {
+      "id": "stage311-regression-sealed-015",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 15,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-sealed-016",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 16,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-sealed-017",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 17,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-sealed-018",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 18,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-sealed-019",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 19,
+      "expected": "ambiguous"
+    },
+    {
+      "id": "stage311-regression-sealed-020",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 20,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-sealed-021",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 21,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-sealed-022",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 22,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-sealed-023",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 23,
+      "expected": "unsupported"
+    },
+    {
+      "id": "stage311-regression-sealed-024",
+      "module": "regression",
+      "formula": "regression_slope",
+      "partition": "sealed",
+      "local_index": 24,
+      "expected": "unsupported"
+    }
+  ]
+}

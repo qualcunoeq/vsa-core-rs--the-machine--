@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 51,
-  "checks": 572,
-  "passed_checks": 572,
+  "artifacts": 52,
+  "checks": 588,
+  "passed_checks": 588,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2426,6 +2426,86 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "release_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "promotions == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "blocked_or_denied == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "regressions_detected == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "rollbacks_applied == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "promotion_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "promotion_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "historical_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "parent_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "clone_only == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage277_portfolio_promotion_rollback.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3035,6 +3115,10 @@
     [
       "docs/stage276_three_candidate_release_candidate.json",
       "c3b1c8bf5daae1d60cd5ad6df8b02292f5c0ddd8d63be93dc5bad454bc86e16a"
+    ],
+    [
+      "docs/stage277_portfolio_promotion_rollback.json",
+      "397fc954f05a62b9427df23c4ec50c27328c859f8c1d4492a73f518e18052475"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

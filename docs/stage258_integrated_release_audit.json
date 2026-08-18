@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 69,
-  "checks": 889,
-  "passed_checks": 889,
+  "artifacts": 70,
+  "checks": 899,
+  "passed_checks": 899,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3741,6 +3741,56 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "supported_artifacts == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "provenance_preserved == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "replay_verified == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage292_visual_geometry_frontend.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4680,6 +4730,10 @@
     [
       "docs/stage291_visual_plot_frontend.json",
       "5532a316e71dbbf4de52689f2b711165644c3331d38b6d55a70520717bccedfa"
+    ],
+    [
+      "docs/stage292_visual_geometry_frontend.json",
+      "66a17bfb24626f15de1d960687858c7071b2f3294ee9412a2b087111c9848702"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

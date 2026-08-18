@@ -20,6 +20,9 @@ pub mod visual_graph;
 #[path = "visual_plot.rs"]
 pub mod visual_plot;
 
+#[path = "visual_geometry.rs"]
+pub mod visual_geometry;
+
 #[path = "visual_source_statistics_bridge.rs"]
 pub mod visual_source_statistics_bridge;
 

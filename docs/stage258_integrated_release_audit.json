@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 56,
-  "checks": 658,
-  "passed_checks": 658,
+  "artifacts": 58,
+  "checks": 685,
+  "passed_checks": 685,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2856,6 +2856,141 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "parent_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "shadow_manifest_hash is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "parent_pack_count == 34",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "shadow_pack_count == 38",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "candidate_ids length == 4",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "validation_passed == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "prerequisite_closure == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "parent_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage282_four_candidate_shadow_manifest.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "dataset_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "shadow_manifest_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "source_modules == 4",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "source_records == 19",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "frontend_replays == 10000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "frontend_tamper_rejections == 10000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "unique_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "correct_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage283_hle_four_candidate_probe.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3485,6 +3620,14 @@
     [
       "docs/stage281_unit_conversion_promotion_rollback.json",
       "645ec30c8ce96f705291acc17f46d092bbe38a948a78dcbd536c4cf20167ab55"
+    ],
+    [
+      "docs/stage282_four_candidate_shadow_manifest.json",
+      "27637f364fbedc8744fbba3e99aea38fb9a8aa8d3e4d6eb1c94ac6a0a9064ab7"
+    ],
+    [
+      "docs/stage283_hle_four_candidate_probe.json",
+      "426bcde5633b350d134237f90c6598c98644e05dca3d37084529492b26cd3511"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

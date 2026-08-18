@@ -1,0 +1,20 @@
+{
+  "schema": "stage229-discovered-source-promotion-v1",
+  "source_report": "docs/stage228_discovered_source_module_campaign.json",
+  "source_report_sha256": "7f3e71c5ab1752d9b7054c36eaa69ffbf46d0e5a05fa12567f3eca0c09ff7299",
+  "source_preflight": true,
+  "discovered_modules": 3,
+  "cases": 18,
+  "exact_decisions": 18,
+  "promotions": 6,
+  "blocked_or_denied": 12,
+  "discovery_replays": 18,
+  "promotion_replays": 18,
+  "promotion_tamper_rejections": 18,
+  "rollbacks": 3,
+  "historical_replays": 3,
+  "world_states_preserved": 18,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "7f10c2cf25406b90aea8613e1fc871d8b0e786bb548046c9b9dbce7e13e9be62"
+}

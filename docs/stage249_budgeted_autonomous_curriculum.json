@@ -1,0 +1,32 @@
+{
+  "schema": "stage249-budgeted-autonomous-curriculum-v1",
+  "corpus_sha256": "07be7bef41e977e63872322beed448fd187a8f3862dbaa51b2f495c39cf1b276",
+  "gap_observations": 960,
+  "proposals": 9,
+  "proposal_replays": 9,
+  "proposal_tamper_rejections": 9,
+  "budget": 20,
+  "selected_modules": 4,
+  "selected_module_ids": [
+    "bounded-combinatorics",
+    "bounded-dynamics",
+    "finite-mobius",
+    "finite-probability"
+  ],
+  "selected_utility": 1680,
+  "selected_cost": 20,
+  "portfolio_replay_verified": true,
+  "portfolio_tamper_rejected": true,
+  "exercise_cases": 480,
+  "selected_authorizations": 240,
+  "unselected_refusals": 240,
+  "exercise_replays": 240,
+  "exercise_tamper_rejections": 240,
+  "clone_records": 240,
+  "parent_memory_records": 0,
+  "parent_memory_unchanged": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_mutations": 0
+}

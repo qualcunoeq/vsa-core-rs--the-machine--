@@ -1,0 +1,18 @@
+{
+  "schema": "stage247-multimodal-science-routes-v1",
+  "corpus_sha256": "7d6a270338b5d075f2a3a3bf1c710abd6ce69f5cf977950406c7828c9f3e1e0e",
+  "cases": 240,
+  "supported_cases": 200,
+  "refused_cases": 40,
+  "exact_decisions": 240,
+  "authorized": 200,
+  "visual_replays": 240,
+  "visual_tamper_rejections": 240,
+  "bridge_emissions": 720,
+  "bridge_replays": 720,
+  "bridge_tamper_rejections": 720,
+  "route_leakage": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_mutations": 0
+}

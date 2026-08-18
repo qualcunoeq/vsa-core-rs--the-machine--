@@ -2,8 +2,8 @@
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
   "artifacts": 21,
-  "checks": 163,
-  "passed_checks": 163,
+  "checks": 164,
+  "passed_checks": 164,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -517,7 +517,12 @@
     },
     {
       "artifact": "docs/stage260_hle_checkpoint_current_curriculum.json",
-      "requirement": "no_signal_short_circuits == 1795",
+      "requirement": "curriculum_candidates == 1347",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage260_hle_checkpoint_current_curriculum.json",
+      "requirement": "no_signal_short_circuits == 1153",
       "passed": true
     },
     {
@@ -877,7 +882,7 @@
     ],
     [
       "docs/stage260_hle_checkpoint_current_curriculum.json",
-      "7374076209d62db39259aec89744e4500745a770604e13dbca772f3bbf4e6ae9"
+      "01bd84399aca4a2ad7ec81d6935c84fda1a46817079a5e194c0d974c2f4f9c61"
     ],
     [
       "docs/source_provenance_integrity.json",

@@ -273,7 +273,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "replay_not_applicable", 2500);
                 check_number(&mut checks, path, value, "replay_not_recorded", 0);
                 check_number(&mut checks, path, value, "timed_out", 1);
-                check_number(&mut checks, path, value, "no_signal_short_circuits", 1795);
+                check_number(&mut checks, path, value, "curriculum_candidates", 1347);
+                check_number(&mut checks, path, value, "no_signal_short_circuits", 1153);
                 check_bool(&mut checks, path, value, "manifest_mutated", false);
             }
             "source_provenance_integrity.json" => {

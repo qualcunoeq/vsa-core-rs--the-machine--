@@ -1,0 +1,21 @@
+{
+  "schema": "stage264-hle-geometry-shadow-probe-v1",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "shadow_manifest_sha256": "ea0e3aaaa57a660ddc79ad03c196ed93a4c19c85546e871e19bf9afadefb47fa",
+  "cases": 2500,
+  "source_records": 5,
+  "frontend_replays": 2500,
+  "frontend_tamper_rejections": 2500,
+  "complete_frontends": 0,
+  "executable_candidates": 0,
+  "unique_shadow_candidates": 0,
+  "correct_shadow_candidates": 0,
+  "incorrect_shadow_candidates_rejected": 0,
+  "ambiguous_or_missing": 2500,
+  "unsupported": 162,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "live_manifest_mutations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "83c0d53912401aa67d58e47eb9c6af5a0286a1be523aa3fea6c7276ef7fdb9b6"
+}

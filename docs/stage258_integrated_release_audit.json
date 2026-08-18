@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 36,
-  "checks": 329,
-  "passed_checks": 329,
+  "artifacts": 37,
+  "checks": 341,
+  "passed_checks": 341,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1356,6 +1356,66 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "dataset_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "shadow_manifest_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "cases == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "source_records == 5",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "frontend_replays == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "frontend_tamper_rejections == 2500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "unique_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "correct_shadow_candidates == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage264_hle_geometry_shadow_probe.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -1768,6 +1828,10 @@
     [
       "docs/stage263_geometry_shadow_manifest.json",
       "ea0e3aaaa57a660ddc79ad03c196ed93a4c19c85546e871e19bf9afadefb47fa"
+    ],
+    [
+      "docs/stage264_hle_geometry_shadow_probe.json",
+      "cfa6422b4336b37ed9257461843af5f87abed51d61453ba211ef05266e837a1f"
     ],
     [
       "docs/source_provenance_integrity.json",

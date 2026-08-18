@@ -12,6 +12,7 @@ use std::collections::BTreeMap;
 use std::env;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
+use std::path::Path;
 use std::process::Command;
 
 use the_machine::router::QuestionRouter;
@@ -21,6 +22,8 @@ const MARKDOWN_NAME: &str = "stage290_hle_checkpoint_after_retrieval.md";
 const TRACE_NAME: &str = "stage290_hle_checkpoint_after_retrieval.trace.jsonl";
 const RETRIEVAL_REPORT: &str = "docs/stage289_retrieval_guided_investigation.json";
 const CURRICULUM_EXAM: &str = "docs/stage_k_sealed_curriculum_exam_5000.json";
+const DATASET_LABEL: &str = "data/hle.jsonl";
+const MATH_CACHE: &str = "data/wikipedia_math_cache.json";
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "snake_case")]
@@ -54,11 +57,13 @@ struct Report {
     checkpoint: &'static str,
     producer_commit: String,
     worktree_clean: bool,
-    dataset: String,
+    dataset: &'static str,
     dataset_sha256: String,
     curriculum_manifest_sha256: String,
     retrieval_report_sha256: String,
     curriculum_exam_sha256: String,
+    runtime_math_cache_present: bool,
+    runtime_math_cache_sha256: Option<String>,
     cases: usize,
     correct_authorized: usize,
     incorrect_authorized: usize,
@@ -149,6 +154,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::create_dir_all(&output)?;
     let dataset = dataset_path();
     let dataset_bytes = fs::read(&dataset)?;
+    let runtime_math_cache_present = Path::new(MATH_CACHE).exists();
+    let runtime_math_cache_sha256 = runtime_math_cache_present
+        .then(|| fs::read(MATH_CACHE).map(|bytes| digest_bytes(&bytes)))
+        .transpose()?;
     let producer_commit = Command::new("git")
         .args(["rev-parse", "--short", "HEAD"])
         .output()
@@ -253,11 +262,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         checkpoint: "post-stage289-retrieval-guided-investigation",
         producer_commit,
         worktree_clean,
-        dataset,
+        dataset: DATASET_LABEL,
         dataset_sha256: digest_bytes(&dataset_bytes),
         curriculum_manifest_sha256: the_machine::curriculum::breadth_first_manifest().replay_hash(),
         retrieval_report_sha256,
         curriculum_exam_sha256,
+        runtime_math_cache_present,
+        runtime_math_cache_sha256,
         cases,
         correct_authorized,
         incorrect_authorized,
@@ -288,7 +299,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(
         format!("{output}/{MARKDOWN_NAME}"),
         format!(
-            "# Stage 290 — post-retrieval HLE checkpoint\n\nA clean release-candidate evaluation after Stage 289 retrieval-guided investigation. HLE outcomes are used only by the terminal scorer, never by routing or curriculum selection.\n\n* cases: {}\n* correct authorized: {}\n* incorrect authorized / false authorization: {} / {}\n* curriculum signals / pack invocations: {} / {}\n* replay compatibility / not applicable / not recorded: {} / {} / {}\n* worktree clean: {}\n* registry / curriculum mutation: {} / {}\n* HLE outcomes used for routing: {}\n* trace: `{}`\n\nDataset SHA-256: `{}`\nCurriculum manifest SHA-256: `{}`\nStage 289 retrieval report SHA-256: `{}`\n\nReproduce with `cargo run --quiet --bin stage290_hle_checkpoint_after_retrieval`.\n",
+            "# Stage 290 — post-retrieval HLE checkpoint\n\nA clean release-candidate evaluation after Stage 289 retrieval-guided investigation. HLE outcomes are used only by the terminal scorer, never by routing or curriculum selection.\n\n* cases: {}\n* correct authorized: {}\n* incorrect authorized / false authorization: {} / {}\n* curriculum signals / pack invocations: {} / {}\n* replay compatibility / not applicable / not recorded: {} / {} / {}\n* worktree clean: {}\n* runtime math cache present / SHA-256: {} / {:?}\n* registry / curriculum mutation: {} / {}\n* HLE outcomes used for routing: {}\n* trace: `{}`\n\nDataset SHA-256: `{}`\nCurriculum manifest SHA-256: `{}`\nStage 289 retrieval report SHA-256: `{}`\n\nReproduce with `cargo run --quiet --bin stage290_hle_checkpoint_after_retrieval`.\n",
             report.cases,
             report.correct_authorized,
             report.incorrect_authorized,
@@ -299,6 +310,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report.replay_not_applicable,
             report.replay_not_recorded,
             report.worktree_clean,
+            report.runtime_math_cache_present,
+            report.runtime_math_cache_sha256,
             report.registry_mutated,
             report.curriculum_mutated,
             report.hle_outcomes_used_for_routing,

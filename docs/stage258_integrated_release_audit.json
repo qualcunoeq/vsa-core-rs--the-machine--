@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 9,
-  "checks": 58,
-  "passed_checks": 58,
+  "artifacts": 10,
+  "checks": 68,
+  "passed_checks": 68,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -201,6 +201,56 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "exact_decisions == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "authorized_supported == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "table_replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "graph_replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "frontend_tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "downstream_tamper_rejected == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_x_multimodal_curriculum_1000.json",
+      "requirement": "production_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
       "requirement": "cases == 5000",
       "passed": true
@@ -325,6 +375,10 @@
     [
       "docs/stage_o_autonomous_breadth_campaign.json",
       "e39826b6dad2a503fa83b4485ff575f599bb59503f767b86c3b566b2e39ab29f"
+    ],
+    [
+      "docs/stage_x_multimodal_curriculum_1000.json",
+      "f7a19c98a3c8bbcfa7c6dbe61b48bf3e038e2ffd10de105e12c4fc887d1bdd18"
     ],
     [
       "docs/stage_k_sealed_curriculum_exam_5000.json",

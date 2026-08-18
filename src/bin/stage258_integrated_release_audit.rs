@@ -80,6 +80,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage_m_continuous_education.json",
         "docs/stage_n_curriculum_learning_curve.json",
         "docs/stage_o_autonomous_breadth_campaign.json",
+        "docs/stage_x_multimodal_curriculum_1000.json",
         "docs/stage_k_sealed_curriculum_exam_5000.json",
         "docs/stage_ab_retrieval_investigation.json",
         "docs/stage254_hle_checkpoint_post_portfolio.json",
@@ -177,6 +178,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     check_number(&mut checks, path, final_stage, "false_authorizations", 0);
                     check_number(&mut checks, path, final_stage, "false_denials", 0);
                 }
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+                check_number(&mut checks, path, value, "production_registry_mutations", 0);
+            }
+            "stage_x_multimodal_curriculum_1000.json" => {
+                check_number(&mut checks, path, value, "exact_decisions", 1000);
+                check_number(&mut checks, path, value, "authorized_supported", 600);
+                check_number(&mut checks, path, value, "table_replay_verified", 1000);
+                check_number(&mut checks, path, value, "graph_replay_verified", 1000);
+                check_number(&mut checks, path, value, "frontend_tamper_rejected", 1000);
+                check_number(&mut checks, path, value, "downstream_tamper_rejected", 300);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "hle_questions_read", 0);
                 check_number(&mut checks, path, value, "production_registry_mutations", 0);
             }

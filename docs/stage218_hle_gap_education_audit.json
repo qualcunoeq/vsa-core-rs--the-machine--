@@ -1,0 +1,27 @@
+{
+  "schema": "stage218-hle-gap-education-audit-v1",
+  "trace_sha256": "c3da954c1c551c5e427f296ea9f07c56b48eb7b339c44f96f32a5aede74fd53e",
+  "trace_cases": 2500,
+  "curriculum_signal_cases": 705,
+  "typed_actionable_gaps": 0,
+  "ambiguous_residuals": 705,
+  "first_failure_counts": {
+    "assumptions_not_established": 8,
+    "authorized_reference_match": 2,
+    "language_normalization": 65,
+    "missing_factual_prerequisite": 451,
+    "missing_specialist_theorem": 87,
+    "no_curriculum_signal": 1614,
+    "unsupported_target_type": 13,
+    "visual_dependency": 260
+  },
+  "campaign_replay_verified": true,
+  "deterministic_rerun": true,
+  "tamper_rejected": true,
+  "manifest_unchanged": true,
+  "selected_modules": 0,
+  "resolved_cases": 0,
+  "remaining_cases": 705,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0
+}

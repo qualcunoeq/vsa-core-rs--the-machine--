@@ -432,6 +432,10 @@ name = "stage308_algebra_number_theory_certificates"
 path = "src/bin/stage308_algebra_number_theory_certificates.rs"
 
 [[bin]]
+name = "stage309_delayed_source_evidence_education"
+path = "src/bin/stage309_delayed_source_evidence_education.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

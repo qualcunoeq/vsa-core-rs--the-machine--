@@ -1,0 +1,75 @@
+{
+  "schema": "stage309-delayed-source-evidence-education-v1",
+  "parent_memory_records": 120000,
+  "clone_memory_records": 120042,
+  "initial_gaps": 120,
+  "resolved_gaps": 80,
+  "remaining_gaps": 40,
+  "rounds": 3,
+  "delayed_catalogs": 2,
+  "discovered_modules": 2,
+  "discovery_replays": 2,
+  "catalog_appends": 2,
+  "catalog_retrievals": 2,
+  "catalog_replays": 2,
+  "catalog_tamper_rejections": 2,
+  "source_exercises": 40,
+  "source_correct": 40,
+  "source_replays": 40,
+  "source_tamper_rejections": 40,
+  "boundary_cases": 10,
+  "boundary_refusals": 10,
+  "boundary_replays": 10,
+  "boundary_tamper_rejections": 10,
+  "memory_receipts": 40,
+  "memory_replays": 40,
+  "memory_tamper_rejections": 40,
+  "parent_memory_unchanged": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_mutations": 0,
+  "hle_questions_read": 0,
+  "rounds_report": [
+    {
+      "round": 0,
+      "input_gaps": 120,
+      "delayed_catalog": null,
+      "catalog_retrieval": "missing",
+      "selected_modules": [],
+      "resolved_gaps": 0,
+      "remaining_gaps": 120,
+      "plan_replay_verified": true,
+      "portfolio_replay_verified": true,
+      "portfolio_tamper_rejected": true
+    },
+    {
+      "round": 1,
+      "input_gaps": 120,
+      "delayed_catalog": "source_derived_finite_statistics",
+      "catalog_retrieval": "unique",
+      "selected_modules": [
+        "stage309-statistics-v3"
+      ],
+      "resolved_gaps": 40,
+      "remaining_gaps": 80,
+      "plan_replay_verified": true,
+      "portfolio_replay_verified": true,
+      "portfolio_tamper_rejected": true
+    },
+    {
+      "round": 2,
+      "input_gaps": 80,
+      "delayed_catalog": "source_derived_bounded_economics",
+      "catalog_retrieval": "unique",
+      "selected_modules": [
+        "stage309-economics-v3"
+      ],
+      "resolved_gaps": 40,
+      "remaining_gaps": 40,
+      "plan_replay_verified": true,
+      "portfolio_replay_verified": true,
+      "portfolio_tamper_rejected": true
+    }
+  ]
+}

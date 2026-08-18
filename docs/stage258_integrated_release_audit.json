@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 60,
-  "checks": 721,
-  "passed_checks": 721,
+  "artifacts": 61,
+  "checks": 742,
+  "passed_checks": 742,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3171,6 +3171,111 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "source_validation_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "development_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "validation_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "sealed_cases == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "boundary_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "baseline_authorized == 480",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "promoted_authorized == 640",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "baseline_exact == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "promoted_exact == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "sealed_baseline_authorized == 180",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "sealed_promoted_authorized == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "sealed_learning_delta == 60",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "baseline_replay == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "promoted_replay == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "promoted_tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage286_self_directed_unit_learning_curve.json",
+      "requirement": "production_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3816,6 +3921,10 @@
     [
       "docs/stage285_technical_gap_prerequisite_discovery.json",
       "a02175db42b95055c9e184e0f40d1b26ec04620acdc4610303a20a2552cc0b80"
+    ],
+    [
+      "docs/stage286_self_directed_unit_learning_curve.json",
+      "792682792fde7720b38969a6ddedf5926e9911bbb9ecb727c050f9160f96b38f"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

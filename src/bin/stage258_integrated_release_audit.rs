@@ -160,6 +160,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage283_hle_four_candidate_probe.json",
         "docs/stage284_curriculum_technical_language_benchmark.json",
         "docs/stage285_technical_gap_prerequisite_discovery.json",
+        "docs/stage286_self_directed_unit_learning_curve.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -1066,6 +1067,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "live_mutations", 0);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage286_self_directed_unit_learning_curve.json" => {
+                check_nonempty_string(&mut checks, path, value, "source_validation_sha256");
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "development_cases", 300);
+                check_number(&mut checks, path, value, "validation_cases", 200);
+                check_number(&mut checks, path, value, "sealed_cases", 300);
+                check_number(&mut checks, path, value, "boundary_cases", 200);
+                check_number(&mut checks, path, value, "baseline_authorized", 480);
+                check_number(&mut checks, path, value, "promoted_authorized", 640);
+                check_number(&mut checks, path, value, "baseline_exact", 1000);
+                check_number(&mut checks, path, value, "promoted_exact", 1000);
+                check_number(&mut checks, path, value, "sealed_baseline_authorized", 180);
+                check_number(&mut checks, path, value, "sealed_promoted_authorized", 240);
+                check_number(&mut checks, path, value, "sealed_learning_delta", 60);
+                check_number(&mut checks, path, value, "baseline_replay", 1000);
+                check_number(&mut checks, path, value, "promoted_replay", 1000);
+                check_number(&mut checks, path, value, "promoted_tamper_rejected", 1000);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+                check_number(&mut checks, path, value, "production_mutations", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

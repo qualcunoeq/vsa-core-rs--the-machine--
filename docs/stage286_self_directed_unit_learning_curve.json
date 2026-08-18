@@ -1,0 +1,66 @@
+{
+  "schema": "stage286-self-directed-unit-learning-curve-v1",
+  "source_validation_sha256": "68c0675139052dc82596bfbd1fdd18fbd374256ef29dd694b5d78491e28ba106",
+  "corpus_sha256": "a78ed33f329bcf57468d5b791d1db262256cfc1f5ff5e2d93549c71e3ce6857a",
+  "cases": 1000,
+  "development_cases": 300,
+  "validation_cases": 200,
+  "sealed_cases": 300,
+  "boundary_cases": 200,
+  "baseline_authorized": 480,
+  "promoted_authorized": 640,
+  "baseline_exact": 1000,
+  "promoted_exact": 1000,
+  "sealed_baseline_authorized": 180,
+  "sealed_promoted_authorized": 240,
+  "sealed_learning_delta": 60,
+  "baseline_replay": 1000,
+  "promoted_replay": 1000,
+  "promoted_tamper_rejected": 1000,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "hle_questions_read": 0,
+  "production_mutations": 0,
+  "partitions": {
+    "Boundary": {
+      "cases": 200,
+      "baseline_exact": 200,
+      "promoted_exact": 200,
+      "baseline_authorized": 0,
+      "promoted_authorized": 0,
+      "baseline_replay": 200,
+      "promoted_replay": 200,
+      "promoted_tamper_rejected": 200
+    },
+    "Development": {
+      "cases": 300,
+      "baseline_exact": 300,
+      "promoted_exact": 300,
+      "baseline_authorized": 180,
+      "promoted_authorized": 240,
+      "baseline_replay": 300,
+      "promoted_replay": 300,
+      "promoted_tamper_rejected": 300
+    },
+    "Sealed": {
+      "cases": 300,
+      "baseline_exact": 300,
+      "promoted_exact": 300,
+      "baseline_authorized": 180,
+      "promoted_authorized": 240,
+      "baseline_replay": 300,
+      "promoted_replay": 300,
+      "promoted_tamper_rejected": 300
+    },
+    "Validation": {
+      "cases": 200,
+      "baseline_exact": 200,
+      "promoted_exact": 200,
+      "baseline_authorized": 120,
+      "promoted_authorized": 160,
+      "baseline_replay": 200,
+      "promoted_replay": 200,
+      "promoted_tamper_rejected": 200
+    }
+  }
+}

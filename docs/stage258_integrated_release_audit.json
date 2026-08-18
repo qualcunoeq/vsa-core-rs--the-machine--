@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 34,
-  "checks": 293,
-  "passed_checks": 293,
+  "artifacts": 35,
+  "checks": 315,
+  "passed_checks": 315,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1176,6 +1176,116 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "candidate_id matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "current_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "evidence_artifacts == 12",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "source_development_cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "source_holdout_cases == 60",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "language_transfer_cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "composition_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "route_blind_cases == 3000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "memory_backed_cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "sealed_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "sealed_learning_delta == 30",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "admission_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "promotion_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "rollback_cases == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "prerequisite_closures == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "all_evidence_checks_passed == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "candidate_present_in_current_manifest == false",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage262_source_geometry_candidate_selection.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/source_provenance_integrity.json",
       "requirement": "valid_citations == 240",
       "passed": true
@@ -1580,6 +1690,10 @@
     [
       "docs/stage174_sealed_curriculum_learning_curve.json",
       "09dcc39e4cfc0a9c8b8d9b3ce0a811937b1f342240d60c3ac5201b9ccf76f9b9"
+    ],
+    [
+      "docs/stage262_source_geometry_candidate_selection.json",
+      "3e4ba48a23a92f00548e6273965552ca21cecd69fa8b4a103e4c6c9e8b343086"
     ],
     [
       "docs/source_provenance_integrity.json",

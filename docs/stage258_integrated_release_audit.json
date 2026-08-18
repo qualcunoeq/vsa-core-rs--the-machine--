@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 58,
-  "checks": 685,
-  "passed_checks": 685,
+  "artifacts": 59,
+  "checks": 702,
+  "passed_checks": 702,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2991,6 +2991,91 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "cases == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "development_cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "validation_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "sealed_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "boundary_cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "exact_decisions == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "authorized == 840",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "ambiguity_preserved == 580",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "unsupported_refusals == 580",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "replay_verified == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "tamper_rejected == 2000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage284_curriculum_technical_language_benchmark.json",
+      "requirement": "production_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3628,6 +3713,10 @@
     [
       "docs/stage283_hle_four_candidate_probe.json",
       "426bcde5633b350d134237f90c6598c98644e05dca3d37084529492b26cd3511"
+    ],
+    [
+      "docs/stage284_curriculum_technical_language_benchmark.json",
+      "46d7a304fd70b5ae00ae11c03c5a706b9210fdd8c44853a380a2c0c8dc0ed1b3"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

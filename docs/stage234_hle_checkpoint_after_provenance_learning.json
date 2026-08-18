@@ -1,0 +1,25 @@
+{
+  "schema": "stage234-hle-checkpoint-after-provenance-learning-v1",
+  "checkpoint": "post-provenance-derived-shadow-learning",
+  "producer_commit": "bf8e255",
+  "source_learning_report_sha256": "b3f27e91b2133d4d70a9b4fbb62db6f8cadcb58a0449947723ee3b891451b991",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "cases": 2500,
+  "correct_authorized": 2,
+  "incorrect_authorized": 0,
+  "false_authorizations": 0,
+  "curriculum_signals": 506,
+  "live_capability_invocations": 0,
+  "replay_verified": 2,
+  "replay_not_applicable": 2498,
+  "replay_mismatches": 0,
+  "terminal_counts": {
+    "correct_authorized": 2,
+    "no_curriculum_signal": 1773,
+    "unsupported_or_unresolved": 465,
+    "visual_input_required": 260
+  },
+  "registry_mutations": 0,
+  "source_memory_mutations": 0
+}

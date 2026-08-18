@@ -1,0 +1,23 @@
+{
+  "schema": "stage278-unit-conversion-shadow-validation-v1",
+  "source_sha256": "c69295d239b6149cf514bec1a3269fcd6244ec533829cf645e0f82a32a679d1e",
+  "corpus_sha256": "f5783191f4dff5901e26b4d54d455386fcd70b6f29da2cb8c39a06c1aaa923b5",
+  "source_records": 4,
+  "cases": 600,
+  "supported_cases": 360,
+  "ambiguous_cases": 120,
+  "unsupported_cases": 120,
+  "exact_decisions": 600,
+  "supported_authorized": 360,
+  "supported_replays": 360,
+  "supported_tamper_rejections": 360,
+  "all_replays": 600,
+  "all_tamper_rejections": 600,
+  "provenance_preserved": 600,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_mutations": 0,
+  "registry_mutations": 0,
+  "production_authorizations": 0,
+  "hle_questions_read": 0
+}

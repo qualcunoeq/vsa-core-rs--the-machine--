@@ -1,0 +1,1046 @@
+{
+  "schema": "stage279-unit-conversion-shadow-manifest-v1",
+  "parent_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
+  "shadow_manifest_hash": "c0086d4ac2b5715498be71d6ffbeb784bd8a97c793b09d93291a4abfa6af779c",
+  "parent_pack_count": 34,
+  "shadow_pack_count": 35,
+  "candidate_id": "source_derived_bounded_unit_conversion",
+  "candidate_status": "shadow_validated",
+  "source_evidence": [
+    "docs/sources/openstax_unit_conversion_catalog.txt",
+    "docs/stage278_unit_conversion_shadow_validation.json"
+  ],
+  "validation_passed": true,
+  "prerequisite_closure": true,
+  "parent_unchanged": true,
+  "shadow_only": true,
+  "live_manifest_mutations": 0,
+  "live_registry_mutations": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest": {
+    "schema_version": "breadth-first-curriculum-v1",
+    "policy": "shadow planning only; source education, promotion, and routing require later governed gates",
+    "packs": [
+      {
+        "id": "classical_mechanics",
+        "title": "Classical mechanics foundations",
+        "status": "shadow_validated",
+        "prerequisites": [],
+        "reusable_artifacts": [
+          "typed_physical_law",
+          "unit_checked_equation"
+        ],
+        "source_requirements": [
+          "authoritative textbook or primary source"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "existing externally validated pack retained as substrate evidence"
+      },
+      {
+        "id": "linear_algebra_spectral",
+        "title": "Linear algebra and spectral theory",
+        "status": "shadow_validated",
+        "prerequisites": [],
+        "reusable_artifacts": [
+          "matrix_artifact",
+          "linear_map",
+          "spectrum"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first planned pack; maximizes bridge reuse"
+      },
+      {
+        "id": "probability_stochastic",
+        "title": "Probability and stochastic processes",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "random_variable",
+          "distribution",
+          "expectation"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "build after typed linear objects and transformations"
+      },
+      {
+        "id": "finite_markov",
+        "title": "Bounded finite Markov chains",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "row_stochastic_transition",
+          "finite_horizon_trace",
+          "two_state_stationary"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "extend finite probability with explicit exact transition semantics"
+      },
+      {
+        "id": "finite_markov_stationary_general",
+        "title": "Bounded exact finite stationary distributions",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "finite_markov",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "stationary_distribution_up_to_four_states",
+          "exact_rank_uniqueness",
+          "stationary_residual_certificate"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "separate exact linear-system extension; the historical two-state Markov contract remains immutable"
+      },
+      {
+        "id": "finite_markov_hitting",
+        "title": "Bounded exact finite hitting probabilities",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "finite_markov_stationary_general"
+        ],
+        "reusable_artifacts": [
+          "target_before_avoid_probability",
+          "statewise_hitting_certificate",
+          "initial_hitting_probability"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "explicit target/avoid boundary with exact transient-state equations"
+      },
+      {
+        "id": "real_complex_analysis",
+        "title": "Real and complex analysis",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "limit",
+          "series",
+          "analytic_function"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "requires explicit domain and convergence artifacts"
+      },
+      {
+        "id": "graph_theory",
+        "title": "Graph theory and spectral inequalities",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "finite_graph",
+          "cut",
+          "graph_spectrum"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "supports reusable combinatorial and spectral bridges"
+      },
+      {
+        "id": "abstract_algebra",
+        "title": "Abstract algebra",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "group",
+          "ring",
+          "homomorphism"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "requires typed algebraic structures rather than labels"
+      },
+      {
+        "id": "elementary_number_theory",
+        "title": "Elementary number theory",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "gcd_bezout",
+          "congruence_class",
+          "crt_class",
+          "totient"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "reuse finite modular and cyclic artifacts before advanced number theory"
+      },
+      {
+        "id": "combinatorics",
+        "title": "Bounded combinatorics",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic",
+          "graph_theory",
+          "elementary_number_theory"
+        ],
+        "reusable_artifacts": [
+          "permutation_count",
+          "combination_count",
+          "multinomial_count",
+          "inclusion_exclusion_count",
+          "surjection_count"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "finite exact counting substrate for probability, graph, and arithmetic composition"
+      },
+      {
+        "id": "ordinary_differential_equations",
+        "title": "Bounded ordinary differential equations",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "linear_algebra_spectral",
+          "real_complex_analysis"
+        ],
+        "reusable_artifacts": [
+          "exact_constant_derivative",
+          "affine_linear_solution",
+          "ode_trace"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "bounded continuous-time substrate after exact calculus and theorem contracts"
+      },
+      {
+        "id": "bounded_calculus",
+        "title": "Bounded exact one-variable calculus",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "real_complex_analysis"
+        ],
+        "reusable_artifacts": [
+          "derivative",
+          "integral",
+          "limit"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "exact symbolic continuous operations under explicit domain contracts"
+      },
+      {
+        "id": "source_formula_sequences",
+        "title": "Source-derived sequences and series",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "combinatorics",
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "arithmetic_nth_term",
+          "arithmetic_partial_sum",
+          "geometric_nth_term",
+          "geometric_partial_sum"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "declarative source records executed by a generic expression interpreter"
+      },
+      {
+        "id": "source_derived_science",
+        "title": "Source-derived bounded classical science laws",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "classical_mechanics",
+          "ordinary_differential_equations",
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "ideal_gas_pressure",
+          "first_law_delta_u",
+          "kinetic_energy",
+          "hooke_force"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-cited law records with generic exact rational execution"
+      },
+      {
+        "id": "source_derived_chemistry",
+        "title": "Source-derived bounded chemistry",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_science"
+        ],
+        "reusable_artifacts": [
+          "molecular_formula",
+          "balanced_reaction",
+          "stoichiometric_ratio",
+          "element_count_vector"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived domain with molecular and reaction representations"
+      },
+      {
+        "id": "source_derived_biology",
+        "title": "Source-derived bounded molecular biology",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_chemistry"
+        ],
+        "reusable_artifacts": [
+          "dna_sequence",
+          "complementary_pair",
+          "base_composition"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived biology domain with explicit nucleotide representations"
+      },
+      {
+        "id": "source_derived_finite_statistics",
+        "title": "Source-derived finite statistics",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic",
+          "source_formula_sequences"
+        ],
+        "reusable_artifacts": [
+          "arithmetic_mean",
+          "weighted_mean",
+          "bernoulli_variance",
+          "binomial_expected_value",
+          "binomial_variance"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first new source-derived domain executed by the generic formula catalog runtime"
+      },
+      {
+        "id": "source_derived_finite_regression",
+        "title": "Source-derived finite regression diagnostics",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_finite_statistics"
+        ],
+        "reusable_artifacts": [
+          "regression_slope",
+          "regression_intercept",
+          "regression_fitted_value",
+          "regression_residual",
+          "regression_r_squared"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-derived regression relations executed by the generic formula catalog runtime"
+      },
+      {
+        "id": "source_derived_linear_interpolation",
+        "title": "Source-derived bounded linear interpolation",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "linear_interpolation",
+          "bounded_affine_formula"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived interpolation domain validated on an untouched transfer partition"
+      },
+      {
+        "id": "source_derived_bayes_rule",
+        "title": "Source-derived bounded Bayes rule",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "probability_stochastic"
+        ],
+        "reusable_artifacts": [
+          "prior_probability",
+          "likelihood",
+          "evidence",
+          "posterior_probability"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "second independent source-derived domain with an exact finite-probability bridge"
+      },
+      {
+        "id": "source_derived_finite_set_operations",
+        "title": "Source-derived bounded finite-set operations",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "combinatorics",
+          "probability_stochastic"
+        ],
+        "reusable_artifacts": [
+          "finite_set",
+          "set_union",
+          "set_intersection",
+          "set_difference",
+          "set_complement",
+          "set_cardinality"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "OpenStax-derived finite set semantics with explicit universe and deterministic operations"
+      },
+      {
+        "id": "source_derived_bounded_counting",
+        "title": "Source-derived bounded counting principles",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "combinatorics",
+          "source_derived_finite_set_operations"
+        ],
+        "reusable_artifacts": [
+          "exact_product_count",
+          "factorial",
+          "ordered_permutation_count",
+          "unordered_combination_count"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "OpenStax-derived distinction between ordered and unordered finite selection"
+      },
+      {
+        "id": "source_derived_bounded_truth_tables",
+        "title": "Source-derived bounded propositional truth tables",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_bounded_counting"
+        ],
+        "reusable_artifacts": [
+          "boolean_expression",
+          "truth_table",
+          "tautology",
+          "contradiction",
+          "logical_equivalence"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "OpenStax-derived finite Boolean evaluation and exhaustive validity checks"
+      },
+      {
+        "id": "polynomial_algebra",
+        "title": "Bounded polynomial algebra over prime fields",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra",
+          "elementary_number_theory",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "polynomial_arithmetic",
+          "polynomial_division",
+          "polynomial_gcd",
+          "finite_field_roots",
+          "quadratic_factorization"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "finite-field polynomial artifacts bridge algebra, arithmetic, and linear maps"
+      },
+      {
+        "id": "source_derived_complex_arithmetic",
+        "title": "Source-derived bounded complex arithmetic",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "complex_pair",
+          "complex_conjugate",
+          "complex_norm_squared",
+          "complex_division"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first externally sourced domain acquired after the hand-built foundations; generic paired formula execution"
+      },
+      {
+        "id": "bounded_complex_analysis",
+        "title": "Bounded exact complex-analysis theorem contracts",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_complex_arithmetic",
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "complex_polynomial_value",
+          "complex_polynomial_derivative",
+          "cauchy_riemann_certificate",
+          "affine_holomorphic_derivative"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-attributed rectangular theorem boundary; polar, contour, and infinite semantics remain separate"
+      },
+      {
+        "id": "source_derived_finite_topology",
+        "title": "Source-derived bounded finite topology",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "finite_topology",
+          "open_set",
+          "closed_set",
+          "interior",
+          "closure"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "first source-derived domain acquired from an attributed topology definition; finite-set operations only"
+      },
+      {
+        "id": "source_derived_finite_metric",
+        "title": "Source-derived bounded finite metric spaces",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_finite_topology"
+        ],
+        "reusable_artifacts": [
+          "finite_metric",
+          "distance",
+          "open_ball",
+          "diameter"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-attributed metric axioms executed over explicit finite distance tables"
+      },
+      {
+        "id": "topology",
+        "title": "Bounded simplicial topology and homology",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "source_derived_finite_topology",
+          "linear_algebra_spectral"
+        ],
+        "reusable_artifacts": [
+          "finite_simplicial_complex",
+          "boundary_matrix_f2",
+          "betti_numbers",
+          "euler_characteristic"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "validated finite simplicial extension with explicit F_2 and dimension bounds"
+      },
+      {
+        "id": "bounded_dirichlet_characters",
+        "title": "Bounded finite Dirichlet characters",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "elementary_number_theory",
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "finite_character",
+          "root_of_unity_value",
+          "character_partial_sum",
+          "orthogonality_certificate"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "finite exact character foundation; asymptotic number theory remains separate"
+      },
+      {
+        "id": "bounded_arithmetic_functions",
+        "title": "Bounded arithmetic functions",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "elementary_number_theory",
+          "real_complex_analysis"
+        ],
+        "reusable_artifacts": [
+          "divisor_certificate",
+          "mobius_value",
+          "prime_counting_value"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-attributed finite arithmetic functions with explicit trial-factorization bounds"
+      },
+      {
+        "id": "source_derived_mobius",
+        "title": "Source-derived finite Möbius inversion",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "elementary_number_theory",
+          "combinatorics",
+          "bounded_arithmetic_functions"
+        ],
+        "reusable_artifacts": [
+          "mobius_inversion_sequence",
+          "divisor_convolution_sequence",
+          "mobius_frontend_request"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-derived finite divisor convolution with bounded technical-language lowering; asymptotic number theory remains separate"
+      },
+      {
+        "id": "number_theory",
+        "title": "Number theory",
+        "status": "planned",
+        "prerequisites": [
+          "real_complex_analysis",
+          "abstract_algebra"
+        ],
+        "reusable_artifacts": [
+          "integer_relation",
+          "character",
+          "asymptotic_count"
+        ],
+        "source_requirements": [
+          "independently selected authoritative sources",
+          "explicit assumptions, validity domains, and notation"
+        ],
+        "validation_gates": {
+          "authoritative_sources": false,
+          "independent_development_corpus": false,
+          "boundary_corpus": false,
+          "pressure_corpus": false,
+          "replay_verified": false,
+          "zero_false_authorization": false,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "defer until asymptotic and algebraic prerequisites are validated"
+      },
+      {
+        "id": "source_derived_bounded_unit_conversion",
+        "title": "Source-derived bounded unit conversion",
+        "status": "shadow_validated",
+        "prerequisites": [
+          "bounded_calculus"
+        ],
+        "reusable_artifacts": [
+          "typed_unit_conversion",
+          "exact_conversion_result",
+          "unit_conversion_provenance"
+        ],
+        "source_requirements": [
+          "docs/sources/openstax_unit_conversion_catalog.txt",
+          "docs/stage278_unit_conversion_shadow_validation.json"
+        ],
+        "validation_gates": {
+          "authoritative_sources": true,
+          "independent_development_corpus": true,
+          "boundary_corpus": true,
+          "pressure_corpus": true,
+          "replay_verified": true,
+          "zero_false_authorization": true,
+          "frozen_hle_holdout": true
+        },
+        "hle_policy": "HLE remains a frozen diagnostic holdout; never development data",
+        "selection_reason": "source-backed bounded measurement utility; clone-only staging after independent validation"
+      }
+    ]
+  }
+}

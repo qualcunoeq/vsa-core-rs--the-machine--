@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 52,
-  "checks": 588,
-  "passed_checks": 588,
+  "artifacts": 55,
+  "checks": 642,
+  "passed_checks": 642,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2506,6 +2506,276 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "source_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "source_records == 4",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "supported_cases == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "ambiguous_cases == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "unsupported_cases == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "exact_decisions == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "supported_authorized == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "supported_replays == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "supported_tamper_rejections == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "all_replays == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "all_tamper_rejections == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "provenance_preserved == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage278_unit_conversion_shadow_validation.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "parent_manifest_hash matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "shadow_manifest_hash is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "parent_pack_count == 34",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "shadow_pack_count == 35",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "candidate_id matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "validation_passed == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "prerequisite_closure == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "parent_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "shadow_only == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage279_unit_conversion_shadow_manifest.json",
+      "requirement": "source_evidence length == 2",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "source_modules == 4",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "source_records == 19",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "selected_modules == 4",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "development_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "validation_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "sealed_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "boundary_cases == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "exact_decisions == 1600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "authorized == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "sealed_exact == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "sealed_authorized == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "boundary_refusals == 400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "frontend_replays == 6400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "tamper_rejections == 6400",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage280_four_candidate_sealed_benchmark.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3119,6 +3389,18 @@
     [
       "docs/stage277_portfolio_promotion_rollback.json",
       "397fc954f05a62b9427df23c4ec50c27328c859f8c1d4492a73f518e18052475"
+    ],
+    [
+      "docs/stage278_unit_conversion_shadow_validation.json",
+      "68c0675139052dc82596bfbd1fdd18fbd374256ef29dd694b5d78491e28ba106"
+    ],
+    [
+      "docs/stage279_unit_conversion_shadow_manifest.json",
+      "c2c0b267d867890e50180465faacb0667805dad001e4b673cfc2bf64d5e1fc0a"
+    ],
+    [
+      "docs/stage280_four_candidate_sealed_benchmark.json",
+      "12e1af7d891575b941607a62a0860a99a4793534a0c92d8ddd83d014cf7b35cc"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

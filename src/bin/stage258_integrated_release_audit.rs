@@ -152,6 +152,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage275_health_ratio_promotion_rollback.json",
         "docs/stage276_three_candidate_release_candidate.json",
         "docs/stage277_portfolio_promotion_rollback.json",
+        "docs/stage278_unit_conversion_shadow_validation.json",
+        "docs/stage279_unit_conversion_shadow_manifest.json",
+        "docs/stage280_four_candidate_sealed_benchmark.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -891,6 +894,78 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "live_manifest_mutations", 0);
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage278_unit_conversion_shadow_validation.json" => {
+                check_nonempty_string(&mut checks, path, value, "source_sha256");
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "source_records", 4);
+                check_number(&mut checks, path, value, "cases", 600);
+                check_number(&mut checks, path, value, "supported_cases", 360);
+                check_number(&mut checks, path, value, "ambiguous_cases", 120);
+                check_number(&mut checks, path, value, "unsupported_cases", 120);
+                check_number(&mut checks, path, value, "exact_decisions", 600);
+                check_number(&mut checks, path, value, "supported_authorized", 360);
+                check_number(&mut checks, path, value, "supported_replays", 360);
+                check_number(&mut checks, path, value, "supported_tamper_rejections", 360);
+                check_number(&mut checks, path, value, "all_replays", 600);
+                check_number(&mut checks, path, value, "all_tamper_rejections", 600);
+                check_number(&mut checks, path, value, "provenance_preserved", 600);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "manifest_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+                check_number(&mut checks, path, value, "production_authorizations", 0);
+                check_number(&mut checks, path, value, "hle_questions_read", 0);
+            }
+            "stage279_unit_conversion_shadow_manifest.json" => {
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "parent_manifest_hash",
+                    &manifest.replay_hash(),
+                );
+                check_nonempty_string(&mut checks, path, value, "shadow_manifest_hash");
+                check_number(&mut checks, path, value, "parent_pack_count", 34);
+                check_number(&mut checks, path, value, "shadow_pack_count", 35);
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "candidate_id",
+                    "source_derived_bounded_unit_conversion",
+                );
+                check_bool(&mut checks, path, value, "validation_passed", true);
+                check_bool(&mut checks, path, value, "prerequisite_closure", true);
+                check_bool(&mut checks, path, value, "parent_unchanged", true);
+                check_bool(&mut checks, path, value, "shadow_only", true);
+                check_number(&mut checks, path, value, "live_manifest_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_array_len(&mut checks, path, value, "source_evidence", 2);
+            }
+            "stage280_four_candidate_sealed_benchmark.json" => {
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "source_modules", 4);
+                check_number(&mut checks, path, value, "source_records", 19);
+                check_number(&mut checks, path, value, "selected_modules", 4);
+                check_number(&mut checks, path, value, "development_cases", 400);
+                check_number(&mut checks, path, value, "validation_cases", 400);
+                check_number(&mut checks, path, value, "sealed_cases", 400);
+                check_number(&mut checks, path, value, "boundary_cases", 400);
+                check_number(&mut checks, path, value, "exact_decisions", 1600);
+                check_number(&mut checks, path, value, "authorized", 1200);
+                check_number(&mut checks, path, value, "sealed_exact", 400);
+                check_number(&mut checks, path, value, "sealed_authorized", 400);
+                check_number(&mut checks, path, value, "boundary_refusals", 400);
+                check_number(&mut checks, path, value, "frontend_replays", 6400);
+                check_number(&mut checks, path, value, "tamper_rejections", 6400);
+                check_number(&mut checks, path, value, "route_leakage", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "manifest_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 62,
-  "checks": 770,
-  "passed_checks": 770,
+  "artifacts": 63,
+  "checks": 794,
+  "passed_checks": 794,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3416,6 +3416,126 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "cases == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "development_cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "validation_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "sealed_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "supported_cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "ambiguous_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "unsupported_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "exact_decisions == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "authorized_answers == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "replay_verified == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "emitted_intermediate_artifacts == 4120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "replayed_intermediate_artifacts == 4120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "tamper_rejected_intermediate_artifacts == 4120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "alternative_routes_applicable == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "alternative_routes_agreed == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "sealed_exact_decisions == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "sealed_authorized_answers == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "production_registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "curriculum_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage179_five_domain_math_synthesis.json",
+      "requirement": "sealed_outcomes_exposed_to_selector == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -4069,6 +4189,10 @@
     [
       "docs/stage287_expanded_curriculum_memory_scale.json",
       "e9d5fa1e0695949212d96bef7b0780dbc0b99b8de08439f78dd7ef5f242afbf2"
+    ],
+    [
+      "docs/stage179_five_domain_math_synthesis.json",
+      "7c1357a5cc288f27a9a15daea87b7e5c6daa35ac25fa55c1c38c20e2734e591b"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

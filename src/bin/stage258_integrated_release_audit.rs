@@ -162,6 +162,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage285_technical_gap_prerequisite_discovery.json",
         "docs/stage286_self_directed_unit_learning_curve.json",
         "docs/stage287_expanded_curriculum_memory_scale.json",
+        "docs/stage179_five_domain_math_synthesis.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -1121,6 +1122,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "live_memory_mutations", 0);
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
+            }
+            "stage179_five_domain_math_synthesis.json" => {
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "cases", 1000);
+                check_number(&mut checks, path, value, "development_cases", 600);
+                check_number(&mut checks, path, value, "validation_cases", 200);
+                check_number(&mut checks, path, value, "sealed_cases", 200);
+                check_number(&mut checks, path, value, "supported_cases", 600);
+                check_number(&mut checks, path, value, "ambiguous_cases", 200);
+                check_number(&mut checks, path, value, "unsupported_cases", 200);
+                check_number(&mut checks, path, value, "exact_decisions", 1000);
+                check_number(&mut checks, path, value, "authorized_answers", 600);
+                check_number(&mut checks, path, value, "replay_verified", 1000);
+                check_number(&mut checks, path, value, "tamper_rejected", 1000);
+                check_number(&mut checks, path, value, "emitted_intermediate_artifacts", 4120);
+                check_number(&mut checks, path, value, "replayed_intermediate_artifacts", 4120);
+                check_number(&mut checks, path, value, "tamper_rejected_intermediate_artifacts", 4120);
+                check_number(&mut checks, path, value, "alternative_routes_applicable", 600);
+                check_number(&mut checks, path, value, "alternative_routes_agreed", 600);
+                check_number(&mut checks, path, value, "sealed_exact_decisions", 200);
+                check_number(&mut checks, path, value, "sealed_authorized_answers", 120);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "production_registry_mutations", 0);
+                check_number(&mut checks, path, value, "curriculum_manifest_mutations", 0);
+                check_number(&mut checks, path, value, "sealed_outcomes_exposed_to_selector", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

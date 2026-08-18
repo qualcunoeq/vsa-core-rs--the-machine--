@@ -1,0 +1,18 @@
+{
+  "schema": "stage223-source-memory-gap-planner-v1",
+  "observations": 200,
+  "observation_replays": 200,
+  "exact_gap_clusters": 10,
+  "plans": 7,
+  "plans_replayed": 7,
+  "exact_coverage_plans": 6,
+  "promotable_plans": 5,
+  "no_overlap_plans": 1,
+  "incomplete_source_plans_blocked": 1,
+  "tamper_rejections": 7,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "live_manifest_mutations": 0,
+  "corpus_sha256": "596797a767dc4d4b61f20abdee20112b9bda3da41c5890f3f62740fb7f89142b",
+  "run": "cargo run --quiet --bin stage223_source_memory_gap_planner"
+}

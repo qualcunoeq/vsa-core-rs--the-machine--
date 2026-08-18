@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 47,
-  "checks": 503,
-  "passed_checks": 503,
+  "artifacts": 48,
+  "checks": 524,
+  "passed_checks": 524,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2081,6 +2081,111 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "source_modules == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "source_records == 15",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "selected_modules == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "cases == 5000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "development_cases == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "validation_cases == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "sealed_cases == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "boundary_cases == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "exact_decisions == 5000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "authorized == 4500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "sealed_exact == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "sealed_authorized == 1500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "boundary_refusals == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "frontend_replays == 15000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "tamper_rejections == 15000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage273_staged_portfolio_exam_5000.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -2674,6 +2779,10 @@
     [
       "docs/stage272_three_candidate_sealed_benchmark.json",
       "86d8701f69a0900b71c61550ed1209cf6084b7040ba6a3f27725f0264fb396ee"
+    ],
+    [
+      "docs/stage273_staged_portfolio_exam_5000.json",
+      "e7f0f6ac4801a328204f8218b288d933f8065894e8b063e0a357842c7d0c549b"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

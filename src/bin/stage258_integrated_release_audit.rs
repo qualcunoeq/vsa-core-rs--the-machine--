@@ -147,6 +147,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage270_health_ratio_shadow_validation.json",
         "docs/stage271_three_candidate_shadow_manifest.json",
         "docs/stage272_three_candidate_sealed_benchmark.json",
+        "docs/stage273_staged_portfolio_exam_5000.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -780,6 +781,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "boundary_refusals", 300);
                 check_number(&mut checks, path, value, "frontend_replays", 3600);
                 check_number(&mut checks, path, value, "tamper_rejections", 3600);
+                check_number(&mut checks, path, value, "route_leakage", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "manifest_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+            }
+            "stage273_staged_portfolio_exam_5000.json" => {
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "source_modules", 3);
+                check_number(&mut checks, path, value, "source_records", 15);
+                check_number(&mut checks, path, value, "selected_modules", 3);
+                check_number(&mut checks, path, value, "cases", 5000);
+                check_number(&mut checks, path, value, "development_cases", 1500);
+                check_number(&mut checks, path, value, "validation_cases", 1500);
+                check_number(&mut checks, path, value, "sealed_cases", 1500);
+                check_number(&mut checks, path, value, "boundary_cases", 500);
+                check_number(&mut checks, path, value, "exact_decisions", 5000);
+                check_number(&mut checks, path, value, "authorized", 4500);
+                check_number(&mut checks, path, value, "sealed_exact", 1500);
+                check_number(&mut checks, path, value, "sealed_authorized", 1500);
+                check_number(&mut checks, path, value, "boundary_refusals", 500);
+                check_number(&mut checks, path, value, "frontend_replays", 15000);
+                check_number(&mut checks, path, value, "tamper_rejections", 15000);
                 check_number(&mut checks, path, value, "route_leakage", 0);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);

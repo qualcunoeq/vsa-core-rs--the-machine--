@@ -1,0 +1,62 @@
+{
+  "schema": "stage273-staged-portfolio-exam-5000-v1",
+  "corpus_sha256": "593940aa209244b11a583eddbda39853e4a52f40c52b535fa32a6d88033259dc",
+  "source_modules": 3,
+  "source_records": 15,
+  "selected_modules": 3,
+  "cases": 5000,
+  "development_cases": 1500,
+  "validation_cases": 1500,
+  "sealed_cases": 1500,
+  "boundary_cases": 500,
+  "exact_decisions": 5000,
+  "authorized": 4500,
+  "sealed_exact": 1500,
+  "sealed_authorized": 1500,
+  "boundary_refusals": 500,
+  "frontend_replays": 15000,
+  "tamper_rejections": 15000,
+  "route_leakage": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_mutations": 0,
+  "registry_mutations": 0,
+  "partitions": {
+    "Boundary": {
+      "cases": 500,
+      "exact": 500,
+      "authorized": 0,
+      "replay_verified": 1500,
+      "tamper_rejected": 1500,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    "Development": {
+      "cases": 1500,
+      "exact": 1500,
+      "authorized": 1500,
+      "replay_verified": 4500,
+      "tamper_rejected": 4500,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    "Sealed": {
+      "cases": 1500,
+      "exact": 1500,
+      "authorized": 1500,
+      "replay_verified": 4500,
+      "tamper_rejected": 4500,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    "Validation": {
+      "cases": 1500,
+      "exact": 1500,
+      "authorized": 1500,
+      "replay_verified": 4500,
+      "tamper_rejected": 4500,
+      "false_authorizations": 0,
+      "false_denials": 0
+    }
+  }
+}

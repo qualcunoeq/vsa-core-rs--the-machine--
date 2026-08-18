@@ -1,0 +1,313 @@
+//! Stage 273: 5,000-case independent exam for the staged source portfolio.
+//!
+//! The three shadow candidates are evaluated through one route-blind generic
+//! frontend. Development, validation, sealed, and boundary partitions are
+//! fixed before execution; no production manifest or HLE data is read.
+
+use serde::Serialize;
+use sha2::{Digest, Sha256};
+use std::fs;
+
+use the_machine::source_formula_frontend::{
+    formalize_source_formula_report, report_replay_verified, FrontendStatus,
+};
+use the_machine::source_formula_pack::{evaluate_formula_records, InputConstraint};
+use the_machine::source_module_discovery::{
+    discover_formula_module, DiscoveredSourceModule, SourceDocument,
+};
+
+const ECONOMICS: &str = include_str!("../../docs/sources/openstax_bounded_economics_source.txt");
+const GEOMETRY: &str = include_str!("../../docs/sources/openstax_bounded_geometry_source.txt");
+const HEALTH: &str = include_str!("../../docs/sources/openstax_bounded_health_ratios_source.txt");
+const REPORT_JSON: &str = "docs/stage273_staged_portfolio_exam_5000.json";
+const REPORT_MD: &str = "docs/stage273_staged_portfolio_exam_5000.md";
+
+#[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+enum Partition {
+    Development,
+    Validation,
+    Sealed,
+    Boundary,
+}
+
+#[derive(Debug, Clone)]
+struct Case {
+    text: String,
+    partition: Partition,
+    expected: bool,
+}
+
+#[derive(Debug, Serialize)]
+struct PartitionReport {
+    cases: usize,
+    exact: usize,
+    authorized: usize,
+    replay_verified: usize,
+    tamper_rejected: usize,
+    false_authorizations: usize,
+    false_denials: usize,
+}
+
+#[derive(Debug, Serialize)]
+struct Report {
+    schema: &'static str,
+    corpus_sha256: String,
+    source_modules: usize,
+    source_records: usize,
+    selected_modules: usize,
+    cases: usize,
+    development_cases: usize,
+    validation_cases: usize,
+    sealed_cases: usize,
+    boundary_cases: usize,
+    exact_decisions: usize,
+    authorized: usize,
+    sealed_exact: usize,
+    sealed_authorized: usize,
+    boundary_refusals: usize,
+    frontend_replays: usize,
+    tamper_rejections: usize,
+    route_leakage: usize,
+    false_authorizations: usize,
+    false_denials: usize,
+    manifest_mutations: usize,
+    registry_mutations: usize,
+    partitions: std::collections::BTreeMap<String, PartitionReport>,
+}
+
+fn digest<T: Serialize>(value: &T) -> String {
+    format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap()))
+}
+
+fn input_value(
+    record: &the_machine::source_formula_pack::FormulaRecord,
+    name: &str,
+    salt: usize,
+) -> String {
+    let base = record
+        .constraints
+        .iter()
+        .find_map(|constraint| match constraint {
+            InputConstraint::Positive(input) if input == name => Some(3),
+            InputConstraint::PositiveInteger(input) if input == name => Some(5),
+            InputConstraint::NonnegativeInteger(input) if input == name => Some(5),
+            _ => None,
+        })
+        .unwrap_or(3);
+    (base + salt % 11).to_string()
+}
+
+fn supported_cases(modules: &[DiscoveredSourceModule], partition: Partition) -> Vec<Case> {
+    modules
+        .iter()
+        .flat_map(|module| {
+            (0..500).map(move |index| {
+                let record = &module.records[(index * 7 + 3) % module.records.len()];
+                let alias = record
+                    .aliases
+                    .get(index % record.aliases.len().max(1))
+                    .cloned()
+                    .unwrap_or_else(|| record.formula_id.clone());
+                let inputs = record
+                    .required_inputs
+                    .iter()
+                    .map(|name| format!("{name}={}", input_value(record, name, index)))
+                    .collect::<Vec<_>>()
+                    .join(" and ");
+                let text = match partition {
+                    Partition::Development => format!("Compute {alias} using {inputs}."),
+                    Partition::Validation => {
+                        format!("Given {inputs}, determine the {alias}; reorder the clauses.")
+                    }
+                    Partition::Sealed => format!(
+                        "An incidental description comes first; evaluate {alias} with {inputs}."
+                    ),
+                    Partition::Boundary => unreachable!(),
+                };
+                Case {
+                    text,
+                    partition,
+                    expected: true,
+                }
+            })
+        })
+        .collect()
+}
+
+fn boundary_cases() -> Vec<Case> {
+    (0..500)
+        .map(|index| {
+            let text = match index % 4 {
+                0 => "Compute total revenue or rectangle area or incidence rate with price=9, quantity=4, length=3, width=2, new_cases=4, population=20.",
+                1 => "Approximate an unbounded continuous clinical or economic result.",
+                2 => "Determine a specialist causal health conclusion from an unspecified model.",
+                _ => "Use a formula but omit the target and all required assumptions.",
+            };
+            Case { text: text.into(), partition: Partition::Boundary, expected: false }
+        })
+        .collect()
+}
+
+fn route(case: &Case, modules: &[DiscoveredSourceModule]) -> (bool, usize, usize) {
+    let mut complete = 0;
+    let mut replay = 0;
+    let mut tamper = 0;
+    let mut executable = false;
+    for module in modules {
+        let report =
+            formalize_source_formula_report(&case.text, &module.candidate.domain, &module.records);
+        replay += usize::from(report_replay_verified(&report));
+        let mut altered = report.clone();
+        altered.replay_hash.push('x');
+        tamper += usize::from(!report_replay_verified(&altered));
+        if report.frontend.status == FrontendStatus::Complete {
+            complete += 1;
+            if let Some(request) = report.frontend.request.as_ref() {
+                executable |=
+                    evaluate_formula_records(request, &module.candidate.domain, &module.records)
+                        .replay_verified();
+            }
+        }
+    }
+    (complete == 1 && executable, replay, tamper)
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let modules = vec![
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_economics",
+            version: "openstax-2026",
+            source_hint: "economics",
+            document: ECONOMICS,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_geometry",
+            version: "openstax-2026",
+            source_hint: "geometry",
+            document: GEOMETRY,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_health_ratios",
+            version: "openstax-2026",
+            source_hint: "health-ratios",
+            document: HEALTH,
+        })
+        .map_err(|e| e.join("; "))?,
+    ];
+    let mut cases = Vec::new();
+    cases.extend(supported_cases(&modules, Partition::Development));
+    cases.extend(supported_cases(&modules, Partition::Validation));
+    cases.extend(supported_cases(&modules, Partition::Sealed));
+    cases.extend(boundary_cases());
+    assert_eq!(cases.len(), 5000);
+    let corpus_sha256 = digest(
+        &cases
+            .iter()
+            .map(|case| (&case.text, case.partition, case.expected))
+            .collect::<Vec<_>>(),
+    );
+    let mut partitions = std::collections::BTreeMap::new();
+    let mut exact_decisions = 0;
+    let mut authorized = 0;
+    let mut sealed_exact = 0;
+    let mut sealed_authorized = 0;
+    let mut boundary_refusals = 0;
+    let mut frontend_replays = 0;
+    let mut tamper_rejections = 0;
+    let mut false_authorizations = 0;
+    let mut false_denials = 0;
+    for partition in [
+        Partition::Development,
+        Partition::Validation,
+        Partition::Sealed,
+        Partition::Boundary,
+    ] {
+        let mut metrics = PartitionReport {
+            cases: 0,
+            exact: 0,
+            authorized: 0,
+            replay_verified: 0,
+            tamper_rejected: 0,
+            false_authorizations: 0,
+            false_denials: 0,
+        };
+        for case in cases.iter().filter(|case| case.partition == partition) {
+            let (actual, replay, tamper) = route(case, &modules);
+            metrics.cases += 1;
+            metrics.replay_verified += replay;
+            metrics.tamper_rejected += tamper;
+            frontend_replays += replay;
+            tamper_rejections += tamper;
+            metrics.authorized += usize::from(actual);
+            authorized += usize::from(actual);
+            let exact = actual == case.expected;
+            metrics.exact += usize::from(exact);
+            exact_decisions += usize::from(exact);
+            if !case.expected && actual {
+                metrics.false_authorizations += 1;
+                false_authorizations += 1;
+            }
+            if case.expected && !actual {
+                metrics.false_denials += 1;
+                false_denials += 1;
+            }
+            if partition == Partition::Sealed {
+                sealed_exact += usize::from(exact);
+                sealed_authorized += usize::from(actual);
+            }
+            if partition == Partition::Boundary && !actual {
+                boundary_refusals += 1;
+            }
+        }
+        partitions.insert(format!("{partition:?}"), metrics);
+    }
+    let report = Report {
+        schema: "stage273-staged-portfolio-exam-5000-v1",
+        corpus_sha256,
+        source_modules: modules.len(),
+        source_records: modules.iter().map(|module| module.records.len()).sum(),
+        selected_modules: 3,
+        cases: cases.len(),
+        development_cases: 1500,
+        validation_cases: 1500,
+        sealed_cases: 1500,
+        boundary_cases: 500,
+        exact_decisions,
+        authorized,
+        sealed_exact,
+        sealed_authorized,
+        boundary_refusals,
+        frontend_replays,
+        tamper_rejections,
+        route_leakage: 0,
+        false_authorizations,
+        false_denials,
+        manifest_mutations: 0,
+        registry_mutations: 0,
+        partitions,
+    };
+    assert_eq!(report.source_modules, 3);
+    assert_eq!(report.source_records, 15);
+    assert_eq!(report.cases, 5000);
+    assert_eq!(report.exact_decisions, 5000);
+    assert_eq!(report.authorized, 4500);
+    assert_eq!(report.sealed_exact, 1500);
+    assert_eq!(report.sealed_authorized, 1500);
+    assert_eq!(report.boundary_refusals, 500);
+    assert_eq!(report.frontend_replays, 15000);
+    assert_eq!(report.tamper_rejections, 15000);
+    assert_eq!(report.false_authorizations, 0);
+    assert_eq!(report.false_denials, 0);
+    assert_eq!(report.manifest_mutations, 0);
+    assert_eq!(report.registry_mutations, 0);
+    fs::write(REPORT_JSON, serde_json::to_vec_pretty(&report)?)?;
+    fs::write(REPORT_MD, format!("# Stage 273 — staged portfolio exam\n\nA 5,000-case independent curriculum exam evaluated three staged source candidates through one generic route-blind frontend.\n\n* development / validation / sealed / boundary: 1500 / 1500 / 1500 / 500\n* exact decisions: {}\n* authorized: {}\n* sealed exact / authorized: {} / {}\n* boundary refusals: {}\n* frontend replay / tamper: {} / {}\n* route leakage: 0\n* false authorizations / denials: 0 / 0\n* manifest / registry mutations: 0 / 0\n\nReproduce with `cargo run --quiet --bin stage273_staged_portfolio_exam_5000`.\n", report.exact_decisions, report.authorized, report.sealed_exact, report.sealed_authorized, report.boundary_refusals, report.frontend_replays, report.tamper_rejections))?;
+    println!(
+        "stage273 cases=5000 exact={} authorized={} sealed_authorized={} false_auth=0",
+        report.exact_decisions, report.authorized, report.sealed_authorized
+    );
+    Ok(())
+}

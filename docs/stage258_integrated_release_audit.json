@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 42,
-  "checks": 412,
-  "passed_checks": 412,
+  "artifacts": 43,
+  "checks": 430,
+  "passed_checks": 430,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1716,6 +1716,96 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "corpus_a_modules == 6",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "corpus_b_modules == 12",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "corpus_a_records == 21",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "corpus_b_records == 15",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "gap_clusters == 18",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "proposals == 18",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "selected_modules == 6",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "source_cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "exact_decisions == 700",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "source_authorizations == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "boundary_refusals == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "frontend_replays == 4200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "tamper_rejections == 4200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage244_cross_corpus_composition.json",
+      "requirement": "live_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage235_hle_shadow_source_probe.json",
       "requirement": "cases == 2500",
       "passed": true
@@ -2203,6 +2293,10 @@
     [
       "docs/stage268_economics_promotion_rollback.json",
       "ac0e7cc6e048ab7b96629d4bd69fe53450e921e1eeab0b608afbc240da5e8e92"
+    ],
+    [
+      "docs/stage244_cross_corpus_composition.json",
+      "43594499d278e432f39900b778e5a5fa1f77945f8a7ae6581a12b3623d12ee2e"
     ],
     [
       "docs/stage235_hle_shadow_source_probe.json",

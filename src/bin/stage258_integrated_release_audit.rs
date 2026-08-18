@@ -163,6 +163,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage286_self_directed_unit_learning_curve.json",
         "docs/stage287_expanded_curriculum_memory_scale.json",
         "docs/stage179_five_domain_math_synthesis.json",
+        "docs/stage245_science_relation_ingestion.json",
+        "docs/stage247_multimodal_science_routes.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -1148,6 +1150,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "production_registry_mutations", 0);
                 check_number(&mut checks, path, value, "curriculum_manifest_mutations", 0);
                 check_number(&mut checks, path, value, "sealed_outcomes_exposed_to_selector", 0);
+            }
+            "stage245_science_relation_ingestion.json" => {
+                check_nonempty_string(&mut checks, path, value, "source_sha256");
+                check_number(&mut checks, path, value, "relation_records", 1);
+                check_number(&mut checks, path, value, "relation_supported", 120);
+                check_number(&mut checks, path, value, "relation_exact", 120);
+                check_number(&mut checks, path, value, "relation_boundaries", 3);
+                check_number(&mut checks, path, value, "relation_refusals", 3);
+                check_number(&mut checks, path, value, "chemistry_supported", 100);
+                check_number(&mut checks, path, value, "chemistry_exact", 100);
+                check_number(&mut checks, path, value, "biology_supported", 100);
+                check_number(&mut checks, path, value, "biology_exact", 100);
+                check_number(&mut checks, path, value, "total_cases", 500);
+                check_number(&mut checks, path, value, "total_exact", 320);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_mutations", 0);
+            }
+            "stage247_multimodal_science_routes.json" => {
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "cases", 240);
+                check_number(&mut checks, path, value, "supported_cases", 200);
+                check_number(&mut checks, path, value, "refused_cases", 40);
+                check_number(&mut checks, path, value, "exact_decisions", 240);
+                check_number(&mut checks, path, value, "authorized", 200);
+                check_number(&mut checks, path, value, "visual_replays", 240);
+                check_number(&mut checks, path, value, "visual_tamper_rejections", 240);
+                check_number(&mut checks, path, value, "bridge_emissions", 720);
+                check_number(&mut checks, path, value, "bridge_replays", 720);
+                check_number(&mut checks, path, value, "bridge_tamper_rejections", 720);
+                check_number(&mut checks, path, value, "route_leakage", 0);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "manifest_mutations", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

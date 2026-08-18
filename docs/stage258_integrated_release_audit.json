@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 63,
-  "checks": 794,
-  "passed_checks": 794,
+  "artifacts": 65,
+  "checks": 824,
+  "passed_checks": 824,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3536,6 +3536,156 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "source_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "relation_records == 1",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "relation_supported == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "relation_exact == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "relation_boundaries == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "relation_refusals == 3",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "chemistry_supported == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "chemistry_exact == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "biology_supported == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "biology_exact == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "total_cases == 500",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "total_exact == 320",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage245_science_relation_ingestion.json",
+      "requirement": "live_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "supported_cases == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "refused_cases == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "authorized == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "visual_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "visual_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "bridge_emissions == 720",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "bridge_replays == 720",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "bridge_tamper_rejections == 720",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage247_multimodal_science_routes.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -4193,6 +4343,14 @@
     [
       "docs/stage179_five_domain_math_synthesis.json",
       "7c1357a5cc288f27a9a15daea87b7e5c6daa35ac25fa55c1c38c20e2734e591b"
+    ],
+    [
+      "docs/stage245_science_relation_ingestion.json",
+      "dd45e76263ada00ccc93682aa8d289c2f976c04e5805c3b9943c3adedb5b6b52"
+    ],
+    [
+      "docs/stage247_multimodal_science_routes.json",
+      "493fae01313f2a6cea8b527090881bed4098bdf8789614a82f4f581cb7502fe8"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 61,
-  "checks": 742,
-  "passed_checks": 742,
+  "artifacts": 62,
+  "checks": 770,
+  "passed_checks": 770,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3276,6 +3276,146 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "shadow_manifest_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "source_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "shadow_packs == 38",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "descriptors == 131",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "records == 60000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "exact_queries == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "exact_complete == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "ambiguous_queries == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "ambiguous_detected == 300",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "stale_queries == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "stale_refused == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "unknown_queries == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "unknown_refused == 200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "provenance_queries == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "provenance_refused == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "prerequisite_queries == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "prerequisite_complete == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "retrieval_contamination == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "replay_verified == 60000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "tamper_rejected == 1000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "reconstruction_records == 60000",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "reconstruction_hash_equal == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "parent_memory_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "manifest_unchanged == true",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "live_memory_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage287_expanded_curriculum_memory_scale.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3925,6 +4065,10 @@
     [
       "docs/stage286_self_directed_unit_learning_curve.json",
       "792682792fde7720b38969a6ddedf5926e9911bbb9ecb727c050f9160f96b38f"
+    ],
+    [
+      "docs/stage287_expanded_curriculum_memory_scale.json",
+      "e9d5fa1e0695949212d96bef7b0780dbc0b99b8de08439f78dd7ef5f242afbf2"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

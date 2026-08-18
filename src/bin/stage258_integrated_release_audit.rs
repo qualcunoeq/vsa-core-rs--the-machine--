@@ -161,6 +161,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage284_curriculum_technical_language_benchmark.json",
         "docs/stage285_technical_gap_prerequisite_discovery.json",
         "docs/stage286_self_directed_unit_learning_curve.json",
+        "docs/stage287_expanded_curriculum_memory_scale.json",
         "docs/stage244_cross_corpus_composition.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
@@ -1090,6 +1091,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "false_denials", 0);
                 check_number(&mut checks, path, value, "hle_questions_read", 0);
                 check_number(&mut checks, path, value, "production_mutations", 0);
+            }
+            "stage287_expanded_curriculum_memory_scale.json" => {
+                check_nonempty_string(&mut checks, path, value, "shadow_manifest_sha256");
+                check_nonempty_string(&mut checks, path, value, "source_report_sha256");
+                check_number(&mut checks, path, value, "shadow_packs", 38);
+                check_number(&mut checks, path, value, "descriptors", 131);
+                check_number(&mut checks, path, value, "records", 60000);
+                check_number(&mut checks, path, value, "exact_queries", 1200);
+                check_number(&mut checks, path, value, "exact_complete", 1200);
+                check_number(&mut checks, path, value, "ambiguous_queries", 300);
+                check_number(&mut checks, path, value, "ambiguous_detected", 300);
+                check_number(&mut checks, path, value, "stale_queries", 200);
+                check_number(&mut checks, path, value, "stale_refused", 200);
+                check_number(&mut checks, path, value, "unknown_queries", 200);
+                check_number(&mut checks, path, value, "unknown_refused", 200);
+                check_number(&mut checks, path, value, "provenance_queries", 100);
+                check_number(&mut checks, path, value, "provenance_refused", 100);
+                check_number(&mut checks, path, value, "prerequisite_queries", 1200);
+                check_number(&mut checks, path, value, "prerequisite_complete", 1200);
+                check_number(&mut checks, path, value, "retrieval_contamination", 0);
+                check_number(&mut checks, path, value, "replay_verified", 60000);
+                check_number(&mut checks, path, value, "tamper_rejected", 1000);
+                check_number(&mut checks, path, value, "reconstruction_records", 60000);
+                check_bool(&mut checks, path, value, "reconstruction_hash_equal", true);
+                check_bool(&mut checks, path, value, "parent_memory_unchanged", true);
+                check_bool(&mut checks, path, value, "manifest_unchanged", true);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "live_memory_mutations", 0);
+                check_number(&mut checks, path, value, "live_registry_mutations", 0);
             }
             "stage244_cross_corpus_composition.json" => {
                 check_number(&mut checks, path, value, "corpus_a_modules", 6);

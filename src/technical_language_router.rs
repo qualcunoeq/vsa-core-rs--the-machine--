@@ -27,6 +27,8 @@ use crate::number_theory_frontend::{
     NumberTheoryFrontendStatus,
 };
 use crate::number_theory_pack::{evaluate_number_theory, NumberTheoryStatus};
+use crate::mobius_frontend::{formalize_mobius_text, MobiusFrontendStatus};
+use crate::mobius_inversion_pack::{evaluate as evaluate_mobius, MobiusStatus};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -37,6 +39,7 @@ pub enum RouteDomain {
     Combinatorics,
     MarkovHitting,
     MarkovStationary,
+    Mobius,
     NumberTheory,
 }
 
@@ -149,6 +152,18 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
     } else if number.status == NumberTheoryFrontendStatus::Ambiguous {
         ambiguous.push(RouteDomain::NumberTheory);
     }
+    let mobius = formalize_mobius_text(text);
+    if mobius.status == MobiusFrontendStatus::Complete
+        && mobius.replay_verified()
+        && mobius.request.as_ref().is_some_and(|request| {
+            let result = evaluate_mobius(request);
+            result.status == MobiusStatus::Complete && result.replay_verified()
+        })
+    {
+        authorized.push(RouteDomain::Mobius);
+    } else if mobius.status == MobiusFrontendStatus::Ambiguous {
+        ambiguous.push(RouteDomain::Mobius);
+    }
     if markov.status == MarkovFrontendStatus::Complete && markov_frontend_replay(&markov) {
         match markov.request.as_ref() {
             Some(MarkovFrontendRequest::Stationary(request)) => {
@@ -248,5 +263,22 @@ mod tests {
         );
         assert_eq!(ambiguous.status, RouteStatus::Ambiguous);
         assert!(replay_verified(&ambiguous));
+    }
+
+    #[test]
+    fn mobius_frontend_requires_unique_downstream_replay() {
+        let inversion = route(
+            "Apply Mobius inversion to f(1)..f(n), indexed from 1: [1, 2, 3, 4].",
+            "mobius",
+        );
+        assert_eq!(inversion.status, RouteStatus::Authorized);
+        assert_eq!(inversion.selected, Some(RouteDomain::Mobius));
+        let competing = route(
+            "Apply Mobius inversion or find the Bezout gcd for a=18 and b=30.",
+            "mobius-competing",
+        );
+        assert_eq!(competing.status, RouteStatus::Ambiguous);
+        assert!(replay_verified(&inversion));
+        assert!(replay_verified(&competing));
     }
 }

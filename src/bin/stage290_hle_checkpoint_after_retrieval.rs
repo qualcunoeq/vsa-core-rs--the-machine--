@@ -16,7 +16,6 @@ use std::process::Command;
 
 use the_machine::router::QuestionRouter;
 
-const DATASET: &str = "data/hle.jsonl";
 const REPORT_NAME: &str = "stage290_hle_checkpoint_after_retrieval.json";
 const MARKDOWN_NAME: &str = "stage290_hle_checkpoint_after_retrieval.md";
 const TRACE_NAME: &str = "stage290_hle_checkpoint_after_retrieval.trace.jsonl";
@@ -55,7 +54,7 @@ struct Report {
     checkpoint: &'static str,
     producer_commit: String,
     worktree_clean: bool,
-    dataset: &'static str,
+    dataset: String,
     dataset_sha256: String,
     curriculum_manifest_sha256: String,
     retrieval_report_sha256: String,
@@ -87,6 +86,10 @@ fn digest_bytes(bytes: &[u8]) -> String {
 
 fn output_dir() -> String {
     env::var("STAGE290_OUTPUT_DIR").unwrap_or_else(|_| "docs".into())
+}
+
+fn dataset_path() -> String {
+    env::var("STAGE290_DATASET").unwrap_or_else(|_| "data/hle.jsonl".into())
 }
 
 fn source_hash(path: &str) -> Result<String, Box<dyn std::error::Error>> {
@@ -144,7 +147,8 @@ fn evidence_text(orchestration: &the_machine::router::OrchestratedAnswer) -> Vec
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let output = output_dir();
     fs::create_dir_all(&output)?;
-    let dataset_bytes = fs::read(DATASET)?;
+    let dataset = dataset_path();
+    let dataset_bytes = fs::read(&dataset)?;
     let producer_commit = Command::new("git")
         .args(["rev-parse", "--short", "HEAD"])
         .output()
@@ -170,7 +174,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut terminal_counts = BTreeMap::new();
     let mut trace_lines = Vec::new();
 
-    for line in BufReader::new(File::open(DATASET)?).lines() {
+    for line in BufReader::new(File::open(&dataset)?).lines() {
         let line = line?;
         if line.trim().is_empty() {
             continue;
@@ -249,7 +253,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         checkpoint: "post-stage289-retrieval-guided-investigation",
         producer_commit,
         worktree_clean,
-        dataset: DATASET,
+        dataset,
         dataset_sha256: digest_bytes(&dataset_bytes),
         curriculum_manifest_sha256: the_machine::curriculum::breadth_first_manifest().replay_hash(),
         retrieval_report_sha256,

@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 72,
-  "checks": 919,
-  "passed_checks": 919,
+  "artifacts": 73,
+  "checks": 929,
+  "passed_checks": 929,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -3891,6 +3891,56 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "exact_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "authorized_routes == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "frontend_replays == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "tamper_rejections == 1200",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "route_leakage == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "hle_questions_read == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage295_multimodal_visual_five_route_blind.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage179_five_domain_math_synthesis.json",
       "requirement": "corpus_sha256 is nonempty",
       "passed": true
@@ -4842,6 +4892,10 @@
     [
       "docs/stage294_visual_circuit_frontend.json",
       "48d71793fc5ee6519b988a0f5669e054ff2b66c7e67e37389c0bf3895c923e9c"
+    ],
+    [
+      "docs/stage295_multimodal_visual_five_route_blind.json",
+      "a43cb943674aa204e9c2fccc954d6ab3f26866bd0ab48b15fc1c2081a7258229"
     ],
     [
       "docs/stage179_five_domain_math_synthesis.json",

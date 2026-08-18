@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 55,
-  "checks": 642,
-  "passed_checks": 642,
+  "artifacts": 56,
+  "checks": 658,
+  "passed_checks": 658,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -2776,6 +2776,86 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "validation_report_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "cases == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "exact_promotion_decisions == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "promotions == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "blocked_or_denied == 100",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "regressions_detected == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "rollbacks_applied == 40",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "promotion_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "promotion_tamper_rejections == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "historical_replays == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "parent_preserved == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "clone_only == 240",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "live_manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage281_unit_conversion_promotion_rollback.json",
+      "requirement": "live_registry_mutations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage244_cross_corpus_composition.json",
       "requirement": "corpus_a_modules == 6",
       "passed": true
@@ -3401,6 +3481,10 @@
     [
       "docs/stage280_four_candidate_sealed_benchmark.json",
       "12e1af7d891575b941607a62a0860a99a4793534a0c92d8ddd83d014cf7b35cc"
+    ],
+    [
+      "docs/stage281_unit_conversion_promotion_rollback.json",
+      "645ec30c8ce96f705291acc17f46d092bbe38a948a78dcbd536c4cf20167ab55"
     ],
     [
       "docs/stage244_cross_corpus_composition.json",

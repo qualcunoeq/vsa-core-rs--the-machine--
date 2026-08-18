@@ -171,6 +171,7 @@ pub mod simplicial_homology_bridge;
 pub mod simplicial_homology_frontend;
 pub mod source_complex_pack;
 pub mod source_catalog_ingestion;
+pub mod source_catalog_memory;
 pub mod source_counting_frontend;
 pub mod source_counting_pack;
 pub mod source_formula_pack;

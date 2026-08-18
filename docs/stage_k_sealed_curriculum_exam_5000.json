@@ -1,6 +1,8 @@
 {
-  "schema": "stage-k-sealed-curriculum-exam-5000-v1",
+  "schema": "stage-k-sealed-curriculum-exam-5000-v2",
   "source": "independently authored permanent development/validation/sealed corpus",
+  "producer_commit": "ea52342",
+  "manifest_sha256": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
   "corpus_sha256": "cba96d23b34f96578f3be01e3f677896da33aa0191b82ce2b1949780b5d5869b",
   "question_corpus_sha256": "b99c6afcfb1fa72b02de1ff17b5f58ed1df52584897ab28aa2c172bdcf94c29f",
   "sealed_question_sha256": "cfdc8930bd0da69f448a5d6cc7e1a813f3a6c346c63f245bc37a3522263fbae8",

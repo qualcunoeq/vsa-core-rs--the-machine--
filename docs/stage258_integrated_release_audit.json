@@ -2,8 +2,8 @@
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
   "artifacts": 20,
-  "checks": 149,
-  "passed_checks": 149,
+  "checks": 151,
+  "passed_checks": 151,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -657,6 +657,16 @@
     },
     {
       "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "producer_commit is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
+      "requirement": "manifest_sha256 matches current manifest",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage_k_sealed_curriculum_exam_5000.json",
       "requirement": "cases == 5000",
       "passed": true
     },
@@ -827,7 +837,7 @@
     ],
     [
       "docs/stage_k_sealed_curriculum_exam_5000.json",
-      "560a7513169f88791db7990ac2bd90e53a9a0d1d2e310fbaf739f9ca7706e56c"
+      "f8aa6f8c2a5af3d762947b373877f2f4d6e9d9cab235c3c0a0577e19d969c13b"
     ],
     [
       "docs/stage_ab_retrieval_investigation.json",

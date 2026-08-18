@@ -9,6 +9,7 @@
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use std::process::Command;
 use the_machine::calculus_pack::{
     evaluate_calculus, CalculusOperation, CalculusRequest, CalculusStatus,
 };
@@ -112,6 +113,8 @@ struct PartitionMetrics {
 struct Report {
     schema: &'static str,
     source: &'static str,
+    producer_commit: String,
+    manifest_sha256: String,
     corpus_sha256: String,
     question_corpus_sha256: String,
     sealed_question_sha256: String,
@@ -731,6 +734,13 @@ fn metrics(receipts: &[Receipt], partition: Partition) -> PartitionMetrics {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut questions = Vec::with_capacity(5000);
     let manifest_before = breadth_first_manifest().replay_hash();
+    let producer_commit = Command::new("git")
+        .args(["rev-parse", "--short", "HEAD"])
+        .output()
+        .ok()
+        .filter(|output| output.status.success())
+        .map(|output| String::from_utf8_lossy(&output.stdout).trim().to_string())
+        .unwrap_or_else(|| "unknown".into());
     for global in 0..5000 {
         questions.push(generated(global % 10, global / 10, global));
     }
@@ -817,8 +827,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     );
     partitions.insert("sealed".into(), metrics(&receipts, Partition::Sealed));
     let report = Report {
-        schema: "stage-k-sealed-curriculum-exam-5000-v1",
+        schema: "stage-k-sealed-curriculum-exam-5000-v2",
         source: "independently authored permanent development/validation/sealed corpus",
+        producer_commit,
+        manifest_sha256: manifest_before,
         corpus_sha256: digest(&receipts),
         question_corpus_sha256: question_hash,
         sealed_question_sha256: digest(

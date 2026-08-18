@@ -70,6 +70,25 @@ fn check_bool(checks: &mut Vec<Check>, artifact: &str, value: &Value, key: &str,
     });
 }
 
+fn check_nonempty_string(checks: &mut Vec<Check>, artifact: &str, value: &Value, key: &str) {
+    checks.push(Check {
+        artifact: artifact.into(),
+        requirement: format!("{key} is nonempty"),
+        passed: value
+            .get(key)
+            .and_then(Value::as_str)
+            .is_some_and(|v| !v.is_empty()),
+    });
+}
+
+fn check_string(checks: &mut Vec<Check>, artifact: &str, value: &Value, key: &str, expected: &str) {
+    checks.push(Check {
+        artifact: artifact.into(),
+        requirement: format!("{key} matches current manifest"),
+        passed: value.get(key).and_then(Value::as_str) == Some(expected),
+    });
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let manifest = breadth_first_manifest();
     assert!(manifest.validate().is_empty());
@@ -317,6 +336,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "production_registry_mutations", 0);
             }
             "stage_k_sealed_curriculum_exam_5000.json" => {
+                check_nonempty_string(&mut checks, path, value, "producer_commit");
+                check_string(
+                    &mut checks,
+                    path,
+                    value,
+                    "manifest_sha256",
+                    &manifest.replay_hash(),
+                );
                 check_number(&mut checks, path, value, "cases", 5000);
                 check_number(&mut checks, path, value, "replay_verified", 5000);
                 check_number(&mut checks, path, value, "tamper_rejections", 5000);

@@ -1,0 +1,27 @@
+{
+  "schema": "stage219-generic-source-formula-frontend-v1",
+  "catalogs": [
+    "source_derived_finite_statistics",
+    "source_derived_sequences_series"
+  ],
+  "cases": 1200,
+  "expected_counts": {
+    "complete": 840,
+    "ambiguous": 120,
+    "missing": 120,
+    "unsupported": 120
+  },
+  "exact_status_decisions": 1200,
+  "complete_frontends": 840,
+  "downstream_complete": 840,
+  "frontend_replays": 1200,
+  "downstream_replays": 840,
+  "tamper_rejections": 1200,
+  "provenance_preserved": 1200,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "corpus_sha256": "bf5421d0174c192fc58fe8582d25a1833993c151191d5afaaad87d15f1b35259",
+  "production_routing": "unchanged",
+  "registry_mutation": false,
+  "run": "cargo run --quiet --bin stage219_generic_source_formula_frontend"
+}

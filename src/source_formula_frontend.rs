@@ -1,28 +1,25 @@
-//! Domain-agnostic frontend for declarative source formula catalogs.
+//! Generic technical-language frontend for source-derived formula catalogs.
 //!
-//! The frontend uses only aliases and declared input names from source
-//! records. It has no formula- or subject-specific branches: a unique source
-//! record plus explicit labeled values is required before a typed request is
-//! emitted.
+//! Formula records supply aliases, required inputs, constraints, and
+//! provenance.  This frontend only lowers explicit aliases plus explicitly
+//! labeled rational inputs; it never infers a formula from a subject keyword
+//! or invents omitted quantities.
 
 use crate::probability_pack::Rational;
 use crate::source_formula_pack::{FormulaRecord, FormulaRequest};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-pub enum FormulaFrontendStatus {
-    Complete,
-    Ambiguous,
-    Missing,
-    Unsupported,
-}
+pub enum FrontendStatus { Complete, Ambiguous, Missing, Unsupported }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
-pub struct FormulaFrontendResult {
-    pub status: FormulaFrontendStatus,
+pub struct SourceFormulaFrontendResult {
+    pub status: FrontendStatus,
+    pub formula_id: Option<String>,
+    /// Compatibility field retained for existing source-catalog routes.
     pub formula: Option<String>,
     pub request: Option<FormulaRequest>,
     pub provenance_spans: Vec<String>,
@@ -31,205 +28,157 @@ pub struct FormulaFrontendResult {
     pub replay_hash: String,
 }
 
-fn digest<T: Serialize>(value: &T) -> String {
-    format!(
-        "{:x}",
-        Sha256::digest(serde_json::to_vec(value).expect("formula frontend serializes"))
-    )
+fn digest<T: Serialize>(value: &T) -> String { format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap())) }
+
+fn payload(result: &SourceFormulaFrontendResult) -> impl Serialize + '_ {
+    (&result.status, &result.formula_id, &result.formula, &result.request, &result.provenance_spans, &result.alternatives, &result.reasons)
 }
 
-fn payload(result: &FormulaFrontendResult) -> impl Serialize + '_ {
-    (
-        result.status,
-        &result.formula,
-        &result.request,
-        &result.provenance_spans,
-        &result.alternatives,
-        &result.reasons,
-    )
+fn output(status: FrontendStatus, formula_id: Option<String>, request: Option<FormulaRequest>, spans: Vec<String>, alternatives: Vec<String>, reasons: Vec<String>) -> SourceFormulaFrontendResult {
+    let formula = formula_id.clone();
+    let replay_hash = digest(&(&status, &formula_id, &formula, &request, &spans, &alternatives, &reasons));
+    SourceFormulaFrontendResult { status, formula_id, formula, request, provenance_spans: spans, alternatives, reasons, replay_hash }
 }
 
-fn result(
-    status: FormulaFrontendStatus,
-    formula: Option<String>,
-    request: Option<FormulaRequest>,
-    provenance_spans: Vec<String>,
-    alternatives: Vec<String>,
-    reasons: Vec<String>,
-) -> FormulaFrontendResult {
-    let mut output = FormulaFrontendResult {
-        status,
-        formula,
-        request,
-        provenance_spans,
-        alternatives,
-        reasons,
-        replay_hash: String::new(),
-    };
-    let replay_hash = digest(&payload(&output));
-    output.replay_hash = replay_hash;
-    output
+fn normalize_phrase(value: &str) -> String {
+    value.to_ascii_lowercase().replace(['_', '-'], " ")
 }
 
-fn rational_token(token: &str) -> Option<Rational> {
-    let cleaned = token.trim_matches(|character: char| {
-        !character.is_ascii_digit() && character != '-' && character != '/'
-    });
-    if let Some((numerator, denominator)) = cleaned.split_once('/') {
-        return Rational::new(numerator.parse().ok()?, denominator.parse().ok()?);
+fn parse_rational(value: &str) -> Option<Rational> {
+    let value = value.trim();
+    if let Some((numerator, denominator)) = value.split_once('/') {
+        Rational::new(numerator.parse().ok()?, denominator.parse().ok()?)
+    } else {
+        Rational::new(value.parse().ok()?, 1)
     }
-    Rational::new(cleaned.parse().ok()?, 1)
 }
 
-fn labeled_value(text: &str, label: &str) -> Option<(String, Rational)> {
-    let tokens: Vec<&str> = text.split_whitespace().collect();
-    for (index, token) in tokens.iter().enumerate() {
-        let normalized = token.trim_matches(|character: char| {
-            !character.is_ascii_alphanumeric()
-                && character != '_'
-                && character != '='
-                && character != ':'
-                && character != '-'
-                && character != '/'
-        });
-        if normalized == label {
-            let mut value_index = index + 1;
-            while matches!(tokens.get(value_index), Some(&"=" | &":")) {
-                value_index += 1;
-            }
-            if let Some(value) = tokens
-                .get(value_index)
-                .and_then(|value| rational_token(value))
-            {
-                return Some((
-                    format!("{label} {}", tokens[index..=value_index].join(" ")),
-                    value,
-                ));
+fn labeled_values(text: &str, label: &str) -> Vec<(String, Rational)> {
+    let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
+    let label = normalize_phrase(label);
+    let mut results = Vec::new();
+    let mut offset = 0;
+    while let Some(relative) = lower[offset..].find(&label) {
+        let start = offset + relative;
+        let before_ok = start == 0 || !lower.as_bytes()[start - 1].is_ascii_alphanumeric();
+        let end = start + label.len();
+        let after_ok = end == lower.len() || !lower.as_bytes()[end].is_ascii_alphanumeric();
+        if before_ok && after_ok {
+            let mut cursor = end;
+            while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) { cursor += 1; }
+            if lower.as_bytes().get(cursor).is_some_and(|byte| *byte == b'=' || *byte == b':') {
+                cursor += 1;
+                while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) { cursor += 1; }
+                let value_start = cursor;
+                if lower.as_bytes().get(cursor) == Some(&b'-') { cursor += 1; }
+                while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_digit()) { cursor += 1; }
+                if lower.as_bytes().get(cursor) == Some(&b'/') {
+                    cursor += 1;
+                    while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_digit()) { cursor += 1; }
+                }
+                if cursor > value_start {
+                    if let Some(value) = parse_rational(&lower[value_start..cursor]) {
+                        results.push((format!("{label}={}", &lower[value_start..cursor]), value));
+                    }
+                }
             }
         }
-        for separator in ['=', ':'] {
-            let prefix = format!("{label}{separator}");
-            if let Some(value) = normalized.strip_prefix(&prefix) {
-                return rational_token(value).map(|value| (normalized.to_owned(), value));
-            }
-        }
+        offset = end.max(offset + 1);
     }
-    None
+    results
 }
 
-fn normalize(value: &str) -> String {
-    value.to_ascii_lowercase()
-}
-
-/// Convert raw text into a typed formula request using only source-declared
-/// aliases and input names. No subject vocabulary is hard-coded here.
-pub fn formalize_formula_text(
-    text: &str,
-    domain: &str,
-    records: &[FormulaRecord],
-) -> FormulaFrontendResult {
-    let lower = normalize(text);
-    if ["continuous", "infinite", "differential", "optimization"]
-        .iter()
-        .any(|marker| lower.contains(marker))
-    {
-        return result(
-            FormulaFrontendStatus::Unsupported,
-            None,
-            None,
-            vec![text.into()],
-            Vec::new(),
-            vec!["text requests semantics outside the declarative formula boundary".into()],
-        );
-    }
-    let mut candidates = BTreeSet::new();
+fn matching_records<'a>(text: &str, records: &'a [FormulaRecord]) -> Vec<&'a FormulaRecord> {
+    let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
+    let mut matches = Vec::new();
     for record in records {
-        if lower.contains(&normalize(&record.formula_id))
-            || record
-                .aliases
-                .iter()
-                .any(|alias| lower.contains(&normalize(alias)))
-        {
-            candidates.insert(record.formula_id.clone());
+        let candidates = std::iter::once(record.formula_id.as_str()).chain(record.aliases.iter().map(String::as_str));
+        if candidates.into_iter().any(|candidate| lower.contains(&normalize_phrase(candidate))) {
+            if !matches.iter().any(|existing: &&FormulaRecord| existing.formula_id == record.formula_id) {
+                matches.push(record);
+            }
         }
     }
-    if candidates.is_empty() {
-        return result(
-            FormulaFrontendStatus::Missing,
-            None,
-            None,
-            vec![text.into()],
-            Vec::new(),
-            vec!["no unique source formula alias was found".into()],
-        );
+    matches
+}
+
+/// Lower a technical report into a source-derived formula request.
+pub fn formalize_source_formula_text(text: &str, domain: &str, records: &[FormulaRecord]) -> SourceFormulaFrontendResult {
+    let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
+    let base_spans = vec![format!("source-formula-text:0..{}", text.len())];
+    if ["asymptotic", "infinite", "approximate", "continuous", "regression"].iter().any(|marker| lower.contains(marker)) {
+        return output(FrontendStatus::Unsupported, None, None, base_spans, Vec::new(), vec!["request is outside the finite source-formula boundary".into()]);
     }
-    if candidates.len() != 1 {
-        return result(
-            FormulaFrontendStatus::Ambiguous,
-            None,
-            None,
-            vec![text.into()],
-            candidates.into_iter().collect(),
-            vec!["multiple source formulas match the text".into()],
-        );
+    let matches = matching_records(text, records);
+    if matches.is_empty() {
+        return output(FrontendStatus::Missing, None, None, base_spans, Vec::new(), vec!["no unique source formula alias was stated".into()]);
     }
-    let formula = candidates.into_iter().next().expect("one candidate");
-    let record = records
-        .iter()
-        .find(|record| record.formula_id == formula)
-        .expect("candidate exists");
+    if matches.len() > 1 || (matches.len() == 1 && lower.contains(" or ")) {
+        return output(FrontendStatus::Ambiguous, None, None, base_spans, matches.iter().map(|record| record.formula_id.clone()).collect(), vec!["multiple formula interpretations remain".into()]);
+    }
+    let record = matches[0];
     let mut inputs = BTreeMap::new();
-    let mut spans = vec![format!("formula:{formula}")];
+    let mut spans = base_spans;
     for input in &record.required_inputs {
-        let Some((span, value)) = labeled_value(&lower, input) else {
-            return result(
-                FormulaFrontendStatus::Missing,
-                Some(formula),
-                None,
-                spans,
-                Vec::new(),
-                vec![format!("declared input {input} is not explicitly labeled")],
-            );
-        };
+        let values = labeled_values(text, input);
+        if values.len() != 1 {
+            return output(FrontendStatus::Missing, Some(record.formula_id.clone()), None, spans, Vec::new(), vec![format!("required input {input} is missing or duplicated")]);
+        }
+        let (span, value) = values.into_iter().next().unwrap();
         spans.push(span);
         inputs.insert(input.clone(), value);
     }
-    result(
-        FormulaFrontendStatus::Complete,
-        Some(formula.clone()),
-        Some(FormulaRequest {
-            formula,
-            inputs,
-            domain: domain.into(),
-            ambiguity: None,
-            provenance: spans.clone(),
-        }),
-        spans,
-        Vec::new(),
-        Vec::new(),
-    )
+    let request = FormulaRequest { formula: record.formula_id.clone(), inputs, domain: domain.into(), ambiguity: None, provenance: vec![format!("formula-id:{}", record.formula_id), format!("source:{}", record.source.source_id), format!("source-span:{}", record.source.evidence_span)] };
+    output(FrontendStatus::Complete, Some(record.formula_id.clone()), Some(request), spans, Vec::new(), Vec::new())
 }
 
-impl FormulaFrontendResult {
-    pub fn replay_verified(&self) -> bool {
-        self.replay_hash == digest(&payload(self))
-    }
+pub fn replay_verified(result: &SourceFormulaFrontendResult) -> bool {
+    result.replay_hash == digest(&payload(result)) && !result.provenance_spans.is_empty()
+}
+
+/// Compatibility names for the original generic source-catalog frontend API.
+pub type FormulaFrontendStatus = FrontendStatus;
+pub type FormulaFrontendResult = SourceFormulaFrontendResult;
+
+/// Preserve the established API while routing through the stricter frontend.
+pub fn formalize_formula_text(text: &str, domain: &str, records: &[FormulaRecord]) -> FormulaFrontendResult {
+    formalize_source_formula_text(text, domain, records)
+}
+
+impl SourceFormulaFrontendResult {
+    pub fn replay_verified(&self) -> bool { replay_verified(self) }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::source_formula_pack::extract_formula_records;
+    use crate::source_statistics_pack::{records, DOMAIN};
 
     #[test]
-    fn generic_alias_and_input_binding_is_fail_closed() {
+    fn generic_frontend_binds_source_record_without_domain_branch() {
+        let result = formalize_source_formula_text("Use the sample mean: sum=30 and count=5.", DOMAIN, &records());
+        assert_eq!(result.status, FrontendStatus::Complete);
+        assert_eq!(result.formula_id.as_deref(), Some("arithmetic_mean"));
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn generic_frontend_refuses_ambiguity_and_missing_inputs() {
+        let records = records();
+        let ambiguous = formalize_source_formula_text("Use the mean or weighted average: sum=30 count=5.", DOMAIN, &records);
+        assert_eq!(ambiguous.status, FrontendStatus::Ambiguous);
+        let missing = formalize_source_formula_text("Use the sample mean: sum=30.", DOMAIN, &records);
+        assert_eq!(missing.status, FrontendStatus::Missing);
+    }
+
+    #[test]
+    fn compatibility_api_preserves_replayable_result_shape() {
         let source = "BEGIN FORMULA ratio\nALIASES: quotient\nEXPRESSION: a / b\nINPUTS: a, b\nASSUMPTIONS: b positive\nCONSTRAINTS: positive:a; positive:b\nSOURCE_ID: test\nTITLE: Test\nSECTION: Test\nURL: https://example.invalid/test\nLICENSE: test\nRETRIEVED: 2026-08-16\nEVIDENCE: ratio definition\nEND FORMULA";
         let records = extract_formula_records(source).unwrap();
-        let complete =
-            formalize_formula_text("Compute the quotient with a=6 and b = 2.", "test", &records);
-        assert_eq!(complete.status, FormulaFrontendStatus::Complete);
-        assert!(complete.replay_verified());
-        let missing = formalize_formula_text("Compute the quotient with a=6.", "test", &records);
-        assert_eq!(missing.status, FormulaFrontendStatus::Missing);
+        let result = formalize_formula_text("Compute the quotient with a=6 and b=2.", "test", &records);
+        assert_eq!(result.status, FormulaFrontendStatus::Complete);
+        assert_eq!(result.formula.as_deref(), Some("ratio"));
+        assert!(result.replay_verified());
     }
 }

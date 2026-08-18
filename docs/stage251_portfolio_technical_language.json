@@ -1,0 +1,20 @@
+{
+  "schema": "stage251-portfolio-technical-language-v1",
+  "corpus_sha256": "8aa2afb2c7c569615d44262fc7d7185140aa39c5c552f2b991c60dbeecef68e4",
+  "cases": 2000,
+  "supported_cases": 1200,
+  "ambiguous_cases": 400,
+  "unsupported_cases": 400,
+  "exact_decisions": 2000,
+  "authorized": 1200,
+  "offered_frontends": 8000,
+  "frontend_replay_verified": 8000,
+  "frontend_tamper_rejections": 8000,
+  "downstream_replay_verified": 1200,
+  "downstream_tamper_rejections": 1200,
+  "route_leakage": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "parent_portfolio_unchanged": true,
+  "live_mutations": 0
+}

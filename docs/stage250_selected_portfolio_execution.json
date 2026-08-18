@@ -1,0 +1,17 @@
+{
+  "schema": "stage250-selected-portfolio-execution-v1",
+  "corpus_sha256": "a5f6db38b2bfd0e8ebd76a68b275e706ced59efacfd9c2a79106f7685c3fb357",
+  "cases": 480,
+  "supported_cases": 240,
+  "refused_cases": 240,
+  "exact_decisions": 480,
+  "authorized": 240,
+  "offered_routes": 1920,
+  "replay_verified": 1920,
+  "tamper_rejections": 1920,
+  "route_leakage": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "parent_portfolio_unchanged": true,
+  "live_mutations": 0
+}

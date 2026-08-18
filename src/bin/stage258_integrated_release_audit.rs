@@ -124,6 +124,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "docs/stage264_hle_geometry_shadow_probe.json",
         "docs/stage265_source_candidate_utility_ranking.json",
         "docs/stage266_economics_shadow_manifest.json",
+        "docs/stage267_economics_shadow_validation.json",
         "docs/stage235_hle_shadow_source_probe.json",
         "docs/source_provenance_integrity.json",
         "docs/stage_m_continuous_education.json",
@@ -634,6 +635,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 check_number(&mut checks, path, value, "live_registry_mutations", 0);
                 check_number(&mut checks, path, value, "false_authorizations", 0);
                 check_number(&mut checks, path, value, "false_denials", 0);
+            }
+            "stage267_economics_shadow_validation.json" => {
+                check_nonempty_string(&mut checks, path, value, "source_sha256");
+                check_nonempty_string(&mut checks, path, value, "shadow_manifest_sha256");
+                check_nonempty_string(&mut checks, path, value, "corpus_sha256");
+                check_number(&mut checks, path, value, "source_records", 5);
+                check_number(&mut checks, path, value, "cases", 600);
+                check_number(&mut checks, path, value, "supported_cases", 360);
+                check_number(&mut checks, path, value, "ambiguous_cases", 120);
+                check_number(&mut checks, path, value, "unsupported_cases", 120);
+                check_number(&mut checks, path, value, "exact_decisions", 600);
+                check_number(&mut checks, path, value, "supported_authorized", 360);
+                check_number(&mut checks, path, value, "supported_replays", 360);
+                check_number(&mut checks, path, value, "supported_tamper_rejections", 360);
+                check_number(&mut checks, path, value, "all_replays", 600);
+                check_number(&mut checks, path, value, "all_tamper_rejections", 600);
+                check_number(&mut checks, path, value, "provenance_preserved", 600);
+                check_number(&mut checks, path, value, "false_authorizations", 0);
+                check_number(&mut checks, path, value, "false_denials", 0);
+                check_number(&mut checks, path, value, "manifest_mutations", 0);
+                check_number(&mut checks, path, value, "registry_mutations", 0);
+                check_number(&mut checks, path, value, "production_authorizations", 0);
             }
             "stage235_hle_shadow_source_probe.json" => {
                 check_number(&mut checks, path, value, "cases", 2500);

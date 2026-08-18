@@ -1,0 +1,23 @@
+{
+  "schema": "stage267-economics-shadow-validation-v1",
+  "source_sha256": "9eeb1f5b916305563eb3bc997b46a1c4b413fb97c1d09abe0c67dabdebec054d",
+  "shadow_manifest_sha256": "76daf8d4fc5835ddd5911eaf6b5b57b18e3ffd60d3e0088e432eabe3271cc1fc",
+  "corpus_sha256": "ee478b7333a4fc9d4aeb24a79e1e6df36b29636606c9180dc631fb04d3bc0f8a",
+  "source_records": 5,
+  "cases": 600,
+  "supported_cases": 360,
+  "ambiguous_cases": 120,
+  "unsupported_cases": 120,
+  "exact_decisions": 600,
+  "supported_authorized": 360,
+  "supported_replays": 360,
+  "supported_tamper_rejections": 360,
+  "all_replays": 600,
+  "all_tamper_rejections": 600,
+  "provenance_preserved": 600,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_mutations": 0,
+  "registry_mutations": 0,
+  "production_authorizations": 0
+}

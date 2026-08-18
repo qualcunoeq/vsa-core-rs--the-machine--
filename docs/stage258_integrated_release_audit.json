@@ -1,9 +1,9 @@
 {
   "schema": "stage258-integrated-release-audit-v1",
   "current_manifest_hash": "5be43e121500a591b8b380a029a155c8cdafa657b97bbf4756176d39c6560bc8",
-  "artifacts": 40,
-  "checks": 376,
-  "passed_checks": 376,
+  "artifacts": 41,
+  "checks": 396,
+  "passed_checks": 396,
   "all_checks_passed": true,
   "false_authorizations": 0,
   "false_denials": 0,
@@ -1536,6 +1536,106 @@
       "passed": true
     },
     {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "source_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "shadow_manifest_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "corpus_sha256 is nonempty",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "source_records == 5",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "cases == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "supported_cases == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "ambiguous_cases == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "unsupported_cases == 120",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "exact_decisions == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "supported_authorized == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "supported_replays == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "supported_tamper_rejections == 360",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "all_replays == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "all_tamper_rejections == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "provenance_preserved == 600",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "false_authorizations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "false_denials == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "manifest_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "registry_mutations == 0",
+      "passed": true
+    },
+    {
+      "artifact": "docs/stage267_economics_shadow_validation.json",
+      "requirement": "production_authorizations == 0",
+      "passed": true
+    },
+    {
       "artifact": "docs/stage235_hle_shadow_source_probe.json",
       "requirement": "cases == 2500",
       "passed": true
@@ -2015,6 +2115,10 @@
     [
       "docs/stage266_economics_shadow_manifest.json",
       "76daf8d4fc5835ddd5911eaf6b5b57b18e3ffd60d3e0088e432eabe3271cc1fc"
+    ],
+    [
+      "docs/stage267_economics_shadow_validation.json",
+      "ee84745180617c136fb01c33e5004a62cca3998a752de1d9b9949f08f35706fc"
     ],
     [
       "docs/stage235_hle_shadow_source_probe.json",

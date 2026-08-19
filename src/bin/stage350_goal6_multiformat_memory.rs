@@ -92,6 +92,7 @@ fn other_kind(kind: SourceCatalogKind) -> SourceCatalogKind {
         SourceCatalogKind::Formula => SourceCatalogKind::Relation,
         SourceCatalogKind::Relation => SourceCatalogKind::Formula,
         SourceCatalogKind::Topology => SourceCatalogKind::Formula,
+        SourceCatalogKind::Metric => SourceCatalogKind::Formula,
     }
 }
 
@@ -100,6 +101,7 @@ fn record_count(records: &SourceCatalogRecords) -> usize {
         SourceCatalogRecords::Formula(records) => records.len(),
         SourceCatalogRecords::Relation(records) => records.len(),
         SourceCatalogRecords::Topology(records) => records.len(),
+        SourceCatalogRecords::Metric(records) => records.len(),
     }
 }
 

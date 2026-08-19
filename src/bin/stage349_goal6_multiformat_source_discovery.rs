@@ -342,6 +342,7 @@ fn run_catalog(
                 }
             }
         }
+        SourceCatalogRecords::Metric(_) => {}
     }
     (cases, exact, replay, tamper, complete, ambiguous, missing)
 }

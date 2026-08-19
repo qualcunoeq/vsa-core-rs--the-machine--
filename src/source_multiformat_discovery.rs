@@ -11,6 +11,7 @@
 use crate::curriculum_campaign::SourceModuleCandidate;
 use crate::source_formula_pack::source_relation_pack::{extract_relation_records, RelationRecord};
 use crate::source_formula_pack::{extract_formula_records, FormulaRecord};
+use crate::source_metric_pack::{extract_metric_definitions, MetricDefinitionRecord};
 use crate::source_topology_pack::{extract_topology_definitions, TopologyDefinitionRecord};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -22,6 +23,7 @@ pub enum SourceCatalogKind {
     Formula,
     Relation,
     Topology,
+    Metric,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -29,6 +31,7 @@ pub enum SourceCatalogRecords {
     Formula(Vec<FormulaRecord>),
     Relation(Vec<RelationRecord>),
     Topology(Vec<TopologyDefinitionRecord>),
+    Metric(Vec<MetricDefinitionRecord>),
 }
 
 impl SourceCatalogRecords {
@@ -37,6 +40,7 @@ impl SourceCatalogRecords {
             Self::Formula(_) => SourceCatalogKind::Formula,
             Self::Relation(_) => SourceCatalogKind::Relation,
             Self::Topology(_) => SourceCatalogKind::Topology,
+            Self::Metric(_) => SourceCatalogKind::Metric,
         }
     }
 
@@ -45,6 +49,7 @@ impl SourceCatalogRecords {
             Self::Formula(records) => records.len(),
             Self::Relation(records) => records.len(),
             Self::Topology(records) => records.len(),
+            Self::Metric(records) => records.len(),
         }
     }
 
@@ -62,6 +67,9 @@ impl SourceCatalogRecords {
                 ids.extend(records.iter().map(|record| record.source.source_id.clone()));
             }
             Self::Topology(records) => {
+                ids.extend(records.iter().map(|record| record.source.source_id.clone()));
+            }
+            Self::Metric(records) => {
                 ids.extend(records.iter().map(|record| record.source.source_id.clone()));
             }
         }
@@ -82,6 +90,10 @@ impl SourceCatalogRecords {
                 .first()
                 .map(|record| record.domain.clone())
                 .unwrap_or_else(|| "source_declared_topology".into()),
+            Self::Metric(records) => records
+                .first()
+                .map(|record| record.domain.clone())
+                .unwrap_or_else(|| "source_declared_metric".into()),
         }
     }
 }
@@ -155,6 +167,10 @@ pub fn discover_source_catalog(
             SourceCatalogKind::Topology,
             marker_count(document.document, "BEGIN TOPOLOGY"),
         ),
+        (
+            SourceCatalogKind::Metric,
+            marker_count(document.document, "BEGIN METRIC"),
+        ),
     ];
     let present = counts
         .iter()
@@ -168,7 +184,7 @@ pub fn discover_source_catalog(
     }
     if present.len() != 1 {
         return Err(vec![
-            "source document mixes formula, relation, and topology formats".into(),
+            "source document mixes supported declarative formats".into()
         ]);
     }
     let kind = present[0];
@@ -181,6 +197,9 @@ pub fn discover_source_catalog(
         }
         SourceCatalogKind::Topology => {
             extract_topology_definitions(document.document).map(SourceCatalogRecords::Topology)
+        }
+        SourceCatalogKind::Metric => {
+            extract_metric_definitions(document.document).map(SourceCatalogRecords::Metric)
         }
     }?;
     if records.is_empty() {
@@ -195,6 +214,7 @@ pub fn discover_source_catalog(
         SourceCatalogKind::Formula => "formula",
         SourceCatalogKind::Relation => "relation",
         SourceCatalogKind::Topology => "topology",
+        SourceCatalogKind::Metric => "metric",
     };
     let candidate = SourceModuleCandidate {
         module_id: format!("discovered-catalog::{kind_name}::{source_hash}"),

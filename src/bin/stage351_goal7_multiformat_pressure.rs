@@ -316,6 +316,7 @@ fn count_record_set(records: &SourceCatalogRecords) -> usize {
         SourceCatalogRecords::Formula(records) => records.len(),
         SourceCatalogRecords::Relation(records) => records.len(),
         SourceCatalogRecords::Topology(records) => records.len(),
+        SourceCatalogRecords::Metric(records) => records.len(),
     }
 }
 
@@ -324,6 +325,7 @@ fn kind_name(kind: SourceCatalogKind) -> &'static str {
         SourceCatalogKind::Formula => "formula",
         SourceCatalogKind::Relation => "relation",
         SourceCatalogKind::Topology => "topology",
+        SourceCatalogKind::Metric => "metric",
     }
 }
 
@@ -435,6 +437,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     }
                 }
             }
+            SourceCatalogRecords::Metric(_) => {}
         }
         corpus_identity.push((
             observation.path.clone(),

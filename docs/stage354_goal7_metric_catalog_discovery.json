@@ -1,0 +1,399 @@
+{
+  "schema": "stage354-goal7-metric-catalog-discovery-v1",
+  "source_manifest_sha256": "43cb30f18ac7f1aad287abe60f36e4af254259385668e1065c2efefc21cc1db3",
+  "source_documents": 26,
+  "admitted_catalogs": 14,
+  "admitted_records": 55,
+  "formula_catalogs": 11,
+  "relation_catalogs": 1,
+  "topology_catalogs": 1,
+  "metric_catalogs": 1,
+  "unmarked_documents": 12,
+  "rejected_documents": 0,
+  "discovery_replays": 14,
+  "catalog_tamper_rejections": 14,
+  "source_mutations": 56,
+  "source_mutations_rejected": 56,
+  "false_authorizations": 0,
+  "production_mutations": 0,
+  "manifest_unchanged": true,
+  "source_observations": [
+    {
+      "path": "docs/sources/bounded_finite_automata_source.txt",
+      "sha256": "25a0799a102b81b49ad28856b89184e44ac7c69853de04a464e19b74c7c5cc3c",
+      "bytes": 1038,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/mit_analytic_number_theory_arithmetic_functions.txt",
+      "sha256": "d012aca23d7b8aa819f79943702d49d7d0424a5fbd8b61f2b19a057875cb0feb",
+      "bytes": 649,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/mit_analytic_number_theory_character_definition.txt",
+      "sha256": "53d49ea094afe0b13fc017f9439e742724032d02eff183010dcbf5644976c31f",
+      "bytes": 523,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_bayes_rule_catalog.txt",
+      "sha256": "4d0cde3a338235435f4846b78770bec035ff716f1b0277b2854efa82bfab1a9c",
+      "bytes": 1048,
+      "classification": "formula_catalog",
+      "records": 1,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_biology_relation_document.txt",
+      "sha256": "d236dd6ba1dd943a48f7b5252b740568287938be30a3cf40e09b469c528ca517",
+      "bytes": 777,
+      "classification": "relation_catalog",
+      "records": 1,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_biology_source.txt",
+      "sha256": "c5a3e964c5ecffecfa8f26b305f2a45dc06dc2e59524f84af6d637fba152b028",
+      "bytes": 642,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_bounded_complex_analysis_source.txt",
+      "sha256": "e04b5c7564577ea1810ad7381f2df0065ef9edf902e6889420aca493e2bef4b7",
+      "bytes": 791,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_bounded_economics_source.txt",
+      "sha256": "9eeb1f5b916305563eb3bc997b46a1c4b413fb97c1d09abe0c67dabdebec054d",
+      "bytes": 3533,
+      "classification": "formula_catalog",
+      "records": 5,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "bytes": 3023,
+      "classification": "formula_catalog",
+      "records": 5,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_bounded_health_ratios_source.txt",
+      "sha256": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
+      "bytes": 3638,
+      "classification": "formula_catalog",
+      "records": 5,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_chemistry_source.txt",
+      "sha256": "1b5f1bd18e802233abdbd96ffa51ed654216125559b3a2dcc13416892bfc9c1c",
+      "bytes": 915,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_complex_arithmetic_source.txt",
+      "sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+      "bytes": 6332,
+      "classification": "formula_catalog",
+      "records": 11,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_counting_principles_catalog.txt",
+      "sha256": "b4e255f017722540045d9d62d3f9eb0f2cb3c86a179a7b7d11ee331252363792",
+      "bytes": 582,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_finite_markov_hitting_source.txt",
+      "sha256": "7820ad4e529d21143b893f988ffc96c1ba43c86a15e440bbd11726deb105ebf0",
+      "bytes": 870,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_finite_markov_stationary_source.txt",
+      "sha256": "f108abcf5d89bdf051a0985f2a2d191b6a9debeefbdf18853c33aaea57fb5f36",
+      "bytes": 798,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_finite_regression_source.txt",
+      "sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "bytes": 3519,
+      "classification": "formula_catalog",
+      "records": 5,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_finite_set_operations_catalog.txt",
+      "sha256": "57f6d1ac3e3b0d6e9d687e3a11830f7c08fb99523c74190f6e8b3422840dc8c9",
+      "bytes": 592,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_finite_statistics_source.txt",
+      "sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "bytes": 3961,
+      "classification": "formula_catalog",
+      "records": 6,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_linear_interpolation_catalog.txt",
+      "sha256": "82027d30794d88784a47524224a340ca007001f9d22ac7a5712ce13c03f42f03",
+      "bytes": 965,
+      "classification": "formula_catalog",
+      "records": 1,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+      "bytes": 2411,
+      "classification": "formula_catalog",
+      "records": 4,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_truth_table_catalog.txt",
+      "sha256": "c2523254cd63b526d35f0dc0f59f616081fa52d5efc55a81158bc0858e2b639f",
+      "bytes": 600,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    },
+    {
+      "path": "docs/sources/openstax_unit_conversion_catalog.txt",
+      "sha256": "c69295d239b6149cf514bec1a3269fcd6244ec533829cf645e0f82a32a679d1e",
+      "bytes": 2122,
+      "classification": "formula_catalog",
+      "records": 4,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/openstax_unit_conversion_goal6_catalog.txt",
+      "sha256": "561930f8e04ab44c41bebabffd83dda19e8d17e4e917d6467d9ba1b8cee7f74a",
+      "bytes": 2767,
+      "classification": "formula_catalog",
+      "records": 5,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/topology_without_tears_finite_definition.txt",
+      "sha256": "8482325b0dae935e43ab186d6e4b9a6f7b05f4d8a8d51174531ff69ac10334d7",
+      "bytes": 1003,
+      "classification": "topology_catalog",
+      "records": 1,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/topology_without_tears_finite_metric_definition.txt",
+      "sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+      "bytes": 908,
+      "classification": "metric_catalog",
+      "records": 1,
+      "replay_verified": true,
+      "error_digest": null
+    },
+    {
+      "path": "docs/sources/topology_without_tears_simplicial_homology_definition.txt",
+      "sha256": "6fc676133cb57bb1660316038329c528974b4476308f188c2196551d0979ac86",
+      "bytes": 676,
+      "classification": "unmarked_source_document",
+      "records": 0,
+      "replay_verified": false,
+      "error_digest": "d0f0ae00a59d06d9fdc68d89d2eccaebc222731af2d8ea4a1f8baa76d87463b2"
+    }
+  ],
+  "catalog_observations": [
+    {
+      "path": "docs/sources/openstax_bayes_rule_catalog.txt",
+      "kind": "formula",
+      "records": 1,
+      "source_hash": "4d0cde3a338235435f4846b78770bec035ff716f1b0277b2854efa82bfab1a9c",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_biology_relation_document.txt",
+      "kind": "relation",
+      "records": 1,
+      "source_hash": "d236dd6ba1dd943a48f7b5252b740568287938be30a3cf40e09b469c528ca517",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_bounded_economics_source.txt",
+      "kind": "formula",
+      "records": 5,
+      "source_hash": "9eeb1f5b916305563eb3bc997b46a1c4b413fb97c1d09abe0c67dabdebec054d",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "kind": "formula",
+      "records": 5,
+      "source_hash": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_bounded_health_ratios_source.txt",
+      "kind": "formula",
+      "records": 5,
+      "source_hash": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_complex_arithmetic_source.txt",
+      "kind": "formula",
+      "records": 11,
+      "source_hash": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_finite_regression_source.txt",
+      "kind": "formula",
+      "records": 5,
+      "source_hash": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_finite_statistics_source.txt",
+      "kind": "formula",
+      "records": 6,
+      "source_hash": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_linear_interpolation_catalog.txt",
+      "kind": "formula",
+      "records": 1,
+      "source_hash": "82027d30794d88784a47524224a340ca007001f9d22ac7a5712ce13c03f42f03",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "kind": "formula",
+      "records": 4,
+      "source_hash": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_unit_conversion_catalog.txt",
+      "kind": "formula",
+      "records": 4,
+      "source_hash": "c69295d239b6149cf514bec1a3269fcd6244ec533829cf645e0f82a32a679d1e",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/openstax_unit_conversion_goal6_catalog.txt",
+      "kind": "formula",
+      "records": 5,
+      "source_hash": "561930f8e04ab44c41bebabffd83dda19e8d17e4e917d6467d9ba1b8cee7f74a",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/topology_without_tears_finite_definition.txt",
+      "kind": "topology",
+      "records": 1,
+      "source_hash": "8482325b0dae935e43ab186d6e4b9a6f7b05f4d8a8d51174531ff69ac10334d7",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    },
+    {
+      "path": "docs/sources/topology_without_tears_finite_metric_definition.txt",
+      "kind": "metric",
+      "records": 1,
+      "source_hash": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4
+    }
+  ],
+  "report_sha256": "ea3f2c68c948e579b426d5a9515e13c97ded742526947108f9d5a2e49afc1151"
+}

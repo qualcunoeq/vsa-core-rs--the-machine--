@@ -1,0 +1,33 @@
+{
+  "schema": "goal6-external-portfolio-score-v1",
+  "release_id": "external-math-exam-v1",
+  "partition": "sealed",
+  "probe_report_sha256": "7f54ab6cfb76f8eff2ad5975ad7aeaf8aef89b8526f4663fe0be438c859b183e",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "questions_read": 1000,
+  "answer_hashes_read": 1000,
+  "plaintext_answers_read": 0,
+  "sealed_questions_read": 1000,
+  "unique_candidate_cases": 1,
+  "correct_shadow_candidates": 1,
+  "incorrect_shadow_candidates_rejected": 0,
+  "candidate_replays": 1,
+  "route_ambiguities": 0,
+  "no_executable_route": 999,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "candidates": [
+    {
+      "id": "math-v1-sealed-0001",
+      "selected_route": "arithmetic_sequence",
+      "candidate_answer_sha256": "b7c7470e59e2a2df1bfd0a4705488ee6fe0c5c125de15cccdfab0e00d6c03dc0",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    }
+  ],
+  "report_sha256": "5553a35edae8ec30eb5f77e92a9a54118aa3d13ed817c7b0b22ae420fc4ea50d"
+}

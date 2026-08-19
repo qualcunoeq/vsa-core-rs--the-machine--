@@ -1,11 +1,11 @@
 # Goal 6 — hash-only external portfolio score
 
-- development questions / answer hashes: 3000 / 3000
-- Unique candidates: 11
-- Correct / rejected candidates: 11 / 0
-- Candidate replay: 11 / 11
-- Multiple-route ambiguities / no executable route: 0 / 2989
-- Plaintext answers / sealed questions read: 0 / 0
+- sealed questions / answer hashes: 1000 / 1000
+- Unique candidates: 1
+- Correct / rejected candidates: 1 / 0
+- Candidate replay: 1 / 1
+- Multiple-route ambiguities / no executable route: 0 / 999
+- Plaintext answers / sealed questions read: 0 / 1000
 - Production authorizations / false authorizations: 0 / 0
 - Manifest unchanged: true
 

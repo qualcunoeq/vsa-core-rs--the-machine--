@@ -1,12 +1,13 @@
 //! Hash-only scorer for the frozen Goal 6 external portfolio.
 //!
-//! It reads development answer hashes after the route-blind probe is frozen,
-//! never reads plaintext answers or sealed questions, and never authorizes or
-//! mutates production.
+//! It reads hash-only answers only in an explicit privileged evaluation mode;
+//! ordinary development runs remain development-only and never read sealed
+//! questions or answer hashes.
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use std::env;
 use std::fs;
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::goal6_external_portfolio::{
@@ -34,6 +35,7 @@ struct Oracle {
 #[derive(Debug, Deserialize)]
 struct ProbeManifest {
     schema: String,
+    partition: String,
     report_sha256: String,
     dataset_sha256: String,
     questions_read: usize,
@@ -53,7 +55,7 @@ struct CandidateReceipt {
 struct Report {
     schema: &'static str,
     release_id: &'static str,
-    partition: &'static str,
+    partition: String,
     probe_report_sha256: String,
     dataset_sha256: String,
     questions_read: usize,
@@ -144,8 +146,24 @@ fn candidate_forms(candidate: &PortfolioCandidate) -> Vec<(&'static str, String)
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let partition = env::var("GOAL6_PORTFOLIO_PARTITION")
+        .unwrap_or_else(|_| "development".into());
+    assert!(matches!(partition.as_str(), "development" | "sealed"));
+    if partition == "sealed" {
+        assert_eq!(
+            env::var("GOAL6_PORTFOLIO_PRIVILEGED_EVAL").as_deref(),
+            Ok("true"),
+            "sealed scoring requires an explicit privileged-eval flag"
+        );
+    }
+    let probe_report_path = env::var("GOAL6_PORTFOLIO_PROBE_REPORT")
+        .unwrap_or_else(|_| PROBE_REPORT.into());
+    let report_json = env::var("GOAL6_PORTFOLIO_SCORE_JSON")
+        .unwrap_or_else(|_| REPORT_JSON.into());
+    let report_md = env::var("GOAL6_PORTFOLIO_SCORE_MD")
+        .unwrap_or_else(|_| REPORT_MD.into());
     let probe: ProbeManifest =
-        serde_json::from_str(&fs::read_to_string(PROBE_REPORT)?)?;
+        serde_json::from_str(&fs::read_to_string(&probe_report_path)?)?;
     let question_bytes = fs::read(format!("{RELEASE_DIR}/questions.jsonl"))?;
     let dataset_sha256 = digest_bytes(&question_bytes);
     let questions: Vec<Question> = String::from_utf8(question_bytes)?
@@ -154,7 +172,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(serde_json::from_str)
         .collect::<Result<Vec<_>, _>>()?;
     let oracle: BTreeMap<String, Oracle> =
-        fs::read_to_string(format!("{RELEASE_DIR}/oracle_development.jsonl"))?
+        fs::read_to_string(format!("{RELEASE_DIR}/oracle_{partition}.jsonl"))?
             .lines()
             .filter(|line| !line.trim().is_empty())
             .map(serde_json::from_str::<Oracle>)
@@ -163,13 +181,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .map(|record| (record.id.clone(), record))
         .collect();
     assert_eq!(probe.schema, "goal6-external-portfolio-probe-v1");
-    assert_eq!(probe.questions_read, 3000);
+    assert_eq!(probe.partition, partition);
+    assert_eq!(probe.questions_read, if partition == "sealed" { 1000 } else { 3000 });
     assert_eq!(probe.dataset_sha256, dataset_sha256);
     let manifest_sha256_before = breadth_first_manifest().replay_hash();
     let mut candidates = Vec::new();
     let mut route_ambiguities = 0;
     let mut no_executable_route = 0;
-    for question in questions.iter().filter(|question| question.split == "development") {
+    for question in questions.iter().filter(|question| question.split == partition) {
         let observations = observe_all(&question.original_prompt, &question.id);
         let executable = executable_routes(&observations);
         if executable.len() != 1 {
@@ -187,7 +206,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .expect("executable route has candidate");
         let expected = oracle
             .get(&question.id)
-            .ok_or_else(|| format!("missing development oracle for {}", question.id))?;
+            .ok_or_else(|| format!("missing {partition} oracle for {}", question.id))?;
         let forms = candidate_forms(candidate);
         let mut matched_representation = None;
         for (kind, form) in &forms {
@@ -210,16 +229,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut report = Report {
         schema: "goal6-external-portfolio-score-v1",
         release_id: "external-math-exam-v1",
-        partition: "development",
+        partition: partition.clone(),
         probe_report_sha256: probe.report_sha256,
         dataset_sha256,
         questions_read: questions
             .iter()
-            .filter(|question| question.split == "development")
+            .filter(|question| question.split == partition)
             .count(),
         answer_hashes_read: oracle.len(),
         plaintext_answers_read: 0,
-        sealed_questions_read: 0,
+        sealed_questions_read: usize::from(partition == "sealed") * oracle.len(),
         unique_candidate_cases: candidates.len(),
         correct_shadow_candidates: candidates
             .iter()
@@ -246,21 +265,24 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut unsigned = serde_json::to_value(&report)?;
     unsigned["report_sha256"] = serde_json::Value::String(String::new());
     report.report_sha256 = digest(&unsigned);
-    assert_eq!(report.questions_read, 3000);
-    assert_eq!(report.answer_hashes_read, 3000);
+    assert_eq!(report.questions_read, if partition == "sealed" { 1000 } else { 3000 });
+    assert_eq!(report.answer_hashes_read, report.questions_read);
     assert_eq!(report.plaintext_answers_read, 0);
-    assert_eq!(report.sealed_questions_read, 0);
+    assert_eq!(
+        report.sealed_questions_read,
+        if partition == "sealed" { report.questions_read } else { 0 }
+    );
     assert_eq!(report.production_authorizations, 0);
     assert_eq!(report.false_authorizations, 0);
     assert_eq!(report.candidate_replays, report.unique_candidate_cases);
     assert!(report.manifest_unchanged);
     let serialized = serde_json::to_string_pretty(&report)?;
-    fs::write(REPORT_JSON, format!("{serialized}\n"))?;
+    fs::write(&report_json, format!("{serialized}\n"))?;
     fs::write(
-        REPORT_MD,
+        &report_md,
         format!(
             "# Goal 6 — hash-only external portfolio score\n\n\
-- Development questions / answer hashes: {} / {}\n\
+- {} questions / answer hashes: {} / {}\n\
 - Unique candidates: {}\n\
 - Correct / rejected candidates: {} / {}\n\
 - Candidate replay: {} / {}\n\
@@ -268,7 +290,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - Plaintext answers / sealed questions read: {} / {}\n\
 - Production authorizations / false authorizations: {} / {}\n\
 - Manifest unchanged: {}\n\n\
-The scorer reruns the frozen route-blind portfolio and compares only canonical candidate hashes against development oracle hashes.\n",
+The privileged scorer reruns the frozen route-blind portfolio and compares only canonical candidate hashes against the selected partition's oracle hashes.\n",
+            partition,
             report.questions_read,
             report.answer_hashes_read,
             report.unique_candidate_cases,

@@ -1,6 +1,6 @@
-# Goal 6 — route-blind external portfolio probe
+# Goal 6 — route-blind external portfolio probe (development)
 
-- Development questions: 3000
+- development questions: 3000
 - Route invocations: 21000
 - Unique shadow candidates / multiple-route ambiguities / no route: 11 / 0 / 2989
 - Frontend / execution replay receipts: 21000 / 12

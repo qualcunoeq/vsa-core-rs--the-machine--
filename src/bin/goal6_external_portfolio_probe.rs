@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use std::env;
 use std::fs;
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::goal6_external_portfolio::{
@@ -41,7 +42,7 @@ struct Receipt {
 struct Report {
     schema: &'static str,
     release_id: &'static str,
-    partition: &'static str,
+    partition: String,
     dataset_sha256: String,
     questions_read: usize,
     answer_keys_read: usize,
@@ -79,6 +80,20 @@ fn increment(map: &mut BTreeMap<String, usize>, key: impl Into<String>) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let partition = env::var("GOAL6_PORTFOLIO_PARTITION")
+        .unwrap_or_else(|_| "development".into());
+    assert!(matches!(partition.as_str(), "development" | "sealed"));
+    if partition == "sealed" {
+        assert_eq!(
+            env::var("GOAL6_PORTFOLIO_PRIVILEGED_EVAL").as_deref(),
+            Ok("true"),
+            "sealed evaluation requires an explicit privileged-eval flag"
+        );
+    }
+    let report_json = env::var("GOAL6_PORTFOLIO_REPORT_JSON")
+        .unwrap_or_else(|_| REPORT_JSON.into());
+    let report_md = env::var("GOAL6_PORTFOLIO_REPORT_MD")
+        .unwrap_or_else(|_| REPORT_MD.into());
     let question_bytes = fs::read(format!("{RELEASE_DIR}/questions.jsonl"))?;
     let dataset_sha256 = digest_bytes(&question_bytes);
     let questions: Vec<Question> = String::from_utf8(question_bytes)?
@@ -88,7 +103,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect::<Result<Vec<_>, _>>()?;
     let questions: Vec<Question> = questions
         .into_iter()
-        .filter(|question| question.split == "development")
+        .filter(|question| question.split == partition)
         .collect();
     let route_count = observe_all("", "route-count").len();
 
@@ -171,11 +186,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut report = Report {
         schema: "goal6-external-portfolio-probe-v1",
         release_id: "external-math-exam-v1",
-        partition: "development",
+        partition: partition.clone(),
         dataset_sha256,
         questions_read: questions.len(),
         answer_keys_read: 0,
-        sealed_questions_read: 0,
+        sealed_questions_read: usize::from(partition == "sealed") * questions.len(),
         route_invocations: questions.len() * route_count,
         unique_shadow_candidates,
         multiple_route_ambiguities,
@@ -199,19 +214,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     unsigned["report_sha256"] = serde_json::Value::String(String::new());
     report.report_sha256 = digest(&unsigned);
     assert_eq!(report.answer_keys_read, 0);
-    assert_eq!(report.sealed_questions_read, 0);
+    assert_eq!(
+        report.sealed_questions_read,
+        if partition == "sealed" { report.questions_read } else { 0 }
+    );
     assert_eq!(report.production_authorizations, 0);
     assert_eq!(report.false_authorizations, 0);
     assert!(report.manifest_unchanged);
-    assert_eq!(report.questions_read, 3000);
+    assert_eq!(report.questions_read, if partition == "sealed" { 1000 } else { 3000 });
     assert_eq!(report.route_invocations, report.questions_read * route_count);
     let serialized = serde_json::to_string_pretty(&report)?;
-    fs::write(REPORT_JSON, format!("{serialized}\n"))?;
+    fs::write(&report_json, format!("{serialized}\n"))?;
     fs::write(
-        REPORT_MD,
+        &report_md,
         format!(
-            "# Goal 6 — route-blind external portfolio probe\n\n\
-- Development questions: {}\n\
+            "# Goal 6 — route-blind external portfolio probe ({})\n\n\
+- {} questions: {}\n\
 - Route invocations: {}\n\
 - Unique shadow candidates / multiple-route ambiguities / no route: {} / {} / {}\n\
 - Frontend / execution replay receipts: {} / {}\n\
@@ -219,7 +237,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - Answer keys / sealed questions read: {} / {}\n\
 - Production authorizations / false authorizations: {} / {}\n\
 - Manifest unchanged: {}\n\n\
-Every development prompt was offered to all {route_count} routes. This is answer-key-blind and shadow-only.\n",
+Every {} prompt was offered to all {route_count} routes. This is answer-key-blind and shadow-only.\n",
+            partition,
+            partition,
             report.questions_read,
             report.route_invocations,
             report.unique_shadow_candidates,
@@ -234,6 +254,7 @@ Every development prompt was offered to all {route_count} routes. This is answer
             report.production_authorizations,
             report.false_authorizations,
             report.manifest_unchanged,
+            partition,
         ),
     )?;
     println!("{serialized}");

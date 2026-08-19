@@ -1,0 +1,116 @@
+{
+  "schema": "stage366-generic-source-domain-acquisition-v1",
+  "source_id": "openstax-precalculus-2e:sequences-series",
+  "source_hash": "c328d9a310329947ae2fd34913178db7ab5cff37874db899a5e624d235159e91",
+  "records": 4,
+  "source_module_replay": true,
+  "source_mutation_rejected": true,
+  "supported_cases": 4,
+  "boundary_cases": 10,
+  "exact_decisions": 14,
+  "replay_verified": 14,
+  "tamper_rejected": 1,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "receipts": [
+    {
+      "formula_id": "arithmetic_nth_term",
+      "status": "complete",
+      "replay_verified": true,
+      "expected_supported": true,
+      "exact": true
+    },
+    {
+      "formula_id": "arithmetic_nth_term::missing",
+      "status": "missing",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "arithmetic_nth_term::invalid",
+      "status": "inconsistent",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "arithmetic_partial_sum",
+      "status": "complete",
+      "replay_verified": true,
+      "expected_supported": true,
+      "exact": true
+    },
+    {
+      "formula_id": "arithmetic_partial_sum::missing",
+      "status": "missing",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "arithmetic_partial_sum::invalid",
+      "status": "inconsistent",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "geometric_nth_term",
+      "status": "complete",
+      "replay_verified": true,
+      "expected_supported": true,
+      "exact": true
+    },
+    {
+      "formula_id": "geometric_nth_term::missing",
+      "status": "missing",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "geometric_nth_term::invalid",
+      "status": "inconsistent",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "geometric_partial_sum",
+      "status": "complete",
+      "replay_verified": true,
+      "expected_supported": true,
+      "exact": true
+    },
+    {
+      "formula_id": "geometric_partial_sum::missing",
+      "status": "missing",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "geometric_partial_sum::invalid",
+      "status": "inconsistent",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "not-in-source",
+      "status": "missing",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    },
+    {
+      "formula_id": "arithmetic_nth_term::ambiguous",
+      "status": "ambiguous",
+      "replay_verified": true,
+      "expected_supported": false,
+      "exact": true
+    }
+  ]
+}

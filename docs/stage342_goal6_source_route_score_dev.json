@@ -1,6 +1,6 @@
 {
   "schema": "stage342-goal6-source-route-score-v1",
-  "selector_report_sha256": "6b9b48687fe9f8fdb82708ad2d90582fa63b119113f83ae9eda803d4169824f0",
+  "selector_report_sha256": "b6c6075ecd0a8e28b56fe98a4183832e7035aa16c8a147dce8459899d1b4c86b",
   "partition": "development",
   "selected_route": "FiniteListMean",
   "selected_source_path": "docs/sources/openstax_finite_statistics_source.txt",
@@ -33,5 +33,5 @@
       "replay_verified": true
     }
   ],
-  "report_sha256": "776ba8e5355a3392215eac1a2b955fbdc0f3f44845a79784bf385cca43f46168"
+  "report_sha256": "0bb0334de64b1edd39bb90996ae430a6e5c587a19397d755044052dd2201f57e"
 }

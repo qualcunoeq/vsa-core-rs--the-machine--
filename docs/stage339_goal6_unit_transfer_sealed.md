@@ -1,4 +1,4 @@
-# Stage 339 — source-selected unit transfer probe
+# Stage 335 — source-selected external portfolio probe
 
 - Partition / questions read: sealed / 1000
 - Selected source / route: `docs/sources/openstax_unit_conversion_goal6_catalog.txt` / `UnitConversion`
@@ -9,7 +9,4 @@
 - Answer keys / plaintext answers / production mutations: 0 / 0 / 0
 - Manifest unchanged: true
 
-This probe is answer-key blind and shadow-only. The unit source was selected by
-the governed source plan, but no sealed question reached a complete unit
-conversion request. Candidate values are recorded only as hashes; no candidate
-authorizes production routing.
+This probe is answer-key blind and shadow-only. Candidate values are recorded only as hashes; no candidate authorizes production routing.

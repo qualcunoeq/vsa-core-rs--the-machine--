@@ -2,9 +2,10 @@
 # Every record is explicit; omitted assumptions are never inferred.
 
 BEGIN FORMULA arithmetic_nth_term
-ALIASES: arithmetic sequence term | affine sequence
+ALIASES: arithmetic sequence | arithmetic sequence term | affine sequence
 EXPRESSION: a1 + (n - 1) * d
 INPUTS: a1, n, d
+BINDINGS: a1=first_integer_sequence_value; n=requested_ordinal; d=constant_integer_sequence_difference
 ASSUMPTIONS: n is a positive integer
 CONSTRAINTS: positive_integer:n
 SOURCE_ID: openstax-precalculus-2e:sequences-series

@@ -237,6 +237,95 @@ fn finite_list_inputs(text: &str) -> Option<(Rational, Rational, Vec<String>)> {
     Some((sum, count, vec![format!("numeric-list:{start}..{end}")]))
 }
 
+fn sequence_integer_values(text: &str) -> Option<Vec<Rational>> {
+    let lower = text.to_ascii_lowercase();
+    let sequence_start = lower.find("sequence")? + "sequence".len();
+    let sentence_end = sentence_end(text, sequence_start);
+    let mut segment = &text[sequence_start..sentence_end];
+    if let Some(are) = segment.to_ascii_lowercase().find(" are ") {
+        segment = &segment[are + " are ".len()..];
+    }
+    if let Some(respectively) = segment.to_ascii_lowercase().find("respectively") {
+        segment = &segment[..respectively];
+    }
+    if let Some(ellipsis) = segment.find("...") {
+        segment = &segment[..ellipsis];
+    }
+    parse_simple_numeric_list(segment)
+}
+
+fn ordinal_token(token: &str) -> Option<i128> {
+    let token = token
+        .trim_matches(|character: char| !character.is_ascii_alphanumeric())
+        .to_ascii_lowercase();
+    if let Ok(number) = token
+        .trim_end_matches(['s', 't', 'n', 'd', 'r', 'h'])
+        .parse::<i128>()
+    {
+        return (number > 0).then_some(number);
+    }
+    [
+        ("first", 1),
+        ("second", 2),
+        ("third", 3),
+        ("fourth", 4),
+        ("fifth", 5),
+        ("sixth", 6),
+        ("seventh", 7),
+        ("eighth", 8),
+        ("ninth", 9),
+        ("tenth", 10),
+    ]
+    .into_iter()
+    .find_map(|(word, number)| (token == word).then_some(number))
+}
+
+fn requested_ordinal(text: &str) -> Option<Rational> {
+    let lower = text.to_ascii_lowercase();
+    if ["sum", "series", "total"]
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
+        return None;
+    }
+    let tokens = lower.split_whitespace().collect::<Vec<_>>();
+    let mut candidates = Vec::new();
+    for (index, token) in tokens.iter().enumerate() {
+        if !token
+            .trim_matches(|character: char| !character.is_ascii_alphabetic())
+            .starts_with("term")
+        {
+            continue;
+        }
+        if let Some(previous) = index
+            .checked_sub(1)
+            .and_then(|position| tokens.get(position))
+        {
+            if let Some(number) = ordinal_token(previous) {
+                candidates.push(number);
+            }
+        }
+    }
+    candidates.dedup();
+    (candidates.len() == 1).then(|| Rational::new(candidates[0], 1).unwrap())
+}
+
+fn source_binding_value(text: &str, binding: &str) -> Option<Rational> {
+    match binding {
+        "first_integer_sequence_value" => sequence_integer_values(text)?.first().cloned(),
+        "constant_integer_sequence_difference" => {
+            let values = sequence_integer_values(text)?;
+            let difference = values.get(1)?.sub(values.first()?)?;
+            values
+                .windows(2)
+                .all(|pair| pair[1].sub(&pair[0]) == Some(difference.clone()))
+                .then_some(difference)
+        }
+        "requested_ordinal" => requested_ordinal(text),
+        _ => None,
+    }
+}
+
 fn labeled_values(text: &str, label: &str) -> Vec<(String, Rational)> {
     let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
     let label = normalize_phrase(label);
@@ -381,6 +470,13 @@ pub fn formalize_source_formula_text(
     for input in &record.required_inputs {
         if inputs.contains_key(input) {
             continue;
+        }
+        if let Some(binding) = record.input_bindings.get(input) {
+            if let Some(value) = source_binding_value(text, binding) {
+                spans.push(format!("source-binding:{input}={binding}"));
+                inputs.insert(input.clone(), value);
+                continue;
+            }
         }
         let values = labeled_values(text, input);
         if values.len() != 1 {
@@ -551,7 +647,7 @@ impl SourceFormulaFrontendResult {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::source_formula_pack::extract_formula_records;
+    use crate::source_formula_pack::{extract_formula_records, source_formula_records};
     use crate::source_regression_pack;
     use crate::source_statistics_pack::{records, DOMAIN};
 
@@ -635,6 +731,39 @@ mod tests {
         assert_eq!(request.inputs["sum"], Rational::new(455, 1).unwrap());
         assert_eq!(request.inputs["count"], Rational::new(5, 1).unwrap());
         assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn generic_frontend_uses_source_declared_sequence_bindings() {
+        let records = source_formula_records();
+        let result = formalize_source_formula_text(
+            "What is the 100th term of the arithmetic sequence 6, 10, 14, 18, ...?",
+            "goal6_source_selected_arithmeticsequence",
+            &records,
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        let request = result.request.as_ref().expect("source bindings complete");
+        assert_eq!(request.inputs["a1"], Rational::new(6, 1).unwrap());
+        assert_eq!(request.inputs["n"], Rational::new(100, 1).unwrap());
+        assert_eq!(request.inputs["d"], Rational::new(4, 1).unwrap());
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn generic_sequence_binding_rejects_sum_and_nonconstant_lists() {
+        let records = source_formula_records();
+        for prompt in [
+            "What is the sum of the first 5 terms of the arithmetic sequence 6, 10, 14, 18, ...?",
+            "What is the 100th term of the arithmetic sequence 6, 10, 15, 18, ...?",
+        ] {
+            let result = formalize_source_formula_text(
+                prompt,
+                "goal6_source_selected_arithmeticsequence",
+                &records,
+            );
+            assert_ne!(result.status, FrontendStatus::Complete, "{prompt}");
+            assert!(replay_verified(&result));
+        }
     }
 
     #[test]

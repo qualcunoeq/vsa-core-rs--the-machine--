@@ -1,8 +1,8 @@
 {
   "schema": "stage335-goal6-source-selected-portfolio-probe-v1",
   "partition": "development",
-  "source_plan_sha256": "3ffb3cb2097a0e4509693f297c691be38732507f93dabbb625b24eb11318d0b7",
-  "input_gap_report_sha256": "f77b9f8119285288cf0ffe6722964e5a98f6dac2bc4a4097096dc4f7b7a05f1b",
+  "source_plan_sha256": "c2e589c326cce225872a44f3e2d358a97950a24d49bed8bbb5632e8bd44c41b7",
+  "input_gap_report_sha256": "e1a893e8fdd30a773dfa3f6e8e46a6857af679eb62cca9d542b5f7e9df45fae3",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "selected_source_path": "docs/sources/openstax_finite_statistics_source.txt",
   "selected_source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
@@ -42,5 +42,5 @@
   "plaintext_answers_read": 0,
   "production_mutations": 0,
   "manifest_unchanged": true,
-  "report_sha256": "078c9fbcb211548d758709fc6d78e6d7ec0378064a0c1aca5a455ba0e9fa69f4"
+  "report_sha256": "08f734168346da1cd3e88bf11366ccc64325862087d1210cdba8ad7e9a06f632"
 }

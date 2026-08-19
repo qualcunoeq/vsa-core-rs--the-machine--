@@ -137,6 +137,15 @@
       "status": "triage_only"
     },
     {
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+      "provenance_fields_present": true,
+      "affected_residuals": 299,
+      "overlap_terms": 706,
+      "lexical_score": 0.23619939779190366,
+      "status": "triage_only"
+    },
+    {
       "source_path": "docs/sources/openstax_finite_statistics_catalog.json",
       "source_sha256": "9d76954caad3d079b385378ee25cafb709f5454d2369b1ec433fbbbc8179904c",
       "provenance_fields_present": false,
@@ -152,15 +161,6 @@
       "affected_residuals": 263,
       "overlap_terms": 583,
       "lexical_score": 0.1950485112077618,
-      "status": "triage_only"
-    },
-    {
-      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
-      "source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
-      "provenance_fields_present": true,
-      "affected_residuals": 191,
-      "overlap_terms": 431,
-      "lexical_score": 0.14419538307126128,
       "status": "triage_only"
     },
     {
@@ -224,5 +224,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "f77b9f8119285288cf0ffe6722964e5a98f6dac2bc4a4097096dc4f7b7a05f1b"
+  "report_sha256": "e1a893e8fdd30a773dfa3f6e8e46a6857af679eb62cca9d542b5f7e9df45fae3"
 }

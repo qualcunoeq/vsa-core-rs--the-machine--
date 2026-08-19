@@ -57,6 +57,10 @@ pub struct FormulaRecord {
     pub aliases: Vec<String>,
     pub expression: Expr,
     pub required_inputs: Vec<String>,
+    /// Source-declared generic frontend binding primitives.  Empty for
+    /// catalogs whose inputs must be explicitly labeled.
+    #[serde(default)]
+    pub input_bindings: BTreeMap<String, String>,
     pub assumptions: Vec<String>,
     pub constraints: Vec<InputConstraint>,
     pub source: SourceCitation,
@@ -302,6 +306,24 @@ fn parse_source_constraint(value: &str) -> Result<InputConstraint, String> {
     }
 }
 
+fn parse_input_bindings(value: &str) -> Result<BTreeMap<String, String>, String> {
+    let mut bindings = BTreeMap::new();
+    for item in split_source_list(value, ';') {
+        let (input, binding) = item
+            .split_once('=')
+            .ok_or_else(|| format!("input binding must use input=binding syntax: {item}"))?;
+        let input = input.trim();
+        let binding = binding.trim();
+        if input.is_empty()
+            || binding.is_empty()
+            || bindings.insert(input.into(), binding.into()).is_some()
+        {
+            return Err(format!("invalid or duplicate input binding: {item}"));
+        }
+    }
+    Ok(bindings)
+}
+
 /// Extract formula candidates from a bounded, provenance-bearing source
 /// document.  The source format is intentionally explicit: it preserves the
 /// evidence span and does not guess missing fields or specialist semantics.
@@ -372,6 +394,11 @@ pub fn extract_formula_records(document: &str) -> Result<Vec<FormulaRecord>, Vec
             let expression = parse_source_expression(&required("EXPRESSION")?)
                 .map_err(|error| format!("{formula_id} expression: {error}"))?;
             let required_inputs = split_source_list(&required("INPUTS")?, ',');
+            let input_bindings = fields
+                .get("BINDINGS")
+                .map(|value| parse_input_bindings(value))
+                .transpose()?
+                .unwrap_or_default();
             let assumptions = split_source_list(&required("ASSUMPTIONS")?, ';');
             let constraints = split_source_list(&required("CONSTRAINTS")?, ';')
                 .into_iter()
@@ -391,6 +418,7 @@ pub fn extract_formula_records(document: &str) -> Result<Vec<FormulaRecord>, Vec
                 aliases,
                 expression,
                 required_inputs,
+                input_bindings,
                 assumptions,
                 constraints,
                 source,
@@ -526,6 +554,14 @@ pub fn validate_formula_records(records: &[FormulaRecord]) -> Result<(), Vec<Str
                 ));
             }
         }
+        for input in record.input_bindings.keys() {
+            if !required.contains(input) {
+                errors.push(format!(
+                    "formula {} binds undeclared input {}",
+                    record.formula_id, input
+                ));
+            }
+        }
         if let Err(citation_errors) = validate_source_citation(&record.source) {
             for error in citation_errors {
                 errors.push(format!("formula {}: {error}", record.formula_id));
@@ -599,6 +635,7 @@ fn formulas() -> Vec<FormulaRecord> {
                 )),
             ),
             required_inputs: vec!["a1".into(), "n".into(), "d".into()],
+            input_bindings: BTreeMap::new(),
             assumptions: vec!["n is a positive integer".into()],
             constraints: vec![InputConstraint::PositiveInteger("n".into())],
             source: cited.clone(),
@@ -623,6 +660,7 @@ fn formulas() -> Vec<FormulaRecord> {
                 Box::new(Expr::Constant(2)),
             ),
             required_inputs: vec!["a1".into(), "n".into(), "d".into()],
+            input_bindings: BTreeMap::new(),
             assumptions: vec!["n is a positive integer".into()],
             constraints: vec![InputConstraint::PositiveInteger("n".into())],
             source: cited.clone(),
@@ -635,6 +673,7 @@ fn formulas() -> Vec<FormulaRecord> {
                 Box::new(Expr::PowInputMinusOne(Box::new(input("r")), "n".into())),
             ),
             required_inputs: vec!["a1".into(), "n".into(), "r".into()],
+            input_bindings: BTreeMap::new(),
             assumptions: vec!["n is a positive integer; exponent is n-1".into()],
             constraints: vec![InputConstraint::PositiveInteger("n".into())],
             source: cited.clone(),
@@ -653,6 +692,7 @@ fn formulas() -> Vec<FormulaRecord> {
                 Box::new(Expr::Sub(Box::new(input("r")), Box::new(Expr::Constant(1)))),
             ),
             required_inputs: vec!["a1".into(), "n".into(), "r".into()],
+            input_bindings: BTreeMap::new(),
             assumptions: vec!["n is a positive integer; r is not 1".into()],
             constraints: vec![
                 InputConstraint::PositiveInteger("n".into()),
@@ -937,6 +977,7 @@ mod tests {
                 Box::new(Expr::Input("b".into())),
             ),
             required_inputs: vec!["a".into(), "b".into()],
+            input_bindings: BTreeMap::new(),
             assumptions: vec!["b is nonzero".into()],
             constraints: vec![InputConstraint::NotEqualInteger("b".into(), 0)],
             source: citation(),
@@ -951,6 +992,7 @@ mod tests {
             aliases: Vec::new(),
             expression: Expr::Input("missing".into()),
             required_inputs: vec!["declared".into()],
+            input_bindings: BTreeMap::new(),
             assumptions: Vec::new(),
             constraints: Vec::new(),
             source: citation(),
@@ -1023,6 +1065,62 @@ END FORMULA
     fn source_document_extractor_rejects_omitted_evidence() {
         let document = "BEGIN FORMULA bad\nEXPRESSION: x\nINPUTS: x\nASSUMPTIONS: -\nCONSTRAINTS: -\nSOURCE_ID: s\nTITLE: t\nSECTION: s\nURL: https://example.invalid\nLICENSE: test\nRETRIEVED: 2026-08-16\nEND FORMULA\n";
         assert!(extract_formula_records(document).is_err());
+    }
+
+    #[test]
+    fn source_document_extractor_preserves_declared_input_bindings() {
+        let document = r#"
+BEGIN FORMULA bounded_sequence
+ALIASES: arithmetic sequence term
+EXPRESSION: a1 + (n - 1) * d
+INPUTS: a1, n, d
+BINDINGS: a1=first_integer_sequence_value; n=requested_ordinal; d=constant_integer_sequence_difference
+ASSUMPTIONS: n is positive
+CONSTRAINTS: positive_integer:n
+SOURCE_ID: test-source
+TITLE: Test source
+SECTION: Test section
+URL: https://example.invalid/source
+LICENSE: test
+RETRIEVED: 2026-08-16
+EVIDENCE: line 1
+END FORMULA
+"#;
+        let records = extract_formula_records(document).unwrap();
+        assert_eq!(
+            records[0].input_bindings,
+            BTreeMap::from([
+                ("a1".into(), "first_integer_sequence_value".into()),
+                ("d".into(), "constant_integer_sequence_difference".into()),
+                ("n".into(), "requested_ordinal".into()),
+            ])
+        );
+        assert!(validate_formula_records(&records).is_ok());
+    }
+
+    #[test]
+    fn source_document_extractor_rejects_bindings_for_undeclared_inputs() {
+        let document = r#"
+BEGIN FORMULA invalid_binding
+ALIASES: invalid
+EXPRESSION: x
+INPUTS: x
+BINDINGS: y=untrusted_value
+ASSUMPTIONS: -
+CONSTRAINTS: -
+SOURCE_ID: test-source
+TITLE: Test source
+SECTION: Test section
+URL: https://example.invalid/source
+LICENSE: test
+RETRIEVED: 2026-08-16
+EVIDENCE: line 1
+END FORMULA
+"#;
+        let errors = extract_formula_records(document).unwrap_err();
+        assert!(errors
+            .iter()
+            .any(|error| error.contains("binds undeclared input y")));
     }
 
     #[test]

@@ -476,6 +476,10 @@ name = "stage321_finite_automata_source_ingestion"
 path = "src/bin/stage321_finite_automata_source_ingestion.rs"
 
 [[bin]]
+name = "stage322_post_automata_cross_domain_synthesis"
+path = "src/bin/stage322_post_automata_cross_domain_synthesis.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

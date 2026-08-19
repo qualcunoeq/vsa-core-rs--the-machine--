@@ -8,6 +8,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeSet;
+use std::env;
 use std::fs;
 use the_machine::curriculum::{CurriculumManifest, CurriculumStatus};
 use the_machine::curriculum_memory::{AppendStatus, CurriculumMemory, MemoryRecord};
@@ -15,10 +16,10 @@ use the_machine::prerequisite_discovery::{discover, DiscoveryStatus};
 
 const SHADOW_MANIFEST: &str = "docs/stage282_four_candidate_shadow_manifest.json";
 const SOURCE_REPORT: &str = "docs/stage278_unit_conversion_shadow_validation.json";
-const REPORT_JSON: &str = "docs/stage300_curriculum_memory_120k.json";
-const REPORT_MD: &str = "docs/stage300_curriculum_memory_120k.md";
-const RECORDS: usize = 120_000;
-const TAMPER_SAMPLE: usize = 2_000;
+const DEFAULT_REPORT_JSON: &str = "docs/stage300_curriculum_memory_120k.json";
+const DEFAULT_REPORT_MD: &str = "docs/stage300_curriculum_memory_120k.md";
+const DEFAULT_RECORDS: usize = 120_000;
+const DEFAULT_TAMPER_SAMPLE: usize = 2_000;
 
 #[derive(Debug, Deserialize)]
 struct ShadowReport {
@@ -28,7 +29,7 @@ struct ShadowReport {
 
 #[derive(Debug, Serialize)]
 struct Report {
-    schema: &'static str,
+    schema: String,
     shadow_manifest_sha256: String,
     source_report_sha256: String,
     shadow_packs: usize,
@@ -97,6 +98,28 @@ fn make_record(
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let record_target = env::var("CURRICULUM_MEMORY_RECORDS")
+        .ok()
+        .and_then(|value| value.parse::<usize>().ok())
+        .unwrap_or(DEFAULT_RECORDS);
+    let tamper_sample = env::var("CURRICULUM_MEMORY_TAMPER_SAMPLE")
+        .ok()
+        .and_then(|value| value.parse::<usize>().ok())
+        .unwrap_or(DEFAULT_TAMPER_SAMPLE);
+    assert!(record_target > 0 && tamper_sample > 0 && tamper_sample <= record_target);
+    let report_json = env::var("CURRICULUM_MEMORY_REPORT_JSON")
+        .unwrap_or_else(|_| DEFAULT_REPORT_JSON.into());
+    let report_md = env::var("CURRICULUM_MEMORY_REPORT_MD")
+        .unwrap_or_else(|_| DEFAULT_REPORT_MD.into());
+    let stage_label = env::var("CURRICULUM_MEMORY_STAGE_LABEL")
+        .unwrap_or_else(|_| "Stage 300 — 120k curriculum memory scale".into());
+    let schema = env::var("CURRICULUM_MEMORY_SCHEMA").unwrap_or_else(|_| {
+        if record_target == DEFAULT_RECORDS {
+            "stage300-curriculum-memory-120k-v1".into()
+        } else {
+            format!("curriculum-memory-scale-{}-v1", record_target)
+        }
+    });
     let shadow_bytes = fs::read(SHADOW_MANIFEST)?;
     let source_bytes = fs::read(SOURCE_REPORT)?;
     let shadow: ShadowReport = serde_json::from_slice(&shadow_bytes)?;
@@ -121,8 +144,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let parent_memory = CurriculumMemory::new();
     let parent_hash = memory_hash(&parent_memory);
     let mut memory = parent_memory.clone();
-    let mut records = Vec::with_capacity(RECORDS);
-    for index in 0..RECORDS {
+    let mut records = Vec::with_capacity(record_target);
+    for index in 0..record_target {
         let (domain, artifact) = &descriptors[index % descriptors.len()];
         let version = format!("v{}", index % 8 + 1);
         let record = make_record(
@@ -141,8 +164,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .clone(),
         );
     }
-    assert_eq!(memory.len(), RECORDS);
-    assert_eq!(memory.segment_count(), RECORDS.div_ceil(256));
+    assert_eq!(memory.len(), record_target);
+    assert_eq!(memory.segment_count(), record_target.div_ceil(256));
     let exact_queries = 1_500;
     let ambiguous_queries = 300;
     let stale_queries = 300;
@@ -226,9 +249,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .filter(|record| memory.replay_verified(record))
         .count();
-    let tamper_rejected = (0..TAMPER_SAMPLE)
+    let tamper_rejected = (0..tamper_sample)
         .filter(|sample| {
-            let index = sample * (records.len() / TAMPER_SAMPLE);
+            let index = sample * (records.len() / tamper_sample);
             let mut tampered = records[index].clone();
             tampered.payload.push('x');
             !memory.replay_verified(&tampered)
@@ -246,17 +269,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(provenance_refused, provenance_queries);
     assert_eq!(prerequisite_complete, prerequisite_queries);
     assert_eq!(retrieval_contamination, 0);
-    assert_eq!(replay_verified, RECORDS);
-    assert_eq!(tamper_rejected, TAMPER_SAMPLE);
+    assert_eq!(replay_verified, record_target);
+    assert_eq!(tamper_rejected, tamper_sample);
     assert!(reconstruction_hash_equal);
     assert_eq!(memory_hash(&parent_memory), parent_hash);
     let report = Report {
-        schema: "stage300-curriculum-memory-120k-v1",
+        schema,
         shadow_manifest_sha256: shadow_hash,
         source_report_sha256: source_hash,
         shadow_packs: shadow.manifest.packs.len(),
         descriptors: descriptors.len(),
-        records: RECORDS,
+        records: record_target,
         segments: memory.segment_count(),
         exact_queries,
         exact_complete,
@@ -272,7 +295,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         prerequisite_complete,
         retrieval_contamination,
         replay_verified,
-        tamper_sample: TAMPER_SAMPLE,
+        tamper_sample,
         tamper_rejected,
         reconstruction_records: reconstructed.len(),
         reconstruction_hash_equal,
@@ -283,17 +306,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         live_memory_mutations: 0,
         live_registry_mutations: 0,
     };
-    assert_eq!(report.records, RECORDS);
-    assert_eq!(report.replay_verified, RECORDS);
-    assert_eq!(report.tamper_rejected, TAMPER_SAMPLE);
+    assert_eq!(report.records, record_target);
+    assert_eq!(report.replay_verified, record_target);
+    assert_eq!(report.tamper_rejected, tamper_sample);
     assert_eq!(report.retrieval_contamination, 0);
     assert!(report.parent_memory_unchanged && report.manifest_unchanged);
-    fs::write(REPORT_JSON, serde_json::to_vec_pretty(&report)?)?;
+    fs::write(&report_json, serde_json::to_vec_pretty(&report)?)?;
     fs::write(
-        REPORT_MD,
+        &report_md,
         format!(
             concat!(
-                "# Stage 300 — 120k curriculum memory scale\n\n",
+                "# {}\n\n",
                 "* shadow packs / descriptors: {} / {}\n",
                 "* records / segments: {} / {}\n",
                 "* exact retrieval / prerequisite closure: {} / {}\n",
@@ -304,6 +327,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 "* false authorizations / denials: 0 / 0\n\n",
                 "The run is shadow-only and stores typed receipts rather than executable methods.\n"
             ),
+            stage_label,
             report.shadow_packs,
             report.descriptors,
             report.records,
@@ -323,7 +347,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ),
     )?;
     println!(
-        "stage300 packs={} records={} replay={} tamper={} contamination=0",
+        "{} packs={} records={} replay={} tamper={} contamination=0",
+        stage_label,
         report.shadow_packs, report.records, report.replay_verified, report.tamper_rejected
     );
     Ok(())

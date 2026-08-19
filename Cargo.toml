@@ -12,6 +12,14 @@ name = "formalization_baseline"
 path = "src/bin/formalization_baseline.rs"
 
 [[bin]]
+name = "external_math_exam_baseline"
+path = "src/bin/external_math_exam_baseline.rs"
+
+[[bin]]
+name = "external_math_exam_externality"
+path = "src/bin/external_math_exam_externality.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

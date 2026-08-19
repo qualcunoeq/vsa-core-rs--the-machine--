@@ -1,0 +1,28 @@
+{
+  "files": {
+    "oracle_development.jsonl": "5bc0e75c5af49d0500cf14437c566e1eed398dd9aeef32c91d05062b83b22ec0",
+    "oracle_sealed.jsonl": "2c2712196b4d0bd63e0389ab23953ba69ff12cad85db2dfa3f19059747624fbf",
+    "questions.jsonl": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2"
+  },
+  "holdout_locked": true,
+  "release_id": "external-math-exam-v1",
+  "schema": "external-math-exam-release-v1",
+  "sealed_answer_policy": "Only answer hashes are stored; plaintext sealed answers are not part of the release.",
+  "selection": {
+    "answers_in_questions": false,
+    "development_count": 3000,
+    "method": "round-robin over sorted (category, level) groups",
+    "original_wording_preserved": true,
+    "sealed_count": 1000
+  },
+  "source": {
+    "citation": "Dan Hendrycks et al., Measuring Mathematical Problem Solving With the MATH Dataset, NeurIPS 2021",
+    "dataset": "MATH (Hendrycks et al., 2021)",
+    "dataset_locator": "https://huggingface.co/datasets/jeggers/competition_math/tree/bc97b222f353525403ba0c2b5a44df44759950d1/original",
+    "license": "MIT",
+    "repository": "https://github.com/hendrycks/math",
+    "revision": "bc97b222f353525403ba0c2b5a44df44759950d1",
+    "source_test_sha256": "f9f344088a5d918a4ad167cb4451db423cdea41168746c613283e6df8b97865f",
+    "source_train_sha256": "ce0e56832dbe5de53f3eafafedd1f2a6f17d77da6c3c65dae9acf1b2556eb662"
+  }
+}

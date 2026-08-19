@@ -1,0 +1,23 @@
+{
+  "schema": "goal3-externality-audit-external-math-v1",
+  "release_id": "external-math-exam-v1",
+  "source_independence": true,
+  "source_locator": "https://huggingface.co/datasets/jeggers/competition_math/tree/bc97b222f353525403ba0c2b5a44df44759950d1/original",
+  "source_revision": "bc97b222f353525403ba0c2b5a44df44759950d1",
+  "license": "MIT",
+  "development_cases": 3000,
+  "sealed_cases": 1000,
+  "total_cases": 4000,
+  "duplicate_question_count": 0,
+  "duplicate_template_count": 60,
+  "template_overlap_review": "parameterized_source_variants_no_exact_copy",
+  "local_lexical_overlap_count": 0,
+  "local_template_overlap_count": 0,
+  "answer_key_field_exposure_count": 0,
+  "answer_hash_in_prompt_count": 0,
+  "holdout_locked": true,
+  "final_exam_eligible": true,
+  "verdict": "independent_external_release_template_overlap_reviewed",
+  "manifest_sha256": "992faa1ec8f08542a86206394c95a7366771ee1beda52055ab230564fe642c78",
+  "questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2"
+}

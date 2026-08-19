@@ -6,6 +6,9 @@
 
 use crate::curriculum_memory::{AppendStatus, CurriculumMemory, MemoryRecord};
 use crate::source_formula_pack::FormulaRecord;
+use crate::source_module_discovery::{
+    replay_verified as module_replay_verified, DiscoveredSourceModule,
+};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -103,6 +106,26 @@ pub fn append_catalog(
     })
 }
 
+/// Append a discovered source module only after its source/document receipt
+/// has replayed successfully.  The source hash becomes the immutable catalog
+/// version, so retrieval cannot silently fall through to a newer or older
+/// document.
+pub fn append_discovered_module(
+    memory: &mut CurriculumMemory,
+    module: &DiscoveredSourceModule,
+) -> AppendStatus {
+    if !module_replay_verified(module) {
+        return AppendStatus::Invalid;
+    }
+    append_catalog(
+        memory,
+        &module.candidate.domain,
+        &module.source_hash,
+        &module.records,
+        module.candidate.source_ids.clone(),
+    )
+}
+
 /// Retrieve one exact catalog version from immutable curriculum memory.
 pub fn retrieve_catalog(
     memory: &CurriculumMemory,
@@ -190,6 +213,7 @@ pub fn replay_verified(result: &CatalogMemoryResult) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::source_module_discovery::{discover_formula_module, SourceDocument};
     use crate::source_statistics_pack;
 
     #[test]
@@ -216,5 +240,40 @@ mod tests {
         let mut tampered = found.clone();
         tampered.records.clear();
         assert!(!replay_verified(&tampered));
+    }
+
+    #[test]
+    fn discovered_module_requires_replay_and_exact_hash_version() {
+        let document = "BEGIN FORMULA ratio\nALIASES: quotient\nEXPRESSION: a / b\nINPUTS: a, b\nASSUMPTIONS: b positive\nCONSTRAINTS: positive:b\nSOURCE_ID: source:test\nTITLE: Test\nSECTION: Ratios\nURL: https://example.invalid/test\nLICENSE: test\nRETRIEVED: 2026-08-18\nEVIDENCE: explicit ratio\nEND FORMULA";
+        let module = discover_formula_module(SourceDocument {
+            domain: "source_test",
+            version: "education-v1",
+            source_hint: "source:hint",
+            document,
+        })
+        .unwrap();
+        let mut memory = CurriculumMemory::new();
+        assert_eq!(
+            append_discovered_module(&mut memory, &module),
+            AppendStatus::Appended
+        );
+        assert_eq!(
+            append_discovered_module(&mut memory, &module),
+            AppendStatus::Duplicate
+        );
+        assert_eq!(
+            retrieve_catalog(&memory, &module.candidate.domain, &module.source_hash).status,
+            CatalogMemoryStatus::Unique
+        );
+        assert_eq!(
+            retrieve_catalog(&memory, &module.candidate.domain, "stale-version").status,
+            CatalogMemoryStatus::Missing
+        );
+        let mut tampered = module.clone();
+        tampered.source_hash.push('x');
+        assert_eq!(
+            append_discovered_module(&mut memory, &tampered),
+            AppendStatus::Invalid
+        );
     }
 }

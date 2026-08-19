@@ -1,0 +1,21 @@
+{
+  "schema": "stage375-source-memory-integration-v1",
+  "acquisition_preflight": true,
+  "holdout_preflight": true,
+  "education_preflight": true,
+  "admitted_modules": 2,
+  "parent_records": 1,
+  "appended_modules": 2,
+  "duplicate_refusals": 2,
+  "exact_retrievals": 2,
+  "exact_retrieval_replays": 2,
+  "stale_version_refusals": 2,
+  "unknown_domain_refusals": 1,
+  "tampered_module_refusals": 1,
+  "tampered_result_replays_rejected": 1,
+  "parent_unchanged": true,
+  "clone_replay_verified": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "fb5ecd4cf5318899d244336b93a274e848cd2af92f93fd92ef5229a51740f9fe"
+}

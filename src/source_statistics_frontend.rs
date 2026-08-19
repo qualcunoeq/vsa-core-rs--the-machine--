@@ -88,6 +88,113 @@ fn parse_explicit_list(segment: &str) -> Option<Vec<Rational>> {
     (values.len() >= 2).then_some(values)
 }
 
+/// Extract a finite numeric enumeration only when the surrounding clause is
+/// list-shaped. Arbitrary numbers in a word problem are never treated as
+/// observations by this helper.
+fn parse_natural_numeric_list(segment: &str) -> Option<Vec<Rational>> {
+    let lower = segment.to_ascii_lowercase();
+    let rejected = [
+        "graph", "table", "[asy]", "prime", "possible", "variable", "unknown", "from",
+        "through", "increase", "decrease", "change", "average speed", "average rate",
+    ];
+    if rejected.iter().any(|marker| lower.contains(marker)) {
+        return None;
+    }
+
+    let mut values = Vec::new();
+    let mut residual = String::with_capacity(segment.len());
+    let chars: Vec<char> = segment.chars().collect();
+    let mut index = 0;
+    while index < chars.len() {
+        let starts_number = chars[index].is_ascii_digit()
+            || (chars[index] == '-'
+                && chars
+                    .get(index + 1)
+                    .is_some_and(|character| character.is_ascii_digit()));
+        if !starts_number {
+            residual.push(chars[index]);
+            index += 1;
+            continue;
+        }
+        let start = index;
+        if chars[index] == '-' {
+            index += 1;
+        }
+        while chars
+            .get(index)
+            .is_some_and(|character| character.is_ascii_digit())
+        {
+            index += 1;
+        }
+        if chars.get(index) == Some(&'.')
+            && chars
+                .get(index + 1)
+                .is_some_and(|character| character.is_ascii_digit())
+        {
+            index += 1;
+            while chars
+                .get(index)
+                .is_some_and(|character| character.is_ascii_digit())
+            {
+                index += 1;
+            }
+        }
+        if chars.get(index) == Some(&'/')
+            && chars
+                .get(index + 1)
+                .is_some_and(|character| character.is_ascii_digit())
+        {
+            index += 1;
+            while chars
+                .get(index)
+                .is_some_and(|character| character.is_ascii_digit())
+            {
+                index += 1;
+            }
+        }
+        let token: String = chars[start..index].iter().collect();
+        values.push(rational_token(&token)?);
+        residual.push(' ');
+    }
+    if values.len() < 2 {
+        return None;
+    }
+    let allowed_words = [
+        "and", "degrees", "degree", "circ", "fahrenheit", "celsius", "scores",
+        "temperatures", "values", "were", "are",
+    ];
+    if residual
+        .split(|character: char| !character.is_ascii_alphabetic())
+        .filter(|word| !word.is_empty())
+        .any(|word| !allowed_words.contains(&word.to_ascii_lowercase().as_str()))
+    {
+        return None;
+    }
+    Some(values)
+}
+
+fn natural_numeric_list_mean(text: &str) -> Option<(Vec<Rational>, String)> {
+    let lower = text.to_ascii_lowercase();
+    let nouns = ["scores", "temperatures", "values"];
+    let (noun_start, noun) = nouns
+        .iter()
+        .filter_map(|noun| lower.find(noun).map(|start| (start, *noun)))
+        .min_by_key(|(start, _)| *start)?;
+    let after_noun = noun_start + noun.len();
+    let (relation_offset, relation) = [" were", " are"]
+        .iter()
+        .filter_map(|relation| lower[after_noun..].find(relation).map(|offset| (offset, *relation)))
+        .min_by_key(|(offset, _)| *offset)?;
+    let start = after_noun + relation_offset + relation.len();
+    let rest = &text[start..];
+    let end = rest
+        .find(|character: char| matches!(character, '.' | '?' | ';'))
+        .unwrap_or(rest.len());
+    let segment = rest[..end].trim();
+    let values = parse_natural_numeric_list(segment)?;
+    Some((values, format!("natural-list-span:{}..{}", start, start + end)))
+}
+
 /// Parse only an explicitly enumerated finite list whose arithmetic mean is
 /// requested.  This bridge deliberately refuses ranges, filtering, symbolic
 /// entries, and optimization/constraint problems; those require separate
@@ -116,6 +223,32 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
             vec![text.into()],
             Vec::new(),
             vec!["mean request requires range, filtering, symbolic, or optimization semantics".into()],
+        );
+    }
+    if lower.contains("by how much")
+        || lower.contains("average increase")
+        || lower.contains("average decrease")
+        || lower.contains("average speed")
+        || lower.contains("average rate")
+    {
+        return result(
+            FrontendStatus::Unsupported,
+            None,
+            None,
+            vec![text.into()],
+            Vec::new(),
+            vec!["request asks for a derived change or rate, not a finite-list mean".into()],
+        );
+    }
+    if let Some((values, span)) = natural_numeric_list_mean(text) {
+        let sum = values.iter().fold(Rational::zero(), |acc, value| {
+            acc.add(value).expect("finite rational sum remains exact")
+        });
+        let count = Rational::new(values.len() as i128, 1).expect("non-empty list");
+        return with_request(
+            "arithmetic_mean",
+            BTreeMap::from([("sum".into(), sum), ("count".into(), count)]),
+            vec![span],
         );
     }
     let candidates = if let (Some(start), Some(end)) = (lower.find('{'), lower.rfind('}')) {
@@ -448,6 +581,27 @@ mod tests {
             "Jeff's five assignment scores are 89, 92, 88, 95 and 91. What is the arithmetic mean of these five scores?",
         );
         assert_eq!(external_style.status, FrontendStatus::Complete, "{external_style:?}");
+
+        let temperature_list = formalize_finite_list_mean_text(
+            "The noon temperatures for seven consecutive days were 80°, 79°, 81°, 85°, 87°, 89°, and 87° Fahrenheit. What is the mean noon temperature?",
+        );
+        assert_eq!(temperature_list.status, FrontendStatus::Complete);
+        let temperature_request = temperature_list.request.as_ref().unwrap();
+        assert_eq!(temperature_request.inputs["sum"], Rational::new(588, 1).unwrap());
+        assert_eq!(temperature_request.inputs["count"], Rational::new(7, 1).unwrap());
+        assert!(temperature_list.replay_verified());
+
+        let latex_temperature_list = formalize_finite_list_mean_text(
+            r#"The noon temperatures for seven consecutive days were $80^{\circ}$, $79^{\circ}$, $81^{\circ}$, $85^{\circ}$, $87^{\circ}$, $89^{\circ}$, and $87^{\circ}$ Fahrenheit. What is the mean noon temperature?"#,
+        );
+        assert_eq!(latex_temperature_list.status, FrontendStatus::Complete);
+        assert!(latex_temperature_list.replay_verified());
+
+        let derived_change = formalize_finite_list_mean_text(
+            "Scores were 87, 83, and 88. By how much will the average increase after a score of 90?",
+        );
+        assert_eq!(derived_change.status, FrontendStatus::Unsupported);
+        assert!(derived_change.replay_verified());
 
         let range = formalize_finite_list_mean_text(
             "What is the arithmetic mean of the integers from -4 through 5?",

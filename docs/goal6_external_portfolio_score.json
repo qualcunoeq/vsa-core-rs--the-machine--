@@ -2,18 +2,18 @@
   "schema": "goal6-external-portfolio-score-v1",
   "release_id": "external-math-exam-v1",
   "partition": "development",
-  "probe_report_sha256": "0385c8cb549431c1ddc57731cec9ca565a332e077299ebc0e9bd0903e0a401c4",
+  "probe_report_sha256": "d6acd6d77b81e92aff83447134f6d65166f22a29bf444cd994629c8fe314085a",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "questions_read": 3000,
   "answer_hashes_read": 3000,
   "plaintext_answers_read": 0,
   "sealed_questions_read": 0,
-  "unique_candidate_cases": 7,
-  "correct_shadow_candidates": 7,
+  "unique_candidate_cases": 9,
+  "correct_shadow_candidates": 9,
   "incorrect_shadow_candidates_rejected": 0,
-  "candidate_replays": 7,
+  "candidate_replays": 9,
   "route_ambiguities": 0,
-  "no_executable_route": 2993,
+  "no_executable_route": 2991,
   "production_authorizations": 0,
   "false_authorizations": 0,
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
@@ -24,6 +24,14 @@
       "id": "math-v1-development-0212",
       "selected_route": "arithmetic_sequence",
       "candidate_answer_sha256": "580811fa95269f3ecd4f22d176e079d36093573680b6ef66fa341e687a15b5da",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0238",
+      "selected_route": "finite_list_mean",
+      "candidate_answer_sha256": "44c8031cb036a7350d8b9b8603af662a4b9cdbd2f96e8d5de5af435c9c35da69",
       "reference_match": true,
       "matched_representation": "fraction",
       "replay_verified": true
@@ -61,6 +69,14 @@
       "replay_verified": true
     },
     {
+      "id": "math-v1-development-2593",
+      "selected_route": "finite_list_mean",
+      "candidate_answer_sha256": "6e4001871c0cf27c7634ef1dc478408f642410fd3a444e2a88e301f5c4a35a4d",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
       "id": "math-v1-development-2842",
       "selected_route": "arithmetic_sequence",
       "candidate_answer_sha256": "eb624dbe56eb6620ae62080c10a273cab73ae8eca98ab17b731446a31c79393a",
@@ -77,5 +93,5 @@
       "replay_verified": true
     }
   ],
-  "report_sha256": "5fc60d1c69e7aad84bad9b7f2928855d094959b2156bf4357d533f0cb2d5d415"
+  "report_sha256": "f891a786f0a6991ce02255911bc86d63e21446295ae8404b4621010fe73c382d"
 }

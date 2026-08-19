@@ -6,11 +6,11 @@
   "questions_read": 3000,
   "answer_keys_read": 0,
   "route_invocations": 21000,
-  "unique_candidates": 7,
-  "no_executable_route": 2993,
+  "unique_candidates": 9,
+  "no_executable_route": 2991,
   "multiple_route_ambiguities": 0,
   "first_gate_counts": {
-    "ambiguous_frontend": 159,
+    "ambiguous_frontend": 157,
     "complete_frontend_execution_boundary": 1,
     "missing_frontend_fields": 2833
   },
@@ -58,16 +58,16 @@
     {
       "route": "FiniteListMean",
       "frontend_status_counts": {
-        "Ambiguous": 28,
-        "Complete": 2,
+        "Ambiguous": 25,
+        "Complete": 4,
         "Missing": 2937,
-        "Unsupported": 33
+        "Unsupported": 34
       },
       "execution_status_counts": {
-        "Complete": 2,
-        "not_run": 2998
+        "Complete": 4,
+        "not_run": 2996
       },
-      "executable_cases": 2
+      "executable_cases": 4
     },
     {
       "route": "FiniteRegression",
@@ -115,7 +115,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 442,
       "overlap_terms": 1119,
-      "lexical_score": 0.37387236886067493,
+      "lexical_score": 0.3741223671013039,
       "status": "triage_only"
     },
     {
@@ -124,7 +124,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 421,
       "overlap_terms": 934,
-      "lexical_score": 0.31206147677915136,
+      "lexical_score": 0.3122701437646272,
       "status": "triage_only"
     },
     {
@@ -133,7 +133,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 328,
       "overlap_terms": 736,
-      "lexical_score": 0.24590711660541262,
+      "lexical_score": 0.24607154797726513,
       "status": "triage_only"
     },
     {
@@ -142,7 +142,7 @@
       "provenance_fields_present": false,
       "affected_residuals": 291,
       "overlap_terms": 644,
-      "lexical_score": 0.21516872702973605,
+      "lexical_score": 0.215312604480107,
       "status": "triage_only"
     },
     {
@@ -151,7 +151,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 263,
       "overlap_terms": 583,
-      "lexical_score": 0.1947878382893418,
+      "lexical_score": 0.1949180875961217,
       "status": "triage_only"
     },
     {
@@ -160,7 +160,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 180,
       "overlap_terms": 381,
-      "lexical_score": 0.1272970263949215,
+      "lexical_score": 0.12738214643931794,
       "status": "triage_only"
     },
     {
@@ -169,7 +169,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 174,
       "overlap_terms": 371,
-      "lexical_score": 0.12395589709321751,
+      "lexical_score": 0.1240387830157138,
       "status": "triage_only"
     },
     {
@@ -178,7 +178,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 159,
       "overlap_terms": 339,
-      "lexical_score": 0.11326428332776478,
+      "lexical_score": 0.11334002006018054,
       "status": "triage_only"
     },
     {
@@ -187,7 +187,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 155,
       "overlap_terms": 338,
-      "lexical_score": 0.11293017039759438,
+      "lexical_score": 0.11300568371782013,
       "status": "triage_only"
     },
     {
@@ -196,7 +196,7 @@
       "provenance_fields_present": false,
       "affected_residuals": 152,
       "overlap_terms": 327,
-      "lexical_score": 0.10925492816572001,
+      "lexical_score": 0.10932798395185557,
       "status": "triage_only"
     },
     {
@@ -205,7 +205,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 133,
       "overlap_terms": 280,
-      "lexical_score": 0.09355162044771133,
+      "lexical_score": 0.09361417586091608,
       "status": "triage_only"
     },
     {
@@ -214,7 +214,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 129,
       "overlap_terms": 274,
-      "lexical_score": 0.09154694286668894,
+      "lexical_score": 0.09160815780675359,
       "status": "triage_only"
     }
   ],
@@ -224,5 +224,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "b1cd1ce98973ed1b0f3f3730c6a0de78f20974a27c7e15ac662adf2ce3bf71d7"
+  "report_sha256": "d94f0fefbefaf1f0980db24c64445fe445f1512a825689f3f55be12e60054956"
 }

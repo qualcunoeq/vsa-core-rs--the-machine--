@@ -12,31 +12,17 @@
     {
       "route": "finite_list_mean",
       "frontend_status_counts": {
-        "Ambiguous": 28,
-        "Complete": 2,
+        "Ambiguous": 25,
+        "Complete": 4,
         "Missing": 2937,
-        "Unsupported": 33
+        "Unsupported": 34
       },
       "execution_status_counts": {
-        "Complete": 2,
-        "not_run": 2998
+        "Complete": 4,
+        "not_run": 2996
       },
       "samples_by_frontend_status": {
         "Ambiguous": [
-          {
-            "case_id": "math-v1-development-0238",
-            "prompt_sha256": "7f01f6be38331525c6f5a59d37d1eb6f4cc5f5c46a42d5dce6c0dc140e7b778f",
-            "prompt_preview": "The noon temperatures for seven consecutive days were $80^{\\circ}$, $79^{\\circ}$, $81^{\\circ}$, $85^{\\circ}$, $87^{\\circ}$, $89^{\\circ}$, and $87^{\\circ}$ Fahrenheit. What is the mean noon temperature, in degrees Fahrenheit, for the week?",
-            "frontend_status": "Ambiguous",
-            "execution_status": "not_run"
-          },
-          {
-            "case_id": "math-v1-development-0588",
-            "prompt_sha256": "195806be2a50d68023e2480b0ee3d65ba8f230b75d2590d4bd3918eda204f641",
-            "prompt_preview": "Kim earned scores of 87, 83 and 88 on her first three mathematics examinations. If Kim receives a score of 90 on the fourth exam, then by how much will her average increase?",
-            "frontend_status": "Ambiguous",
-            "execution_status": "not_run"
-          },
           {
             "case_id": "math-v1-development-0589",
             "prompt_sha256": "1bf3aef5e52c7e4f0f5c9a40c0f14a512cf0d708c445c4478df7f8c746e7a14b",
@@ -78,9 +64,30 @@
             "prompt_preview": "The sum of four numbers is one-half. What is the mean of the four numbers? Express your answer as a common fraction.",
             "frontend_status": "Ambiguous",
             "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0975",
+            "prompt_sha256": "db9163f6110232efa133afc7f381e1070f507ac479a4d7f008cea205d0a56153",
+            "prompt_preview": "What is the average student headcount for the spring terms of the `02-`03, `03-`04 and `04-`05 academic years? Express your answer to the nearest whole number. [asy] unitsize(0.35 cm); fill((1,0)--(1,11.7)--(4,11.7)--(4,0)--cycle,gray(.5));",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-1077",
+            "prompt_sha256": "757ba5d710cdd638d70f59777631361a74d62ba87d15e4121c6e54bb602fcab3",
+            "prompt_preview": "According to the graph, what is the average monthly balance, in dollars, of David's savings account during the four-month period shown? [asy] draw((0,0)--(13,0)--(13,8)--(0,8)--cycle,linewidth(1)); draw((0,2)--(13,2),linewidth(1)); draw((0,",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
           }
         ],
         "Complete": [
+          {
+            "case_id": "math-v1-development-0238",
+            "prompt_sha256": "7f01f6be38331525c6f5a59d37d1eb6f4cc5f5c46a42d5dce6c0dc140e7b778f",
+            "prompt_preview": "The noon temperatures for seven consecutive days were $80^{\\circ}$, $79^{\\circ}$, $81^{\\circ}$, $85^{\\circ}$, $87^{\\circ}$, $89^{\\circ}$, and $87^{\\circ}$ Fahrenheit. What is the mean noon temperature, in degrees Fahrenheit, for the week?",
+            "frontend_status": "Complete",
+            "execution_status": "Complete"
+          },
           {
             "case_id": "math-v1-development-1287",
             "prompt_sha256": "4e0e042d4d7f8fca9ad39095c41ada6d706858f86f75511eb865c9498ce3c511",
@@ -92,6 +99,13 @@
             "case_id": "math-v1-development-1858",
             "prompt_sha256": "df8914a85f181e87714700e5f00ebf00311a02e74aa45949146c0b6300ff5f12",
             "prompt_preview": "What is the arithmetic mean of 14, 22 and 36?",
+            "frontend_status": "Complete",
+            "execution_status": "Complete"
+          },
+          {
+            "case_id": "math-v1-development-2593",
+            "prompt_sha256": "2c014deb615d34eccbe63c828af3fb077ad3fe6dbde34a5829637925e224bf91",
+            "prompt_preview": "Jane's quiz scores were 98, 97, 92, 85 and 93. What was her mean score?",
             "frontend_status": "Complete",
             "execution_status": "Complete"
           }
@@ -1201,5 +1215,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "production_mutations": 0,
-  "report_sha256": "56b5608a1b9b093c1cff3448306974e02a8e40b19f3642801ea75126b980f22b"
+  "report_sha256": "9f0b9d7c6f2fa05820553ca83802c24223bae85aa2e1f1e976c392724d22003b"
 }

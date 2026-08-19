@@ -161,6 +161,14 @@ pub fn propose_capability_gap(
             "indexed exact integer sequence with divisor dependencies",
             "source_derived_mobius",
         ),
+        "unknown_source_residual" => (
+            "unrecognized source operation to a typed shadow capability contract",
+            "repeated operation scope from at least two independent source lineages",
+            "none: unknown-domain bootstrap remains unimplemented",
+            "source sections carrying the explicit operation, assumptions, and boundaries",
+            "candidate artifact schema derived only from declared source fields",
+            "unknown_domain_shadow",
+        ),
         _ => return None,
     };
     let mut gap = CapabilityGap {

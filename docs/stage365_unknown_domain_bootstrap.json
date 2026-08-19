@@ -1,0 +1,51 @@
+{
+  "schema": "stage365-unknown-domain-bootstrap-v1",
+  "corpus_sha256": "685506ff26c17da02f8e407f7f163f5ee4331ea5c94a61759a87ecd41cac8b16",
+  "cases": 4,
+  "repeated_residuals": 2,
+  "proposals": 2,
+  "proposal_replay_verified": 2,
+  "non_executable_proposals": 2,
+  "residuals_preserved": 2,
+  "tamper_rejections": 4,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "receipts": [
+    {
+      "id": "repeated-unknown-scope",
+      "envelopes": 2,
+      "proposals": 1,
+      "proposal_replay": 1,
+      "non_executable": 1,
+      "tamper_rejected": true,
+      "residual_preserved": false
+    },
+    {
+      "id": "single-lineage",
+      "envelopes": 2,
+      "proposals": 0,
+      "proposal_replay": 0,
+      "non_executable": 0,
+      "tamper_rejected": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "scope-mismatch",
+      "envelopes": 2,
+      "proposals": 0,
+      "proposal_replay": 0,
+      "non_executable": 0,
+      "tamper_rejected": true,
+      "residual_preserved": true
+    },
+    {
+      "id": "tamper-control",
+      "envelopes": 2,
+      "proposals": 1,
+      "proposal_replay": 1,
+      "non_executable": 1,
+      "tamper_rejected": true,
+      "residual_preserved": false
+    }
+  ]
+}

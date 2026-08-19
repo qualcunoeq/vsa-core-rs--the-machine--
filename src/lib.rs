@@ -219,6 +219,7 @@ pub mod target_context;
 pub mod target_grounding;
 pub mod technical_language_router;
 pub mod temporal;
+pub mod unknown_domain_bootstrap;
 pub mod text_encoder;
 pub mod third_party_corpus_benchmark;
 pub mod unit_aware_quantity;

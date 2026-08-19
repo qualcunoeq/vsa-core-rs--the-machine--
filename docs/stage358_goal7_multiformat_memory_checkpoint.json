@@ -1,0 +1,19 @@
+{
+  "schema": "stage358-goal7-multiformat-memory-checkpoint-v1",
+  "source_documents": 26,
+  "admitted_catalogs": 14,
+  "admitted_records": 55,
+  "appended": 14,
+  "duplicate_refusals": 14,
+  "unique_retrievals": 14,
+  "retrieval_replays": 14,
+  "result_tamper_rejections": 14,
+  "stored_record_tamper_rejections": 14,
+  "missing_version_refusals": 14,
+  "wrong_kind_refusals": 14,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_mutations": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "211a073d51b522547e77bebfb9d7d549832b84a944f52a6678c9aca27c3170e9"
+}

@@ -504,6 +504,10 @@ name = "stage328_expanded_technical_language_routes"
 path = "src/bin/stage328_expanded_technical_language_routes.rs"
 
 [[bin]]
+name = "stage329_electromagnetism_language_route"
+path = "src/bin/stage329_electromagnetism_language_route.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

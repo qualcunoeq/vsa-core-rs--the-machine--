@@ -1,0 +1,2421 @@
+{
+  "schema": "stage329-electromagnetism-language-route-v1",
+  "corpus_sha256": "148f271850da8f7a1045460e160347fd71bec31acfa0124f1516228e4033471d",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "supported_routes": 120,
+  "ambiguity_preserved": 40,
+  "unsupported_refused": 80,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "route_leakage": 0,
+  "hle_questions_read": 0,
+  "production_mutations": 0,
+  "receipts": [
+    {
+      "id": "stage329-000",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-001",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-002",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-003",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-004",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-005",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-006",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-007",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-008",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-009",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-010",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-011",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-012",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-013",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-014",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-015",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-016",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-017",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-018",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-019",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-020",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-021",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-022",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-023",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-024",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-025",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-026",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-027",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-028",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-029",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-030",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-031",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-032",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-033",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-034",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-035",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-036",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-037",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-038",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-039",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-040",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-041",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-042",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-043",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-044",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-045",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-046",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-047",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-048",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-049",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-050",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-051",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-052",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-053",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-054",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-055",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-056",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-057",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-058",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-059",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-060",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-061",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-062",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-063",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-064",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-065",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-066",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-067",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-068",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-069",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-070",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-071",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-072",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-073",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-074",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-075",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-076",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-077",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-078",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-079",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-080",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-081",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-082",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-083",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-084",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-085",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-086",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-087",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-088",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-089",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-090",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-091",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-092",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-093",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-094",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-095",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-096",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-097",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-098",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-099",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-100",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-101",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-102",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-103",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-104",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-105",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-106",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-107",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-108",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-109",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-110",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-111",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-112",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-113",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-114",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-115",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-116",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-117",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-118",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-119",
+      "hidden": "supported",
+      "actual": "authorized",
+      "selected": "electromagnetism",
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-120",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-121",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-122",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-123",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-124",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-125",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-126",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-127",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-128",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-129",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-130",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-131",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-132",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-133",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-134",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-135",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-136",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-137",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-138",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-139",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-140",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-141",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-142",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-143",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-144",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-145",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-146",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-147",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-148",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-149",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-150",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-151",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-152",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-153",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-154",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-155",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-156",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-157",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-158",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-159",
+      "hidden": "ambiguous",
+      "actual": "ambiguous",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-160",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-161",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-162",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-163",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-164",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-165",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-166",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-167",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-168",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-169",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-170",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-171",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-172",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-173",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-174",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-175",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-176",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-177",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-178",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-179",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-180",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-181",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-182",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-183",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-184",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-185",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-186",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-187",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-188",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-189",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-190",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-191",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-192",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-193",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-194",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-195",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-196",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-197",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-198",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-199",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-200",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-201",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-202",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-203",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-204",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-205",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-206",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-207",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-208",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-209",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-210",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-211",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-212",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-213",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-214",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-215",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-216",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-217",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-218",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-219",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-220",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-221",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-222",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-223",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-224",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-225",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-226",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-227",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-228",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-229",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-230",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-231",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-232",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-233",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-234",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-235",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-236",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-237",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-238",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    },
+    {
+      "id": "stage329-239",
+      "hidden": "unsupported",
+      "actual": "unsupported",
+      "selected": null,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "false_authorization": false,
+      "false_denial": false
+    }
+  ]
+}

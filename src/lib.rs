@@ -58,6 +58,7 @@ pub mod drift;
 pub mod drives;
 pub mod dynamics_frontend;
 pub mod electromagnetism_pack;
+pub mod electromagnetism_frontend;
 pub mod epistemic;
 pub mod equation_classification;
 pub mod equation_normalization;

@@ -16,6 +16,11 @@ use crate::combinatorics_frontend::{
     CombinatoricsFrontendStatus,
 };
 use crate::combinatorics_pack::{evaluate_combinatorics, CombinatoricsStatus};
+use crate::electromagnetism_frontend::{
+    downstream_replay as em_downstream_replay, formalize_em_text,
+    replay_verified as em_frontend_replay, EmFrontendStatus,
+};
+use crate::electromagnetism_pack::{evaluate as evaluate_em, EmStatus};
 use crate::finite_markov_frontend::{
     formalize as formalize_markov, replay_verified as markov_frontend_replay,
     MarkovFrontendRequest, MarkovFrontendStatus,
@@ -77,6 +82,7 @@ pub enum RouteDomain {
     ODE,
     Polynomial,
     Spectral,
+    Electromagnetism,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -245,6 +251,32 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
         ambiguous.extend([RouteDomain::MarkovHitting, RouteDomain::MarkovStationary]);
     }
     let lower_text = text.to_ascii_lowercase();
+
+    let em_signal = [
+        "ohm's law",
+        "ohms law",
+        "electric power",
+        "electrical power",
+        "charge from constant current",
+        "capacitor charge",
+    ]
+    .iter()
+    .any(|marker| lower_text.contains(marker));
+    if em_signal {
+        let em = formalize_em_text(text, case_id);
+        if em.status == EmFrontendStatus::Complete
+            && em_frontend_replay(&em)
+            && em_downstream_replay(&em)
+            && em.request.as_ref().is_some_and(|request| {
+                let result = evaluate_em(request);
+                result.status == EmStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::Electromagnetism);
+        } else if em.status == EmFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::Electromagnetism);
+        }
+    }
 
     let ode_signal = lower_text.contains("differential equation") || lower_text.contains("ode");
     if ode_signal {
@@ -589,5 +621,20 @@ mod tests {
         assert!(replay_verified(&polynomial));
         assert!(replay_verified(&spectral));
         assert!(replay_verified(&missing));
+    }
+
+    #[test]
+    fn source_electromagnetism_route_requires_law_and_units() {
+        let supported = route(
+            "Apply Ohm's law with I=2 and R=5 in SI-consistent exact units.",
+            "em-supported",
+        );
+        assert_eq!(supported.status, RouteStatus::Authorized);
+        assert_eq!(supported.selected, Some(RouteDomain::Electromagnetism));
+
+        let ambiguous = route("Use electric power with V=3 and I=2.", "em-missing-scope");
+        assert_eq!(ambiguous.status, RouteStatus::Ambiguous);
+        assert!(replay_verified(&supported));
+        assert!(replay_verified(&ambiguous));
     }
 }

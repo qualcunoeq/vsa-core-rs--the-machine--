@@ -43,8 +43,44 @@ fn binding(text: &str, label: &str) -> Option<u64> {
         .next()?;
     token.parse().ok()
 }
+
+fn numeric_values(text: &str) -> Vec<u64> {
+    let mut values = Vec::new();
+    let mut current = String::new();
+    for character in text.chars() {
+        if character.is_ascii_digit() {
+            current.push(character);
+        } else if !current.is_empty() {
+            if let Ok(value) = current.parse() {
+                values.push(value);
+            }
+            current.clear();
+        }
+    }
+    if !current.is_empty() {
+        if let Ok(value) = current.parse() {
+            values.push(value);
+        }
+    }
+    values
+}
+
+fn phrase_selection_values(text: &str) -> Option<(u64, u64)> {
+    let has_selection_verb = text.contains("choose") || text.contains("select");
+    let has_range_phrase = text.contains(" from ") || text.contains(" out of ");
+    if !has_selection_verb || !has_range_phrase {
+        return None;
+    }
+    let values = numeric_values(text);
+    (values.len() == 2).then(|| (values[0], values[1]))
+}
+
 pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendResult {
     let lower = text.to_ascii_lowercase();
+    let explicit_unordered = lower.contains("unordered")
+        || lower.contains("order does not matter")
+        || (lower.contains("order") && lower.contains("does not matter"));
+    let explicit_ordered = lower.contains("ordered") || lower.contains("order matters");
     let provenance = vec![
         format!("source-counting-frontend:{case_id}"),
         "explicit-bounded-count-parser".into(),
@@ -85,12 +121,12 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
             replay_hash: String::new(),
         });
     }
-    let operation = if lower.contains("permutation")
-        || (lower.contains("ordered") && !lower.contains("unordered"))
-    {
+    let operation = if lower.contains("permutation") || (explicit_ordered && !explicit_unordered) {
         CountingOperation::Permutation
-    } else if lower.contains("combination") || lower.contains("unordered") {
+    } else if lower.contains("combination") || explicit_unordered {
         CountingOperation::Combination
+    } else if lower.contains("order matters") {
+        CountingOperation::Permutation
     } else if lower.contains("factorial") || lower.contains("n!") || lower.contains("n !") {
         CountingOperation::Factorial
     } else if lower.contains("multiply")
@@ -99,7 +135,7 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
     {
         CountingOperation::Product
     } else {
-        if ["count", "ways", "select", "arrange"]
+        if ["count", "ways", "select", "arrange", "choose"]
             .iter()
             .any(|marker| lower.contains(marker))
         {
@@ -122,12 +158,25 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
             replay_hash: String::new(),
         });
     };
-    let n = binding(&lower, "n=")
+    let mut n = binding(&lower, "n=")
         .or_else(|| binding(&lower, "n ="))
         .or_else(|| binding(&lower, "total="));
-    let r = binding(&lower, "r=")
+    let mut r = binding(&lower, "r=")
         .or_else(|| binding(&lower, "r ="))
         .or_else(|| binding(&lower, "choose="));
+    if matches!(
+        operation,
+        CountingOperation::Permutation | CountingOperation::Combination
+    ) && (n.is_none() || r.is_none())
+    {
+        let order_is_explicit = explicit_unordered || explicit_ordered;
+        if order_is_explicit {
+            if let Some((requested, available)) = phrase_selection_values(&lower) {
+                r.get_or_insert(requested);
+                n.get_or_insert(available);
+            }
+        }
+    }
     if matches!(
         operation,
         CountingOperation::Permutation | CountingOperation::Combination
@@ -206,6 +255,26 @@ mod tests {
     #[test]
     fn preserves_missing_operation_as_non_authorizing() {
         let result = formalize_counting_text("Count the ways, but no model is stated.", "t");
+        assert_eq!(result.status, CountingFrontendStatus::Missing);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn binds_explicit_unordered_phrase_without_guessing() {
+        let result = formalize_counting_text(
+            "Choose 3 cards from a deck of 52; the order does not matter.",
+            "t",
+        );
+        assert_eq!(result.status, CountingFrontendStatus::Complete);
+        let request = result.request.unwrap();
+        assert_eq!(request.n, Some(52));
+        assert_eq!(request.r, Some(3));
+        assert_eq!(request.operation, CountingOperation::Combination);
+    }
+
+    #[test]
+    fn refuses_phrase_selection_without_order_semantics() {
+        let result = formalize_counting_text("Choose 3 cards from a deck of 52.", "t");
         assert_eq!(result.status, CountingFrontendStatus::Missing);
         assert!(replay_verified(&result));
     }

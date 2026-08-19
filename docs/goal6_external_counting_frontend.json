@@ -17,12 +17,23 @@
   "external_questions_read": 3000,
   "external_answer_keys_read": 0,
   "external_counting_signals": 92,
-  "external_complete_frontends": 0,
-  "external_executable_candidates": 0,
-  "external_candidate_replays": 0,
-  "external_candidates": [],
+  "external_complete_frontends": 2,
+  "external_executable_candidates": 1,
+  "external_candidate_replays": 1,
+  "external_candidates": [
+    {
+      "id": "math-v1-development-0918",
+      "status": "shadow_candidate",
+      "operation": "Combination",
+      "artifact": {
+        "ExactCount": 15
+      },
+      "frontend_replay_verified": true,
+      "execution_replay_verified": true
+    }
+  ],
   "production_authorizations": 0,
   "false_authorizations": 0,
   "manifest_unchanged": true,
-  "report_sha256": "3036ae78e82af81c4f1a391076cf426404ca5bfb8749570c39b052af099fe078"
+  "report_sha256": "a1d387ee144ebd57070cff3945b5981e6c9fb86c776c9019b4915e2bac0688f3"
 }

@@ -96,7 +96,7 @@ fn independent_cases() -> Vec<IndependentCase> {
     for index in 0..80u64 {
         let n = 4 + index % 17;
         let r = index % (n + 1);
-        let (text, expected) = match index % 4 {
+        let (text, expected) = match index % 5 {
             0 => (
                 format!("For n={n} and r={r}, count the ordered permutations."),
                 (0..r).fold(1u128, |value, offset| value * (n - offset) as u128),
@@ -106,9 +106,13 @@ fn independent_cases() -> Vec<IndependentCase> {
                 factorial(n as u128) / (factorial(r as u128) * factorial((n - r) as u128)),
             ),
             2 => (format!("Evaluate n! when n={n}."), factorial(n as u128)),
-            _ => (
+            3 => (
                 format!("Multiply the independent factors n={n} and r={r}."),
                 (n as u128) * (r as u128),
+            ),
+            _ => (
+                format!("Choose {r} objects from a collection of {n}; the order does not matter."),
+                factorial(n as u128) / (factorial(r as u128) * factorial((n - r) as u128)),
             ),
         };
         cases.push(IndependentCase {

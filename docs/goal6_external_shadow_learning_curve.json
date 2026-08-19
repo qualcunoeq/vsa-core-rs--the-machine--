@@ -31,18 +31,18 @@
     {
       "label": "bounded_counting_shadow",
       "evaluated_cases": 3000,
-      "correct_shadow": 0,
+      "correct_shadow": 1,
       "false_authorizations": 0,
-      "replay_verified": 0,
+      "replay_verified": 1,
       "production_authorizations": 0
     }
   ],
-  "cumulative_candidates": 5,
-  "cumulative_correct_shadow": 5,
-  "cumulative_replays": 5,
+  "cumulative_candidates": 6,
+  "cumulative_correct_shadow": 6,
+  "cumulative_replays": 6,
   "cumulative_false_authorizations": 0,
   "candidate_ids_disjoint": true,
   "route_reports_unchanged": true,
   "production_authorizations": 0,
-  "report_sha256": "547d0d4d1a6951d5bb8f53c90e923a746082f74c340f5a7c8d3ef3d76e4b93bf"
+  "report_sha256": "bf226978a757f5516cbf0d72fa2bcd5f9fc527cbc2359d073fb320d8c9d6eda5"
 }

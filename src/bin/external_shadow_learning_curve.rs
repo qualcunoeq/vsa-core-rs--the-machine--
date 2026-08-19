@@ -10,6 +10,7 @@ const BASELINE: &str = "docs/goal1_external_math_exam_baseline_development.json"
 const MEAN: &str = "docs/goal6_external_list_mean_shadow_score.json";
 const SEQUENCE: &str = "docs/goal6_external_sequence_shadow_score.json";
 const COUNTING: &str = "docs/goal6_external_counting_frontend.json";
+const COUNTING_SCORE: &str = "docs/goal6_external_counting_shadow_score.json";
 const REPORT_JSON: &str = "docs/goal6_external_shadow_learning_curve.json";
 const REPORT_MD: &str = "docs/goal6_external_shadow_learning_curve.md";
 
@@ -31,6 +32,7 @@ struct Candidate {
 #[derive(Debug, Deserialize)]
 struct RouteReport {
     questions_read: usize,
+    answer_hashes_read: usize,
     plaintext_answers_read: usize,
     candidate_cases: usize,
     correct_shadow_candidates: usize,
@@ -53,6 +55,21 @@ struct CountingReport {
     manifest_unchanged: bool,
     external_counting_signals: usize,
     external_candidates: Vec<CountingCandidate>,
+}
+
+#[derive(Debug, Deserialize)]
+struct CountingScoreReport {
+    questions_read: usize,
+    answer_hashes_read: usize,
+    plaintext_answers_read: usize,
+    candidate_cases: usize,
+    correct_shadow_candidates: usize,
+    incorrect_shadow_candidates_rejected: usize,
+    candidate_replays: usize,
+    production_authorizations: usize,
+    false_authorizations: usize,
+    manifest_unchanged: bool,
+    candidates: Vec<Candidate>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -96,21 +113,39 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mean: RouteReport = serde_json::from_slice(&fs::read(MEAN)?)?;
     let sequence: RouteReport = serde_json::from_slice(&fs::read(SEQUENCE)?)?;
     let counting: CountingReport = serde_json::from_slice(&fs::read(COUNTING)?)?;
+    let counting_score: CountingScoreReport = serde_json::from_slice(&fs::read(COUNTING_SCORE)?)?;
     assert_eq!(baseline.cases, 3000);
     assert_eq!(baseline.correct_authorized, 0);
     assert_eq!(baseline.false_authorizations, 0);
     assert!(!baseline.registry_mutated);
     assert_eq!(mean.questions_read, 4000);
+    assert_eq!(mean.answer_hashes_read, 3000);
     assert_eq!(mean.plaintext_answers_read, 0);
     assert_eq!(sequence.questions_read, 3000);
+    assert_eq!(sequence.answer_hashes_read, 3000);
     assert_eq!(sequence.plaintext_answers_read, 0);
     assert_eq!(counting.external_questions_read, 3000);
     assert_eq!(counting.external_answer_keys_read, 0);
-    assert_eq!(counting.external_executable_candidates, 0);
-    assert_eq!(counting.external_candidate_replays, 0);
+    assert_eq!(counting.external_executable_candidates, 1);
+    assert_eq!(counting.external_candidate_replays, 1);
     assert_eq!(counting.production_authorizations, 0);
     assert_eq!(counting.false_authorizations, 0);
-    assert!(mean.manifest_unchanged && sequence.manifest_unchanged && counting.manifest_unchanged);
+    assert_eq!(counting_score.questions_read, 3000);
+    assert_eq!(counting_score.answer_hashes_read, 3000);
+    assert_eq!(counting_score.plaintext_answers_read, 0);
+    assert_eq!(counting_score.candidate_cases, 1);
+    assert_eq!(counting_score.correct_shadow_candidates, 1);
+    assert_eq!(counting_score.incorrect_shadow_candidates_rejected, 0);
+    assert_eq!(counting_score.candidate_replays, 1);
+    assert_eq!(counting_score.production_authorizations, 0);
+    assert_eq!(counting_score.false_authorizations, 0);
+    assert!(counting_score.manifest_unchanged);
+    assert!(
+        mean.manifest_unchanged
+            && sequence.manifest_unchanged
+            && counting.manifest_unchanged
+            && counting_score.manifest_unchanged
+    );
     let mean_ids = mean
         .candidates
         .iter()
@@ -121,8 +156,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .map(|candidate| candidate.id.clone())
         .collect::<Vec<_>>();
-    let counting_ids = counting
-        .external_candidates
+    let counting_ids = counting_score
+        .candidates
         .iter()
         .map(|candidate| candidate.id.clone())
         .collect::<Vec<_>>();
@@ -131,15 +166,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .all(|id| !sequence_ids.contains(id) && !counting_ids.contains(id))
         && sequence_ids.iter().all(|id| !counting_ids.contains(id));
     let cumulative_replays =
-        mean.candidate_replays + sequence.candidate_replays + counting.external_candidate_replays;
+        mean.candidate_replays + sequence.candidate_replays + counting_score.candidate_replays;
     let cumulative_correct = mean.correct_shadow_candidates
         + sequence.correct_shadow_candidates
-        + counting.external_executable_candidates;
+        + counting_score.correct_shadow_candidates;
     let mut report = Report {
         schema: "goal6-external-shadow-learning-curve-v2",
         development_cases: baseline.cases,
         answer_keys_read: 0,
-        plaintext_answers_read: mean.plaintext_answers_read + sequence.plaintext_answers_read,
+        plaintext_answers_read: mean.plaintext_answers_read
+            + sequence.plaintext_answers_read
+            + counting_score.plaintext_answers_read,
         checkpoints: vec![
             Checkpoint {
                 label: "baseline".into(),
@@ -168,27 +205,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Checkpoint {
                 label: "bounded_counting_shadow".into(),
                 evaluated_cases: counting.external_questions_read,
-                correct_shadow: counting.external_executable_candidates,
-                false_authorizations: counting.false_authorizations,
-                replay_verified: counting.external_candidate_replays,
-                production_authorizations: counting.production_authorizations,
+                correct_shadow: counting_score.correct_shadow_candidates,
+                false_authorizations: counting_score.false_authorizations,
+                replay_verified: counting_score.candidate_replays,
+                production_authorizations: counting_score.production_authorizations,
             },
         ],
         cumulative_candidates: mean.candidate_cases
             + sequence.candidate_cases
-            + counting.external_executable_candidates,
+            + counting_score.candidate_cases,
         cumulative_correct_shadow: cumulative_correct,
         cumulative_replays,
         cumulative_false_authorizations: mean.false_authorizations
             + sequence.false_authorizations
-            + counting.false_authorizations,
+            + counting_score.false_authorizations,
         candidate_ids_disjoint,
         route_reports_unchanged: mean.manifest_unchanged
             && sequence.manifest_unchanged
-            && counting.manifest_unchanged,
+            && counting.manifest_unchanged
+            && counting_score.manifest_unchanged,
         production_authorizations: mean.production_authorizations
             + sequence.production_authorizations
-            + counting.production_authorizations,
+            + counting_score.production_authorizations,
         report_sha256: String::new(),
     };
     assert_eq!(mean.candidate_cases, 2);
@@ -197,9 +235,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(sequence.candidate_cases, 3);
     assert_eq!(sequence.correct_shadow_candidates, 3);
     assert_eq!(sequence.incorrect_shadow_candidates_rejected, 0);
-    assert!(counting.external_candidates.is_empty());
-    assert_eq!(cumulative_correct, 5);
-    assert_eq!(cumulative_replays, 5);
+    assert_eq!(counting_score.candidates.len(), 1);
+    assert_eq!(cumulative_correct, 6);
+    assert_eq!(cumulative_replays, 6);
     assert_eq!(report.answer_keys_read, 0);
     assert_eq!(report.plaintext_answers_read, 0);
     assert!(report.candidate_ids_disjoint);
@@ -213,7 +251,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(
         REPORT_MD,
         format!(
-            "# Goal 6 — external shadow learning curve\n\n- Baseline: 0/{} authorized, 0 false authorizations\n- Finite-list-mean shadow: {}/{} correct candidates, {}/{} replay\n- Arithmetic-sequence shadow: {}/{} correct candidates, {}/{} replay\n- Bounded-counting shadow: {}/{} complete candidates, {}/{} replay (signals: {})\n- Cumulative correct shadow candidates: {}\n- Cumulative candidate replay: {}\n- Candidate IDs disjoint: {}\n- Answer keys / plaintext answers read by this aggregator: {} / {}\n- Production authorizations / false authorizations: {} / {}\n\nThis is a development-only shadow curve; it does not claim autonomous curriculum selection and does not modify production routing.\n",
+            "# Goal 6 — external shadow learning curve\n\n- Baseline: 0/{} authorized, 0 false authorizations\n- Finite-list-mean shadow: {}/{} correct candidates, {}/{} replay\n- Arithmetic-sequence shadow: {}/{} correct candidates, {}/{} replay\n- Bounded-counting shadow: {}/{} correct candidates, {}/{} replay (signals: {})\n- Cumulative correct shadow candidates: {}\n- Cumulative candidate replay: {}\n- Candidate IDs disjoint: {}\n- Answer hashes / plaintext answers read by this aggregator: {} / {}\n- Production authorizations / false authorizations: {} / {}\n\nThis is a development-only shadow curve; it does not claim autonomous curriculum selection and does not modify production routing.\n",
             baseline.cases,
             mean.correct_shadow_candidates,
             mean.candidate_cases,
@@ -223,15 +261,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             sequence.candidate_cases,
             sequence.candidate_replays,
             sequence.candidate_cases,
-            counting.external_executable_candidates,
+            counting_score.correct_shadow_candidates,
             counting.external_questions_read,
-            counting.external_candidate_replays,
-            counting.external_executable_candidates,
+            counting_score.candidate_replays,
+            counting_score.candidate_cases,
             counting.external_counting_signals,
             report.cumulative_correct_shadow,
             report.cumulative_replays,
             report.candidate_ids_disjoint,
-            report.answer_keys_read,
+            mean.answer_hashes_read + sequence.answer_hashes_read + counting_score.answer_hashes_read,
             report.plaintext_answers_read,
             report.production_authorizations,
             report.cumulative_false_authorizations,

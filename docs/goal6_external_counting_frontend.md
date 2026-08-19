@@ -5,8 +5,8 @@
 - Execution replay/tamper: 80/80 / 80/80 emitted executions
 - False authorizations / denials: 0 / 0
 - External development questions read: 3000 (answer keys read: 0)
-- Counting signals / complete frontends / executable candidates: 92 / 0 / 0
-- Candidate replays: 0
+- Counting signals / complete frontends / executable candidates: 92 / 2 / 1
+- Candidate replays: 1
 - Production authorizations: 0
 - Curriculum manifest unchanged: true
 - Source: `openstax-contemporary-mathematics:counting-principles` (document SHA-256 `88843184f34abdab6cba6dbd7cff3265a3b28e42e2d14f24ce02a9d3579f3257`)

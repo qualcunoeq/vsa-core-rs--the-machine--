@@ -1,0 +1,25 @@
+{
+  "schema": "goal6-external-counting-shadow-score-v1",
+  "release_id": "external-math-exam-v1",
+  "partition": "development",
+  "source_domain": "external-source-counting-shadow",
+  "questions_read": 3000,
+  "answer_hashes_read": 3000,
+  "plaintext_answers_read": 0,
+  "candidate_cases": 1,
+  "correct_shadow_candidates": 1,
+  "incorrect_shadow_candidates_rejected": 0,
+  "candidate_replays": 1,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "candidates": [
+    {
+      "id": "math-v1-development-0918",
+      "candidate_answer_sha256": "e629fa6598d732768f7c726b4b621285f9c3b85303900aa912017db7617d8bdb",
+      "reference_match": true,
+      "replay_verified": true
+    }
+  ],
+  "report_sha256": "51cd316729e2bdddac403e17c767f4ad0e5c9e6c7f79ad4584c2258d8b6e5a6c"
+}

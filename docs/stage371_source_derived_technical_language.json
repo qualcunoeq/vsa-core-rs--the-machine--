@@ -1,0 +1,20 @@
+{
+  "schema": "stage371-source-derived-technical-language-v1",
+  "corpus_sha256": "78fe24d833dc04a8127115f803be62f10d6f354064b3a1448954ccf63840edab",
+  "source_records": 2,
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "route_decisions": 240,
+  "frontend_replays": 240,
+  "downstream_authorized": 120,
+  "downstream_replays": 120,
+  "frontend_tamper_rejections": 240,
+  "downstream_tamper_rejections": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "hle_questions_read": 0
+}

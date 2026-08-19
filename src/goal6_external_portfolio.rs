@@ -10,6 +10,7 @@ use crate::source_counting_pack::{evaluate as evaluate_counting, CountingArtifac
 use crate::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, source_formula_records, FormulaStatus,
 };
+use crate::source_formula_frontend::formalize_formula_text;
 use crate::source_sequence_frontend::{
     formalize_sequence_terms_text, replay_verified as sequence_frontend_replay,
 };
@@ -24,6 +25,9 @@ pub const SEQUENCE_DOMAIN: &str = "external-source-sequence-shadow";
 pub const UNIT_DOMAIN: &str = "source_catalog_unit_conversion";
 pub const UNIT_SOURCE: &str =
     include_str!("../docs/sources/openstax_unit_conversion_goal6_catalog.txt");
+pub const GEOMETRY_DOMAIN: &str = "source_derived_bounded_geometry";
+pub const GEOMETRY_SOURCE: &str =
+    include_str!("../docs/sources/openstax_bounded_geometry_source.txt");
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "snake_case")]
@@ -32,6 +36,7 @@ pub enum PortfolioRoute {
     ArithmeticSequence,
     BoundedCounting,
     UnitConversion,
+    BoundedGeometry,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -205,6 +210,22 @@ fn unit_route(text: &str, case_id: &str) -> RouteObservation {
     )
 }
 
+fn geometry_route(text: &str) -> RouteObservation {
+    let records = extract_formula_records(GEOMETRY_SOURCE).expect("geometry source extracts");
+    let frontend = formalize_formula_text(text, GEOMETRY_DOMAIN, &records);
+    let mut tampered = frontend.clone();
+    tampered.replay_hash.push('x');
+    formula_rational_observation(
+        PortfolioRoute::BoundedGeometry,
+        format!("{:?}", frontend.status),
+        frontend.replay_verified(),
+        !tampered.replay_verified(),
+        frontend.request.as_ref(),
+        GEOMETRY_DOMAIN,
+        &records,
+    )
+}
+
 /// Offer one prompt to every portfolio route, without a lexical pre-dispatch.
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
@@ -212,6 +233,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         sequence_route(text, case_id),
         counting_route(text, case_id),
         unit_route(text, case_id),
+        geometry_route(text),
     ]
 }
 
@@ -229,12 +251,25 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 4);
+        assert_eq!(observations.len(), 5);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
         assert!(observations.iter().all(|item| item.frontend_replay_verified));
         assert!(observations.iter().all(|item| item.frontend_tamper_rejected));
+    }
+
+    #[test]
+    fn route_blind_geometry_selects_only_geometry_route() {
+        let observations = observe_all(
+            "Compute the rectangle area using length=4 and width=3.",
+            "test-geometry",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::BoundedGeometry);
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
     }
 
     #[test]

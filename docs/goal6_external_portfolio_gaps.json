@@ -5,15 +5,14 @@
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "questions_read": 3000,
   "answer_keys_read": 0,
-  "route_invocations": 12000,
+  "route_invocations": 15000,
   "unique_candidates": 7,
   "no_executable_route": 2993,
   "multiple_route_ambiguities": 0,
   "first_gate_counts": {
     "ambiguous_frontend": 129,
     "complete_frontend_execution_boundary": 1,
-    "missing_frontend_fields": 2860,
-    "no_validated_route": 3
+    "missing_frontend_fields": 2863
   },
   "route_gaps": [
     {
@@ -44,6 +43,17 @@
         "not_run": 2998
       },
       "executable_cases": 1
+    },
+    {
+      "route": "BoundedGeometry",
+      "frontend_status_counts": {
+        "Missing": 2987,
+        "Unsupported": 13
+      },
+      "execution_status_counts": {
+        "not_run": 3000
+      },
+      "executable_cases": 0
     },
     {
       "route": "FiniteListMean",
@@ -191,5 +201,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "02d4428b5a7d245184400b3918fc5e7b64c4c15b1cf1029c5c8df9b748a41ddb"
+  "report_sha256": "c5021bb818631481eb3b08759a3f1ed3de56f73e9bbc566381d7a861d2d6f864"
 }

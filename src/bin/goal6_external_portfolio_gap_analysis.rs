@@ -118,6 +118,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .into_iter()
         .filter(|question| question.split == "development")
         .collect();
+    let route_count = observe_all("", "route-count").len();
 
     let mut route_statuses: BTreeMap<String, (BTreeMap<String, usize>, BTreeMap<String, usize>, usize)> =
         BTreeMap::new();
@@ -239,7 +240,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         dataset_sha256,
         questions_read: questions.len(),
         answer_keys_read: 0,
-        route_invocations: questions.len() * 4,
+        route_invocations: questions.len() * route_count,
         unique_candidates,
         no_executable_route,
         multiple_route_ambiguities,

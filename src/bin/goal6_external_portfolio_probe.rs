@@ -90,6 +90,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .into_iter()
         .filter(|question| question.split == "development")
         .collect();
+    let route_count = observe_all("", "route-count").len();
 
     let manifest_sha256_before = breadth_first_manifest().replay_hash();
     let mut unique_shadow_candidates = 0;
@@ -175,7 +176,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         questions_read: questions.len(),
         answer_keys_read: 0,
         sealed_questions_read: 0,
-        route_invocations: questions.len() * 4,
+        route_invocations: questions.len() * route_count,
         unique_shadow_candidates,
         multiple_route_ambiguities,
         no_executable_route,
@@ -203,7 +204,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.false_authorizations, 0);
     assert!(report.manifest_unchanged);
     assert_eq!(report.questions_read, 3000);
-    assert_eq!(report.route_invocations, 12000);
+    assert_eq!(report.route_invocations, report.questions_read * route_count);
     let serialized = serde_json::to_string_pretty(&report)?;
     fs::write(REPORT_JSON, format!("{serialized}\n"))?;
     fs::write(
@@ -218,7 +219,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 - Answer keys / sealed questions read: {} / {}\n\
 - Production authorizations / false authorizations: {} / {}\n\
 - Manifest unchanged: {}\n\n\
-Every development prompt was offered to all four routes. This is answer-key-blind and shadow-only.\n",
+Every development prompt was offered to all {route_count} routes. This is answer-key-blind and shadow-only.\n",
             report.questions_read,
             report.route_invocations,
             report.unique_shadow_candidates,

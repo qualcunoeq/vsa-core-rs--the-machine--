@@ -1,0 +1,23 @@
+{
+  "schema": "stage360-knowledge-version-evolution-v1",
+  "versions": 14,
+  "knowledge_entries": 18,
+  "appended": 18,
+  "duplicate_refusals": 18,
+  "historical_decisions": 14,
+  "historical_replays": 14,
+  "current_reevaluations": 14,
+  "current_replays": 14,
+  "expected_version_differences": 3,
+  "missing_version_refusals": 1,
+  "tamper_rejections": 18,
+  "corrected_entries": 1,
+  "deprecated_entries": 1,
+  "split_entries": 1,
+  "merged_entries": 1,
+  "counterexample_updates": 1,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "parent_memory_unchanged": true,
+  "report_sha256": "01872d973936b2d896e78056720a03814191cda873d657977ad5a03b39589e06"
+}

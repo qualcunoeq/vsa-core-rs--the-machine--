@@ -1,0 +1,23 @@
+{
+  "schema": "stage369-two-lineage-source-acquisition-v1",
+  "corpus_sha256": "99ef8899746b810be549dda6e2b9b0ebe78306b18c61816f1258de0063bb1214",
+  "selected_lineages": 2,
+  "selection_replay_verified": true,
+  "executable_lineages": 2,
+  "source_records": 2,
+  "module_replays": 2,
+  "supported_exercises": 2,
+  "exact_decisions": 8,
+  "boundary_cases": 6,
+  "boundary_exact_decisions": 6,
+  "boundary_replays": 6,
+  "execution_replays": 2,
+  "tamper_rejections": 8,
+  "source_mutation_rejected": true,
+  "acquisition_replay_verified": true,
+  "promotable_in_clone": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "parent_catalog_unchanged": true
+}

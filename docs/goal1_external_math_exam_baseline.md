@@ -98,5 +98,5 @@ parquet inputs produced byte-identical question, oracle, and manifest hashes.
 * questions SHA-256: `3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2`;
 * development oracle SHA-256: `5bc0e75c5af49d0500cf14437c566e1eed398dd9aeef32c91d05062b83b22ec0`;
 * sealed oracle SHA-256: `2c2712196b4d0bd63e0389ab23953ba69ff12cad85db2dfa3f19059747624fbf`;
-* producer commit: `d4d2140`;
+* producer commit: `752f99a`;
 * curriculum manifest SHA-256: `3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844`.

@@ -680,7 +680,7 @@ mod tests {
     #[test]
     fn generic_frontend_binds_one_explicit_finite_numeric_list() {
         let result = formalize_source_formula_text(
-            "What is the arithmetic mean of 14, 22 and 36?",
+            "What is the arithmetic mean of 13, 22 and 37?",
             DOMAIN,
             &records(),
         );
@@ -706,7 +706,7 @@ mod tests {
     #[test]
     fn generic_frontend_rejects_filters_ranges_variables_and_expressions() {
         let near_misses = [
-            "Find the arithmetic mean of the prime numbers in this list: 21, 23, 25, 27, 29.",
+            "Find the arithmetic mean of the prime numbers in this list: 11, 13, 17, 19, 23.",
             "What is the arithmetic mean of the integers from -4 through 5, inclusive?",
             "Given that 10 is the arithmetic mean of the set {6, 13, 18, 4, x}, find x.",
             "The arithmetic mean of nine numbers is 54. If two numbers u and v are added, find their mean.",
@@ -722,14 +722,14 @@ mod tests {
     #[test]
     fn generic_frontend_accepts_only_an_explicit_declared_numeric_list() {
         let result = formalize_source_formula_text(
-            "Jeff's five assignment scores are 89, 92, 88, 95 and 91. What is the arithmetic mean of these five scores?",
+            "A learner's four quiz scores are 81, 87, 94 and 98. What is the arithmetic mean of these four scores?",
             DOMAIN,
             &records(),
         );
         assert_eq!(result.status, FrontendStatus::Complete);
         let request = result.request.as_ref().expect("declared list binds");
-        assert_eq!(request.inputs["sum"], Rational::new(455, 1).unwrap());
-        assert_eq!(request.inputs["count"], Rational::new(5, 1).unwrap());
+        assert_eq!(request.inputs["sum"], Rational::new(360, 1).unwrap());
+        assert_eq!(request.inputs["count"], Rational::new(4, 1).unwrap());
         assert!(replay_verified(&result));
     }
 
@@ -737,13 +737,13 @@ mod tests {
     fn generic_frontend_uses_source_declared_sequence_bindings() {
         let records = source_formula_records();
         let result = formalize_source_formula_text(
-            "What is the 100th term of the arithmetic sequence 6, 10, 14, 18, ...?",
+            "What is the 100th term of the arithmetic sequence 7, 11, 15, 19, ...?",
             "goal6_source_selected_arithmeticsequence",
             &records,
         );
         assert_eq!(result.status, FrontendStatus::Complete);
         let request = result.request.as_ref().expect("source bindings complete");
-        assert_eq!(request.inputs["a1"], Rational::new(6, 1).unwrap());
+        assert_eq!(request.inputs["a1"], Rational::new(7, 1).unwrap());
         assert_eq!(request.inputs["n"], Rational::new(100, 1).unwrap());
         assert_eq!(request.inputs["d"], Rational::new(4, 1).unwrap());
         assert!(replay_verified(&result));
@@ -753,8 +753,8 @@ mod tests {
     fn generic_sequence_binding_rejects_sum_and_nonconstant_lists() {
         let records = source_formula_records();
         for prompt in [
-            "What is the sum of the first 5 terms of the arithmetic sequence 6, 10, 14, 18, ...?",
-            "What is the 100th term of the arithmetic sequence 6, 10, 15, 18, ...?",
+            "What is the sum of the first 5 terms of the arithmetic sequence 7, 11, 15, 19, ...?",
+            "What is the 100th term of the arithmetic sequence 7, 11, 16, 19, ...?",
         ] {
             let result = formalize_source_formula_text(
                 prompt,

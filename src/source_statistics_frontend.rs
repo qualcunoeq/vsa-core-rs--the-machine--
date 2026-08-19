@@ -52,7 +52,8 @@ fn rational_token(token: &str) -> Option<Rational> {
         !character.is_ascii_digit() && character != '-' && character != '/'
     });
     if let Some((whole, fraction)) = cleaned.split_once('.') {
-        if whole.is_empty() || fraction.is_empty() || !fraction.chars().all(|c| c.is_ascii_digit()) {
+        if whole.is_empty() || fraction.is_empty() || !fraction.chars().all(|c| c.is_ascii_digit())
+        {
             return None;
         }
         let sign = if whole.starts_with('-') { -1 } else { 1 };
@@ -94,8 +95,20 @@ fn parse_explicit_list(segment: &str) -> Option<Vec<Rational>> {
 fn parse_natural_numeric_list(segment: &str) -> Option<Vec<Rational>> {
     let lower = segment.to_ascii_lowercase();
     let rejected = [
-        "graph", "table", "[asy]", "prime", "possible", "variable", "unknown", "from",
-        "through", "increase", "decrease", "change", "average speed", "average rate",
+        "graph",
+        "table",
+        "[asy]",
+        "prime",
+        "possible",
+        "variable",
+        "unknown",
+        "from",
+        "through",
+        "increase",
+        "decrease",
+        "change",
+        "average speed",
+        "average rate",
     ];
     if rejected.iter().any(|marker| lower.contains(marker)) {
         return None;
@@ -160,8 +173,17 @@ fn parse_natural_numeric_list(segment: &str) -> Option<Vec<Rational>> {
         return None;
     }
     let allowed_words = [
-        "and", "degrees", "degree", "circ", "fahrenheit", "celsius", "scores",
-        "temperatures", "values", "were", "are",
+        "and",
+        "degrees",
+        "degree",
+        "circ",
+        "fahrenheit",
+        "celsius",
+        "scores",
+        "temperatures",
+        "values",
+        "were",
+        "are",
     ];
     if residual
         .split(|character: char| !character.is_ascii_alphabetic())
@@ -183,7 +205,11 @@ fn natural_numeric_list_mean(text: &str) -> Option<(Vec<Rational>, String)> {
     let after_noun = noun_start + noun.len();
     let (relation_offset, relation) = [" were", " are"]
         .iter()
-        .filter_map(|relation| lower[after_noun..].find(relation).map(|offset| (offset, *relation)))
+        .filter_map(|relation| {
+            lower[after_noun..]
+                .find(relation)
+                .map(|offset| (offset, *relation))
+        })
         .min_by_key(|(offset, _)| *offset)?;
     let start = after_noun + relation_offset + relation.len();
     let rest = &text[start..];
@@ -192,7 +218,10 @@ fn natural_numeric_list_mean(text: &str) -> Option<(Vec<Rational>, String)> {
         .unwrap_or(rest.len());
     let segment = rest[..end].trim();
     let values = parse_natural_numeric_list(segment)?;
-    Some((values, format!("natural-list-span:{}..{}", start, start + end)))
+    Some((
+        values,
+        format!("natural-list-span:{}..{}", start, start + end),
+    ))
 }
 
 fn single_symbol(token: &str) -> Option<String> {
@@ -212,7 +241,11 @@ fn mean_equality_unknown(text: &str) -> Option<(BTreeMap<String, Rational>, Stri
     let left_of = lower[mean_pos..].find(" of ")? + mean_pos + 4;
     let connector = [" is equal to the mean", " is equal to the average"]
         .iter()
-        .filter_map(|marker| lower[left_of..].find(marker).map(|offset| (offset, *marker)))
+        .filter_map(|marker| {
+            lower[left_of..]
+                .find(marker)
+                .map(|offset| (offset, *marker))
+        })
         .min_by_key(|(offset, _)| *offset)?;
     let connector_start = left_of + connector.0;
     let left_segment = text[left_of..connector_start].trim();
@@ -265,11 +298,17 @@ fn mean_equality_unknown(text: &str) -> Option<(BTreeMap<String, Rational>, Stri
             Rational::new(left_values.len() as i128, 1).expect("left list is non-empty"),
         ),
         ("right_known_sum".into(), known_sum),
-        ("right_count".into(), Rational::new(2, 1).expect("right list has two entries")),
+        (
+            "right_count".into(),
+            Rational::new(2, 1).expect("right list has two entries"),
+        ),
     ]);
     Some((
         inputs,
-        format!("mean-equality-span:{}..{};unknown:{}", left_of, right_end, unknown_symbol),
+        format!(
+            "mean-equality-span:{}..{};unknown:{}",
+            left_of, right_end, unknown_symbol
+        ),
     ))
 }
 
@@ -290,17 +329,36 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
         );
     }
     let rejected_semantics = [
-        "from", "through", "prime", "multiple", "positive", "negative", "median", "largest",
-        "smallest", "expression", "variable", "unknown", "reciprocal", "added to", "list becomes",
+        "from",
+        "through",
+        "prime",
+        "multiple",
+        "positive",
+        "negative",
+        "median",
+        "largest",
+        "smallest",
+        "expression",
+        "variable",
+        "unknown",
+        "reciprocal",
+        "added to",
+        "list becomes",
     ];
-    if rejected_semantics.iter().any(|marker| lower.contains(marker)) {
+    if rejected_semantics
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
         return result(
             FrontendStatus::Unsupported,
             None,
             None,
             vec![text.into()],
             Vec::new(),
-            vec!["mean request requires range, filtering, symbolic, or optimization semantics".into()],
+            vec![
+                "mean request requires range, filtering, symbolic, or optimization semantics"
+                    .into(),
+            ],
         );
     }
     if lower.contains("by how much")
@@ -414,7 +472,9 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
     };
     let sum = values
         .iter()
-        .fold(Rational::new(0, 1).expect("zero is valid"), |acc, value| acc.add(value).unwrap());
+        .fold(Rational::new(0, 1).expect("zero is valid"), |acc, value| {
+            acc.add(value).unwrap()
+        });
     let count = Rational::new(values.len() as i128, 1).expect("list count is positive");
     with_request(
         "arithmetic_mean",
@@ -659,17 +719,27 @@ mod tests {
         assert!(complete.replay_verified());
 
         let external_style = formalize_finite_list_mean_text(
-            "Jeff's five assignment scores are 89, 92, 88, 95 and 91. What is the arithmetic mean of these five scores?",
+            "A learner's four quiz scores are 81, 87, 94 and 98. What is the arithmetic mean of these four scores?",
         );
-        assert_eq!(external_style.status, FrontendStatus::Complete, "{external_style:?}");
+        assert_eq!(
+            external_style.status,
+            FrontendStatus::Complete,
+            "{external_style:?}"
+        );
 
         let temperature_list = formalize_finite_list_mean_text(
             "The noon temperatures for seven consecutive days were 80°, 79°, 81°, 85°, 87°, 89°, and 87° Fahrenheit. What is the mean noon temperature?",
         );
         assert_eq!(temperature_list.status, FrontendStatus::Complete);
         let temperature_request = temperature_list.request.as_ref().unwrap();
-        assert_eq!(temperature_request.inputs["sum"], Rational::new(588, 1).unwrap());
-        assert_eq!(temperature_request.inputs["count"], Rational::new(7, 1).unwrap());
+        assert_eq!(
+            temperature_request.inputs["sum"],
+            Rational::new(588, 1).unwrap()
+        );
+        assert_eq!(
+            temperature_request.inputs["count"],
+            Rational::new(7, 1).unwrap()
+        );
         assert!(temperature_list.replay_verified());
 
         let latex_temperature_list = formalize_finite_list_mean_text(
@@ -690,9 +760,8 @@ mod tests {
         assert_eq!(range.status, FrontendStatus::Unsupported);
         assert!(range.replay_verified());
 
-        let symbolic = formalize_finite_list_mean_text(
-            "The arithmetic mean of x + 8, 15, and 2x is 24.",
-        );
+        let symbolic =
+            formalize_finite_list_mean_text("The arithmetic mean of x + 8, 15, and 2x is 24.");
         assert_ne!(symbolic.status, FrontendStatus::Complete);
         assert!(symbolic.replay_verified());
     }
@@ -707,7 +776,10 @@ mod tests {
         let request = complete.request.as_ref().unwrap();
         assert_eq!(request.inputs["left_sum"], Rational::new(33, 1).unwrap());
         assert_eq!(request.inputs["left_count"], Rational::new(3, 1).unwrap());
-        assert_eq!(request.inputs["right_known_sum"], Rational::new(12, 1).unwrap());
+        assert_eq!(
+            request.inputs["right_known_sum"],
+            Rational::new(12, 1).unwrap()
+        );
         assert_eq!(request.inputs["right_count"], Rational::new(2, 1).unwrap());
         assert!(complete.replay_verified());
 

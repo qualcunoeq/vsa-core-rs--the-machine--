@@ -42,9 +42,8 @@ fn rational(value: &str) -> Option<Rational> {
 }
 
 fn integer_token(value: &str) -> Option<Rational> {
-    let cleaned = value.trim_matches(|character: char| {
-        !character.is_ascii_digit() && character != '-'
-    });
+    let cleaned =
+        value.trim_matches(|character: char| !character.is_ascii_digit() && character != '-');
     cleaned
         .parse::<i128>()
         .ok()
@@ -260,10 +259,7 @@ pub fn formalize_sequence_terms_text(
                 let gap = values[1].sub(&values[0]).unwrap();
                 a1 = Some(values[0].clone());
                 difference = gap.div(&Rational::new(12, 1).unwrap());
-                evidence.push(format!(
-                    "first-thirteenth-terms-span:{}..{end}",
-                    start + 3
-                ));
+                evidence.push(format!("first-thirteenth-terms-span:{}..{end}", start + 3));
             }
         }
     }
@@ -281,7 +277,7 @@ pub fn formalize_sequence_terms_text(
                         request: None,
                         evidence,
                         unresolved: vec![
-                            "fewer than three explicit sequence terms are available".into(),
+                            "fewer than three explicit sequence terms are available".into()
                         ],
                         provenance,
                         replay_hash: String::new(),
@@ -539,31 +535,43 @@ mod tests {
     #[test]
     fn binds_natural_language_terms_and_requested_target() {
         let result = formalize_sequence_terms_text(
-            "The first three terms of an arithmetic sequence are 1, 10 and 19, respectively. What is the value of the 21st term?",
+            "The first three terms of an arithmetic sequence are 2, 11 and 20, respectively. What is the value of the 17th term?",
             "test-terms",
             "external-source-sequence-shadow",
         );
         assert_eq!(result.status, SequenceFrontendStatus::Complete);
         let request = result.request.as_ref().unwrap();
         assert_eq!(request.formula, "arithmetic_nth_term");
-        assert_eq!(request.inputs.get("a1"), Some(&Rational::new(1, 1).unwrap()));
+        assert_eq!(
+            request.inputs.get("a1"),
+            Some(&Rational::new(2, 1).unwrap())
+        );
         assert_eq!(request.inputs.get("d"), Some(&Rational::new(9, 1).unwrap()));
-        assert_eq!(request.inputs.get("n"), Some(&Rational::new(21, 1).unwrap()));
+        assert_eq!(
+            request.inputs.get("n"),
+            Some(&Rational::new(17, 1).unwrap())
+        );
         assert!(replay_verified(&result));
     }
 
     #[test]
     fn binds_two_distant_terms_without_using_definition_ordinal() {
         let result = formalize_sequence_terms_text(
-            "The first and thirteenth terms of an arithmetic sequence are 5 and 29, respectively. What is the fiftieth term?",
+            "The first and thirteenth terms of an arithmetic sequence are 7 and 31, respectively. What is the fiftieth term?",
             "test-distant-terms",
             "external-source-sequence-shadow",
         );
         assert_eq!(result.status, SequenceFrontendStatus::Complete);
         let request = result.request.as_ref().unwrap();
-        assert_eq!(request.inputs.get("a1"), Some(&Rational::new(5, 1).unwrap()));
+        assert_eq!(
+            request.inputs.get("a1"),
+            Some(&Rational::new(7, 1).unwrap())
+        );
         assert_eq!(request.inputs.get("d"), Some(&Rational::new(2, 1).unwrap()));
-        assert_eq!(request.inputs.get("n"), Some(&Rational::new(50, 1).unwrap()));
+        assert_eq!(
+            request.inputs.get("n"),
+            Some(&Rational::new(50, 1).unwrap())
+        );
         assert!(replay_verified(&result));
     }
 

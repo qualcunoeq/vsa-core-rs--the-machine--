@@ -22,35 +22,8 @@
   "repeated_template_groups": 93,
   "repeated_template_records": 269,
   "answer_marker_records": [],
-  "repository_exact_overlap_records": [
-    "math-v1-development-0212",
-    "math-v1-development-0389",
-    "math-v1-development-0688",
-    "math-v1-development-1287",
-    "math-v1-development-1858",
-    "math-v1-sealed-0001"
-  ],
-  "repository_exact_overlap_matches": {
-    "math-v1-development-0212": [
-      "src/source_sequence_frontend.rs"
-    ],
-    "math-v1-development-0389": [
-      "src/source_sequence_frontend.rs"
-    ],
-    "math-v1-development-0688": [
-      "src/source_formula_frontend.rs"
-    ],
-    "math-v1-development-1287": [
-      "src/source_formula_frontend.rs",
-      "src/source_statistics_frontend.rs"
-    ],
-    "math-v1-development-1858": [
-      "src/source_formula_frontend.rs"
-    ],
-    "math-v1-sealed-0001": [
-      "src/source_formula_frontend.rs"
-    ]
-  },
+  "repository_exact_overlap_records": [],
+  "repository_exact_overlap_matches": {},
   "structural_checks": {
     "manifest_schema": true,
     "holdout_locked": true,
@@ -64,10 +37,10 @@
     "cross_split_exact_overlap": true,
     "duplicate_prompt_groups": true,
     "answer_markers": true,
-    "repository_exact_overlap": false
+    "repository_exact_overlap": true
   },
-  "externality_verdict": "review_required",
+  "externality_verdict": "clean_under_static_audit",
   "sealed_answers_parsed": false,
   "implementation_mutations": 0,
-  "report_sha256": "fdeeb137049c8706df52862dfcb2fd6aaa0a56d20c59ad5a2c5b8bbcc0abd2b2"
+  "report_sha256": "57c767be45c2103e3d0331322eecca6c04e962ffb5fdd632f8c35713b8fb1740"
 }

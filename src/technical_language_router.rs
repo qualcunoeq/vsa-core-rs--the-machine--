@@ -30,6 +30,14 @@ use crate::number_theory_frontend::{
     NumberTheoryFrontendStatus,
 };
 use crate::number_theory_pack::{evaluate_number_theory, NumberTheoryStatus};
+use crate::source_formula_pack::biology_pack::biology_frontend::{
+    formalize_biology_text, BiologyFrontendStatus,
+};
+use crate::source_formula_pack::biology_pack::{evaluate_biology, BiologyStatus};
+use crate::source_formula_pack::chemistry_pack::chemistry_frontend::{
+    formalize_chemistry_text, FrontendStatus as ChemistryFrontendStatus,
+};
+use crate::source_formula_pack::chemistry_pack::{evaluate_chemistry, ChemistryStatus};
 use crate::source_metric_pack::source_metric_frontend::{
     formalize_metric_text, FrontendStatus as MetricFrontendStatus,
 };
@@ -52,6 +60,8 @@ pub enum RouteDomain {
     NumberTheory,
     FiniteMetric,
     FiniteTopology,
+    Chemistry,
+    Biology,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -282,6 +292,46 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
             ambiguous.push(RouteDomain::FiniteTopology);
         }
     }
+
+    let chemistry_signal = lower_text.contains("formula:")
+        || lower_text.contains("chemical formula")
+        || lower_text.contains("balanced reaction")
+        || lower_text.contains("validate reaction")
+        || lower_text.contains("reaction:")
+        || lower_text.contains("stoichiometric");
+    if chemistry_signal {
+        let chemistry = formalize_chemistry_text(text);
+        if chemistry.status == ChemistryFrontendStatus::Complete
+            && chemistry.replay_verified()
+            && chemistry.request.as_ref().is_some_and(|request| {
+                let result = evaluate_chemistry(request);
+                result.status == ChemistryStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::Chemistry);
+        } else if chemistry.status == ChemistryFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::Chemistry);
+        }
+    }
+
+    let biology_signal = lower_text.contains("dna")
+        || lower_text.contains("base composition")
+        || lower_text.contains("reverse complement")
+        || lower_text.contains("complementary strand");
+    if biology_signal {
+        let biology = formalize_biology_text(text);
+        if biology.status == BiologyFrontendStatus::Complete
+            && biology.replay_verified()
+            && biology.request.as_ref().is_some_and(|request| {
+                let result = evaluate_biology(request);
+                result.status == BiologyStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::Biology);
+        } else if biology.status == BiologyFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::Biology);
+        }
+    }
     authorized.sort();
     ambiguous.sort();
     if authorized.len() == 1 && ambiguous.is_empty() {
@@ -421,5 +471,24 @@ mod tests {
         assert_eq!(missing.status, RouteStatus::Unsupported);
         assert!(replay_verified(&metric));
         assert!(replay_verified(&topology));
+    }
+
+    #[test]
+    fn source_chemistry_and_biology_routes_require_local_artifacts() {
+        let chemistry = route("Parse the molecular formula: Al2(SO4)3.", "chemistry-route");
+        assert_eq!(chemistry.status, RouteStatus::Authorized);
+        assert_eq!(chemistry.selected, Some(RouteDomain::Chemistry));
+
+        let biology = route(
+            "Compute the reverse complement of DNA sequence: AATTGGCC, given 5' to 3' orientation.",
+            "biology-route",
+        );
+        assert_eq!(biology.status, RouteStatus::Authorized);
+        assert_eq!(biology.selected, Some(RouteDomain::Biology));
+
+        let unsupported = route("Compute the molar mass of H2O.", "chemistry-unsupported");
+        assert_eq!(unsupported.status, RouteStatus::Unsupported);
+        assert!(replay_verified(&chemistry));
+        assert!(replay_verified(&biology));
     }
 }

@@ -1,0 +1,46 @@
+{
+  "schema": "stage367-source-selection-gate-v1",
+  "corpus_sha256": "ed303a4bb25074ac3d39f5051e855ff247ae4c2af250f907114a68982dc4f46d",
+  "cases": 4,
+  "exact_selection_cases": 2,
+  "selected_lineages": 5,
+  "rejected_candidates": 4,
+  "replay_verified": 3,
+  "tamper_rejected": 2,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "receipts": [
+    {
+      "id": "exact-lineages",
+      "candidates": 2,
+      "selected": 2,
+      "rejected": 0,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "distractors-rejected",
+      "candidates": 4,
+      "selected": 2,
+      "rejected": 2,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "tampered-lineage",
+      "candidates": 2,
+      "selected": 1,
+      "rejected": 1,
+      "replay_verified": true,
+      "tamper_rejected": false
+    },
+    {
+      "id": "no-valid-lineage",
+      "candidates": 1,
+      "selected": 0,
+      "rejected": 1,
+      "replay_verified": false,
+      "tamper_rejected": false
+    }
+  ]
+}

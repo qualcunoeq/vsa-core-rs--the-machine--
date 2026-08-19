@@ -1,0 +1,126 @@
+{
+  "schema": "external-source-alias-probe-v1",
+  "release_id": "external-math-exam-v1",
+  "development_questions": 3000,
+  "answer_keys_read": 0,
+  "source_documents_considered": 27,
+  "parseable_sources": 9,
+  "selected_sources": 3,
+  "source_probes": [
+    {
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "records": 5,
+      "valid_catalog": true,
+      "distinct_aliases": 6,
+      "alias_hits": 10,
+      "distinct_hit_questions": 10,
+      "hit_records": {
+        "arithmetic_mean": 10
+      },
+      "matched_case_ids": [
+        "math-v1-development-0513",
+        "math-v1-development-0688",
+        "math-v1-development-1044",
+        "math-v1-development-1287",
+        "math-v1-development-1289",
+        "math-v1-development-1424",
+        "math-v1-development-1826",
+        "math-v1-development-1858",
+        "math-v1-development-2476",
+        "math-v1-development-2895"
+      ],
+      "frontend_cases": 3000,
+      "frontend_complete": 0,
+      "frontend_ambiguous": 0,
+      "frontend_missing": 2987,
+      "frontend_unsupported": 13,
+      "frontend_replays": 3000,
+      "frontend_tamper_rejections": 3000,
+      "executable_candidates": 0,
+      "candidate_replays": 0,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "exact alias overlap is a triage signal, not semantic proof",
+        "no independent external exercise corpus is attached",
+        "no frontend result authorizes an answer"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "records": 5,
+      "valid_catalog": true,
+      "distinct_aliases": 10,
+      "alias_hits": 4,
+      "distinct_hit_questions": 4,
+      "hit_records": {
+        "density": 1,
+        "rectangle_perimeter": 2,
+        "triangle_area": 1
+      },
+      "matched_case_ids": [
+        "math-v1-development-0170",
+        "math-v1-development-1169",
+        "math-v1-development-1485",
+        "math-v1-development-2283"
+      ],
+      "frontend_cases": 3000,
+      "frontend_complete": 0,
+      "frontend_ambiguous": 0,
+      "frontend_missing": 2987,
+      "frontend_unsupported": 13,
+      "frontend_replays": 3000,
+      "frontend_tamper_rejections": 3000,
+      "executable_candidates": 0,
+      "candidate_replays": 0,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "exact alias overlap is a triage signal, not semantic proof",
+        "no independent external exercise corpus is attached",
+        "no frontend result authorizes an answer"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_bounded_economics_source.txt",
+      "source_sha256": "9eeb1f5b916305563eb3bc997b46a1c4b413fb97c1d09abe0c67dabdebec054d",
+      "records": 5,
+      "valid_catalog": true,
+      "distinct_aliases": 10,
+      "alias_hits": 3,
+      "distinct_hit_questions": 3,
+      "hit_records": {
+        "profit": 1,
+        "total_cost": 2
+      },
+      "matched_case_ids": [
+        "math-v1-development-0225",
+        "math-v1-development-2747",
+        "math-v1-development-2987"
+      ],
+      "frontend_cases": 3000,
+      "frontend_complete": 0,
+      "frontend_ambiguous": 1,
+      "frontend_missing": 2986,
+      "frontend_unsupported": 13,
+      "frontend_replays": 3000,
+      "frontend_tamper_rejections": 3000,
+      "executable_candidates": 0,
+      "candidate_replays": 0,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "exact alias overlap is a triage signal, not semantic proof",
+        "no independent external exercise corpus is attached",
+        "no frontend result authorizes an answer"
+      ]
+    }
+  ],
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "report_sha256": "ca9d53616a3907021478cfa1d18d8156d513de4426bafb120222c850415eae40"
+}

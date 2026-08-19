@@ -32,6 +32,10 @@ name = "external_source_ingestion"
 path = "src/bin/external_source_ingestion.rs"
 
 [[bin]]
+name = "external_source_alias_probe"
+path = "src/bin/external_source_alias_probe.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

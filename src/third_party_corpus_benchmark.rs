@@ -199,6 +199,131 @@ pub struct ThirdPartyReport {
     pub rejection_reasons: BTreeMap<String, String>,
 }
 
+/// Evidence that a third-party release is independent of the local
+/// development corpus.  This is deliberately an audit, not an oracle: it
+/// detects release-level leakage signals but does not infer correctness from
+/// a prompt's wording.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct ExternalityAudit {
+    pub release_id: String,
+    pub release_hash: String,
+    pub source_independence: bool,
+    pub lexical_overlap_count: usize,
+    pub template_overlap_count: usize,
+    pub answer_exposure_count: usize,
+    pub development_exposure_count: usize,
+    pub development_cases: usize,
+    pub holdout_cases: usize,
+    pub total_cases: usize,
+    pub final_exam_eligible: bool,
+    pub verdict: String,
+}
+
+fn normalized_tokens(prompt: &str) -> Vec<String> {
+    prompt
+        .split(|ch: char| !ch.is_ascii_alphanumeric())
+        .filter(|token| !token.is_empty())
+        .map(|token| token.to_ascii_lowercase())
+        .collect()
+}
+
+fn template(prompt: &str) -> String {
+    normalized_tokens(prompt)
+        .into_iter()
+        .map(|token| {
+            if token.chars().all(|ch| ch.is_ascii_digit()) {
+                "<num>".to_string()
+            } else if token.len() >= 12 {
+                "<long>".to_string()
+            } else {
+                token
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// Audit a frozen release for obvious development/answer leakage signals.
+///
+/// The final-exam threshold is intentionally enforced here rather than in a
+/// caller, so a small third-party pilot cannot accidentally be reported as
+/// the required 3,000--5,000-question external exam.
+pub fn audit_externality(corpus: &ThirdPartyCorpus) -> ExternalityAudit {
+    let development: Vec<&ThirdPartyCase> = corpus
+        .cases
+        .iter()
+        .filter(|case| case.split == CorpusSplit::Development)
+        .collect();
+    let holdout: Vec<&ThirdPartyCase> = corpus
+        .cases
+        .iter()
+        .filter(|case| case.split == CorpusSplit::Holdout)
+        .collect();
+    let development_prompts: BTreeSet<String> =
+        development.iter().map(|case| case.original_prompt.clone()).collect();
+    let development_templates: BTreeSet<String> =
+        development.iter().map(|case| template(&case.original_prompt)).collect();
+    let mut lexical_overlap_count = 0;
+    let mut template_overlap_count = 0;
+    let mut answer_exposure_count = 0;
+    let mut development_exposure_count = 0;
+    for case in &holdout {
+        if development_prompts.contains(&case.original_prompt) {
+            lexical_overlap_count += 1;
+        }
+        if development_templates.contains(&template(&case.original_prompt)) {
+            template_overlap_count += 1;
+        }
+        if let Some(expected_result) = &case.expected_result {
+            if !expected_result.is_empty() && case.original_prompt.contains(expected_result) {
+                answer_exposure_count += 1;
+            }
+        }
+        if development.iter().any(|candidate| {
+            candidate.source_item_id == case.source_item_id
+                || candidate.original_prompt == case.original_prompt
+        }) {
+            development_exposure_count += 1;
+        }
+    }
+    let source_independence = corpus.release_kind == ReleaseKind::ThirdParty
+        && !corpus.sources.is_empty()
+        && corpus
+            .sources
+            .iter()
+            .all(|source| !source.locator.starts_with("fixture:") && source.license != "not-evidence");
+    let final_exam_eligible = corpus.holdout_locked
+        && source_independence
+        && corpus.cases.len() >= 3_000
+        && corpus.cases.len() <= 5_000
+        && !holdout.is_empty()
+        && lexical_overlap_count == 0
+        && template_overlap_count == 0
+        && answer_exposure_count == 0
+        && development_exposure_count == 0;
+    let verdict = if final_exam_eligible {
+        "independent_external_release".into()
+    } else if source_independence && corpus.holdout_locked {
+        "external_pilot_not_final_exam_eligible".into()
+    } else {
+        "externality_audit_failed".into()
+    };
+    ExternalityAudit {
+        release_id: corpus.release_id.clone(),
+        release_hash: corpus.release_hash(),
+        source_independence,
+        lexical_overlap_count,
+        template_overlap_count,
+        answer_exposure_count,
+        development_exposure_count,
+        development_cases: development.len(),
+        holdout_cases: holdout.len(),
+        total_cases: corpus.cases.len(),
+        final_exam_eligible,
+        verdict,
+    }
+}
+
 /// Assign a stable, conservative research cluster to an unsupported prose
 /// problem.  This deliberately describes the missing capability family; it
 /// does not attempt to solve the prompt or broaden `decompose`.
@@ -371,5 +496,52 @@ mod tests {
             rejection_cluster("She works at the coffee shop every day."),
             "temporal_or_sequential_reasoning"
         );
+    }
+
+    #[test]
+    fn externality_audit_marks_small_clean_release_as_pilot() {
+        let mut external = source();
+        external.source_id = "external-source".into();
+        external.citation = "Independent external source".into();
+        external.locator = "https://example.invalid/external".into();
+        external.license = "CC BY".into();
+        let corpus = ThirdPartyCorpus {
+            schema_version: 1,
+            release_id: "external-pilot".into(),
+            release_kind: ReleaseKind::ThirdParty,
+            oracle: "independent evaluator".into(),
+            holdout_locked: true,
+            sources: vec![external],
+            cases: vec![
+                ThirdPartyCase {
+                    id: "dev-1".into(),
+                    source_id: "external-source".into(),
+                    source_item_id: "item-1".into(),
+                    split: CorpusSplit::Development,
+                    original_prompt: "Compute two plus three".into(),
+                    scope: ScopeLabel::Ambiguous,
+                    expected_outcome: ExpectedOutcome::Ambiguous,
+                    expected_signature: None,
+                    expected_result: None,
+                },
+                ThirdPartyCase {
+                    id: "holdout-1".into(),
+                    source_id: "external-source".into(),
+                    source_item_id: "item-2".into(),
+                    split: CorpusSplit::Holdout,
+                    original_prompt: "Compute seven minus four".into(),
+                    scope: ScopeLabel::Ambiguous,
+                    expected_outcome: ExpectedOutcome::Ambiguous,
+                    expected_signature: None,
+                    expected_result: None,
+                },
+            ],
+        };
+        let audit = audit_externality(&corpus);
+        assert!(audit.source_independence);
+        assert_eq!(audit.lexical_overlap_count, 0);
+        assert_eq!(audit.template_overlap_count, 0);
+        assert!(!audit.final_exam_eligible);
+        assert_eq!(audit.verdict, "external_pilot_not_final_exam_eligible");
     }
 }

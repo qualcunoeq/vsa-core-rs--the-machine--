@@ -1,0 +1,18 @@
+{
+  "schema": "goal3-externality-audit-pilot-v1",
+  "audit": {
+    "release_id": "third-party-gsm8k-restricted-v2",
+    "release_hash": "c3d288f3ecf5f4bf1bbc6e8160e0edb1cf469e2df0db21f3476caddd330b1374",
+    "source_independence": true,
+    "lexical_overlap_count": 0,
+    "template_overlap_count": 0,
+    "answer_exposure_count": 0,
+    "development_exposure_count": 0,
+    "development_cases": 90,
+    "holdout_cases": 10,
+    "total_cases": 100,
+    "final_exam_eligible": false,
+    "verdict": "external_pilot_not_final_exam_eligible"
+  },
+  "validation_errors": []
+}

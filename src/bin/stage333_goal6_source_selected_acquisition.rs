@@ -8,6 +8,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use std::env;
 use std::fs;
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::probability_pack::Rational;
@@ -17,9 +18,8 @@ use the_machine::source_formula_pack::{
 };
 
 const PLAN_PATH: &str = "docs/goal6_external_portfolio_source_plan.json";
-const REPORT_JSON: &str = "docs/stage333_goal6_source_selected_acquisition.json";
-const REPORT_MD: &str = "docs/stage333_goal6_source_selected_acquisition.md";
-const DOMAIN: &str = "goal6_source_selected_finite_statistics";
+const DEFAULT_REPORT_JSON: &str = "docs/stage333_goal6_source_selected_acquisition.json";
+const DEFAULT_REPORT_MD: &str = "docs/stage333_goal6_source_selected_acquisition.md";
 
 #[derive(Debug, Deserialize)]
 struct SourcePlan {
@@ -191,11 +191,16 @@ fn oracle_expr(expression: &Expr, inputs: &BTreeMap<String, Rational>) -> Option
     }
 }
 
-fn request(record: &FormulaRecord, inputs: BTreeMap<String, Rational>, id: &str) -> FormulaRequest {
+fn request(
+    record: &FormulaRecord,
+    inputs: BTreeMap<String, Rational>,
+    id: &str,
+    domain: &str,
+) -> FormulaRequest {
     FormulaRequest {
         formula: record.formula_id.clone(),
         inputs,
-        domain: DOMAIN.into(),
+        domain: domain.into(),
         ambiguity: None,
         provenance: vec![format!("stage333:{id}:{}", record.source.evidence_span)],
     }
@@ -209,8 +214,9 @@ fn evaluate(
     expected: Expected,
     mut req: FormulaRequest,
     expected_value: Option<Rational>,
+    domain: &str,
 ) -> Receipt {
-    let result = evaluate_formula_records(&req, DOMAIN, records);
+    let result = evaluate_formula_records(&req, domain, records);
     let exact_decision = match expected {
         Expected::Complete => result.status == FormulaStatus::Complete,
         Expected::Ambiguous => result.status == FormulaStatus::Ambiguous,
@@ -246,22 +252,45 @@ fn evaluate(
 }
 
 fn source_mutations(source: &str) -> Vec<String> {
+    let formula_ids = source
+        .lines()
+        .filter_map(|line| line.strip_prefix("BEGIN FORMULA "))
+        .map(str::trim)
+        .collect::<Vec<_>>();
+    let duplicate_formula = formula_ids
+        .get(1)
+        .map(|second| {
+            source.replacen(
+                &format!("BEGIN FORMULA {}", formula_ids[0]),
+                &format!("BEGIN FORMULA {second}"),
+                1,
+            )
+        })
+        .unwrap_or_else(|| source.to_owned());
+    let empty_title = source
+        .lines()
+        .find(|line| line.starts_with("TITLE:"))
+        .map(|line| source.replacen(line, "TITLE:", 1))
+        .unwrap_or_else(|| source.to_owned());
     vec![
         source.replacen("END FORMULA", "", 1),
-        source.replacen("EXPRESSION: sum / count", "EXPRESSION: sum // count", 1),
-        source.replacen(
-            "SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics",
-            "SOURCE_ID:",
-            1,
-        ),
+        source.replacen("EXPRESSION:", "EXPRESSION: @", 1),
+        empty_title,
         source.replacen("URL: https://", "URL: file://", 1),
-        source.replacen(
-            "BEGIN FORMULA arithmetic_mean",
-            "BEGIN FORMULA mean_equality_unknown",
-            1,
-        ),
+        duplicate_formula,
         source.replacen("CONSTRAINTS:", "CONSTRAINTS: positive:undeclared;", 1),
     ]
+}
+
+fn route_domain(route: &str) -> String {
+    let mut normalized = String::new();
+    for (index, character) in route.chars().enumerate() {
+        if character.is_ascii_uppercase() && index > 0 {
+            normalized.push('_');
+        }
+        normalized.push(character.to_ascii_lowercase());
+    }
+    format!("goal6_source_selected_{normalized}")
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -273,18 +302,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(plan.promotion_proposals, 0);
     assert_eq!(plan.production_mutations, 0);
     assert!(plan.manifest_unchanged);
+    let desired_route =
+        env::var("GOAL6_SOURCE_SELECTED_ROUTE").unwrap_or_else(|_| "FiniteListMean".into());
+    let report_json = env::var("GOAL6_SOURCE_SELECTED_ACQUISITION_REPORT_JSON")
+        .unwrap_or_else(|_| DEFAULT_REPORT_JSON.into());
+    let report_md = env::var("GOAL6_SOURCE_SELECTED_ACQUISITION_REPORT_MD")
+        .unwrap_or_else(|_| DEFAULT_REPORT_MD.into());
 
     let selected = plan
         .plan_entries
         .iter()
         .filter(|entry| {
             entry.provenance_fields_present
-                && entry.matching_route.as_deref() == Some("FiniteListMean")
+                && entry.matching_route.as_deref() == Some(desired_route.as_str())
                 && entry.semantic_gate == "complete_route_evidence"
                 && entry.executable_cases > 0
         })
         .max_by_key(|entry| entry.executable_cases)
         .ok_or("no provenance-bearing executable source candidate")?;
+    let selected_route = selected.matching_route.clone().unwrap_or_default();
+    let domain = route_domain(&selected_route);
     let source_bytes = fs::read(&selected.source_path)?;
     assert_eq!(digest_bytes(&source_bytes), selected.source_sha256);
     let source_text = String::from_utf8(source_bytes.clone())?;
@@ -304,8 +341,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             format!("development-supported-{index:03}"),
             "development",
             Expected::Complete,
-            request(record, inputs, &format!("supported-{index:03}")),
+            request(record, inputs, &format!("supported-{index:03}"), &domain),
             expected_value,
+            &domain,
         ));
     }
     for index in 0..40 {
@@ -314,6 +352,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             record,
             make_inputs(record, index + 200),
             &format!("ambiguous-{index:03}"),
+            &domain,
         );
         req.ambiguity = Some("source formulation is intentionally unresolved".into());
         receipts.push(evaluate(
@@ -324,6 +363,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Ambiguous,
             req,
             None,
+            &domain,
         ));
     }
     for index in 0..20 {
@@ -332,6 +372,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             record,
             make_inputs(record, index + 300),
             &format!("unknown-{index:03}"),
+            &domain,
         );
         req.formula = "unlisted_source_formula".into();
         receipts.push(evaluate(
@@ -342,6 +383,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Refused,
             req,
             None,
+            &domain,
         ));
     }
     for index in 0..20 {
@@ -354,8 +396,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             format!("development-missing-{index:03}"),
             "development",
             Expected::Refused,
-            request(record, inputs, &format!("missing-{index:03}")),
+            request(record, inputs, &format!("missing-{index:03}"), &domain),
             None,
+            &domain,
         ));
     }
     for index in 0..20 {
@@ -364,6 +407,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             record,
             make_inputs(record, index + 500),
             &format!("domain-{index:03}"),
+            &domain,
         );
         req.domain = "unvalidated_domain".into();
         receipts.push(evaluate(
@@ -374,6 +418,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Refused,
             req,
             None,
+            &domain,
         ));
     }
     for index in 0..20 {
@@ -396,8 +441,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             format!("development-invalid-{index:03}"),
             "development",
             Expected::Refused,
-            request(record, inputs, &format!("invalid-{index:03}")),
+            request(record, inputs, &format!("invalid-{index:03}"), &domain),
             None,
+            &domain,
         ));
     }
     for index in 0..60 {
@@ -410,8 +456,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             format!("holdout-supported-{index:03}"),
             "holdout",
             Expected::Complete,
-            request(record, inputs, &format!("holdout-{index:03}")),
+            request(record, inputs, &format!("holdout-{index:03}"), &domain),
             expected_value,
+            &domain,
         ));
     }
 
@@ -501,11 +548,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert!(report.manifest_unchanged);
 
     fs::write(
-        REPORT_JSON,
+        &report_json,
         format!("{}\n", serde_json::to_string_pretty(&report)?),
     )?;
     fs::write(
-        REPORT_MD,
+        &report_md,
         format!(
             "# Stage 333 — Goal 6 source-selected acquisition\n\n\
              - Selected source / route: `{}` / `{}`\n\

@@ -109,6 +109,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         env::var("GOAL6_SOURCE_SELECTED_REPORT_JSON").unwrap_or_else(|_| DEFAULT_JSON.into());
     let report_md =
         env::var("GOAL6_SOURCE_SELECTED_REPORT_MD").unwrap_or_else(|_| DEFAULT_MD.into());
+    let desired_route =
+        env::var("GOAL6_SOURCE_SELECTED_ROUTE").unwrap_or_else(|_| "FiniteListMean".into());
     let plan_bytes = fs::read(PLAN_PATH)?;
     let plan: Plan = serde_json::from_slice(&plan_bytes)?;
     assert_eq!(plan.schema, "goal6-external-portfolio-source-plan-v1");
@@ -122,7 +124,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .filter(|entry| {
             entry.provenance_fields_present
-                && entry.matching_route.as_deref() == Some("FiniteListMean")
+                && entry.matching_route.as_deref() == Some(desired_route.as_str())
                 && entry.semantic_gate == "complete_route_evidence"
                 && entry.executable_cases > 0
         })

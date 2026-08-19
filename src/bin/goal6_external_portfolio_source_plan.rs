@@ -127,7 +127,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .then_with(|| right.overlap_terms.cmp(&left.overlap_terms))
             .then_with(|| left.source_path.cmp(&right.source_path))
     });
-    triage.truncate(5);
+    // Retain the top lexical queue plus lower-ranked entries that may carry
+    // complete executable-route evidence.  The semantic gate below, not rank,
+    // decides whether any entry is actionable.
+    triage.truncate(8);
 
     // A source is actionable only when the validated route that would consume
     // it has at least one complete executable residual. This prevents lexical
@@ -159,6 +162,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 Some("FiniteStatistics")
             }
+        } else if path.contains("precalculus_sequences") {
+            Some("ArithmeticSequence")
         } else {
             None
         }

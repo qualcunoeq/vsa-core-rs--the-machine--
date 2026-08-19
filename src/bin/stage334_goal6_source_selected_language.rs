@@ -8,20 +8,18 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use std::env;
 use std::fs;
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::probability_pack::Rational;
-use the_machine::source_formula_frontend::{
-    formalize_source_formula_text, FrontendStatus, SourceFormulaFrontendResult,
-};
+use the_machine::source_formula_frontend::{formalize_source_formula_text, FrontendStatus};
 use the_machine::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, Expr, FormulaRecord, FormulaStatus,
 };
 
 const PLAN_PATH: &str = "docs/goal6_external_portfolio_source_plan.json";
-const REPORT_JSON: &str = "docs/stage334_goal6_source_selected_language.json";
-const REPORT_MD: &str = "docs/stage334_goal6_source_selected_language.md";
-const DOMAIN: &str = "goal6_source_selected_finite_statistics";
+const DEFAULT_REPORT_JSON: &str = "docs/stage334_goal6_source_selected_language.json";
+const DEFAULT_REPORT_MD: &str = "docs/stage334_goal6_source_selected_language.md";
 
 #[derive(Debug, Deserialize)]
 struct SourcePlan {
@@ -226,8 +224,9 @@ fn evaluate(
     expected: Expected,
     text: &str,
     expected_value: Option<Rational>,
+    domain: &str,
 ) -> Receipt {
-    let frontend = formalize_source_formula_text(text, DOMAIN, records);
+    let frontend = formalize_source_formula_text(text, domain, records);
     let frontend_exact = match expected {
         Expected::Complete => frontend.status == FrontendStatus::Complete,
         Expected::Ambiguous => frontend.status == FrontendStatus::Ambiguous,
@@ -245,7 +244,7 @@ fn evaluate(
         value_correct,
         provenance_preserved,
     ) = if let Some(request) = frontend.request.as_ref() {
-        let result = evaluate_formula_records(request, DOMAIN, records);
+        let result = evaluate_formula_records(request, domain, records);
         let exact = expected == Expected::Complete && result.status == FormulaStatus::Complete;
         let mut tampered = result.clone();
         tampered.replay_hash.push('x');
@@ -296,22 +295,45 @@ fn evaluate(
 }
 
 fn mutations(source: &str) -> Vec<String> {
+    let formula_ids = source
+        .lines()
+        .filter_map(|line| line.strip_prefix("BEGIN FORMULA "))
+        .map(str::trim)
+        .collect::<Vec<_>>();
+    let duplicate_formula = formula_ids
+        .get(1)
+        .map(|second| {
+            source.replacen(
+                &format!("BEGIN FORMULA {}", formula_ids[0]),
+                &format!("BEGIN FORMULA {second}"),
+                1,
+            )
+        })
+        .unwrap_or_else(|| source.to_owned());
+    let empty_title = source
+        .lines()
+        .find(|line| line.starts_with("TITLE:"))
+        .map(|line| source.replacen(line, "TITLE:", 1))
+        .unwrap_or_else(|| source.to_owned());
     vec![
         source.replacen("END FORMULA", "", 1),
-        source.replacen("EXPRESSION: sum / count", "EXPRESSION: sum // count", 1),
-        source.replacen(
-            "SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics",
-            "SOURCE_ID:",
-            1,
-        ),
+        source.replacen("EXPRESSION:", "EXPRESSION: @", 1),
+        empty_title,
         source.replacen("URL: https://", "URL: file://", 1),
-        source.replacen(
-            "BEGIN FORMULA arithmetic_mean",
-            "BEGIN FORMULA mean_equality_unknown",
-            1,
-        ),
+        duplicate_formula,
         source.replacen("CONSTRAINTS:", "CONSTRAINTS: positive:undeclared;", 1),
     ]
+}
+
+fn route_domain(route: &str) -> String {
+    let mut normalized = String::new();
+    for (index, character) in route.chars().enumerate() {
+        if character.is_ascii_uppercase() && index > 0 {
+            normalized.push('_');
+        }
+        normalized.push(character.to_ascii_lowercase());
+    }
+    format!("goal6_source_selected_{normalized}")
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -323,17 +345,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(plan.promotion_proposals, 0);
     assert_eq!(plan.production_mutations, 0);
     assert!(plan.manifest_unchanged);
+    let desired_route =
+        env::var("GOAL6_SOURCE_SELECTED_ROUTE").unwrap_or_else(|_| "FiniteListMean".into());
+    let report_json = env::var("GOAL6_SOURCE_SELECTED_LANGUAGE_REPORT_JSON")
+        .unwrap_or_else(|_| DEFAULT_REPORT_JSON.into());
+    let report_md = env::var("GOAL6_SOURCE_SELECTED_LANGUAGE_REPORT_MD")
+        .unwrap_or_else(|_| DEFAULT_REPORT_MD.into());
     let selected = plan
         .plan_entries
         .iter()
         .filter(|entry| {
             entry.provenance_fields_present
-                && entry.matching_route.as_deref() == Some("FiniteListMean")
+                && entry.matching_route.as_deref() == Some(desired_route.as_str())
                 && entry.semantic_gate == "complete_route_evidence"
                 && entry.executable_cases > 0
         })
         .max_by_key(|entry| entry.executable_cases)
         .ok_or("no source candidate with complete provenance and route evidence")?;
+    let selected_route = selected.matching_route.clone().unwrap_or_default();
+    let domain = route_domain(&selected_route);
     let source_bytes = fs::read(&selected.source_path)?;
     assert_eq!(digest_bytes(&source_bytes), selected.source_sha256);
     let source_text = String::from_utf8(source_bytes.clone())?;
@@ -356,6 +386,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Complete,
             &text,
             oracle(&record.expression, &values),
+            &domain,
         ));
     }
     for index in 0..40 {
@@ -373,6 +404,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Ambiguous,
             &text,
             None,
+            &domain,
         ));
     }
     for index in 0..20 {
@@ -397,6 +429,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Refused,
             &text,
             None,
+            &domain,
         ));
     }
     for index in 0..20 {
@@ -411,6 +444,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Refused,
             &text,
             None,
+            &domain,
         ));
         let _ = values;
     }
@@ -425,6 +459,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Refused,
             &text,
             None,
+            &domain,
         ));
     }
     for index in 0..60 {
@@ -438,6 +473,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Expected::Complete,
             &text,
             oracle(&record.expression, &values),
+            &domain,
         ));
     }
     let source_mutations = mutations(&source_text);
@@ -534,11 +570,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.production_mutations, 0);
     assert!(report.manifest_unchanged);
     fs::write(
-        REPORT_JSON,
+        &report_json,
         format!("{}\n", serde_json::to_string_pretty(&report)?),
     )?;
     fs::write(
-        REPORT_MD,
+        &report_md,
         format!(
             "# Stage 334 — Goal 6 source-selected technical language\n\n\
              - Selected source / route: `{}` / `{}`\n\

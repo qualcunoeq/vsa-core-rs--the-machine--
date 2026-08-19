@@ -8,8 +8,8 @@
   "answer_keys_read": 0,
   "source_documents_considered": 29,
   "triage_candidates_read": 12,
-  "review_queue_size": 5,
-  "semantic_ready_entries": 1,
+  "review_queue_size": 8,
+  "semantic_ready_entries": 2,
   "plan_entries": [
     {
       "source_path": "docs/sources/openstax_finite_statistics_source.txt",
@@ -124,6 +124,74 @@
         "source_scope_and_authority_require_review",
         "no_complete_executable_residual_for_source_route"
       ]
+    },
+    {
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
+      "provenance_fields_present": true,
+      "affected_residuals": 191,
+      "overlap_terms": 431,
+      "lexical_score": 0.14419538307126128,
+      "matching_route": "ArithmeticSequence",
+      "executable_cases": 3,
+      "semantic_gate": "complete_route_evidence",
+      "queue_rank": 6,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review"
+      ]
+    },
+    {
+      "source_path": "docs/sources/topology_without_tears_finite_definition.txt",
+      "source_sha256": "8482325b0dae935e43ab186d6e4b9a6f7b05f4d8a8d51174531ff69ac10334d7",
+      "provenance_fields_present": true,
+      "affected_residuals": 180,
+      "overlap_terms": 381,
+      "lexical_score": 0.1274673803947809,
+      "matching_route": null,
+      "executable_cases": 0,
+      "semantic_gate": "no_matching_validated_route",
+      "queue_rank": 7,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_bounded_health_ratios_source.txt",
+      "source_sha256": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
+      "provenance_fields_present": true,
+      "affected_residuals": 174,
+      "overlap_terms": 371,
+      "lexical_score": 0.12412177985948478,
+      "matching_route": null,
+      "executable_cases": 0,
+      "semantic_gate": "no_matching_validated_route",
+      "queue_rank": 8,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
+      ]
     }
   ],
   "source_ingestions": 0,
@@ -133,5 +201,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "all_entries_blocked": true,
-  "report_sha256": "07ef90689acd93c742401e1f6feec40043dfc778cb511c7f5e8c6ef18e9cc836"
+  "report_sha256": "d5105d6f458d4e4df8fb803b9b24a23e897de9d12230b08e939f4f91b7920ef7"
 }

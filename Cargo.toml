@@ -480,6 +480,10 @@ name = "stage322_post_automata_cross_domain_synthesis"
 path = "src/bin/stage322_post_automata_cross_domain_synthesis.rs"
 
 [[bin]]
+name = "stage323_post_automata_technical_language"
+path = "src/bin/stage323_post_automata_technical_language.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

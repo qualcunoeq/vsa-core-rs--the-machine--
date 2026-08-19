@@ -22,13 +22,14 @@ use crate::finite_markov_frontend::{
 };
 use crate::finite_markov_hitting_pack::{evaluate as evaluate_hitting, HittingStatus};
 use crate::finite_markov_stationary_pack::{evaluate as evaluate_stationary, StationaryStatus};
+use crate::finite_state_contract::{formalize as formalize_state, StateDecision};
+use crate::mobius_frontend::{formalize_mobius_text, MobiusFrontendStatus};
+use crate::mobius_inversion_pack::{evaluate as evaluate_mobius, MobiusStatus};
 use crate::number_theory_frontend::{
     formalize_number_theory_text, replay_verified as number_frontend_replay,
     NumberTheoryFrontendStatus,
 };
 use crate::number_theory_pack::{evaluate_number_theory, NumberTheoryStatus};
-use crate::mobius_frontend::{formalize_mobius_text, MobiusFrontendStatus};
-use crate::mobius_inversion_pack::{evaluate as evaluate_mobius, MobiusStatus};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -37,6 +38,7 @@ use sha2::{Digest, Sha256};
 pub enum RouteDomain {
     ComplexAnalysis,
     Combinatorics,
+    FiniteStateTransition,
     MarkovHitting,
     MarkovStationary,
     Mobius,
@@ -183,6 +185,26 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
     } else if markov.status == MarkovFrontendStatus::Ambiguous {
         ambiguous.extend([RouteDomain::MarkovHitting, RouteDomain::MarkovStationary]);
     }
+    // The finite-state parser intentionally returns `Ambiguous` when its
+    // required fields are absent.  Only expose that ambiguity to the
+    // dispatcher when the text actually claims to describe a state machine;
+    // otherwise every unrelated technical question would become ambiguous.
+    let lower_text = text.to_ascii_lowercase();
+    let state_signal = ["initial state", "transitions:", "event sequence"]
+        .iter()
+        .any(|marker| lower_text.contains(marker));
+    if state_signal {
+        let (state_status, state_artifact) = formalize_state(text);
+        if state_status == StateDecision::Supported
+            && state_artifact
+                .as_ref()
+                .is_some_and(|artifact| artifact.replay_verified())
+        {
+            authorized.push(RouteDomain::FiniteStateTransition);
+        } else if state_status == StateDecision::Ambiguous {
+            ambiguous.push(RouteDomain::FiniteStateTransition);
+        }
+    }
     authorized.sort();
     ambiguous.sort();
     if authorized.len() == 1 && ambiguous.is_empty() {
@@ -280,5 +302,22 @@ mod tests {
         assert_eq!(competing.status, RouteStatus::Ambiguous);
         assert!(replay_verified(&inversion));
         assert!(replay_verified(&competing));
+    }
+
+    #[test]
+    fn finite_state_route_requires_a_replayable_trace() {
+        let supported = route(
+            "Initial state: locked. Transitions: locked --open--> open; open --close--> locked. Event sequence: open, close. Expected state: locked.",
+            "finite-state-supported",
+        );
+        assert_eq!(supported.status, RouteStatus::Authorized);
+        assert_eq!(supported.selected, Some(RouteDomain::FiniteStateTransition));
+        let ambiguous = route(
+            "Initial state: locked. Transitions: locked --open [key_ok]--> open. Event sequence: open. Expected state: open.",
+            "finite-state-ambiguous",
+        );
+        assert_eq!(ambiguous.status, RouteStatus::Ambiguous);
+        assert!(replay_verified(&supported));
+        assert!(replay_verified(&ambiguous));
     }
 }

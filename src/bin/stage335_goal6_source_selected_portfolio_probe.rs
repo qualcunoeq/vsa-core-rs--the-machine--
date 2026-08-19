@@ -15,7 +15,18 @@ const PLAN_PATH: &str = "docs/goal6_external_portfolio_source_plan.json";
 const QUESTIONS_PATH: &str = "data/external_math_exam_v1/questions.jsonl";
 const DEFAULT_JSON: &str = "docs/stage335_goal6_source_selected_portfolio_probe.json";
 const DEFAULT_MD: &str = "docs/stage335_goal6_source_selected_portfolio_probe.md";
-const DOMAIN: &str = "goal6_source_selected_finite_statistics";
+
+fn route_domain(route: &str) -> String {
+    let mut domain = String::from("goal6_source_selected_");
+    for character in route.chars() {
+        if character.is_ascii_alphanumeric() {
+            domain.push(character.to_ascii_lowercase());
+        } else {
+            domain.push('_');
+        }
+    }
+    domain
+}
 
 #[derive(Debug, Deserialize)]
 struct Plan {
@@ -130,6 +141,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .max_by_key(|entry| entry.executable_cases)
         .ok_or("no source candidate with complete provenance and route evidence")?;
+    let domain = route_domain(&desired_route);
     let source_bytes = fs::read(&selected.source_path)?;
     assert_eq!(digest_bytes(&source_bytes), selected.source_sha256);
     let records = extract_formula_records(std::str::from_utf8(&source_bytes)?)
@@ -157,7 +169,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut execution_tamper_rejected = 0;
     let mut candidates = Vec::new();
     for question in &questions {
-        let frontend = formalize_source_formula_text(&question.original_prompt, DOMAIN, &records);
+        let frontend = formalize_source_formula_text(&question.original_prompt, &domain, &records);
         match frontend.status {
             the_machine::source_formula_frontend::FrontendStatus::Complete => {
                 frontend_complete += 1
@@ -177,7 +189,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let Some(request) = frontend.request.as_ref() else {
             continue;
         };
-        let execution = evaluate_formula_records(request, DOMAIN, &records);
+        let execution = evaluate_formula_records(request, &domain, &records);
         if execution.status != FormulaStatus::Complete {
             continue;
         }

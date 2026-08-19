@@ -55,7 +55,10 @@ struct Report {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("frontend serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("frontend serializes"))
+    )
 }
 
 fn downstream(frontend: &ChemistryFrontendResult) -> (bool, bool, bool) {
@@ -128,7 +131,11 @@ fn main() {
         } else {
             format!("Check this balanced equation: {reaction}.")
         };
-        receipts.push(run(format!("reaction_{index:03}"), text, Expected::Complete));
+        receipts.push(run(
+            format!("reaction_{index:03}"),
+            text,
+            Expected::Complete,
+        ));
     }
     for index in 0..20 {
         let text = if index % 2 == 0 {
@@ -136,7 +143,11 @@ fn main() {
         } else {
             "Find ratio from H2 to NH3 using equation: N2 + 3H2 -> 2NH3."
         };
-        receipts.push(run(format!("ratio_{index:03}"), text.into(), Expected::Complete));
+        receipts.push(run(
+            format!("ratio_{index:03}"),
+            text.into(),
+            Expected::Complete,
+        ));
     }
     for index in 0..20 {
         receipts.push(run(
@@ -183,18 +194,36 @@ fn main() {
 
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Complete).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let unsupported = receipts.iter().filter(|r| r.expected == Expected::Unsupported).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Complete)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let unsupported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Unsupported)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let complete_frontends = receipts
         .iter()
         .filter(|r| r.frontend_status == FrontendStatus::Complete)
         .count();
     let downstream_authorizations = receipts.iter().filter(|r| r.downstream_authorized).count();
-    let frontend_replay_verified = receipts.iter().filter(|r| r.frontend_replay_verified).count();
-    let downstream_replay_verified = receipts.iter().filter(|r| r.downstream_replay_verified).count();
-    let frontend_tamper_rejections = receipts.iter().filter(|r| r.frontend_tamper_rejected).count();
+    let frontend_replay_verified = receipts
+        .iter()
+        .filter(|r| r.frontend_replay_verified)
+        .count();
+    let downstream_replay_verified = receipts
+        .iter()
+        .filter(|r| r.downstream_replay_verified)
+        .count();
+    let frontend_tamper_rejections = receipts
+        .iter()
+        .filter(|r| r.frontend_tamper_rejected)
+        .count();
     let downstream_tamper_rejections = receipts
         .iter()
         .filter(|r| r.downstream_tamper_rejected)
@@ -241,7 +270,10 @@ fn main() {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report).expect("frontend report serializes");
-    std::fs::write("docs/stage_h_source_chemistry_frontend.json", format!("{serialized}\n"))
-        .expect("frontend report writes");
+    std::fs::write(
+        "docs/stage_h_source_chemistry_frontend.json",
+        format!("{serialized}\n"),
+    )
+    .expect("frontend report writes");
     println!("{serialized}");
 }

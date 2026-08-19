@@ -115,8 +115,9 @@ fn terminal(entry: &Value, orchestration: &OrchestratedAnswer, correct: bool) ->
         | Some(AbstentionReason::TargetNotIdentified)
         | Some(AbstentionReason::SymbolBindingFailed) => Terminal::LanguageNormalizationFailure,
         Some(AbstentionReason::InsufficientEvidence) => Terminal::MissingFactualKnowledge,
-        Some(AbstentionReason::NoApplicableMethod)
-        | Some(AbstentionReason::VerificationFailed) => Terminal::MissingReasoningMethod,
+        Some(AbstentionReason::NoApplicableMethod) | Some(AbstentionReason::VerificationFailed) => {
+            Terminal::MissingReasoningMethod
+        }
         Some(AbstentionReason::UnsupportedDomain)
         | Some(AbstentionReason::SolverUnsupportedOperation)
         | Some(AbstentionReason::MissingRequiredGiven)

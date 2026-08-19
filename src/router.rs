@@ -3641,10 +3641,10 @@ mod tests {
         let result = QuestionRouter::orchestrate(q);
         assert_eq!(QuestionRouter::route(q), Tool::Math);
         assert_eq!(result.answer.as_deref(), Some("607"));
-        assert!(result.evidence.iter().any(|e| matches!(
-            e,
-            VerificationEvidence::ExecutableCheck { .. }
-        )));
+        assert!(result
+            .evidence
+            .iter()
+            .any(|e| matches!(e, VerificationEvidence::ExecutableCheck { .. })));
     }
 
     #[test]

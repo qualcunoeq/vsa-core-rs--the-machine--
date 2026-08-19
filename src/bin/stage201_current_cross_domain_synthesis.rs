@@ -17,8 +17,8 @@ use the_machine::abstract_algebra_pack::{
     AbstractAlgebraRequest, AbstractAlgebraStatus,
 };
 use the_machine::combinatorics_pack::{
-    evaluate_combinatorics, CombinatoricsArtifact, CombinatoricsOperation,
-    CombinatoricsRequest, CombinatoricsStatus,
+    evaluate_combinatorics, CombinatoricsArtifact, CombinatoricsOperation, CombinatoricsRequest,
+    CombinatoricsStatus,
 };
 use the_machine::number_theory_pack::{
     evaluate_number_theory, NumberTheoryArtifact, NumberTheoryOperation, NumberTheoryRequest,
@@ -220,7 +220,11 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
     match case.route {
         Route::CombinationInverse => {
             c.operation = CombinatoricsOperation::Combinations;
-            c.n = Some(if case.mode == Mode::Unsupported { 31 } else { 8 + (case.seed % 5) as u64 });
+            c.n = Some(if case.mode == Mode::Unsupported {
+                31
+            } else {
+                8 + (case.seed % 5) as u64
+            });
             c.k = Some(2 + (case.seed % 3) as u64);
             n.operation = NumberTheoryOperation::ModularInverse;
             n.modulus = Some(17);
@@ -238,7 +242,11 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
         }
         Route::MultinomialCrt => {
             c.operation = CombinatoricsOperation::Multinomial;
-            c.parts = if case.mode == Mode::Unsupported { vec![31] } else { vec![2, 1, 1 + (case.seed % 2) as u64] };
+            c.parts = if case.mode == Mode::Unsupported {
+                vec![31]
+            } else {
+                vec![2, 1, 1 + (case.seed % 2) as u64]
+            };
             n.operation = NumberTheoryOperation::ChineseRemainder;
             n.modulus = Some(3);
             n.second_modulus = Some(5);
@@ -255,10 +263,18 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
         }
         Route::SurjectionOrder => {
             c.operation = CombinatoricsOperation::SurjectionCount;
-            c.n = Some(if case.mode == Mode::Unsupported { 13 } else { 4 + (case.seed % 5) as u64 });
+            c.n = Some(if case.mode == Mode::Unsupported {
+                13
+            } else {
+                4 + (case.seed % 5) as u64
+            });
             c.k = Some(2 + (case.seed % 3) as u64);
             n.operation = NumberTheoryOperation::GcdBezout;
-            let count = if case.mode == Mode::Unsupported { 0 } else { surjection_count(c.n.unwrap(), c.k.unwrap()) };
+            let count = if case.mode == Mode::Unsupported {
+                0
+            } else {
+                surjection_count(c.n.unwrap(), c.k.unwrap())
+            };
             n.a = Some(12);
             n.b = Some((count % 12) as i64);
             a.operation = AbstractAlgebraOperation::AdditiveOrder;
@@ -267,7 +283,11 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
         }
         Route::PigeonholeHomomorphism => {
             c.operation = CombinatoricsOperation::PigeonholeMinimum;
-            c.objects = Some(if case.mode == Mode::Unsupported { 101 } else { 7 });
+            c.objects = Some(if case.mode == Mode::Unsupported {
+                101
+            } else {
+                7
+            });
             c.boxes = Some(3);
             n.operation = NumberTheoryOperation::LinearCongruence;
             n.a = Some(3);
@@ -280,13 +300,29 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
         }
         Route::InclusionTotient => {
             c.operation = CombinatoricsOperation::InclusionExclusionTwo;
-            c.first_count = Some(if case.mode == Mode::Unsupported { 90 } else { 5 });
-            c.second_count = Some(if case.mode == Mode::Unsupported { 90 } else { 4 });
+            c.first_count = Some(if case.mode == Mode::Unsupported {
+                90
+            } else {
+                5
+            });
+            c.second_count = Some(if case.mode == Mode::Unsupported {
+                90
+            } else {
+                4
+            });
             c.intersection_count = Some(if case.mode == Mode::Unsupported { 0 } else { 2 });
             n.operation = NumberTheoryOperation::EulerTotient;
-            n.modulus = Some(if case.mode == Mode::Unsupported { 100 } else { 9 });
+            n.modulus = Some(if case.mode == Mode::Unsupported {
+                100
+            } else {
+                9
+            });
             a.operation = AbstractAlgebraOperation::ConstructModularRing;
-            a.modulus = Some(if case.mode == Mode::Unsupported { 65 } else { 9 });
+            a.modulus = Some(if case.mode == Mode::Unsupported {
+                65
+            } else {
+                9
+            });
         }
     }
     if ambiguous {
@@ -307,12 +343,19 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
     let tamper = !ct.replay_verified() && !nt.replay_verified() && !at.replay_verified();
     if case.mode == Mode::Supported {
         invariant = match case.route {
-            Route::CombinationInverse => matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(count)) if count > 0) && matches!(nr.artifact, Some(NumberTheoryArtifact::Scalar(_))) && matches!(ar.artifact, Some(AbstractAlgebraArtifact::Boolean(true))),
+            Route::CombinationInverse => {
+                matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(count)) if count > 0)
+                    && matches!(nr.artifact, Some(NumberTheoryArtifact::Scalar(_)))
+                    && matches!(ar.artifact, Some(AbstractAlgebraArtifact::Boolean(true)))
+            }
             Route::MultinomialCrt => {
                 let count = if c.parts == vec![2, 1, 1] { 12 } else { 30 };
                 matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(value)) if value == count as u128)
                     && matches!(nr.artifact, Some(NumberTheoryArtifact::CrtClass { modulus: 15, residue }) if residue % 3 == count % 3 && residue % 5 == count % 5)
-                    && matches!(ar.artifact, Some(AbstractAlgebraArtifact::ModularRing { .. }))
+                    && matches!(
+                        ar.artifact,
+                        Some(AbstractAlgebraArtifact::ModularRing { .. })
+                    )
             }
             Route::SurjectionOrder => {
                 let count = surjection_count(c.n.unwrap(), c.k.unwrap());
@@ -321,66 +364,197 @@ fn evaluate(case: &Case) -> (Mode, bool, bool, bool, String) {
                     && matches!(nr.artifact, Some(NumberTheoryArtifact::GcdBezout { gcd: value, .. }) if value.unsigned_abs() as u64 == gcd(12, count % 12))
                     && matches!(ar.artifact, Some(AbstractAlgebraArtifact::Scalar(value)) if value as u64 == order)
             }
-            Route::PigeonholeHomomorphism => matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(3))) && matches!(nr.artifact, Some(NumberTheoryArtifact::CongruenceClass { solution_count: 3, .. })) && matches!(ar.artifact, Some(AbstractAlgebraArtifact::KernelImage { kernel_size: 2, image_size: 2 })),
-            Route::InclusionTotient => matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(7))) && matches!(nr.artifact, Some(NumberTheoryArtifact::Scalar(6))) && matches!(ar.artifact, Some(AbstractAlgebraArtifact::ModularRing { modulus: 9 })),
+            Route::PigeonholeHomomorphism => {
+                matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(3)))
+                    && matches!(
+                        nr.artifact,
+                        Some(NumberTheoryArtifact::CongruenceClass {
+                            solution_count: 3,
+                            ..
+                        })
+                    )
+                    && matches!(
+                        ar.artifact,
+                        Some(AbstractAlgebraArtifact::KernelImage {
+                            kernel_size: 2,
+                            image_size: 2
+                        })
+                    )
+            }
+            Route::InclusionTotient => {
+                matches!(cr.artifact, Some(CombinatoricsArtifact::Scalar(7)))
+                    && matches!(nr.artifact, Some(NumberTheoryArtifact::Scalar(6)))
+                    && matches!(
+                        ar.artifact,
+                        Some(AbstractAlgebraArtifact::ModularRing { modulus: 9 })
+                    )
+            }
         };
     }
-    let (actual, _complete, _all) = classify(&[cr.status == CombinatoricsStatus::Complete, nr.status == NumberTheoryStatus::Complete, ar.status == AbstractAlgebraStatus::Complete], ambiguous);
-    let gate = if actual == case.mode { String::new() } else { format!("{:?}_boundary", case.route).to_lowercase() };
+    let (actual, _complete, _all) = classify(
+        &[
+            cr.status == CombinatoricsStatus::Complete,
+            nr.status == NumberTheoryStatus::Complete,
+            ar.status == AbstractAlgebraStatus::Complete,
+        ],
+        ambiguous,
+    );
+    let gate = if actual == case.mode {
+        String::new()
+    } else {
+        format!("{:?}_boundary", case.route).to_lowercase()
+    };
     (actual, replay, tamper, invariant, gate)
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let routes = [Route::CombinationInverse, Route::MultinomialCrt, Route::SurjectionOrder, Route::PigeonholeHomomorphism, Route::InclusionTotient];
-    let corpus = (0..CASES).map(|index| {
-        let route = routes[index % routes.len()];
-        let seed = index / routes.len();
-        Case { id: format!("stage201-{route:?}-{seed:03}"), route, mode: mode(seed), partition: partition(index), seed }
-    }).collect::<Vec<_>>();
+    let routes = [
+        Route::CombinationInverse,
+        Route::MultinomialCrt,
+        Route::SurjectionOrder,
+        Route::PigeonholeHomomorphism,
+        Route::InclusionTotient,
+    ];
+    let corpus = (0..CASES)
+        .map(|index| {
+            let route = routes[index % routes.len()];
+            let seed = index / routes.len();
+            Case {
+                id: format!("stage201-{route:?}-{seed:03}"),
+                route,
+                mode: mode(seed),
+                partition: partition(index),
+                seed,
+            }
+        })
+        .collect::<Vec<_>>();
     let mut receipts = Vec::with_capacity(CASES);
     for case in &corpus {
         let (actual, replay, tamper, invariant, gate) = evaluate(case);
         let authorized = actual == Mode::Supported && invariant;
         let exact = actual == case.mode;
         receipts.push(Receipt {
-            id: case.id.clone(), route: case.route, mode: case.mode, actual, exact, authorized,
-            replay_verified: replay, tamper_rejected: tamper, invariant_preserved: invariant,
-            first_failure_gate: gate, false_authorization: case.mode != Mode::Supported && authorized,
+            id: case.id.clone(),
+            route: case.route,
+            mode: case.mode,
+            actual,
+            exact,
+            authorized,
+            replay_verified: replay,
+            tamper_rejected: tamper,
+            invariant_preserved: invariant,
+            first_failure_gate: gate,
+            false_authorization: case.mode != Mode::Supported && authorized,
             false_denial: case.mode == Mode::Supported && !authorized,
         });
     }
     let supported = corpus.iter().filter(|c| c.mode == Mode::Supported).count();
     let ambiguous = corpus.iter().filter(|c| c.mode == Mode::Ambiguous).count();
-    let unsupported = corpus.iter().filter(|c| c.mode == Mode::Unsupported).count();
-    let sealed_exact_decisions = corpus.iter().zip(receipts.iter())
-        .filter(|(case, receipt)| case.partition == "sealed" && receipt.exact).count();
-    let sealed_authorized_answers = corpus.iter().zip(receipts.iter())
-        .filter(|(case, receipt)| case.partition == "sealed" && receipt.authorized).count();
+    let unsupported = corpus
+        .iter()
+        .filter(|c| c.mode == Mode::Unsupported)
+        .count();
+    let sealed_exact_decisions = corpus
+        .iter()
+        .zip(receipts.iter())
+        .filter(|(case, receipt)| case.partition == "sealed" && receipt.exact)
+        .count();
+    let sealed_authorized_answers = corpus
+        .iter()
+        .zip(receipts.iter())
+        .filter(|(case, receipt)| case.partition == "sealed" && receipt.authorized)
+        .count();
     let report = Report {
         schema: "stage201-current-cross-domain-synthesis-v1",
-        parent_stage200_sha256: digest(&fs::read("docs/stage200_algebra_number_theory_composition.json")?),
-        corpus_sha256: digest(&corpus), cases: CASES, development_cases: 600, validation_cases: 200, sealed_cases: 200,
-        supported, ambiguous, unsupported,
+        parent_stage200_sha256: digest(&fs::read(
+            "docs/stage200_algebra_number_theory_composition.json",
+        )?),
+        corpus_sha256: digest(&corpus),
+        cases: CASES,
+        development_cases: 600,
+        validation_cases: 200,
+        sealed_cases: 200,
+        supported,
+        ambiguous,
+        unsupported,
         exact_decisions: receipts.iter().filter(|r| r.exact).count(),
         authorized_answers: receipts.iter().filter(|r| r.authorized).count(),
-        ambiguous_preserved: receipts.iter().filter(|r| r.mode == Mode::Ambiguous && r.actual == Mode::Ambiguous).count(),
-        unsupported_refused: receipts.iter().filter(|r| r.mode == Mode::Unsupported && r.actual == Mode::Unsupported).count(),
+        ambiguous_preserved: receipts
+            .iter()
+            .filter(|r| r.mode == Mode::Ambiguous && r.actual == Mode::Ambiguous)
+            .count(),
+        unsupported_refused: receipts
+            .iter()
+            .filter(|r| r.mode == Mode::Unsupported && r.actual == Mode::Unsupported)
+            .count(),
         replay_verified: receipts.iter().filter(|r| r.replay_verified).count(),
         tamper_rejected: receipts.iter().filter(|r| r.tamper_rejected).count(),
-        invariant_failures: receipts.iter().filter(|r| r.mode == Mode::Supported && !r.invariant_preserved).count(),
+        invariant_failures: receipts
+            .iter()
+            .filter(|r| r.mode == Mode::Supported && !r.invariant_preserved)
+            .count(),
         false_authorizations: receipts.iter().filter(|r| r.false_authorization).count(),
-        false_denials: receipts.iter().filter(|r| r.false_denial).count(), route_leakage: 0, production_registry_mutations: 0,
+        false_denials: receipts.iter().filter(|r| r.false_denial).count(),
+        route_leakage: 0,
+        production_registry_mutations: 0,
         sealed_exact_decisions,
         sealed_authorized_answers,
-        failure_gates: receipts.iter().filter(|r| !r.first_failure_gate.is_empty()).fold(BTreeMap::new(), |mut m, r| { *m.entry(r.first_failure_gate.clone()).or_insert(0) += 1; m }),
-        route_counts: corpus.iter().fold(BTreeMap::new(), |mut m, c| { *m.entry(c.route).or_insert(0) += 1; m }), receipts, corpus,
+        failure_gates: receipts
+            .iter()
+            .filter(|r| !r.first_failure_gate.is_empty())
+            .fold(BTreeMap::new(), |mut m, r| {
+                *m.entry(r.first_failure_gate.clone()).or_insert(0) += 1;
+                m
+            }),
+        route_counts: corpus.iter().fold(BTreeMap::new(), |mut m, c| {
+            *m.entry(c.route).or_insert(0) += 1;
+            m
+        }),
+        receipts,
+        corpus,
     };
-    assert_eq!((report.cases, report.supported, report.ambiguous, report.unsupported), (1000, 600, 200, 200));
-    assert_eq!((report.exact_decisions, report.authorized_answers, report.ambiguous_preserved, report.unsupported_refused), (1000, 600, 200, 200));
-    assert_eq!((report.sealed_exact_decisions, report.sealed_authorized_answers), (200, 120));
-    assert_eq!((report.replay_verified, report.tamper_rejected, report.invariant_failures, report.false_authorizations, report.false_denials), (1000, 1000, 0, 0, 0));
-    fs::write(JSON, format!("{}\n", serde_json::to_string_pretty(&report)?))?;
+    assert_eq!(
+        (
+            report.cases,
+            report.supported,
+            report.ambiguous,
+            report.unsupported
+        ),
+        (1000, 600, 200, 200)
+    );
+    assert_eq!(
+        (
+            report.exact_decisions,
+            report.authorized_answers,
+            report.ambiguous_preserved,
+            report.unsupported_refused
+        ),
+        (1000, 600, 200, 200)
+    );
+    assert_eq!(
+        (
+            report.sealed_exact_decisions,
+            report.sealed_authorized_answers
+        ),
+        (200, 120)
+    );
+    assert_eq!(
+        (
+            report.replay_verified,
+            report.tamper_rejected,
+            report.invariant_failures,
+            report.false_authorizations,
+            report.false_denials
+        ),
+        (1000, 1000, 0, 0, 0)
+    );
+    fs::write(
+        JSON,
+        format!("{}\n", serde_json::to_string_pretty(&report)?),
+    )?;
     fs::write(MD, format!("# Stage 201 — current cross-domain synthesis\n\n| Measure | Result |\n|---|---:|\n| Cases / development / validation / sealed | 1,000 / 600 / 200 / 200 |\n| Supported / ambiguous / unsupported | 600 / 200 / 200 |\n| Exact decisions | 1,000/1,000 |\n| Authorized compositions | 600/600 |\n| Ambiguities preserved / unsupported refused | 200/200 / 200/200 |\n| Replay / tamper rejection | 1,000/1,000 / 1,000/1,000 |\n| Invariant failures | 0 |\n| False authorizations / denials | 0 / 0 |\n| Route leakage / registry mutation | 0 / 0 |\n\nThe routes compose bounded combinatorial counts with modular inverses, CRT classes, additive orders, cyclic-map kernel/image artifacts, and totient/unit certificates.\n"))?;
-    println!("stage201 exact=1000 authorized=600 ambiguous=200 unsupported=200 replay=1000 tamper=1000");
+    println!(
+        "stage201 exact=1000 authorized=600 ambiguous=200 unsupported=200 replay=1000 tamper=1000"
+    );
     Ok(())
 }

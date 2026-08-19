@@ -57,10 +57,14 @@ pub fn route_classified_equation(
         EquationClass::Unsupported => return Err(EquationRoutingFailure::UnsupportedClass),
     };
     let Some(capability) = registry.get(capability_id) else {
-        return Err(EquationRoutingFailure::SolverUnavailable(capability_id.into()));
+        return Err(EquationRoutingFailure::SolverUnavailable(
+            capability_id.into(),
+        ));
     };
     if !capability.quality_gate.enabled() {
-        return Err(EquationRoutingFailure::SolverUnavailable(capability_id.into()));
+        return Err(EquationRoutingFailure::SolverUnavailable(
+            capability_id.into(),
+        ));
     }
     Ok(capability_id.into())
 }
@@ -117,7 +121,9 @@ fn classify_pair(
     variable: Option<&str>,
 ) -> Result<EquationClass, EquationClassificationFailure> {
     let degree = match variable {
-        Some(variable) => polynomial_degree(&((lhs.clone() - rhs.clone()).canonicalize()), variable),
+        Some(variable) => {
+            polynomial_degree(&((lhs.clone() - rhs.clone()).canonicalize()), variable)
+        }
         None => {
             if supported_nodes(lhs) && supported_nodes(rhs) {
                 0
@@ -166,10 +172,7 @@ fn collect_variables(expr: &SymExpr, variables: &mut BTreeSet<String>) {
             collect_variables(body, variables);
         }
         SymExpr::Integral {
-            lower,
-            upper,
-            body,
-            ..
+            lower, upper, body, ..
         } => {
             if let Some(lower) = lower {
                 collect_variables(lower, variables);
@@ -207,7 +210,9 @@ fn polynomial_degree(expr: &SymExpr, variable: &str) -> u32 {
         SymExpr::Add(a, b) | SymExpr::Sub(a, b) => {
             polynomial_degree(a, variable).max(polynomial_degree(b, variable))
         }
-        SymExpr::Mul(a, b) => polynomial_degree(a, variable).saturating_add(polynomial_degree(b, variable)),
+        SymExpr::Mul(a, b) => {
+            polynomial_degree(a, variable).saturating_add(polynomial_degree(b, variable))
+        }
         SymExpr::Neg(a) => polynomial_degree(a, variable),
         SymExpr::Div(a, _) => polynomial_degree(a, variable),
         SymExpr::Pow(base, exp) => match exp.as_ref() {

@@ -155,7 +155,11 @@ fn cases(catalogs: &[Catalog]) -> Vec<Case> {
             };
             cases.push(Case {
                 id: format!("supported-{}-{index:03}", catalog.name),
-                text: format!("{wording} {}; {}.", record.formula_id, inputs(record, false)),
+                text: format!(
+                    "{wording} {}; {}.",
+                    record.formula_id,
+                    inputs(record, false)
+                ),
                 expected: Expected::Supported,
                 intended: Some(catalog.name),
             });
@@ -205,7 +209,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ("complex_arithmetic".into(), digest(COMPLEX)),
         (
             "statistics".into(),
-            digest(include_str!("../../docs/sources/openstax_finite_statistics_source.txt")),
+            digest(include_str!(
+                "../../docs/sources/openstax_finite_statistics_source.txt"
+            )),
         ),
         (
             "sequences_series".into(),
@@ -236,7 +242,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut all_tampered = true;
         let mut all_provenance = true;
         for catalog in &catalogs {
-            let result = formalize_source_formula_text(&case.text, catalog.domain, &catalog.records);
+            let result =
+                formalize_source_formula_text(&case.text, catalog.domain, &catalog.records);
             frontend_invocations += 1;
             all_frontends_replayed &= replay_verified(&result);
             all_provenance &= !result.provenance_spans.is_empty();

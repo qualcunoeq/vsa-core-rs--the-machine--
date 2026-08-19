@@ -34,9 +34,7 @@ pub struct LinearEquationExecutionReceipt {
     pub replay_verified: bool,
 }
 
-fn grounded_equation(
-    target: &FormalizedTarget,
-) -> Result<(String, String), LinearEquationFailure> {
+fn grounded_equation(target: &FormalizedTarget) -> Result<(String, String), LinearEquationFailure> {
     let subject = target
         .subject_resolution
         .selected
@@ -49,13 +47,19 @@ fn grounded_equation(
         .target_variable
         .as_deref()
         .ok_or(LinearEquationFailure::TargetVariableMissing)?;
-    if variable.len() != 1 || !variable.chars().all(|character| character.is_ascii_alphabetic()) {
+    if variable.len() != 1
+        || !variable
+            .chars()
+            .all(|character| character.is_ascii_alphabetic())
+    {
         return Err(LinearEquationFailure::TargetVariableAmbiguous);
     }
     Ok((subject.object.clone(), variable.to_string()))
 }
 
-fn problem_for(target: &FormalizedTarget) -> Result<(String, String, crate::algebra_island::AlgebraProblem), LinearEquationFailure> {
+fn problem_for(
+    target: &FormalizedTarget,
+) -> Result<(String, String, crate::algebra_island::AlgebraProblem), LinearEquationFailure> {
     let (equation, variable) = grounded_equation(target)?;
     let problem = algebra_island::parse_problem(&format!("Solve for {variable}: {equation}"))
         .ok_or(LinearEquationFailure::UnsupportedRelation)?;
@@ -98,10 +102,9 @@ pub fn execute_linear_equation(
     target: &FormalizedTarget,
 ) -> Result<LinearEquationExecutionReceipt, LinearEquationFailure> {
     let (equation, variable, _problem) = authorize_linear_equation(target)?;
-    let answer: AlgebraAnswer = algebra_island::try_answer(&format!(
-        "Solve for {variable}: {equation}"
-    ))
-    .ok_or(LinearEquationFailure::SolverFailed)?;
+    let answer: AlgebraAnswer =
+        algebra_island::try_answer(&format!("Solve for {variable}: {equation}"))
+            .ok_or(LinearEquationFailure::SolverFailed)?;
     if !answer.receipt.verification.passed
         || answer.receipt.operation != AlgebraOperation::SolveLinearEquation
     {

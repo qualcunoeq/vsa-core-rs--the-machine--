@@ -63,13 +63,47 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let parent = breadth_first_manifest();
     let parent_hash = parent.replay_hash();
     let candidates = vec![
-        candidate("source_derived_bounded_economics", "Source-derived bounded economics", &["bounded_economic_formula", "typed_economic_quantity"], &["docs/stage267_economics_shadow_validation.json"]),
-        candidate("source_derived_bounded_geometry", "Source-derived bounded geometry", &["geometry_measurement_composition", "dimensional_expression"], &["docs/stage163_source_geometry_acquisition.json", "docs/stage263_geometry_shadow_manifest.json"]),
-        candidate("source_derived_bounded_health_ratios", "Source-derived bounded health ratios", &["typed_health_ratio", "population_rate"], &["docs/stage270_health_ratio_shadow_validation.json"]),
-        candidate("source_derived_bounded_unit_conversion", "Source-derived bounded unit conversion", &["typed_unit_conversion", "exact_conversion_result"], &["docs/stage278_unit_conversion_shadow_validation.json", "docs/stage279_unit_conversion_shadow_manifest.json"]),
+        candidate(
+            "source_derived_bounded_economics",
+            "Source-derived bounded economics",
+            &["bounded_economic_formula", "typed_economic_quantity"],
+            &["docs/stage267_economics_shadow_validation.json"],
+        ),
+        candidate(
+            "source_derived_bounded_geometry",
+            "Source-derived bounded geometry",
+            &["geometry_measurement_composition", "dimensional_expression"],
+            &[
+                "docs/stage163_source_geometry_acquisition.json",
+                "docs/stage263_geometry_shadow_manifest.json",
+            ],
+        ),
+        candidate(
+            "source_derived_bounded_health_ratios",
+            "Source-derived bounded health ratios",
+            &["typed_health_ratio", "population_rate"],
+            &["docs/stage270_health_ratio_shadow_validation.json"],
+        ),
+        candidate(
+            "source_derived_bounded_unit_conversion",
+            "Source-derived bounded unit conversion",
+            &["typed_unit_conversion", "exact_conversion_result"],
+            &[
+                "docs/stage278_unit_conversion_shadow_validation.json",
+                "docs/stage279_unit_conversion_shadow_manifest.json",
+            ],
+        ),
     ];
-    let candidate_ids = candidates.iter().map(|candidate| candidate.id.clone()).collect::<Vec<_>>();
-    let prerequisite_closure = candidates.iter().all(|candidate| candidate.prerequisites.iter().all(|id| parent.packs.iter().any(|pack| &pack.id == id)));
+    let candidate_ids = candidates
+        .iter()
+        .map(|candidate| candidate.id.clone())
+        .collect::<Vec<_>>();
+    let prerequisite_closure = candidates.iter().all(|candidate| {
+        candidate
+            .prerequisites
+            .iter()
+            .all(|id| parent.packs.iter().any(|pack| &pack.id == id))
+    });
     let mut shadow = parent.clone();
     shadow.packs.extend(candidates);
     let validation_passed = shadow.validate().is_empty();

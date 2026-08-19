@@ -8,9 +8,8 @@ use serde::Serialize;
 use sha2::{Digest, Sha256};
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::curriculum_campaign::{
-    candidate_is_promotable, cluster_gaps, manifest_unchanged, observe_gap,
-    observation_replay_verified, propose_learning_plans, GapKind, GapObservation,
-    SourceModuleCandidate,
+    candidate_is_promotable, cluster_gaps, manifest_unchanged, observation_replay_verified,
+    observe_gap, propose_learning_plans, GapKind, GapObservation, SourceModuleCandidate,
 };
 
 #[derive(Debug, Serialize)]
@@ -134,7 +133,9 @@ fn main() {
         .count();
     let incomplete_source_plans_blocked = plans
         .iter()
-        .filter(|plan| plan.module_id == "incomplete-source-candidate" && !candidate_is_promotable(plan, 1))
+        .filter(|plan| {
+            plan.module_id == "incomplete-source-candidate" && !candidate_is_promotable(plan, 1)
+        })
         .count();
     let tamper_rejections = plans
         .iter()

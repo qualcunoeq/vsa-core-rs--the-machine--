@@ -127,7 +127,10 @@ pub fn retrieve_catalog(
             domain,
             version,
             Vec::new(),
-            candidates.iter().map(|record| record.record_id.clone()).collect(),
+            candidates
+                .iter()
+                .map(|record| record.record_id.clone())
+                .collect(),
             candidates
                 .iter()
                 .flat_map(|record| record.provenance.clone())

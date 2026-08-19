@@ -1,5 +1,8 @@
 use serde::Deserialize;
-use std::{collections::{BTreeMap, BTreeSet}, env, fs};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    env, fs,
+};
 
 #[derive(Debug, Deserialize)]
 struct Corpus {
@@ -23,10 +26,9 @@ fn main() {
     let path = env::args()
         .nth(1)
         .unwrap_or_else(|| "data/quantity_relation_v1_pilot.json".into());
-    let corpus: Corpus = serde_json::from_str(
-        &fs::read_to_string(&path).expect("quantity relation corpus"),
-    )
-    .expect("quantity relation JSON");
+    let corpus: Corpus =
+        serde_json::from_str(&fs::read_to_string(&path).expect("quantity relation corpus"))
+            .expect("quantity relation JSON");
     assert_eq!(corpus.schema_version, 1, "unsupported schema");
     let mut ids = BTreeSet::new();
     let mut pairs: BTreeMap<String, Vec<&Case>> = BTreeMap::new();
@@ -36,13 +38,33 @@ fn main() {
         assert!(!case.family.trim().is_empty(), "empty family: {}", case.id);
         match case.outcome.as_str() {
             "supported" => {
-                assert!(case.signature.is_some(), "supported case missing signature: {}", case.id);
-                assert!(case.target.is_some(), "supported case missing target: {}", case.id);
-                assert!(case.reason.is_none(), "supported case has rejection reason: {}", case.id);
+                assert!(
+                    case.signature.is_some(),
+                    "supported case missing signature: {}",
+                    case.id
+                );
+                assert!(
+                    case.target.is_some(),
+                    "supported case missing target: {}",
+                    case.id
+                );
+                assert!(
+                    case.reason.is_none(),
+                    "supported case has rejection reason: {}",
+                    case.id
+                );
             }
             "ambiguous" | "unsupported" => {
-                assert!(case.signature.is_none(), "negative case has signature: {}", case.id);
-                assert!(case.reason.is_some(), "negative case missing reason: {}", case.id);
+                assert!(
+                    case.signature.is_none(),
+                    "negative case has signature: {}",
+                    case.id
+                );
+                assert!(
+                    case.reason.is_some(),
+                    "negative case missing reason: {}",
+                    case.id
+                );
             }
             other => panic!("unknown outcome {other:?} for {}", case.id),
         }
@@ -60,13 +82,28 @@ fn main() {
                 .filter_map(|case| case.signature.as_deref())
                 .collect();
             if supported.len() > 1 {
-                assert!(supported.iter().all(|signature| *signature == supported[0]), "rewrite signature mismatch");
+                assert!(
+                    supported.iter().all(|signature| *signature == supported[0]),
+                    "rewrite signature mismatch"
+                );
             }
         })
         .count();
-    let supported = corpus.cases.iter().filter(|case| case.outcome == "supported").count();
-    let ambiguous = corpus.cases.iter().filter(|case| case.outcome == "ambiguous").count();
-    let unsupported = corpus.cases.iter().filter(|case| case.outcome == "unsupported").count();
+    let supported = corpus
+        .cases
+        .iter()
+        .filter(|case| case.outcome == "supported")
+        .count();
+    let ambiguous = corpus
+        .cases
+        .iter()
+        .filter(|case| case.outcome == "ambiguous")
+        .count();
+    let unsupported = corpus
+        .cases
+        .iter()
+        .filter(|case| case.outcome == "unsupported")
+        .count();
     println!(
         "quantity-relation-corpus: cases={} supported={} ambiguous={} unsupported={} rewrite_pairs={} deterministic=true",
         corpus.cases.len(), supported, ambiguous, unsupported, rewrite_pairs

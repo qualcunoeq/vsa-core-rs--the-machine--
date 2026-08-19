@@ -13,8 +13,8 @@ use crate::multi_step_quantity::{
     execute as execute_multi_step, formalize as formalize_multi_step, MultiStepDecision,
 };
 use crate::percentage_quantity::{
-    bridge_to_algebra as bridge_percentage_to_algebra,
-    formalize as formalize_percentage, PercentageQuantityDecision,
+    bridge_to_algebra as bridge_percentage_to_algebra, formalize as formalize_percentage,
+    PercentageQuantityDecision,
 };
 use crate::quantity_relation::{formalize as formalize_quantity, QuantityRelationDecision};
 use crate::quantity_relation_integration::{bridge_ratio_to_linear_system, bridge_to_algebra};
@@ -268,9 +268,7 @@ fn execute_route(candidate: &RouteCandidate) -> Result<RouteOutcome, RouteFailur
             };
             let receipt =
                 bridge_percentage_to_algebra(&artifact).ok_or(RouteFailure::ReplayFailed)?;
-            receipt
-                .algebra_replay_verified
-                .then_some(receipt.result)
+            receipt.algebra_replay_verified.then_some(receipt.result)
         }
         RouteKind::UnsupportedHandoff => return Err(RouteFailure::InvalidHandoff),
     }

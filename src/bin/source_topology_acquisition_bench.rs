@@ -110,16 +110,30 @@ fn request(
     }
 }
 
-fn expected_set(operation: TopologyOperation, points: &[String], opens: &[Vec<String>], target: &[String]) -> TopologyArtifact {
+fn expected_set(
+    operation: TopologyOperation,
+    points: &[String],
+    opens: &[Vec<String>],
+    target: &[String],
+) -> TopologyArtifact {
     match operation {
-        TopologyOperation::IsOpen => TopologyArtifact::Boolean(opens.iter().any(|open| open == target)),
+        TopologyOperation::IsOpen => {
+            TopologyArtifact::Boolean(opens.iter().any(|open| open == target))
+        }
         TopologyOperation::IsClosed => {
-            let complement = points.iter().filter(|point| !target.contains(point)).cloned().collect::<Vec<_>>();
+            let complement = points
+                .iter()
+                .filter(|point| !target.contains(point))
+                .cloned()
+                .collect::<Vec<_>>();
             TopologyArtifact::Boolean(opens.iter().any(|open| open == &complement))
         }
         TopologyOperation::Interior => {
             let mut result = Vec::new();
-            for open in opens.iter().filter(|open| open.iter().all(|point| target.contains(point))) {
+            for open in opens
+                .iter()
+                .filter(|open| open.iter().all(|point| target.contains(point)))
+            {
                 result.extend(open.iter().cloned());
             }
             result.sort();
@@ -127,9 +141,21 @@ fn expected_set(operation: TopologyOperation, points: &[String], opens: &[Vec<St
             TopologyArtifact::Set(result)
         }
         TopologyOperation::Closure => {
-            let closed_sets = opens.iter().map(|open| points.iter().filter(|point| !open.contains(point)).cloned().collect::<Vec<_>>()).collect::<Vec<_>>();
+            let closed_sets = opens
+                .iter()
+                .map(|open| {
+                    points
+                        .iter()
+                        .filter(|point| !open.contains(point))
+                        .cloned()
+                        .collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>();
             let mut result = points.to_vec();
-            for closed in closed_sets.iter().filter(|closed| target.iter().all(|point| closed.contains(point))) {
+            for closed in closed_sets
+                .iter()
+                .filter(|closed| target.iter().all(|point| closed.contains(point)))
+            {
                 result.retain(|point| closed.contains(point));
             }
             result.sort();
@@ -156,15 +182,23 @@ fn expected_set(operation: TopologyOperation, points: &[String], opens: &[Vec<St
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let manifest = breadth_first_manifest();
     let manifest_hash = manifest.replay_hash();
-    let source_document = include_str!("../../docs/sources/topology_without_tears_finite_definition.txt");
-    let records = extract_topology_definitions(source_document).expect("source definition extracts");
+    let source_document =
+        include_str!("../../docs/sources/topology_without_tears_finite_definition.txt");
+    let records =
+        extract_topology_definitions(source_document).expect("source definition extracts");
     let mut mutations = vec![
         source_document.replace("TOPOLOGY_ID: finite_topology_axioms", "TOPOLOGY_ID: "),
         source_document.replace("URL: https://", "URL: http://"),
-        source_document.replace("AXIOMS: empty;whole;unions;finite_intersections", "AXIOMS: empty;whole"),
+        source_document.replace(
+            "AXIOMS: empty;whole;unions;finite_intersections",
+            "AXIOMS: empty;whole",
+        ),
         source_document.replace("MAX_POINTS: 8", "MAX_POINTS: 0"),
         source_document.replace("END TOPOLOGY", "BEGIN TOPOLOGY"),
-        source_document.replace("ALIASES: finite topology|topological space", "ALIASES: duplicate|duplicate"),
+        source_document.replace(
+            "ALIASES: finite topology|topological space",
+            "ALIASES: duplicate|duplicate",
+        ),
     ];
     let source_mutations_rejected = mutations
         .drain(..)
@@ -179,47 +213,115 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         corpus.push(Case {
             id: format!("validate_{index}"),
             family: "validate_topology".into(),
-            request: request(TopologyOperation::ValidateTopology, points.clone(), opens.clone(), None),
+            request: request(
+                TopologyOperation::ValidateTopology,
+                points.clone(),
+                opens.clone(),
+                None,
+            ),
             expected_status: TopologyStatus::Complete,
-            expected_artifact: Some(expected_set(TopologyOperation::ValidateTopology, &points, &opens, &[])),
+            expected_artifact: Some(expected_set(
+                TopologyOperation::ValidateTopology,
+                &points,
+                &opens,
+                &[],
+            )),
         });
         let target = opens[index % opens.len()].clone();
         corpus.push(Case {
             id: format!("is_open_{index}"),
             family: "is_open".into(),
-            request: request(TopologyOperation::IsOpen, points.clone(), opens.clone(), Some(target.clone())),
+            request: request(
+                TopologyOperation::IsOpen,
+                points.clone(),
+                opens.clone(),
+                Some(target.clone()),
+            ),
             expected_status: TopologyStatus::Complete,
-            expected_artifact: Some(expected_set(TopologyOperation::IsOpen, &points, &opens, &target)),
+            expected_artifact: Some(expected_set(
+                TopologyOperation::IsOpen,
+                &points,
+                &opens,
+                &target,
+            )),
         });
-        let target = points.iter().filter(|point| !opens[index % opens.len()].contains(point)).cloned().collect::<Vec<_>>();
+        let target = points
+            .iter()
+            .filter(|point| !opens[index % opens.len()].contains(point))
+            .cloned()
+            .collect::<Vec<_>>();
         corpus.push(Case {
             id: format!("is_closed_{index}"),
             family: "is_closed".into(),
-            request: request(TopologyOperation::IsClosed, points.clone(), opens.clone(), Some(target.clone())),
+            request: request(
+                TopologyOperation::IsClosed,
+                points.clone(),
+                opens.clone(),
+                Some(target.clone()),
+            ),
             expected_status: TopologyStatus::Complete,
-            expected_artifact: Some(expected_set(TopologyOperation::IsClosed, &points, &opens, &target)),
+            expected_artifact: Some(expected_set(
+                TopologyOperation::IsClosed,
+                &points,
+                &opens,
+                &target,
+            )),
         });
-        let target = points.iter().take(1 + index % points.len()).cloned().collect::<Vec<_>>();
+        let target = points
+            .iter()
+            .take(1 + index % points.len())
+            .cloned()
+            .collect::<Vec<_>>();
         corpus.push(Case {
             id: format!("interior_{index}"),
             family: "interior".into(),
-            request: request(TopologyOperation::Interior, points.clone(), opens.clone(), Some(target.clone())),
+            request: request(
+                TopologyOperation::Interior,
+                points.clone(),
+                opens.clone(),
+                Some(target.clone()),
+            ),
             expected_status: TopologyStatus::Complete,
-            expected_artifact: Some(expected_set(TopologyOperation::Interior, &points, &opens, &target)),
+            expected_artifact: Some(expected_set(
+                TopologyOperation::Interior,
+                &points,
+                &opens,
+                &target,
+            )),
         });
-        let target = points.iter().skip(index % points.len()).take(1 + index % points.len()).cloned().collect::<Vec<_>>();
+        let target = points
+            .iter()
+            .skip(index % points.len())
+            .take(1 + index % points.len())
+            .cloned()
+            .collect::<Vec<_>>();
         corpus.push(Case {
             id: format!("closure_{index}"),
             family: "closure".into(),
-            request: request(TopologyOperation::Closure, points.clone(), opens.clone(), Some(target.clone())),
+            request: request(
+                TopologyOperation::Closure,
+                points.clone(),
+                opens.clone(),
+                Some(target.clone()),
+            ),
             expected_status: TopologyStatus::Complete,
-            expected_artifact: Some(expected_set(TopologyOperation::Closure, &points, &opens, &target)),
+            expected_artifact: Some(expected_set(
+                TopologyOperation::Closure,
+                &points,
+                &opens,
+                &target,
+            )),
         });
     }
     assert_eq!(corpus.len(), 120);
     for index in 0..40 {
         let (points, opens) = topology_for(index);
-        let mut req = request(TopologyOperation::Interior, points, opens, Some(vec!["p0".into()]));
+        let mut req = request(
+            TopologyOperation::Interior,
+            points,
+            opens,
+            Some(vec!["p0".into()]),
+        );
         req.ambiguity = Some("the source notation leaves the target set unresolved".into());
         corpus.push(Case {
             id: format!("ambiguous_{index}"),
@@ -254,7 +356,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     for index in 0..20 {
         let points = names(3);
-        let opens = vec![Vec::new(), vec!["p0".into()], vec!["p1".into()], points.clone()];
+        let opens = vec![
+            Vec::new(),
+            vec!["p0".into()],
+            vec!["p1".into()],
+            points.clone(),
+        ];
         corpus.push(Case {
             id: format!("invalid_axioms_{index}"),
             family: "invalid_open_set_family".into(),
@@ -290,7 +397,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for case in &corpus {
         *family_counts.entry(case.family.clone()).or_insert(0usize) += 1;
         let result = evaluate_topology(&case.request, &records);
-        let exact_case = result.status == case.expected_status && result.artifact == case.expected_artifact;
+        let exact_case =
+            result.status == case.expected_status && result.artifact == case.expected_artifact;
         let replay_ok = result.replay_verified();
         let mut altered = result.clone();
         altered.replay_hash.push('x');
@@ -303,11 +411,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 && case.expected_status != TopologyStatus::Ambiguous
                 && exact_case,
         );
-        supported_artifacts += usize::from(case.expected_status == TopologyStatus::Complete && result.artifact.is_some());
+        supported_artifacts += usize::from(
+            case.expected_status == TopologyStatus::Complete && result.artifact.is_some(),
+        );
         replay += usize::from(replay_ok);
         tamper += usize::from(tamper_ok);
-        let false_authorization = case.expected_status != TopologyStatus::Complete && result.authorized();
-        let false_denial_case = case.expected_status == TopologyStatus::Complete && !result.authorized();
+        let false_authorization =
+            case.expected_status != TopologyStatus::Complete && result.authorized();
+        let false_denial_case =
+            case.expected_status == TopologyStatus::Complete && !result.authorized();
         false_auth += usize::from(false_authorization);
         false_denial += usize::from(false_denial_case);
         receipts.push(Receipt {
@@ -354,7 +466,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     assert!(report.manifest_unchanged);
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage-d-source-derived-finite-topology.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage-d-source-derived-finite-topology.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

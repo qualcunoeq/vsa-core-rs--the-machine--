@@ -116,7 +116,10 @@ fn layered_fixture(
                 diagnostic_only: true,
             };
             let validation = concept.validate(2, 2, 0, 0);
-            assert!(validation.passed, "fixture concept must validate: {concept_id}");
+            assert!(
+                validation.passed,
+                "fixture concept must validate: {concept_id}"
+            );
             index.insert(concept, &validation).unwrap();
         }
     }
@@ -169,12 +172,13 @@ fn evaluate_once(max_depth: usize) -> ConceptCompositionBenchmarkReport {
             depth,
             receipt.proposals.len(),
         );
-        let proposal_ids = |items: &[crate::capability_planner::CapabilityChainProofConceptPlanningProposal]| {
-            items
-                .iter()
-                .map(|proposal| proposal.concept_id.clone())
-                .collect::<Vec<_>>()
-        };
+        let proposal_ids =
+            |items: &[crate::capability_planner::CapabilityChainProofConceptPlanningProposal]| {
+                items
+                    .iter()
+                    .map(|proposal| proposal.concept_id.clone())
+                    .collect::<Vec<_>>()
+            };
         depths.push(ConceptCompositionDepthMetrics {
             max_concepts: depth,
             proposals: receipt.proposals.len(),
@@ -210,7 +214,10 @@ pub fn evaluate(max_depth: usize) -> ConceptCompositionBenchmarkReport {
 fn proposal_ids(
     items: &[crate::capability_planner::CapabilityChainProofConceptPlanningProposal],
 ) -> std::collections::BTreeSet<String> {
-    items.iter().map(|proposal| proposal.concept_id.clone()).collect()
+    items
+        .iter()
+        .map(|proposal| proposal.concept_id.clone())
+        .collect()
 }
 
 fn evaluate_budget_sweep_once(
@@ -316,10 +323,7 @@ mod tests {
             .iter()
             .all(|depth| depth.full_budget_frontier_preserved));
         assert_eq!(report.depths[2].proposals, 8);
-        assert!(report
-            .depths
-            .iter()
-            .all(|depth| depth.rejections == 0));
+        assert!(report.depths.iter().all(|depth| depth.rejections == 0));
     }
 
     #[test]

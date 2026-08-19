@@ -143,10 +143,7 @@ fn request(formula: &str, index: usize) -> FormulaRequest {
             ("fitted".into(), rational(7, 1)),
         ]),
         "regression_r_squared" => std::collections::BTreeMap::from([
-            (
-                "explained_sum".into(),
-                rational((8 + index % 3) as i128, 1),
-            ),
+            ("explained_sum".into(), rational((8 + index % 3) as i128, 1)),
             ("total_sum".into(), rational((10 + index % 3) as i128, 1)),
         ]),
         _ => std::collections::BTreeMap::new(),
@@ -166,9 +163,7 @@ fn expected_value(formula: &str, index: usize) -> Rational {
         "regression_intercept" => rational((4 + index) as i128, 1),
         "regression_fitted_value" => rational((7 + 2 * index) as i128, 1),
         "regression_residual" => rational((2 + index) as i128, 1),
-        "regression_r_squared" => {
-            rational((8 + index % 3) as i128, (10 + index % 3) as i128)
-        }
+        "regression_r_squared" => rational((8 + index % 3) as i128, (10 + index % 3) as i128),
         _ => rational(0, 1),
     }
 }
@@ -439,7 +434,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut false_authorizations = 0;
     let mut false_denials = 0;
     let mut partitions = BTreeMap::new();
-    for partition in [Partition::Development, Partition::Validation, Partition::Sealed] {
+    for partition in [
+        Partition::Development,
+        Partition::Validation,
+        Partition::Sealed,
+    ] {
         let mut metrics = PartitionMetrics {
             cases: 0,
             baseline_authorized: 0,
@@ -539,7 +538,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.source_exercises_correct, 120);
     assert_eq!(report.source_exercises_replayed, 120);
     assert_eq!(report.source_boundary_refusals, 20);
-    assert_eq!(report.source_validation_status, SourceValidationStatus::Validated);
+    assert_eq!(
+        report.source_validation_status,
+        SourceValidationStatus::Validated
+    );
     assert!(report.parent_memory_unchanged && report.manifest_unchanged);
     assert_eq!(report.post_authorized, 380);
     assert_eq!(report.sealed_baseline_authorized, 0);
@@ -576,6 +578,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report.production_mutations,
         ),
     )?;
-    println!("stage301 memory={} clone={} selected={} sealed_delta={} false_auth=0", report.parent_memory_records, report.clone_memory_records, report.selected_module, report.sealed_learning_delta);
+    println!(
+        "stage301 memory={} clone={} selected={} sealed_delta={} false_auth=0",
+        report.parent_memory_records,
+        report.clone_memory_records,
+        report.selected_module,
+        report.sealed_learning_delta
+    );
     Ok(())
 }

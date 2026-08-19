@@ -4,11 +4,11 @@ use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use the_machine::probability_pack::Rational;
-use the_machine::source_complex_pack::{
-    evaluate_complex, ComplexArtifact, ComplexOperation, ComplexStatus,
-};
 use the_machine::source_complex_pack::source_complex_frontend::{
     formalize_complex_text, FrontendStatus,
+};
+use the_machine::source_complex_pack::{
+    evaluate_complex, ComplexArtifact, ComplexOperation, ComplexStatus,
 };
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]

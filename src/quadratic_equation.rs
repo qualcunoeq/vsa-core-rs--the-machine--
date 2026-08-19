@@ -49,7 +49,11 @@ fn grounded_equation(
         .target_variable
         .as_deref()
         .ok_or(QuadraticEquationFailure::TargetVariableMissing)?;
-    if variable.len() != 1 || !variable.chars().all(|character| character.is_ascii_alphabetic()) {
+    if variable.len() != 1
+        || !variable
+            .chars()
+            .all(|character| character.is_ascii_alphabetic())
+    {
         return Err(QuadraticEquationFailure::TargetVariableAmbiguous);
     }
     Ok((subject.object.clone(), variable.to_string()))
@@ -93,10 +97,9 @@ pub fn execute_quadratic_equation(
     target: &FormalizedTarget,
 ) -> Result<QuadraticEquationExecutionReceipt, QuadraticEquationFailure> {
     let (equation, variable, _problem) = authorize_quadratic_equation(target)?;
-    let answer: AlgebraAnswer = algebra_island::try_answer(&format!(
-        "Solve for {variable}: {equation}"
-    ))
-    .ok_or(QuadraticEquationFailure::SolverFailed)?;
+    let answer: AlgebraAnswer =
+        algebra_island::try_answer(&format!("Solve for {variable}: {equation}"))
+            .ok_or(QuadraticEquationFailure::SolverFailed)?;
     if !answer.receipt.verification.passed
         || answer.receipt.operation != AlgebraOperation::SolveQuadraticEquation
         || !matches!(
@@ -147,7 +150,12 @@ mod tests {
 
     #[test]
     fn two_real_roots_execute_and_replay() {
-        let trace = assess_prompt("quadratic-1", "Solve for x: x^2 - 5*x + 6 = 0.", "Math", false);
+        let trace = assess_prompt(
+            "quadratic-1",
+            "Solve for x: x^2 - 5*x + 6 = 0.",
+            "Math",
+            false,
+        );
         let receipt = execute_quadratic_equation(&trace.target_completion.target).unwrap();
         assert_eq!(receipt.result, "[2, 3]");
         assert!(receipt.replay_verified);
@@ -156,7 +164,12 @@ mod tests {
 
     #[test]
     fn double_root_executes_and_replays() {
-        let trace = assess_prompt("quadratic-2", "Solve for x: x^2 - 4*x + 4 = 0.", "Math", false);
+        let trace = assess_prompt(
+            "quadratic-2",
+            "Solve for x: x^2 - 4*x + 4 = 0.",
+            "Math",
+            false,
+        );
         let receipt = execute_quadratic_equation(&trace.target_completion.target).unwrap();
         assert_eq!(receipt.solution_set, vec!["2"]);
         assert!(replay_quadratic_equation(&receipt));

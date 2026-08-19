@@ -85,7 +85,9 @@ fn sequence_candidates(text: &str) -> Vec<String> {
                 .collect();
             let normalized = token.to_ascii_uppercase();
             if normalized.len() > 1
-                && normalized.chars().all(|value| matches!(value, 'A' | 'T' | 'C' | 'G'))
+                && normalized
+                    .chars()
+                    .all(|value| matches!(value, 'A' | 'T' | 'C' | 'G'))
                 && !candidates.contains(&normalized)
             {
                 candidates.push(normalized);
@@ -96,7 +98,12 @@ fn sequence_candidates(text: &str) -> Vec<String> {
     candidates
 }
 
-fn request(operation: BiologyOperation, sequence: String, orientation: Option<String>, text: &str) -> BiologyRequest {
+fn request(
+    operation: BiologyOperation,
+    sequence: String,
+    orientation: Option<String>,
+    text: &str,
+) -> BiologyRequest {
     BiologyRequest {
         operation,
         sequence: Some(sequence),
@@ -154,7 +161,8 @@ pub fn formalize_biology_text(text: &str) -> BiologyFrontendResult {
             text,
         );
     };
-    let operation = if lower.contains("reverse complement") || lower.contains("reverse-complement") {
+    let operation = if lower.contains("reverse complement") || lower.contains("reverse-complement")
+    {
         BiologyOperation::ReverseComplement
     } else if lower.contains("complement") {
         BiologyOperation::Complement
@@ -163,16 +171,17 @@ pub fn formalize_biology_text(text: &str) -> BiologyFrontendResult {
     } else {
         BiologyOperation::ValidateDna
     };
-    let orientation = if lower.contains("5' to 3'")
-        || lower.contains("5’ to 3’")
-        || lower.contains("5_to_3")
-    {
-        Some("5_to_3".into())
-    } else {
-        None
-    };
-    if matches!(operation, BiologyOperation::Complement | BiologyOperation::ReverseComplement)
-        && orientation.is_none()
+    let orientation =
+        if lower.contains("5' to 3'") || lower.contains("5’ to 3’") || lower.contains("5_to_3")
+        {
+            Some("5_to_3".into())
+        } else {
+            None
+        };
+    if matches!(
+        operation,
+        BiologyOperation::Complement | BiologyOperation::ReverseComplement
+    ) && orientation.is_none()
     {
         return output(
             BiologyFrontendStatus::Ambiguous,
@@ -208,9 +217,14 @@ mod tests {
 
     #[test]
     fn explicit_sequence_and_orientation_are_typed() {
-        let result = formalize_biology_text("Find the reverse complement of DNA sequence: AATTGGCC, 5' to 3'.");
+        let result = formalize_biology_text(
+            "Find the reverse complement of DNA sequence: AATTGGCC, 5' to 3'.",
+        );
         assert_eq!(result.status, BiologyFrontendStatus::Complete);
-        assert_eq!(result.request.as_ref().unwrap().operation, BiologyOperation::ReverseComplement);
+        assert_eq!(
+            result.request.as_ref().unwrap().operation,
+            BiologyOperation::ReverseComplement
+        );
         assert!(result.replay_verified());
     }
 

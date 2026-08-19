@@ -10,8 +10,8 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::curriculum_campaign::{
-    candidate_is_promotable, cluster_gaps, manifest_unchanged, observe_gap,
-    propose_learning_plans, GapKind, SourceModuleCandidate,
+    candidate_is_promotable, cluster_gaps, manifest_unchanged, observe_gap, propose_learning_plans,
+    GapKind, SourceModuleCandidate,
 };
 use the_machine::probability_pack::Rational;
 use the_machine::source_formula_pack::{FormulaRequest, FormulaStatus};
@@ -142,8 +142,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             independent_validation_correct += 1;
         }
     }
-    let shadow_promotable = candidate_is_promotable(selected, 120)
-        && independent_validation_correct == 120;
+    let shadow_promotable =
+        candidate_is_promotable(selected, 120) && independent_validation_correct == 120;
     let false_authorizations = plans
         .iter()
         .filter(|plan| plan.status == the_machine::curriculum_campaign::PlanStatus::Proposed)
@@ -172,7 +172,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         corpus_sha256: digest(&(observations, candidates, plans)),
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage_g_self_directed_campaign.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage_g_self_directed_campaign.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

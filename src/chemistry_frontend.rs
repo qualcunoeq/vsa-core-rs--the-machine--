@@ -29,7 +29,10 @@ pub struct ChemistryFrontendResult {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("chemistry frontend serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("chemistry frontend serializes"))
+    )
 }
 
 fn payload(result: &ChemistryFrontendResult) -> impl Serialize + '_ {
@@ -82,7 +85,10 @@ fn formula_candidates(text: &str) -> Vec<String> {
                 .take_while(|value| token_chars(*value))
                 .collect();
             if !token.is_empty()
-                && !matches!(token.to_ascii_lowercase().as_str(), "is" | "are" | "the" | "of")
+                && !matches!(
+                    token.to_ascii_lowercase().as_str(),
+                    "is" | "are" | "the" | "of"
+                )
                 && !candidates.contains(&token)
             {
                 candidates.push(token);
@@ -138,7 +144,10 @@ fn request(operation: ChemistryOperation, text: &str) -> ChemistryRequest {
         to_species: None,
         domain: "source_derived_bounded_chemistry".into(),
         ambiguity: None,
-        provenance: vec![format!("chemistry-frontend-text:{:x}", Sha256::digest(text.as_bytes()))],
+        provenance: vec![format!(
+            "chemistry-frontend-text:{:x}",
+            Sha256::digest(text.as_bytes())
+        )],
     }
 }
 
@@ -201,8 +210,8 @@ pub fn formalize_chemistry_text(text: &str) -> ChemistryFrontendResult {
         );
         request.reaction = Some(reaction.clone());
         if asks_ratio {
-            let Some(from) = species_after(text, "ratio from")
-                .or_else(|| species_after(text, "from"))
+            let Some(from) =
+                species_after(text, "ratio from").or_else(|| species_after(text, "from"))
             else {
                 return output(
                     FrontendStatus::Missing,

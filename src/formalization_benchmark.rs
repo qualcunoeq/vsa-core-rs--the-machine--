@@ -217,7 +217,10 @@ pub fn experiment_results(
                 group.structural_target_accuracy,
             );
             metrics.insert("target_complete_rate".into(), group.target_complete_rate);
-            metrics.insert("authorization_accuracy".into(), group.authorization_accuracy);
+            metrics.insert(
+                "authorization_accuracy".into(),
+                group.authorization_accuracy,
+            );
             metrics.insert(
                 "method_selection_success_rate".into(),
                 group.method_selection_success_rate,
@@ -264,7 +267,9 @@ pub fn experiment_results(
             }
             ExperimentResult {
                 experiment: format!("formalization_{}", group.group.replace(':', "_")),
-                claim: "constrained formalization preserves typed structure and explains abstentions".into(),
+                claim:
+                    "constrained formalization preserves typed structure and explains abstentions"
+                        .into(),
                 commit: commit.clone(),
                 seed: 0,
                 dataset: Some(dataset.clone()),
@@ -272,7 +277,10 @@ pub fn experiment_results(
                 metrics,
                 passed: group.false_authorizations == 0
                     && group.failure_taxonomy.classification_coverage >= 0.95,
-                notes: format!("cases={}, taxonomy={:?}", group.cases, group.failure_taxonomy.counts),
+                notes: format!(
+                    "cases={}, taxonomy={:?}",
+                    group.cases, group.failure_taxonomy.counts
+                ),
             }
         })
         .collect()
@@ -285,15 +293,18 @@ mod tests {
 
     #[test]
     fn seed_corpus_has_stable_holdout_and_taxonomy_metrics() {
-        let corpus: FormalizationCorpus = serde_json::from_str(include_str!(
-            "../data/formalization_seed_v1.json"
-        ))
-        .unwrap();
+        let corpus: FormalizationCorpus =
+            serde_json::from_str(include_str!("../data/formalization_seed_v1.json")).unwrap();
         let report = evaluate(&corpus);
         assert_eq!(report.corpus_cases, 60);
         assert!(report.deterministic);
         assert_eq!(report.groups["holdout"].cases, 18);
-        assert!(report.groups["total"].failure_taxonomy.classification_coverage >= 0.95);
+        assert!(
+            report.groups["total"]
+                .failure_taxonomy
+                .classification_coverage
+                >= 0.95
+        );
         assert_eq!(report.groups["total"].false_authorizations, 0);
         assert_eq!(report.groups["total"].planning_attempts, 37);
         assert_eq!(report.groups["total"].planning_success, 29);
@@ -302,10 +313,8 @@ mod tests {
 
     #[test]
     fn results_use_standard_experiment_schema() {
-        let corpus: FormalizationCorpus = serde_json::from_str(include_str!(
-            "../data/formalization_seed_v1.json"
-        ))
-        .unwrap();
+        let corpus: FormalizationCorpus =
+            serde_json::from_str(include_str!("../data/formalization_seed_v1.json")).unwrap();
         let report = evaluate(&corpus);
         let results = experiment_results(&report, "data/formalization_seed_v1.json", "test");
         assert_eq!(results.len(), 6);

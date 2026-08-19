@@ -45,13 +45,18 @@ struct Report {
     sealed_false_denials: usize,
 }
 
-fn digest(value: &str) -> String { format!("{:x}", Sha256::digest(value.as_bytes())) }
+fn digest(value: &str) -> String {
+    format!("{:x}", Sha256::digest(value.as_bytes()))
+}
 
-fn number(value: &Value, key: &str) -> usize { value[key].as_u64().expect("checkpoint metric is numeric") as usize }
+fn number(value: &Value, key: &str) -> usize {
+    value[key].as_u64().expect("checkpoint metric is numeric") as usize
+}
 
 fn main() {
     let prior: Value = serde_json::from_str(PRIOR).expect("prior sealed report is valid JSON");
-    let extension: Value = serde_json::from_str(EXTENSION).expect("source routing report is valid JSON");
+    let extension: Value =
+        serde_json::from_str(EXTENSION).expect("source routing report is valid JSON");
     let prior_sealed = &prior["partitions"]["sealed"];
     let extension_metrics = &extension["metrics"];
     let extension_sealed = &extension["partitions"]["sealed"];
@@ -63,29 +68,54 @@ fn main() {
         extension_report_sha256: digest(EXTENSION),
         manifest_sha256: breadth_first_manifest().replay_hash(),
         cases: number(&prior, "cases") + number(extension_metrics, "cases"),
-        supported: number(&prior, "supported") + number(extension_metrics, "interpolation") + number(extension_metrics, "bayes"),
+        supported: number(&prior, "supported")
+            + number(extension_metrics, "interpolation")
+            + number(extension_metrics, "bayes"),
         ambiguous: number(&prior, "ambiguous") + number(extension_metrics, "ambiguous"),
         unsupported: number(&prior, "unsupported") + number(extension_metrics, "unsupported"),
-        supported_authorized: number(&prior, "supported_authorized") + number(extension_metrics, "authorized"),
-        ambiguities_preserved: number(&prior, "ambiguities_preserved") + number(extension_metrics, "ambiguity_preserved"),
-        unsupported_refused: number(&prior, "unsupported_refused") + number(extension_metrics, "unsupported_refused"),
-        replay_verified: number(&prior, "replay_verified") + number(extension_metrics, "replay_verified"),
-        tamper_rejections: number(&prior, "tamper_rejections") + number(extension_metrics, "tamper_rejections"),
-        provenance_preserved: number(&prior, "provenance_preserved") + number(extension_metrics, "provenance_preserved"),
-        false_authorizations: number(&prior, "false_authorizations") + number(extension_metrics, "false_authorizations"),
+        supported_authorized: number(&prior, "supported_authorized")
+            + number(extension_metrics, "authorized"),
+        ambiguities_preserved: number(&prior, "ambiguities_preserved")
+            + number(extension_metrics, "ambiguity_preserved"),
+        unsupported_refused: number(&prior, "unsupported_refused")
+            + number(extension_metrics, "unsupported_refused"),
+        replay_verified: number(&prior, "replay_verified")
+            + number(extension_metrics, "replay_verified"),
+        tamper_rejections: number(&prior, "tamper_rejections")
+            + number(extension_metrics, "tamper_rejections"),
+        provenance_preserved: number(&prior, "provenance_preserved")
+            + number(extension_metrics, "provenance_preserved"),
+        false_authorizations: number(&prior, "false_authorizations")
+            + number(extension_metrics, "false_authorizations"),
         false_denials: number(&prior, "false_denials") + number(extension_metrics, "false_denials"),
         route_leakage: number(extension_metrics, "route_leakage"),
         sealed_cases: number(prior_sealed, "cases") + number(extension_sealed, "cases"),
-        sealed_supported: number(prior_sealed, "supported") + number(extension_sealed, "interpolation") + number(extension_sealed, "bayes"),
+        sealed_supported: number(prior_sealed, "supported")
+            + number(extension_sealed, "interpolation")
+            + number(extension_sealed, "bayes"),
         sealed_ambiguous: number(prior_sealed, "ambiguous") + number(extension_sealed, "ambiguous"),
-        sealed_unsupported: number(prior_sealed, "unsupported") + number(extension_sealed, "unsupported"),
-        sealed_authorized: number(prior_sealed, "supported_authorized") + number(extension_sealed, "authorized"),
-        sealed_replay_verified: number(prior_sealed, "replay_verified") + number(extension_sealed, "replay_verified"),
-        sealed_tamper_rejections: number(prior_sealed, "tamper_rejections") + number(extension_sealed, "tamper_rejections"),
-        sealed_false_authorizations: number(prior_sealed, "false_authorizations") + number(extension_sealed, "false_authorizations"),
-        sealed_false_denials: number(prior_sealed, "false_denials") + number(extension_sealed, "false_denials"),
+        sealed_unsupported: number(prior_sealed, "unsupported")
+            + number(extension_sealed, "unsupported"),
+        sealed_authorized: number(prior_sealed, "supported_authorized")
+            + number(extension_sealed, "authorized"),
+        sealed_replay_verified: number(prior_sealed, "replay_verified")
+            + number(extension_sealed, "replay_verified"),
+        sealed_tamper_rejections: number(prior_sealed, "tamper_rejections")
+            + number(extension_sealed, "tamper_rejections"),
+        sealed_false_authorizations: number(prior_sealed, "false_authorizations")
+            + number(extension_sealed, "false_authorizations"),
+        sealed_false_denials: number(prior_sealed, "false_denials")
+            + number(extension_sealed, "false_denials"),
     };
-    assert_eq!((report.cases, report.supported, report.ambiguous, report.unsupported), (5480, 3240, 1120, 1120));
+    assert_eq!(
+        (
+            report.cases,
+            report.supported,
+            report.ambiguous,
+            report.unsupported
+        ),
+        (5480, 3240, 1120, 1120)
+    );
     assert_eq!(report.supported_authorized, 3240);
     assert_eq!(report.ambiguities_preserved, 1120);
     assert_eq!(report.unsupported_refused, 1120);
@@ -94,7 +124,15 @@ fn main() {
     assert_eq!(report.provenance_preserved, 5480);
     assert_eq!(report.false_authorizations, 0);
     assert_eq!(report.false_denials, 0);
-    assert_eq!((report.sealed_cases, report.sealed_supported, report.sealed_ambiguous, report.sealed_unsupported), (1096, 648, 224, 224));
+    assert_eq!(
+        (
+            report.sealed_cases,
+            report.sealed_supported,
+            report.sealed_ambiguous,
+            report.sealed_unsupported
+        ),
+        (1096, 648, 224, 224)
+    );
     assert_eq!(report.sealed_authorized, 648);
     assert_eq!(report.sealed_replay_verified, 1096);
     assert_eq!(report.sealed_tamper_rejections, 1096);

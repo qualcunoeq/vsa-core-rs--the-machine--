@@ -126,7 +126,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             module_id: "unproven_biology_shortcut".into(),
             title: "Unproven biology shortcut".into(),
             domain: "molecular_biology".into(),
-            provides: vec!["dna_sequence", "base_composition"].into_iter().map(String::from).collect(),
+            provides: vec!["dna_sequence", "base_composition"]
+                .into_iter()
+                .map(String::from)
+                .collect(),
             prerequisite_artifacts: vec!["dna_sequence".into()],
             source_ids: Vec::new(),
             independent_exercise_count: 0,
@@ -149,7 +152,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             1 => BiologyOperation::BaseComposition,
             _ => BiologyOperation::ReverseComplement,
         };
-        let result = evaluate_biology(&biology_request(operation, sequences[index % sequences.len()]));
+        let result = evaluate_biology(&biology_request(
+            operation,
+            sequences[index % sequences.len()],
+        ));
         if result.authorized() {
             independent_validation_correct += 1;
         }

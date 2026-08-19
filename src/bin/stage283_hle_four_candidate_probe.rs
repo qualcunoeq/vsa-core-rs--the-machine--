@@ -59,15 +59,43 @@ fn digest<T: Serialize>(value: &T) -> String {
 }
 
 fn render(value: the_machine::probability_pack::Rational) -> String {
-    if value.denominator == 1 { value.numerator.to_string() } else { format!("{}/{}", value.numerator, value.denominator) }
+    if value.denominator == 1 {
+        value.numerator.to_string()
+    } else {
+        format!("{}/{}", value.numerator, value.denominator)
+    }
 }
 
 fn modules() -> Result<Vec<DiscoveredSourceModule>, Box<dyn std::error::Error>> {
     Ok(vec![
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_economics", version: "openstax-2026", source_hint: "economics", document: ECONOMICS }).map_err(|e| e.join("; "))?,
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_geometry", version: "openstax-2026", source_hint: "geometry", document: GEOMETRY }).map_err(|e| e.join("; "))?,
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_health_ratios", version: "openstax-2026", source_hint: "health-ratios", document: HEALTH }).map_err(|e| e.join("; "))?,
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_unit_conversion", version: "openstax-2026", source_hint: "unit-conversion", document: UNITS }).map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_economics",
+            version: "openstax-2026",
+            source_hint: "economics",
+            document: ECONOMICS,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_geometry",
+            version: "openstax-2026",
+            source_hint: "geometry",
+            document: GEOMETRY,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_health_ratios",
+            version: "openstax-2026",
+            source_hint: "health-ratios",
+            document: HEALTH,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_unit_conversion",
+            version: "openstax-2026",
+            source_hint: "unit-conversion",
+            document: UNITS,
+        })
+        .map_err(|e| e.join("; "))?,
     ])
 }
 
@@ -75,7 +103,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let dataset_bytes = fs::read(DATASET)?;
     let shadow_bytes = fs::read(SHADOW_MANIFEST)?;
     let shadow: Value = serde_json::from_slice(&shadow_bytes)?;
-    assert_eq!(shadow.get("shadow_only").and_then(Value::as_bool), Some(true));
+    assert_eq!(
+        shadow.get("shadow_only").and_then(Value::as_bool),
+        Some(true)
+    );
     let modules = modules()?;
     let mut report = Report {
         schema: "stage283-hle-four-candidate-probe-v1",
@@ -100,33 +131,56 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut receipts = Vec::new();
     for line in BufReader::new(File::open(DATASET)?).lines() {
         let line = line?;
-        if line.trim().is_empty() { continue; }
+        if line.trim().is_empty() {
+            continue;
+        }
         let entry: Value = serde_json::from_str(&line)?;
         let question = entry.get("question").and_then(Value::as_str).unwrap_or("");
         let expected = entry.get("answer").and_then(Value::as_str).unwrap_or("");
         let mut candidates = Vec::new();
         let mut unsupported_count = 0;
         for module in &modules {
-            let frontend = formalize_source_formula_report(question, &module.candidate.domain, &module.records);
+            let frontend = formalize_source_formula_report(
+                question,
+                &module.candidate.domain,
+                &module.records,
+            );
             report.frontend_replays += usize::from(report_replay_verified(&frontend));
             let mut tampered = frontend.clone();
             tampered.replay_hash.push('x');
             report.frontend_tamper_rejections += usize::from(!report_replay_verified(&tampered));
-            if frontend.frontend.status == FrontendStatus::Unsupported { unsupported_count += 1; }
+            if frontend.frontend.status == FrontendStatus::Unsupported {
+                unsupported_count += 1;
+            }
             if frontend.frontend.status == FrontendStatus::Complete {
                 if let Some(request) = frontend.frontend.request.as_ref() {
-                    let execution = evaluate_formula_records(request, &module.candidate.domain, &module.records);
-                    if execution.status == FormulaStatus::Complete && execution.value.is_some() && execution.replay_verified() {
+                    let execution = evaluate_formula_records(
+                        request,
+                        &module.candidate.domain,
+                        &module.records,
+                    );
+                    if execution.status == FormulaStatus::Complete
+                        && execution.value.is_some()
+                        && execution.replay_verified()
+                    {
                         candidates.push(render(execution.value.as_ref().unwrap().clone()));
                     }
                 }
             }
         }
         report.unsupported += usize::from(unsupported_count == modules.len());
-        let candidate = if candidates.len() == 1 { candidates.into_iter().next() } else { None };
+        let candidate = if candidates.len() == 1 {
+            candidates.into_iter().next()
+        } else {
+            None
+        };
         if let Some(answer) = candidate.as_ref() {
             report.unique_shadow_candidates += 1;
-            if QuestionRouter::exact_answers_match(answer, expected) { report.correct_shadow_candidates += 1; } else { report.incorrect_shadow_candidates_rejected += 1; }
+            if QuestionRouter::exact_answers_match(answer, expected) {
+                report.correct_shadow_candidates += 1;
+            } else {
+                report.incorrect_shadow_candidates_rejected += 1;
+            }
         } else {
             report.ambiguous_or_missing += 1;
         }

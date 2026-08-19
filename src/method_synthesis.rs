@@ -7,8 +7,8 @@
 //! capability formalizers and their replay gates.
 
 use crate::clock_time_contract::{self, ClockBehaviorDefect, ClockDecision};
-use crate::fractional_quantity::{self, FractionalQuantityDecision};
 use crate::finite_state_contract::{self, StateDecision};
+use crate::fractional_quantity::{self, FractionalQuantityDecision};
 use crate::percentage_quantity::{self, PercentageQuantityDecision};
 use crate::quantity_relation::{self, QuantityRelationDecision};
 use crate::unit_aware_quantity::{self, UnitQuantityDecision};
@@ -886,19 +886,28 @@ pub fn inject_state_method_defect(
     parent: &MethodImplementationSpec,
     defect: finite_state_contract::StateBehaviorDefect,
 ) -> Result<FaultedStateMethodSpec, String> {
-    parent.validate().map_err(|errors| format!("invalid parent method: {errors:?}"))?;
+    parent
+        .validate()
+        .map_err(|errors| format!("invalid parent method: {errors:?}"))?;
     if parent.capability_family != "FiniteStateTransitionV1" {
         return Err("state defects require the finite-state family".into());
     }
-    Ok(FaultedStateMethodSpec { parent: parent.clone(), defect })
+    Ok(FaultedStateMethodSpec {
+        parent: parent.clone(),
+        defect,
+    })
 }
 
 pub fn shadow_execute_state_faulted(
     faulted: &FaultedStateMethodSpec,
     prompt: &str,
 ) -> Result<ShadowExecution, String> {
-    faulted.parent.validate().map_err(|errors| format!("invalid method spec: {errors:?}"))?;
-    let (decision, artifact, replay) = finite_state_contract::formalize_with_defect(prompt, faulted.defect);
+    faulted
+        .parent
+        .validate()
+        .map_err(|errors| format!("invalid method spec: {errors:?}"))?;
+    let (decision, artifact, replay) =
+        finite_state_contract::formalize_with_defect(prompt, faulted.defect);
     let decision = match decision {
         StateDecision::Supported => ShadowDecision::Applicable,
         StateDecision::Ambiguous => ShadowDecision::Ambiguous,
@@ -908,7 +917,9 @@ pub fn shadow_execute_state_faulted(
         family: faulted.parent.capability_family.clone(),
         prompt: prompt.into(),
         decision,
-        artifact_type: artifact.as_ref().map(|_| ArtifactType::StateTransitionTrace),
+        artifact_type: artifact
+            .as_ref()
+            .map(|_| ArtifactType::StateTransitionTrace),
         observed_duration_minutes: None,
         observed_final_state: artifact.as_ref().map(|item| item.final_state.clone()),
         artifact_replay_verified: replay,
@@ -940,7 +951,10 @@ pub fn evaluate_state_defect(
     faulted: &FaultedStateMethodSpec,
     cases: &[finite_state_contract::StateCase],
 ) -> StateDefectCampaignReport {
-    let mut report = StateDefectCampaignReport { cases: cases.len(), ..Default::default() };
+    let mut report = StateDefectCampaignReport {
+        cases: cases.len(),
+        ..Default::default()
+    };
     for case in cases {
         let Ok(observed) = shadow_execute_state_faulted(faulted, &case.prompt) else {
             report.decision_mismatches += 1;
@@ -951,13 +965,23 @@ pub fn evaluate_state_defect(
             StateDecision::Ambiguous => ShadowDecision::Ambiguous,
             StateDecision::Unsupported => ShadowDecision::Unsupported,
         };
-        if observed.decision != expected { report.decision_mismatches += 1; }
-        if expected == ShadowDecision::Applicable && observed.observed_final_state != case.expected_state {
+        if observed.decision != expected {
+            report.decision_mismatches += 1;
+        }
+        if expected == ShadowDecision::Applicable
+            && observed.observed_final_state != case.expected_state
+        {
             report.final_state_mismatches += 1;
         }
-        if expected == ShadowDecision::Applicable && !observed.method_replay_verified { report.replay_failures += 1; }
-        if observed.authorized() && expected != ShadowDecision::Applicable { report.false_authorizations += 1; }
-        if !observed.authorized() && expected == ShadowDecision::Applicable { report.false_denials += 1; }
+        if expected == ShadowDecision::Applicable && !observed.method_replay_verified {
+            report.replay_failures += 1;
+        }
+        if observed.authorized() && expected != ShadowDecision::Applicable {
+            report.false_authorizations += 1;
+        }
+        if !observed.authorized() && expected == ShadowDecision::Applicable {
+            report.false_denials += 1;
+        }
     }
     report
 }
@@ -973,10 +997,14 @@ pub fn apply_state_revision_sandboxed(
     faulted: &FaultedStateMethodSpec,
     revision: &StateMethodRevision,
 ) -> Result<MethodImplementationSpec, MethodRevisionError> {
-    if revision.parent_spec_id != faulted.parent.spec_id { return Err(MethodRevisionError::ParentMismatch); }
+    if revision.parent_spec_id != faulted.parent.spec_id {
+        return Err(MethodRevisionError::ParentMismatch);
+    }
     let mut repaired = faulted.parent.clone();
     repaired.spec_id = revision.revision_id.clone();
-    repaired.validate().map_err(MethodRevisionError::Validation)?;
+    repaired
+        .validate()
+        .map_err(MethodRevisionError::Validation)?;
     Ok(repaired)
 }
 
@@ -1595,12 +1623,18 @@ mod tests {
             state_matches,
             operation_trace(&spec),
         );
-        assert_eq!(development_report.correct_decisions, development_report.cases);
+        assert_eq!(
+            development_report.correct_decisions,
+            development_report.cases
+        );
         assert_eq!(holdout_report.correct_decisions, holdout_report.cases);
         assert_eq!(state_matches, contract.cases.len());
         assert_eq!(holdout_report.false_authorizations, 0);
         assert_eq!(holdout_report.false_denials, 0);
-        assert_eq!(holdout_report.accepted_replay_verified, holdout_report.authorized);
+        assert_eq!(
+            holdout_report.accepted_replay_verified,
+            holdout_report.authorized
+        );
     }
 
     #[test]
@@ -1640,9 +1674,18 @@ mod tests {
             "phase4 state pressure: hash={} cases={} supported={} ambiguous={} unsupported={}",
             finite_state_contract::pressure_hash(),
             pressure.len(),
-            pressure.iter().filter(|case| case.expected == finite_state_contract::StateDecision::Supported).count(),
-            pressure.iter().filter(|case| case.expected == finite_state_contract::StateDecision::Ambiguous).count(),
-            pressure.iter().filter(|case| case.expected == finite_state_contract::StateDecision::Unsupported).count(),
+            pressure
+                .iter()
+                .filter(|case| case.expected == finite_state_contract::StateDecision::Supported)
+                .count(),
+            pressure
+                .iter()
+                .filter(|case| case.expected == finite_state_contract::StateDecision::Ambiguous)
+                .count(),
+            pressure
+                .iter()
+                .filter(|case| case.expected == finite_state_contract::StateDecision::Unsupported)
+                .count(),
         );
         let defects = [
             finite_state_contract::StateBehaviorDefect::IgnoreGuards,
@@ -1655,7 +1698,8 @@ mod tests {
             finite_state_contract::StateBehaviorDefect::BypassSequenceBudget,
         ];
         for defect in defects {
-            let faulted = inject_state_method_defect(&parent, defect).expect("state defect injection");
+            let faulted =
+                inject_state_method_defect(&parent, defect).expect("state defect injection");
             let report = evaluate_state_defect(&faulted, &pressure);
             eprintln!(
                 "phase4 state defect: defect={defect:?} cases={} decision_mismatches={} final_state_mismatches={} replay_failures={} false_auth={} false_denials={}",
@@ -1666,27 +1710,37 @@ mod tests {
                 report.false_authorizations,
                 report.false_denials,
             );
-            assert!(report.detected(), "state defect {defect:?} was not observable");
+            assert!(
+                report.detected(),
+                "state defect {defect:?} was not observable"
+            );
             let revision = StateMethodRevision {
                 parent_spec_id: parent.spec_id.clone(),
                 revision_id: format!("phase4-state-repair-{defect:?}"),
                 defect,
             };
-            let repaired = apply_state_revision_sandboxed(&faulted, &revision).expect("state sandbox repair");
-            let repaired_cases: Vec<HistoricalCase> = pressure.iter().map(|case| HistoricalCase {
-                family: contract.contract_id.clone(),
-                prompt: case.prompt.clone(),
-                expected: match case.expected {
-                    StateDecision::Supported => ShadowDecision::Applicable,
-                    StateDecision::Ambiguous => ShadowDecision::Ambiguous,
-                    StateDecision::Unsupported => ShadowDecision::Unsupported,
-                },
-            }).collect();
+            let repaired =
+                apply_state_revision_sandboxed(&faulted, &revision).expect("state sandbox repair");
+            let repaired_cases: Vec<HistoricalCase> = pressure
+                .iter()
+                .map(|case| HistoricalCase {
+                    family: contract.contract_id.clone(),
+                    prompt: case.prompt.clone(),
+                    expected: match case.expected {
+                        StateDecision::Supported => ShadowDecision::Applicable,
+                        StateDecision::Ambiguous => ShadowDecision::Ambiguous,
+                        StateDecision::Unsupported => ShadowDecision::Unsupported,
+                    },
+                })
+                .collect();
             let repaired_report = evaluate_method_spec(&repaired, &repaired_cases);
             assert_eq!(repaired_report.correct_decisions, pressure.len());
             assert_eq!(repaired_report.false_authorizations, 0);
             assert_eq!(repaired_report.false_denials, 0);
-            assert_eq!(repaired_report.accepted_replay_verified, repaired_report.authorized);
+            assert_eq!(
+                repaired_report.accepted_replay_verified,
+                repaired_report.authorized
+            );
             assert!(parent.validate().is_ok());
             assert_eq!(parent.spec_id, faulted.parent.spec_id);
         }

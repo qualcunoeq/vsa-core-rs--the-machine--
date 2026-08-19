@@ -146,7 +146,9 @@ pub fn execute_case(case: &CompositionCase) -> Result<CompositionReceipt, Compos
     if stage_one_artifact != expected_stage_one {
         return Err(CompositionFailure::StageOneReplayFailed);
     }
-    let stage_two_prompt = case.stage_two.replace("{intermediate}", &stage_one_artifact);
+    let stage_two_prompt = case
+        .stage_two
+        .replace("{intermediate}", &stage_one_artifact);
     let stage_two_artifact = match case.stage_two_output {
         ArtifactKind::Integer => execute_integer_stage(&stage_two_prompt)
             .map_err(|_| CompositionFailure::StageTwoRejected)?,
@@ -192,7 +194,12 @@ pub fn execute_integer_stage(source: &str) -> Result<String, CompositionFailure>
             .execute(request.target.clone(), request.contract)
             .map_err(|_| CompositionFailure::StageOneRejected)?;
         if !answer.receipt.steps.iter().all(|step| step.replay_verified)
-            || !recurrence::replay_recurrence(&request.definition, request.target, request.contract, &answer.receipt)
+            || !recurrence::replay_recurrence(
+                &request.definition,
+                request.target,
+                request.contract,
+                &answer.receipt,
+            )
         {
             return Err(CompositionFailure::StageOneReplayFailed);
         }
@@ -202,7 +209,8 @@ pub fn execute_integer_stage(source: &str) -> Result<String, CompositionFailure>
     if !answer.receipt.verification.passed {
         return Err(CompositionFailure::StageOneReplayFailed);
     }
-    let replay = algebra_island::try_answer(source).ok_or(CompositionFailure::StageOneReplayFailed)?;
+    let replay =
+        algebra_island::try_answer(source).ok_or(CompositionFailure::StageOneReplayFailed)?;
     (replay.answer == answer.answer && replay.receipt.verification.passed)
         .then_some(answer.answer)
         .ok_or(CompositionFailure::StageOneReplayFailed)
@@ -217,11 +225,15 @@ pub fn execute_system_stage(source: &str) -> Result<String, CompositionFailure> 
 fn replay_system_stage(source: &str, expected: &str) -> bool {
     linear_system::execute_linear_system(source)
         .ok()
-        .is_some_and(|receipt| receipt.result == expected && linear_system::replay_linear_system(&receipt))
+        .is_some_and(|receipt| {
+            receipt.result == expected && linear_system::replay_linear_system(&receipt)
+        })
 }
 
 pub fn replay_composition(case: &CompositionCase, receipt: &CompositionReceipt) -> bool {
-    execute_case(case).ok().is_some_and(|replayed| replayed == *receipt)
+    execute_case(case)
+        .ok()
+        .is_some_and(|replayed| replayed == *receipt)
 }
 
 pub fn evaluate(corpus: &CompositionCorpus) -> CompositionReport {
@@ -253,15 +265,28 @@ pub fn evaluate(corpus: &CompositionCorpus) -> CompositionReport {
         if case.stage_one_output != case.stage_two_input && !authorized {
             metrics.incompatible_handoffs_rejected += 1;
         }
-        let result = execution.as_ref().ok().map(|receipt| receipt.stage_two_artifact.clone());
+        let result = execution
+            .as_ref()
+            .ok()
+            .map(|receipt| receipt.stage_two_artifact.clone());
         if let Ok(receipt) = execution {
             metrics.intermediate_replay_verified += usize::from(receipt.stage_one_replay_verified);
             metrics.final_replay_verified += usize::from(replay_composition(case, &receipt));
-            if case.expected.as_ref().is_some_and(|expected| expected != &receipt.stage_two_artifact) {
+            if case
+                .expected
+                .as_ref()
+                .is_some_and(|expected| expected != &receipt.stage_two_artifact)
+            {
                 metrics.regressions += 1;
             }
         } else {
-            let key = format!("{}:{:?}", case.family, execute_case(case).err().unwrap_or(CompositionFailure::StageOneRejected));
+            let key = format!(
+                "{}:{:?}",
+                case.family,
+                execute_case(case)
+                    .err()
+                    .unwrap_or(CompositionFailure::StageOneRejected)
+            );
             *failures.entry(key).or_default() += 1;
         }
         outcomes.push((case, Outcome { authorized, result }));
@@ -272,7 +297,12 @@ pub fn evaluate(corpus: &CompositionCorpus) -> CompositionReport {
             groups.entry(pair_id.clone()).or_default().push(outcome);
         }
     }
-    let mut rewrites = CompositionRewriteMetrics { pairs: 0, decision_stable: 0, result_stable: 0, regressions: 0 };
+    let mut rewrites = CompositionRewriteMetrics {
+        pairs: 0,
+        decision_stable: 0,
+        result_stable: 0,
+        regressions: 0,
+    };
     for group in groups.values().filter(|group| group.len() == 2) {
         rewrites.pairs += 1;
         let decision = group[0].authorized == group[1].authorized;
@@ -281,7 +311,13 @@ pub fn evaluate(corpus: &CompositionCorpus) -> CompositionReport {
         rewrites.result_stable += usize::from(result);
         rewrites.regressions += usize::from(!(decision && result));
     }
-    CompositionReport { corpus_cases: metrics.cases, metrics, rewrites, failure_taxonomy: failures, deterministic: true }
+    CompositionReport {
+        corpus_cases: metrics.cases,
+        metrics,
+        rewrites,
+        failure_taxonomy: failures,
+        deterministic: true,
+    }
 }
 
 #[cfg(test)]
@@ -315,7 +351,10 @@ mod tests {
         assert!(!replay_composition(&case, &tampered_second_boundary));
         let mut forged = case.clone();
         forged.tamper_intermediate = true;
-        assert!(matches!(execute_case(&forged), Err(CompositionFailure::ForgedIntermediate)));
+        assert!(matches!(
+            execute_case(&forged),
+            Err(CompositionFailure::ForgedIntermediate)
+        ));
     }
 
     #[test]

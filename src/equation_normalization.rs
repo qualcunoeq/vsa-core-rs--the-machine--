@@ -27,8 +27,8 @@ pub fn execute_equation_normalization(
     if !source.contains('=') {
         return Err(EquationNormalizationFailure::MissingEquality);
     }
-    let (lhs, rhs) = algebra::parse_equation(source)
-        .map_err(|_| EquationNormalizationFailure::ParseRejected)?;
+    let (lhs, rhs) =
+        algebra::parse_equation(source).map_err(|_| EquationNormalizationFailure::ParseRejected)?;
     let difference = (lhs - rhs).canonicalize();
     let normalized_equation = format!("{} = 0", difference);
     let receipt = EquationNormalizationReceipt {

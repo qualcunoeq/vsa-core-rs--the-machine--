@@ -6,8 +6,13 @@
 //! graph pack models loop-free simple graphs. The vertex ordering and source
 //! provenance are preserved in the resulting graph request.
 
-use crate::graph_pack::{evaluate_graph, FiniteGraph, GraphArtifact, GraphOperation, GraphRequest, GraphResult, GraphStatus};
-use crate::source_topology_pack::{evaluate_topology, TopologyArtifact, TopologyDefinitionRecord, TopologyRequest, TopologyStatus};
+use crate::graph_pack::{
+    evaluate_graph, FiniteGraph, GraphArtifact, GraphOperation, GraphRequest, GraphResult,
+    GraphStatus,
+};
+use crate::source_topology_pack::{
+    evaluate_topology, TopologyArtifact, TopologyDefinitionRecord, TopologyRequest, TopologyStatus,
+};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -24,7 +29,10 @@ pub struct TopologyGraphBridgeResult {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("topology graph bridge serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("topology graph bridge serializes"))
+    )
 }
 
 fn payload(result: &TopologyGraphBridgeResult) -> impl Serialize + '_ {
@@ -85,7 +93,14 @@ pub fn topology_to_graph(
             provenance,
         );
     }
-    let TopologyArtifact::ValidatedTopology { points, open_sets } = topology_result.artifact.clone().unwrap_or(TopologyArtifact::ValidatedTopology { points: Vec::new(), open_sets: Vec::new() }) else {
+    let TopologyArtifact::ValidatedTopology { points, open_sets } = topology_result
+        .artifact
+        .clone()
+        .unwrap_or(TopologyArtifact::ValidatedTopology {
+            points: Vec::new(),
+            open_sets: Vec::new(),
+        })
+    else {
         return output(
             GraphStatus::Unsupported,
             topology_result.status,
@@ -114,7 +129,8 @@ pub fn topology_to_graph(
                 continue;
             }
             let relation_holds = open_sets.iter().all(|open| {
-                !open.binary_search(&points[left]).is_ok() || open.binary_search(&points[right]).is_ok()
+                !open.binary_search(&points[left]).is_ok()
+                    || open.binary_search(&points[right]).is_ok()
             });
             if relation_holds {
                 edges.push((left, right));
@@ -137,7 +153,19 @@ pub fn topology_to_graph(
     let graph_result = evaluate_graph(&graph_request);
     let graph = match graph_result.artifact.clone() {
         Some(GraphArtifact::Graph(graph)) if graph_result.status == GraphStatus::Complete => graph,
-        _ => return output(GraphStatus::InvalidGraph, topology_result.status, None, Some(graph_result), topology_result.assumptions.clone(), vec!["specialization relation was not accepted by the finite graph boundary".into()], provenance),
+        _ => {
+            return output(
+                GraphStatus::InvalidGraph,
+                topology_result.status,
+                None,
+                Some(graph_result),
+                topology_result.assumptions.clone(),
+                vec![
+                    "specialization relation was not accepted by the finite graph boundary".into(),
+                ],
+                provenance,
+            )
+        }
     };
     output(
         GraphStatus::Complete,
@@ -155,7 +183,11 @@ impl TopologyGraphBridgeResult {
         self.replay_hash == digest(&payload(self))
             && !self.provenance.is_empty()
             && (self.status != GraphStatus::Complete || self.graph.is_some())
-            && self.graph_result.as_ref().map(|result| result.replay_verified()).unwrap_or(self.status != GraphStatus::Complete)
+            && self
+                .graph_result
+                .as_ref()
+                .map(|result| result.replay_verified())
+                .unwrap_or(self.status != GraphStatus::Complete)
     }
 
     pub fn authorized(&self) -> bool {
@@ -178,7 +210,11 @@ mod tests {
             operation: crate::source_topology_pack::TopologyOperation::ValidateTopology,
             topology: "finite_topology_axioms".into(),
             points: vec!["a".into(), "b".into(), "c".into()],
-            open_sets: vec![Vec::new(), vec!["a".into()], vec!["a".into(), "b".into(), "c".into()]],
+            open_sets: vec![
+                Vec::new(),
+                vec!["a".into()],
+                vec!["a".into(), "b".into(), "c".into()],
+            ],
             target_set: None,
             domain: "source_derived_finite_topology".into(),
             ambiguity: None,

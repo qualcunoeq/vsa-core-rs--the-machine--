@@ -124,7 +124,11 @@ fn supported_cases(modules: &[DiscoveredSourceModule], partition: Partition) -> 
                     ),
                     Partition::Boundary => unreachable!(),
                 };
-                Case { text, partition, expected_authorized: true }
+                Case {
+                    text,
+                    partition,
+                    expected_authorized: true,
+                }
             })
         })
         .collect()
@@ -170,10 +174,34 @@ fn route(case: &Case, modules: &[DiscoveredSourceModule]) -> (bool, usize, usize
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let modules = vec![
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_economics", version: "openstax-2026", source_hint: "economics", document: ECONOMICS }).map_err(|e| e.join("; "))?,
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_geometry", version: "openstax-2026", source_hint: "geometry", document: GEOMETRY }).map_err(|e| e.join("; "))?,
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_health_ratios", version: "openstax-2026", source_hint: "health-ratios", document: HEALTH }).map_err(|e| e.join("; "))?,
-        discover_formula_module(SourceDocument { domain: "source_derived_bounded_unit_conversion", version: "openstax-2026", source_hint: "unit-conversion", document: UNITS }).map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_economics",
+            version: "openstax-2026",
+            source_hint: "economics",
+            document: ECONOMICS,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_geometry",
+            version: "openstax-2026",
+            source_hint: "geometry",
+            document: GEOMETRY,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_health_ratios",
+            version: "openstax-2026",
+            source_hint: "health-ratios",
+            document: HEALTH,
+        })
+        .map_err(|e| e.join("; "))?,
+        discover_formula_module(SourceDocument {
+            domain: "source_derived_bounded_unit_conversion",
+            version: "openstax-2026",
+            source_hint: "unit-conversion",
+            document: UNITS,
+        })
+        .map_err(|e| e.join("; "))?,
     ];
     assert_eq!(modules.len(), 4);
     let mut cases = Vec::new();
@@ -182,7 +210,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     cases.extend(supported_cases(&modules, Partition::Sealed));
     cases.extend(boundary_cases());
     assert_eq!(cases.len(), 1600);
-    let corpus_sha256 = digest(&cases.iter().map(|case| (&case.text, case.partition, case.expected_authorized)).collect::<Vec<_>>());
+    let corpus_sha256 = digest(
+        &cases
+            .iter()
+            .map(|case| (&case.text, case.partition, case.expected_authorized))
+            .collect::<Vec<_>>(),
+    );
     let mut partitions = std::collections::BTreeMap::new();
     let mut exact_decisions = 0;
     let mut authorized = 0;
@@ -193,8 +226,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut tamper_rejections = 0;
     let mut false_authorizations = 0;
     let mut false_denials = 0;
-    for partition in [Partition::Development, Partition::Validation, Partition::Sealed, Partition::Boundary] {
-        let mut metrics = PartitionMetrics { cases: 0, exact: 0, authorized: 0, replay_verified: 0, tamper_rejected: 0, false_authorizations: 0, false_denials: 0 };
+    for partition in [
+        Partition::Development,
+        Partition::Validation,
+        Partition::Sealed,
+        Partition::Boundary,
+    ] {
+        let mut metrics = PartitionMetrics {
+            cases: 0,
+            exact: 0,
+            authorized: 0,
+            replay_verified: 0,
+            tamper_rejected: 0,
+            false_authorizations: 0,
+            false_denials: 0,
+        };
         for case in cases.iter().filter(|case| case.partition == partition) {
             let (actual, replay, tamper) = route(case, &modules);
             metrics.cases += 1;
@@ -207,10 +253,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let exact = actual == case.expected_authorized;
             metrics.exact += usize::from(exact);
             exact_decisions += usize::from(exact);
-            if !case.expected_authorized && actual { metrics.false_authorizations += 1; false_authorizations += 1; }
-            if case.expected_authorized && !actual { metrics.false_denials += 1; false_denials += 1; }
-            if partition == Partition::Sealed { sealed_exact += usize::from(exact); sealed_authorized += usize::from(actual); }
-            if partition == Partition::Boundary && !actual { boundary_refusals += 1; }
+            if !case.expected_authorized && actual {
+                metrics.false_authorizations += 1;
+                false_authorizations += 1;
+            }
+            if case.expected_authorized && !actual {
+                metrics.false_denials += 1;
+                false_denials += 1;
+            }
+            if partition == Partition::Sealed {
+                sealed_exact += usize::from(exact);
+                sealed_authorized += usize::from(actual);
+            }
+            if partition == Partition::Boundary && !actual {
+                boundary_refusals += 1;
+            }
         }
         partitions.insert(format!("{partition:?}"), metrics);
     }
@@ -251,6 +308,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.registry_mutations, 0);
     fs::write(REPORT_JSON, serde_json::to_vec_pretty(&report)?)?;
     fs::write(REPORT_MD, format!("# Stage 280 — four-candidate sealed benchmark\n\nFour source-derived bounded modules were evaluated through one route-blind generic frontend.\n\n* cases: 1600\n* exact decisions: {}\n* authorized: {}\n* sealed exact / authorized: {} / {}\n* boundary refusals: {}\n* frontend replay / tamper: {} / {}\n* route leakage: 0\n* false authorizations / denials: 0 / 0\n* manifest / registry mutations: 0 / 0\n\nReproduce with `cargo run --quiet --bin stage280_four_candidate_sealed_benchmark`.\n", report.exact_decisions, report.authorized, report.sealed_exact, report.sealed_authorized, report.boundary_refusals, report.frontend_replays, report.tamper_rejections))?;
-    println!("stage280 cases=1600 exact={} authorized={} sealed_authorized={} false_auth=0", report.exact_decisions, report.authorized, report.sealed_authorized);
+    println!(
+        "stage280 cases=1600 exact={} authorized={} sealed_authorized={} false_auth=0",
+        report.exact_decisions, report.authorized, report.sealed_authorized
+    );
     Ok(())
 }

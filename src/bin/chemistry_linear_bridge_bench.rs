@@ -8,15 +8,15 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use the_machine::linear_algebra_pack::{
+    evaluate_linear_algebra, LinearAlgebraArtifact, LinearAlgebraOperation, LinearAlgebraRequest,
+    LinearAlgebraResult, LinearAlgebraStatus,
+};
 use the_machine::source_formula_pack::chemistry_pack::chemistry_linear_bridge::{
     bridge_chemistry_to_linear, ChemistryLinearBridgeStatus,
 };
 use the_machine::source_formula_pack::chemistry_pack::{
     evaluate_chemistry, ChemistryOperation, ChemistryRequest, ChemistryStatus,
-};
-use the_machine::linear_algebra_pack::{
-    evaluate_linear_algebra, LinearAlgebraArtifact, LinearAlgebraOperation, LinearAlgebraRequest,
-    LinearAlgebraResult, LinearAlgebraStatus,
 };
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -116,7 +116,9 @@ fn evaluate_case(id: String, chemistry_request: ChemistryRequest, expected: Expe
             let basis_preserved = vector.basis.len() == vector.values.len()
                 && vector.basis.windows(2).all(|pair| pair[0] < pair[1]);
             let semantic_preserved = !vector.semantic_kind.is_empty()
-                && linear_request.requested_output.ends_with(&vector.semantic_kind);
+                && linear_request
+                    .requested_output
+                    .ends_with(&vector.semantic_kind);
             let valid = bridge.authorized()
                 && linear.status == LinearAlgebraStatus::Complete
                 && linear.replay_verified()
@@ -269,14 +271,32 @@ fn main() {
 
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Supported).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let refused = receipts.iter().filter(|r| r.expected == Expected::Refused).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Supported)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let refused = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Refused)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let supported_handoffs = receipts.iter().filter(|r| r.handoff_valid).count();
-    let chemistry_replays = receipts.iter().filter(|r| r.chemistry_status != ChemistryStatus::Complete || r.replay_verified).count();
-    let bridge_replays = receipts.iter().filter(|r| r.bridge_status != ChemistryLinearBridgeStatus::Complete || r.replay_verified).count();
-    let linear_replays = receipts.iter().filter(|r| r.linear_status.is_none() || r.replay_verified).count();
+    let chemistry_replays = receipts
+        .iter()
+        .filter(|r| r.chemistry_status != ChemistryStatus::Complete || r.replay_verified)
+        .count();
+    let bridge_replays = receipts
+        .iter()
+        .filter(|r| r.bridge_status != ChemistryLinearBridgeStatus::Complete || r.replay_verified)
+        .count();
+    let linear_replays = receipts
+        .iter()
+        .filter(|r| r.linear_status.is_none() || r.replay_verified)
+        .count();
     let tamper_rejections = receipts.iter().filter(|r| r.tamper_rejected).count();
     let basis_preserved = receipts.iter().filter(|r| r.handoff_valid).count();
     let semantic_kinds_preserved = receipts.iter().filter(|r| r.handoff_valid).count();
@@ -328,7 +348,10 @@ fn main() {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report).expect("composition report serializes");
-    std::fs::write("docs/stage_h_chemistry_linear_bridge.json", format!("{serialized}\n"))
-        .expect("composition report writes");
+    std::fs::write(
+        "docs/stage_h_chemistry_linear_bridge.json",
+        format!("{serialized}\n"),
+    )
+    .expect("composition report writes");
     println!("{serialized}");
 }

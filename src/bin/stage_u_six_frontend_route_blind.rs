@@ -121,8 +121,21 @@ fn digest<T: Serialize>(value: &T) -> String {
     format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap()))
 }
 
-fn no_request(module: Module, ambiguous: bool, provenance: bool, replay: bool, tamper: bool) -> Observation {
-    Observation { module, authorized: false, ambiguous, provenance, replay, tamper }
+fn no_request(
+    module: Module,
+    ambiguous: bool,
+    provenance: bool,
+    replay: bool,
+    tamper: bool,
+) -> Observation {
+    Observation {
+        module,
+        authorized: false,
+        ambiguous,
+        provenance,
+        replay,
+        tamper,
+    }
 }
 
 fn metric_observation(text: &str) -> Observation {
@@ -130,8 +143,13 @@ fn metric_observation(text: &str) -> Observation {
     let mut tampered_frontend = frontend.clone();
     tampered_frontend.replay_hash.push('x');
     let Some(request) = frontend.request.clone() else {
-        return no_request(Module::Metric, frontend.status == MetricFrontendStatus::Ambiguous,
-            frontend.replay_verified(), frontend.replay_verified(), !tampered_frontend.replay_verified());
+        return no_request(
+            Module::Metric,
+            frontend.status == MetricFrontendStatus::Ambiguous,
+            frontend.replay_verified(),
+            frontend.replay_verified(),
+            !tampered_frontend.replay_verified(),
+        );
     };
     let records = extract_metric_definitions(METRIC_SOURCE).expect("metric source extracts");
     let result = evaluate_metric(&request, &records);
@@ -155,8 +173,13 @@ fn observe(module: Module, text: &str) -> Observation {
             let mut tampered_frontend = frontend.clone();
             tampered_frontend.replay_hash.push('x');
             let Some(request) = frontend.request.clone() else {
-                return no_request(module, frontend.status == StatisticsFrontendStatus::Ambiguous,
-                    frontend.replay_verified(), frontend.replay_verified(), !tampered_frontend.replay_verified());
+                return no_request(
+                    module,
+                    frontend.status == StatisticsFrontendStatus::Ambiguous,
+                    frontend.replay_verified(),
+                    frontend.replay_verified(),
+                    !tampered_frontend.replay_verified(),
+                );
             };
             let result = evaluate_statistics(&request);
             let mut tampered_result = result.clone();
@@ -175,8 +198,13 @@ fn observe(module: Module, text: &str) -> Observation {
             let mut tampered_frontend = frontend.clone();
             tampered_frontend.replay_hash.push('x');
             let Some(request) = frontend.request.clone() else {
-                return no_request(module, frontend.status == ComplexFrontendStatus::Ambiguous,
-                    frontend.replay_verified(), frontend.replay_verified(), !tampered_frontend.replay_verified());
+                return no_request(
+                    module,
+                    frontend.status == ComplexFrontendStatus::Ambiguous,
+                    frontend.replay_verified(),
+                    frontend.replay_verified(),
+                    !tampered_frontend.replay_verified(),
+                );
             };
             let result = evaluate_complex(&request);
             let mut tampered_result = result.clone();
@@ -195,15 +223,22 @@ fn observe(module: Module, text: &str) -> Observation {
             let mut tampered_frontend = frontend.clone();
             tampered_frontend.replay_hash.push('x');
             let Some(request) = frontend.request.clone() else {
-                return no_request(module, frontend.status == ChemistryFrontendStatus::Ambiguous,
-                    frontend.replay_verified(), frontend.replay_verified(), !tampered_frontend.replay_verified());
+                return no_request(
+                    module,
+                    frontend.status == ChemistryFrontendStatus::Ambiguous,
+                    frontend.replay_verified(),
+                    frontend.replay_verified(),
+                    !tampered_frontend.replay_verified(),
+                );
             };
-            let result = the_machine::source_formula_pack::chemistry_pack::evaluate_chemistry(&request);
+            let result =
+                the_machine::source_formula_pack::chemistry_pack::evaluate_chemistry(&request);
             let mut tampered_result = result.clone();
             tampered_result.replay_hash.push('x');
             Observation {
                 module,
-                authorized: result.status == the_machine::source_formula_pack::chemistry_pack::ChemistryStatus::Complete,
+                authorized: result.status
+                    == the_machine::source_formula_pack::chemistry_pack::ChemistryStatus::Complete,
                 ambiguous: frontend.status == ChemistryFrontendStatus::Ambiguous,
                 provenance: result.source.is_some() && !result.provenance.is_empty(),
                 replay: frontend.replay_verified() && result.replay_verified(),
@@ -215,15 +250,21 @@ fn observe(module: Module, text: &str) -> Observation {
             let mut tampered_frontend = frontend.clone();
             tampered_frontend.replay_hash.push('x');
             let Some(request) = frontend.request.clone() else {
-                return no_request(module, frontend.status == BiologyFrontendStatus::Ambiguous,
-                    frontend.replay_verified(), frontend.replay_verified(), !tampered_frontend.replay_verified());
+                return no_request(
+                    module,
+                    frontend.status == BiologyFrontendStatus::Ambiguous,
+                    frontend.replay_verified(),
+                    frontend.replay_verified(),
+                    !tampered_frontend.replay_verified(),
+                );
             };
             let result = the_machine::source_formula_pack::biology_pack::evaluate_biology(&request);
             let mut tampered_result = result.clone();
             tampered_result.replay_hash.push('x');
             Observation {
                 module,
-                authorized: result.status == the_machine::source_formula_pack::biology_pack::BiologyStatus::Complete,
+                authorized: result.status
+                    == the_machine::source_formula_pack::biology_pack::BiologyStatus::Complete,
                 ambiguous: frontend.status == BiologyFrontendStatus::Ambiguous,
                 provenance: result.source.is_some() && !result.provenance.is_empty(),
                 replay: frontend.replay_verified() && result.replay_verified(),
@@ -235,8 +276,13 @@ fn observe(module: Module, text: &str) -> Observation {
             let mut tampered_frontend = frontend.clone();
             tampered_frontend.replay_hash.push('x');
             let Some(request) = frontend.request.clone() else {
-                return no_request(module, frontend.status == RegressionFrontendStatus::Ambiguous,
-                    frontend.replay_verified(), frontend.replay_verified(), !tampered_frontend.replay_verified());
+                return no_request(
+                    module,
+                    frontend.status == RegressionFrontendStatus::Ambiguous,
+                    frontend.replay_verified(),
+                    frontend.replay_verified(),
+                    !tampered_frontend.replay_verified(),
+                );
             };
             let result = evaluate_regression(&request);
             let mut tampered_result = result.clone();
@@ -255,14 +301,25 @@ fn observe(module: Module, text: &str) -> Observation {
 
 fn dispatch(text: &str) -> (Actual, Vec<Observation>) {
     let observations = [
-        Module::Statistics, Module::Complex, Module::Chemistry,
-        Module::Biology, Module::Metric, Module::Regression,
-    ].into_iter().map(|module| observe(module, text)).collect::<Vec<_>>();
+        Module::Statistics,
+        Module::Complex,
+        Module::Chemistry,
+        Module::Biology,
+        Module::Metric,
+        Module::Regression,
+    ]
+    .into_iter()
+    .map(|module| observe(module, text))
+    .collect::<Vec<_>>();
     let authorized = observations.iter().filter(|item| item.authorized).count();
     let ambiguous = observations.iter().any(|item| item.ambiguous);
-    let actual = if authorized == 1 && !ambiguous { Actual::Authorized }
-        else if authorized > 1 || ambiguous { Actual::Ambiguous }
-        else { Actual::Unsupported };
+    let actual = if authorized == 1 && !ambiguous {
+        Actual::Authorized
+    } else if authorized > 1 || ambiguous {
+        Actual::Ambiguous
+    } else {
+        Actual::Unsupported
+    };
     (actual, observations)
 }
 
@@ -279,8 +336,13 @@ fn generated_text(module: Module, expected: Expected, index: usize) -> String {
     }
     if expected == Expected::Unsupported {
         return match module {
-            Module::Regression => "Run a confidence interval and hypothesis test for a nonlinear logistic model.".into(),
-            _ => "Estimate a continuous density and a confidence interval from observations.".into(),
+            Module::Regression => {
+                "Run a confidence interval and hypothesis test for a nonlinear logistic model."
+                    .into()
+            }
+            _ => {
+                "Estimate a continuous density and a confidence interval from observations.".into()
+            }
         };
     }
     match module {
@@ -294,17 +356,34 @@ fn generated_text(module: Module, expected: Expected, index: usize) -> String {
             1 => "Multiply (3+2i) by (1-4i).".into(),
             _ => "Find the norm squared of (3-4i).".into(),
         },
-        Module::Chemistry => if index % 2 == 0 { "Parse this molecular formula: H2O." } else { "Validate reaction: N2 + 3H2 -> 2NH3." }.into(),
+        Module::Chemistry => if index % 2 == 0 {
+            "Parse this molecular formula: H2O."
+        } else {
+            "Validate reaction: N2 + 3H2 -> 2NH3."
+        }
+        .into(),
         Module::Biology => match index % 3 {
             0 => "For DNA sequence: AATTGGCC, determine base composition.".into(),
             1 => "Validate DNA sequence: ATCG.".into(),
             _ => "Find the reverse complement of DNA sequence: AATTGGCC, 5' to 3'.".into(),
         },
         Module::Metric => match index % 4 {
-            0 => format!("For a finite metric {}; check the metric axioms.", metric_table()),
-            1 => format!("For a finite metric {}; determine the distance from p0 to p2.", metric_table()),
-            2 => format!("For a finite metric {}; determine the open ball centered at p0 with radius 2.", metric_table()),
-            _ => format!("For a finite metric {}; determine the diameter.", metric_table()),
+            0 => format!(
+                "For a finite metric {}; check the metric axioms.",
+                metric_table()
+            ),
+            1 => format!(
+                "For a finite metric {}; determine the distance from p0 to p2.",
+                metric_table()
+            ),
+            2 => format!(
+                "For a finite metric {}; determine the open ball centered at p0 with radius 2.",
+                metric_table()
+            ),
+            _ => format!(
+                "For a finite metric {}; determine the diameter.",
+                metric_table()
+            ),
         },
         Module::Regression => match index % 5 {
             0 => "Calculate slope from covariance_sum=12 x_variance_sum=4.".into(),
@@ -318,30 +397,58 @@ fn generated_text(module: Module, expected: Expected, index: usize) -> String {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let modules = [
-        Module::Statistics, Module::Complex, Module::Chemistry,
-        Module::Biology, Module::Metric, Module::Regression,
+        Module::Statistics,
+        Module::Complex,
+        Module::Chemistry,
+        Module::Biology,
+        Module::Metric,
+        Module::Regression,
     ];
     let mut receipts = Vec::with_capacity(1_440);
     for (module_index, module) in modules.into_iter().enumerate() {
         for index in 0..240 {
-            let expected = if index < 120 { Expected::Supported } else if index < 160 { Expected::Ambiguous } else { Expected::Unsupported };
+            let expected = if index < 120 {
+                Expected::Supported
+            } else if index < 160 {
+                Expected::Ambiguous
+            } else {
+                Expected::Unsupported
+            };
             let text = generated_text(module, expected, index + module_index * 23);
             let (actual, observations) = dispatch(&text);
-            let authorized_modules = observations.iter().filter(|item| item.authorized).map(|item| item.module).collect::<Vec<_>>();
-            let ambiguous_modules = observations.iter().filter(|item| item.ambiguous).map(|item| item.module).collect::<Vec<_>>();
-            let selected_module = (authorized_modules.len() == 1 && ambiguous_modules.is_empty()).then(|| authorized_modules[0]);
+            let authorized_modules = observations
+                .iter()
+                .filter(|item| item.authorized)
+                .map(|item| item.module)
+                .collect::<Vec<_>>();
+            let ambiguous_modules = observations
+                .iter()
+                .filter(|item| item.ambiguous)
+                .map(|item| item.module)
+                .collect::<Vec<_>>();
+            let selected_module = (authorized_modules.len() == 1 && ambiguous_modules.is_empty())
+                .then(|| authorized_modules[0]);
             let exact = match expected {
-                Expected::Supported => actual == Actual::Authorized && selected_module == Some(module),
+                Expected::Supported => {
+                    actual == Actual::Authorized && selected_module == Some(module)
+                }
                 Expected::Ambiguous => actual == Actual::Ambiguous,
                 Expected::Unsupported => actual == Actual::Unsupported,
             };
             receipts.push(Receipt {
-                id: format!("stage_u_{module_index:02}_{index:03}"), text_sha256: digest(&text), expected, actual,
-                authorized_modules, ambiguous_modules, selected_module, exact,
+                id: format!("stage_u_{module_index:02}_{index:03}"),
+                text_sha256: digest(&text),
+                expected,
+                actual,
+                authorized_modules,
+                ambiguous_modules,
+                selected_module,
+                exact,
                 provenance: observations.iter().all(|item| item.provenance),
                 replay: observations.iter().all(|item| item.replay),
                 tamper_rejected: observations.iter().all(|item| item.tamper),
-                false_authorization: expected != Expected::Supported && actual == Actual::Authorized,
+                false_authorization: expected != Expected::Supported
+                    && actual == Actual::Authorized,
                 false_denial: expected == Expected::Supported && actual != Actual::Authorized,
             });
         }
@@ -349,29 +456,60 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let report = Report {
         schema: "stage-u-six-frontend-route-blind-v1",
         source: "all six validated source frontends invoked independently; no lexical route filter",
-        corpus_sha256: digest(&receipts), cases: receipts.len(),
-        supported: receipts.iter().filter(|r| r.expected == Expected::Supported).count(),
-        ambiguous: receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count(),
-        unsupported: receipts.iter().filter(|r| r.expected == Expected::Unsupported).count(),
+        corpus_sha256: digest(&receipts),
+        cases: receipts.len(),
+        supported: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Supported)
+            .count(),
+        ambiguous: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Ambiguous)
+            .count(),
+        unsupported: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Unsupported)
+            .count(),
         exact_decisions: receipts.iter().filter(|r| r.exact).count(),
-        authorized_supported: receipts.iter().filter(|r| r.expected == Expected::Supported && r.actual == Actual::Authorized).count(),
-        ambiguities_preserved: receipts.iter().filter(|r| r.expected == Expected::Ambiguous && r.actual == Actual::Ambiguous).count(),
-        unsupported_refusals: receipts.iter().filter(|r| r.expected == Expected::Unsupported && r.actual == Actual::Unsupported).count(),
+        authorized_supported: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Supported && r.actual == Actual::Authorized)
+            .count(),
+        ambiguities_preserved: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Ambiguous && r.actual == Actual::Ambiguous)
+            .count(),
+        unsupported_refusals: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Unsupported && r.actual == Actual::Unsupported)
+            .count(),
         frontend_invocations: receipts.len() * modules.len(),
-        multi_frontend_ambiguities: receipts.iter().filter(|r| r.authorized_modules.len() > 1).count(),
+        multi_frontend_ambiguities: receipts
+            .iter()
+            .filter(|r| r.authorized_modules.len() > 1)
+            .count(),
         provenance_preserved: receipts.iter().filter(|r| r.provenance).count(),
         replay_verified: receipts.iter().filter(|r| r.replay).count(),
         tamper_rejected: receipts.iter().filter(|r| r.tamper_rejected).count(),
         false_authorizations: receipts.iter().filter(|r| r.false_authorization).count(),
         false_denials: receipts.iter().filter(|r| r.false_denial).count(),
-        selected_module_counts: receipts.iter().fold(BTreeMap::new(), |mut counts, receipt| {
-            if let Some(module) = receipt.selected_module { *counts.entry(format!("{module:?}")).or_insert(0) += 1; }
-            counts
-        }),
-        hle_questions_read: 0, production_registry_mutations: 0, receipts,
+        selected_module_counts: receipts
+            .iter()
+            .fold(BTreeMap::new(), |mut counts, receipt| {
+                if let Some(module) = receipt.selected_module {
+                    *counts.entry(format!("{module:?}")).or_insert(0) += 1;
+                }
+                counts
+            }),
+        hle_questions_read: 0,
+        production_registry_mutations: 0,
+        receipts,
     };
     assert_eq!(report.cases, 1_440);
-    assert_eq!((report.supported, report.ambiguous, report.unsupported), (720, 240, 480));
+    assert_eq!(
+        (report.supported, report.ambiguous, report.unsupported),
+        (720, 240, 480)
+    );
     assert_eq!(report.exact_decisions, 1_440);
     assert_eq!(report.authorized_supported, 720);
     assert_eq!(report.ambiguities_preserved, 240);
@@ -382,7 +520,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.tamper_rejected, 1_440);
     assert_eq!(report.false_authorizations, 0);
     assert_eq!(report.false_denials, 0);
-    fs::write(REPORT_JSON, format!("{}\n", serde_json::to_string_pretty(&report)?))?;
+    fs::write(
+        REPORT_JSON,
+        format!("{}\n", serde_json::to_string_pretty(&report)?),
+    )?;
     fs::write(REPORT_MD, format!("# Stage U: six source frontends route-blind\n\n- Cases: 1,440 (720 supported, 240 ambiguous, 480 unsupported)\n- Frontend invocations: 8,640\n- Exact decisions: 1,440/1,440\n- Supported authorizations: 720/720\n- Ambiguities preserved: 240/240\n- Unsupported refusals: 480/480\n- Provenance, replay, tamper: 1,440/1,440 each\n- False authorizations / denials: 0 / 0\n- HLE questions read: 0\n- Production registry mutations: 0\n- Corpus report: `{}`\n", REPORT_JSON))?;
     Ok(())
 }

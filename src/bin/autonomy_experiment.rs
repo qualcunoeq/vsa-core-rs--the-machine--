@@ -234,9 +234,7 @@ async fn experiment_3() {
     // Stage 2: Act on assessment
     match state1 {
         ReasoningState::Confident {
-            plan,
-            confidence,
-            ..
+            plan, confidence, ..
         } => {
             eprintln!(
                 "  Iter 0: Confident → executing plan ({} steps, conf={:.2})",

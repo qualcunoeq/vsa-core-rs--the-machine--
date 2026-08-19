@@ -223,6 +223,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report.false_denials,
         ),
     )?;
-    println!("stage303 retrieval={} beliefs={} clone={} replay={} tamper={} false_auth=0", report.retrieval_cases, report.authorized_belief_updates, report.clone_memory_records, report.replay_verified, report.tamper_rejected);
+    println!(
+        "stage303 retrieval={} beliefs={} clone={} replay={} tamper={} false_auth=0",
+        report.retrieval_cases,
+        report.authorized_belief_updates,
+        report.clone_memory_records,
+        report.replay_verified,
+        report.tamper_rejected
+    );
     Ok(())
 }

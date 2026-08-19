@@ -17,9 +17,7 @@ use the_machine::actuator::{ActionRequest, ActionResult, JumpBoxActuator};
 use the_machine::diagnostic::{
     classify_structural, seed_diagnostic_knowledge, seed_error_classifier,
 };
-use the_machine::meta_reasoning::{
-    assess, extract_key_terms, ReasoningState,
-};
+use the_machine::meta_reasoning::{assess, extract_key_terms, ReasoningState};
 use the_machine::qa::QaEngine;
 use the_machine::text_encoder::ingest_text;
 use the_machine::VSABrain;

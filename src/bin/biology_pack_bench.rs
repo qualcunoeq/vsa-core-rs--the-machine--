@@ -229,9 +229,18 @@ fn main() {
 
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Supported).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let refused = receipts.iter().filter(|r| r.expected == Expected::Refused).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Supported)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let refused = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Refused)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let supported_artifacts = receipts.iter().filter(|r| r.authorized).count();
     let replay_verified = receipts.iter().filter(|r| r.replay_verified).count();
@@ -272,7 +281,10 @@ fn main() {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report).expect("biology report serializes");
-    std::fs::write("docs/stage_h_source_biology_pack.json", format!("{serialized}\n"))
-        .expect("biology report writes");
+    std::fs::write(
+        "docs/stage_h_source_biology_pack.json",
+        format!("{serialized}\n"),
+    )
+    .expect("biology report writes");
     println!("{serialized}");
 }

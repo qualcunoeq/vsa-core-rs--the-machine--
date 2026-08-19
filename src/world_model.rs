@@ -116,11 +116,28 @@ pub struct BeliefState {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum WorldUpdate {
-    ObservationAccepted { id: String, entity: EntityId },
-    Contradiction { entity: EntityId, timestamp: u64 },
-    EventApplied { id: String, entity: EntityId, from: String, to: String },
-    ImpossibleEvent { id: String, entity: EntityId },
-    MissingEvidence { id: String, entity: EntityId },
+    ObservationAccepted {
+        id: String,
+        entity: EntityId,
+    },
+    Contradiction {
+        entity: EntityId,
+        timestamp: u64,
+    },
+    EventApplied {
+        id: String,
+        entity: EntityId,
+        from: String,
+        to: String,
+    },
+    ImpossibleEvent {
+        id: String,
+        entity: EntityId,
+    },
+    MissingEvidence {
+        id: String,
+        entity: EntityId,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -136,13 +153,14 @@ pub struct WorldReplayReceipt {
 
 impl WorldReplayReceipt {
     pub fn replay_verified(&self) -> bool {
-        self.replay_hash == receipt_hash(
-            &self.updates,
-            &self.beliefs,
-            self.contradictions,
-            self.impossible_events,
-            self.missing_evidence,
-        )
+        self.replay_hash
+            == receipt_hash(
+                &self.updates,
+                &self.beliefs,
+                self.contradictions,
+                self.impossible_events,
+                self.missing_evidence,
+            )
             && self.updates.iter().all(|update| match update {
                 WorldUpdate::ObservationAccepted { id, .. }
                 | WorldUpdate::EventApplied { id, .. }
@@ -179,11 +197,29 @@ fn score(reliability: u8, confidence: u8) -> u16 {
 }
 
 fn value_state(value: &ClaimValue) -> Option<&str> {
-    match value { ClaimValue::State(state) => Some(state), ClaimValue::Boolean(_) => None }
+    match value {
+        ClaimValue::State(state) => Some(state),
+        ClaimValue::Boolean(_) => None,
+    }
 }
 
 pub fn replay_investigation(investigation: &Investigation) -> WorldReplayReceipt {
-    let mut beliefs: BTreeMap<EntityId, BeliefState> = investigation.entities.iter().cloned().map(|entity| (entity.clone(), BeliefState { entity, state: None, competing: Vec::new(), claims: Vec::new() })).collect();
+    let mut beliefs: BTreeMap<EntityId, BeliefState> = investigation
+        .entities
+        .iter()
+        .cloned()
+        .map(|entity| {
+            (
+                entity.clone(),
+                BeliefState {
+                    entity,
+                    state: None,
+                    competing: Vec::new(),
+                    claims: Vec::new(),
+                },
+            )
+        })
+        .collect();
     let mut guard_values: BTreeMap<(EntityId, String), bool> = BTreeMap::new();
     let mut updates = Vec::new();
     let mut contradictions = 0;
@@ -195,20 +231,47 @@ pub fn replay_investigation(investigation: &Investigation) -> WorldReplayReceipt
     events.sort_by(|a, b| (a.timestamp, &a.id).cmp(&(b.timestamp, &b.id)));
     for observation in observations {
         let Some(belief) = beliefs.get_mut(&observation.entity) else {
-            updates.push(WorldUpdate::ImpossibleEvent { id: observation.id, entity: observation.entity });
+            updates.push(WorldUpdate::ImpossibleEvent {
+                id: observation.id,
+                entity: observation.entity,
+            });
             impossible_events += 1;
             continue;
         };
-        let claim = BeliefClaim { value: observation.value.clone(), kind: ClaimKind::Observed, source: observation.source.clone(), timestamp: observation.timestamp, valid_from: observation.valid_from, valid_until: observation.valid_until, score: score(observation.reliability, observation.confidence) };
+        let claim = BeliefClaim {
+            value: observation.value.clone(),
+            kind: ClaimKind::Observed,
+            source: observation.source.clone(),
+            timestamp: observation.timestamp,
+            valid_from: observation.valid_from,
+            valid_until: observation.valid_until,
+            score: score(observation.reliability, observation.confidence),
+        };
         if let ClaimValue::Boolean(value) = observation.value {
-            guard_values.insert((observation.entity.clone(), observation.variable.clone()), value);
+            guard_values.insert(
+                (observation.entity.clone(), observation.variable.clone()),
+                value,
+            );
         }
         if observation.variable == "status" {
-            let conflicting: Vec<&BeliefClaim> = belief.claims.iter().filter(|existing| existing.timestamp == observation.timestamp && value_state(&existing.value) != value_state(&claim.value)).collect();
+            let conflicting: Vec<&BeliefClaim> = belief
+                .claims
+                .iter()
+                .filter(|existing| {
+                    existing.timestamp == observation.timestamp
+                        && value_state(&existing.value) != value_state(&claim.value)
+                })
+                .collect();
             if !conflicting.is_empty() {
                 contradictions += 1;
-                updates.push(WorldUpdate::Contradiction { entity: observation.entity.clone(), timestamp: observation.timestamp });
-                if conflicting.iter().all(|existing| existing.score == claim.score) {
+                updates.push(WorldUpdate::Contradiction {
+                    entity: observation.entity.clone(),
+                    timestamp: observation.timestamp,
+                });
+                if conflicting
+                    .iter()
+                    .all(|existing| existing.score == claim.score)
+                {
                     belief.competing.extend(conflicting.into_iter().cloned());
                     belief.competing.push(claim.clone());
                     belief.state = None;
@@ -230,39 +293,101 @@ pub fn replay_investigation(investigation: &Investigation) -> WorldReplayReceipt
             }
         }
         belief.claims.push(claim);
-        updates.push(WorldUpdate::ObservationAccepted { id: observation.id, entity: observation.entity });
+        updates.push(WorldUpdate::ObservationAccepted {
+            id: observation.id,
+            entity: observation.entity,
+        });
     }
     for event in events {
         let Some(belief) = beliefs.get_mut(&event.entity) else {
             impossible_events += 1;
-            updates.push(WorldUpdate::ImpossibleEvent { id: event.id, entity: event.entity });
+            updates.push(WorldUpdate::ImpossibleEvent {
+                id: event.id,
+                entity: event.entity,
+            });
             continue;
         };
         let Some(current) = belief.state.clone() else {
             missing_evidence += 1;
-            updates.push(WorldUpdate::MissingEvidence { id: event.id, entity: event.entity });
+            updates.push(WorldUpdate::MissingEvidence {
+                id: event.id,
+                entity: event.entity,
+            });
             continue;
         };
-        let candidates: Vec<&TransitionRule> = investigation.spec.transitions.iter().filter(|rule| rule.from == current && rule.event == event.event).collect();
-        let viable: Vec<&TransitionRule> = candidates.iter().copied().filter(|rule| rule.guard.as_ref().is_none_or(|guard| guard_values.get(&(event.entity.clone(), format!("guard:{guard}"))) == Some(&true))).collect();
+        let candidates: Vec<&TransitionRule> = investigation
+            .spec
+            .transitions
+            .iter()
+            .filter(|rule| rule.from == current && rule.event == event.event)
+            .collect();
+        let viable: Vec<&TransitionRule> = candidates
+            .iter()
+            .copied()
+            .filter(|rule| {
+                rule.guard.as_ref().is_none_or(|guard| {
+                    guard_values.get(&(event.entity.clone(), format!("guard:{guard}")))
+                        == Some(&true)
+                })
+            })
+            .collect();
         if viable.len() != 1 {
-            if candidates.iter().any(|rule| rule.guard.as_ref().is_some_and(|guard| guard_values.get(&(event.entity.clone(), format!("guard:{guard}"))).is_none())) {
+            if candidates.iter().any(|rule| {
+                rule.guard.as_ref().is_some_and(|guard| {
+                    guard_values
+                        .get(&(event.entity.clone(), format!("guard:{guard}")))
+                        .is_none()
+                })
+            }) {
                 missing_evidence += 1;
-                updates.push(WorldUpdate::MissingEvidence { id: event.id, entity: event.entity });
+                updates.push(WorldUpdate::MissingEvidence {
+                    id: event.id,
+                    entity: event.entity,
+                });
             } else {
                 impossible_events += 1;
-                updates.push(WorldUpdate::ImpossibleEvent { id: event.id, entity: event.entity });
+                updates.push(WorldUpdate::ImpossibleEvent {
+                    id: event.id,
+                    entity: event.entity,
+                });
             }
             continue;
         }
         let rule = viable[0];
         let from = current.clone();
         belief.state = Some(rule.to.clone());
-        belief.claims.push(BeliefClaim { value: ClaimValue::State(rule.to.clone()), kind: ClaimKind::Derived, source: event.source.clone(), timestamp: event.timestamp, valid_from: None, valid_until: None, score: score(event.reliability, event.confidence) });
-        updates.push(WorldUpdate::EventApplied { id: event.id, entity: event.entity, from, to: rule.to.clone() });
+        belief.claims.push(BeliefClaim {
+            value: ClaimValue::State(rule.to.clone()),
+            kind: ClaimKind::Derived,
+            source: event.source.clone(),
+            timestamp: event.timestamp,
+            valid_from: None,
+            valid_until: None,
+            score: score(event.reliability, event.confidence),
+        });
+        updates.push(WorldUpdate::EventApplied {
+            id: event.id,
+            entity: event.entity,
+            from,
+            to: rule.to.clone(),
+        });
     }
-    let replay_hash = receipt_hash(&updates, &beliefs, contradictions, impossible_events, missing_evidence);
-    WorldReplayReceipt { investigation_id: investigation.id.clone(), updates, beliefs, contradictions, impossible_events, missing_evidence, replay_hash }
+    let replay_hash = receipt_hash(
+        &updates,
+        &beliefs,
+        contradictions,
+        impossible_events,
+        missing_evidence,
+    );
+    WorldReplayReceipt {
+        investigation_id: investigation.id.clone(),
+        updates,
+        beliefs,
+        contradictions,
+        impossible_events,
+        missing_evidence,
+        replay_hash,
+    }
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -277,12 +402,35 @@ pub struct InvestigationBenchmarkReport {
 }
 
 pub fn evaluate_corpus(cases: &[Investigation]) -> InvestigationBenchmarkReport {
-    let mut report = InvestigationBenchmarkReport { cases: cases.len(), ..Default::default() };
+    let mut report = InvestigationBenchmarkReport {
+        cases: cases.len(),
+        ..Default::default()
+    };
     for case in cases {
         let receipt = replay_investigation(case);
-        let final_state = receipt.beliefs.values().next().and_then(|belief| belief.state.clone());
-        let competing = receipt.beliefs.values().map(|belief| belief.competing.len()).sum::<usize>();
-        report.exact_expectations += usize::from(receipt.updates.iter().filter(|update| matches!(update, WorldUpdate::EventApplied { .. })).count() == case.expected.applied_events && receipt.contradictions == case.expected.contradictions && receipt.impossible_events == case.expected.impossible_events && receipt.missing_evidence == case.expected.missing_evidence && final_state == case.expected.final_state && competing == case.expected.competing_hypotheses);
+        let final_state = receipt
+            .beliefs
+            .values()
+            .next()
+            .and_then(|belief| belief.state.clone());
+        let competing = receipt
+            .beliefs
+            .values()
+            .map(|belief| belief.competing.len())
+            .sum::<usize>();
+        report.exact_expectations += usize::from(
+            receipt
+                .updates
+                .iter()
+                .filter(|update| matches!(update, WorldUpdate::EventApplied { .. }))
+                .count()
+                == case.expected.applied_events
+                && receipt.contradictions == case.expected.contradictions
+                && receipt.impossible_events == case.expected.impossible_events
+                && receipt.missing_evidence == case.expected.missing_evidence
+                && final_state == case.expected.final_state
+                && competing == case.expected.competing_hypotheses,
+        );
         report.replay_verified += usize::from(receipt.replay_verified());
         report.contradictions += receipt.contradictions;
         report.impossible_events += receipt.impossible_events;
@@ -293,29 +441,180 @@ pub fn evaluate_corpus(cases: &[Investigation]) -> InvestigationBenchmarkReport 
 }
 
 fn base_spec() -> WorldModelSpec {
-    WorldModelSpec { states: ["idle", "active", "blocked"].into_iter().map(String::from).collect(), events: ["start", "stop", "fail", "reset"].into_iter().map(String::from).collect(), transitions: vec![TransitionRule { from: "idle".into(), event: "start".into(), guard: None, to: "active".into() }, TransitionRule { from: "active".into(), event: "stop".into(), guard: None, to: "idle".into() }, TransitionRule { from: "active".into(), event: "fail".into(), guard: None, to: "blocked".into() }, TransitionRule { from: "blocked".into(), event: "reset".into(), guard: None, to: "idle".into() }, TransitionRule { from: "idle".into(), event: "start".into(), guard: Some("authorized".into()), to: "active".into() }], required_variables: ["status".into(), "guard:authorized".into()].into_iter().collect() }
+    WorldModelSpec {
+        states: ["idle", "active", "blocked"]
+            .into_iter()
+            .map(String::from)
+            .collect(),
+        events: ["start", "stop", "fail", "reset"]
+            .into_iter()
+            .map(String::from)
+            .collect(),
+        transitions: vec![
+            TransitionRule {
+                from: "idle".into(),
+                event: "start".into(),
+                guard: None,
+                to: "active".into(),
+            },
+            TransitionRule {
+                from: "active".into(),
+                event: "stop".into(),
+                guard: None,
+                to: "idle".into(),
+            },
+            TransitionRule {
+                from: "active".into(),
+                event: "fail".into(),
+                guard: None,
+                to: "blocked".into(),
+            },
+            TransitionRule {
+                from: "blocked".into(),
+                event: "reset".into(),
+                guard: None,
+                to: "idle".into(),
+            },
+            TransitionRule {
+                from: "idle".into(),
+                event: "start".into(),
+                guard: Some("authorized".into()),
+                to: "active".into(),
+            },
+        ],
+        required_variables: ["status".into(), "guard:authorized".into()]
+            .into_iter()
+            .collect(),
+    }
 }
 
-fn observation(id: &str, value: &str, timestamp: u64, confidence: u8) -> Observation { Observation { id: id.into(), entity: EntityId("device-0".into()), variable: "status".into(), value: ClaimValue::State(value.into()), timestamp, valid_from: None, valid_until: None, source: if id == "obs-b" { "sensor-b".into() } else { "sensor-a".into() }, reliability: 90, confidence } }
-fn event(id: &str, name: &str, timestamp: u64) -> WorldEvent { WorldEvent { id: id.into(), entity: EntityId("device-0".into()), event: name.into(), timestamp, source: "controller".into(), reliability: 90, confidence: 90 } }
-fn investigation(id: String, observations: Vec<Observation>, events: Vec<WorldEvent>, expected: InvestigationExpectation) -> Investigation { Investigation { id, entities: [EntityId("device-0".into())].into_iter().collect(), spec: base_spec(), observations, events, expected } }
+fn observation(id: &str, value: &str, timestamp: u64, confidence: u8) -> Observation {
+    Observation {
+        id: id.into(),
+        entity: EntityId("device-0".into()),
+        variable: "status".into(),
+        value: ClaimValue::State(value.into()),
+        timestamp,
+        valid_from: None,
+        valid_until: None,
+        source: if id == "obs-b" {
+            "sensor-b".into()
+        } else {
+            "sensor-a".into()
+        },
+        reliability: 90,
+        confidence,
+    }
+}
+fn event(id: &str, name: &str, timestamp: u64) -> WorldEvent {
+    WorldEvent {
+        id: id.into(),
+        entity: EntityId("device-0".into()),
+        event: name.into(),
+        timestamp,
+        source: "controller".into(),
+        reliability: 90,
+        confidence: 90,
+    }
+}
+fn investigation(
+    id: String,
+    observations: Vec<Observation>,
+    events: Vec<WorldEvent>,
+    expected: InvestigationExpectation,
+) -> Investigation {
+    Investigation {
+        id,
+        entities: [EntityId("device-0".into())].into_iter().collect(),
+        spec: base_spec(),
+        observations,
+        events,
+        expected,
+    }
+}
 
 pub fn synthetic_corpus() -> Vec<Investigation> {
     let mut cases = Vec::with_capacity(240);
     for index in 0..100 {
-        cases.push(investigation(format!("world-valid-{index:03}"), vec![observation("obs-0", "idle", 0, 95)], vec![event("evt-start", "start", 1), event("evt-stop", "stop", 2)], InvestigationExpectation { applied_events: 2, contradictions: 0, impossible_events: 0, missing_evidence: 0, final_state: Some("idle".into()), competing_hypotheses: 0 }));
+        cases.push(investigation(
+            format!("world-valid-{index:03}"),
+            vec![observation("obs-0", "idle", 0, 95)],
+            vec![event("evt-start", "start", 1), event("evt-stop", "stop", 2)],
+            InvestigationExpectation {
+                applied_events: 2,
+                contradictions: 0,
+                impossible_events: 0,
+                missing_evidence: 0,
+                final_state: Some("idle".into()),
+                competing_hypotheses: 0,
+            },
+        ));
     }
     for index in 0..40 {
-        cases.push(investigation(format!("world-contradiction-{index:03}"), vec![observation("obs-a", "idle", 0, 90), observation("obs-b", "active", 0, 90)], vec![event("evt-stop", "stop", 1)], InvestigationExpectation { applied_events: 0, contradictions: 1, impossible_events: 0, missing_evidence: 1, final_state: None, competing_hypotheses: 2 }));
+        cases.push(investigation(
+            format!("world-contradiction-{index:03}"),
+            vec![
+                observation("obs-a", "idle", 0, 90),
+                observation("obs-b", "active", 0, 90),
+            ],
+            vec![event("evt-stop", "stop", 1)],
+            InvestigationExpectation {
+                applied_events: 0,
+                contradictions: 1,
+                impossible_events: 0,
+                missing_evidence: 1,
+                final_state: None,
+                competing_hypotheses: 2,
+            },
+        ));
     }
     for index in 0..40 {
-        cases.push(investigation(format!("world-impossible-{index:03}"), vec![observation("obs-0", "idle", 0, 95)], vec![event("evt-stop", "stop", 1)], InvestigationExpectation { applied_events: 0, contradictions: 0, impossible_events: 1, missing_evidence: 0, final_state: Some("idle".into()), competing_hypotheses: 0 }));
+        cases.push(investigation(
+            format!("world-impossible-{index:03}"),
+            vec![observation("obs-0", "idle", 0, 95)],
+            vec![event("evt-stop", "stop", 1)],
+            InvestigationExpectation {
+                applied_events: 0,
+                contradictions: 0,
+                impossible_events: 1,
+                missing_evidence: 0,
+                final_state: Some("idle".into()),
+                competing_hypotheses: 0,
+            },
+        ));
     }
     for index in 0..30 {
-        cases.push(investigation(format!("world-missing-{index:03}"), Vec::new(), vec![event("evt-start", "start", 1)], InvestigationExpectation { applied_events: 0, contradictions: 0, impossible_events: 0, missing_evidence: 1, final_state: None, competing_hypotheses: 0 }));
+        cases.push(investigation(
+            format!("world-missing-{index:03}"),
+            Vec::new(),
+            vec![event("evt-start", "start", 1)],
+            InvestigationExpectation {
+                applied_events: 0,
+                contradictions: 0,
+                impossible_events: 0,
+                missing_evidence: 1,
+                final_state: None,
+                competing_hypotheses: 0,
+            },
+        ));
     }
     for index in 0..30 {
-        cases.push(investigation(format!("world-hypothesis-{index:03}"), vec![observation("obs-a", "idle", 0, 90), observation("obs-b", "active", 0, 80)], Vec::new(), InvestigationExpectation { applied_events: 0, contradictions: 1, impossible_events: 0, missing_evidence: 0, final_state: Some("idle".into()), competing_hypotheses: 0 }));
+        cases.push(investigation(
+            format!("world-hypothesis-{index:03}"),
+            vec![
+                observation("obs-a", "idle", 0, 90),
+                observation("obs-b", "active", 0, 80),
+            ],
+            Vec::new(),
+            InvestigationExpectation {
+                applied_events: 0,
+                contradictions: 1,
+                impossible_events: 0,
+                missing_evidence: 0,
+                final_state: Some("idle".into()),
+                competing_hypotheses: 0,
+            },
+        ));
     }
     cases
 }
@@ -344,8 +643,16 @@ mod tests {
         assert!(report.missing_evidence > 0);
         let receipt = replay_investigation(&cases[0]);
         assert!(receipt.replay_verified());
-        assert!(receipt.beliefs.values().flat_map(|belief| belief.claims.iter()).any(|claim| claim.kind == ClaimKind::Observed));
-        assert!(receipt.beliefs.values().flat_map(|belief| belief.claims.iter()).any(|claim| claim.kind == ClaimKind::Derived));
+        assert!(receipt
+            .beliefs
+            .values()
+            .flat_map(|belief| belief.claims.iter())
+            .any(|claim| claim.kind == ClaimKind::Observed));
+        assert!(receipt
+            .beliefs
+            .values()
+            .flat_map(|belief| belief.claims.iter())
+            .any(|claim| claim.kind == ClaimKind::Derived));
         let mut tampered = receipt.clone();
         tampered.updates.pop();
         assert!(!tampered.replay_verified());
@@ -354,7 +661,10 @@ mod tests {
         assert!(!counter_tampered.replay_verified());
         assert_eq!(cases[0].observations[0].source, "sensor-a");
         assert_eq!(cases[100].observations[1].source, "sensor-b");
-        let interval = Observation { valid_until: Some(5), ..cases[0].observations[0].clone() };
+        let interval = Observation {
+            valid_until: Some(5),
+            ..cases[0].observations[0].clone()
+        };
         assert!(interval.valid_at(5));
         assert!(!interval.valid_at(6));
     }

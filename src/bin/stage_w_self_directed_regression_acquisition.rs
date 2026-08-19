@@ -11,15 +11,15 @@ use std::collections::BTreeMap;
 use std::fs;
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::curriculum_campaign::{
-    candidate_is_promotable, cluster_gaps, manifest_unchanged, observe_gap,
-    propose_learning_plans, GapKind, SourceModuleCandidate,
+    candidate_is_promotable, cluster_gaps, manifest_unchanged, observe_gap, propose_learning_plans,
+    GapKind, SourceModuleCandidate,
 };
 use the_machine::probability_pack::Rational;
 use the_machine::source_formula_pack::{
     validate_formula_records, Expr, InputConstraint, SourceCitation,
 };
-use the_machine::source_regression_pack::{evaluate_regression, records, DOMAIN};
 use the_machine::source_formula_pack::{FormulaRequest, FormulaStatus};
+use the_machine::source_regression_pack::{evaluate_regression, records, DOMAIN};
 
 const SOURCE: &str = include_str!("../../docs/sources/openstax_finite_regression_source.txt");
 const REPORT_JSON: &str = "docs/stage_w_self_directed_regression_acquisition.json";
@@ -216,8 +216,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         {
             independent_validation_correct += 1;
         }
-        if result.replay_verified() { independent_replay_verified += 1; }
-        if !tampered.replay_verified() { independent_tamper_rejected += 1; }
+        if result.replay_verified() {
+            independent_replay_verified += 1;
+        }
+        if !tampered.replay_verified() {
+            independent_tamper_rejected += 1;
+        }
     }
     let mut mutations = Vec::new();
     let mut duplicate_id = source_records.clone();
@@ -236,7 +240,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .push(InputConstraint::Positive("unlisted".into()));
     mutations.push(undeclared_constraint);
     let mut bad_citation = source_records.clone();
-    bad_citation[0].source = SourceCitation { source_id: String::new(), ..bad_citation[0].source.clone() };
+    bad_citation[0].source = SourceCitation {
+        source_id: String::new(),
+        ..bad_citation[0].source.clone()
+    };
     mutations.push(bad_citation);
     let mut malformed_expression = source_records.clone();
     malformed_expression[0].expression = Expr::Div(

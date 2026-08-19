@@ -119,7 +119,11 @@ fn main() {
             1 => format!("Given DNA sequence is {sequence}; validate the bases."),
             _ => format!("Check strand: {sequence}, 5' to 3'."),
         };
-        receipts.push(run(format!("validate_{index:03}"), text, Expected::Complete));
+        receipts.push(run(
+            format!("validate_{index:03}"),
+            text,
+            Expected::Complete,
+        ));
     }
     for index in 0..20 {
         receipts.push(run(
@@ -181,18 +185,36 @@ fn main() {
 
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Complete).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let unsupported_count = receipts.iter().filter(|r| r.expected == Expected::Unsupported).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Complete)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let unsupported_count = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Unsupported)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let complete_frontends = receipts
         .iter()
         .filter(|r| r.frontend_status == BiologyFrontendStatus::Complete)
         .count();
     let downstream_authorizations = receipts.iter().filter(|r| r.downstream_authorized).count();
-    let frontend_replay_verified = receipts.iter().filter(|r| r.frontend_replay_verified).count();
-    let downstream_replay_verified = receipts.iter().filter(|r| r.downstream_replay_verified).count();
-    let frontend_tamper_rejections = receipts.iter().filter(|r| r.frontend_tamper_rejected).count();
+    let frontend_replay_verified = receipts
+        .iter()
+        .filter(|r| r.frontend_replay_verified)
+        .count();
+    let downstream_replay_verified = receipts
+        .iter()
+        .filter(|r| r.downstream_replay_verified)
+        .count();
+    let frontend_tamper_rejections = receipts
+        .iter()
+        .filter(|r| r.frontend_tamper_rejected)
+        .count();
     let downstream_tamper_rejections = receipts
         .iter()
         .filter(|r| r.downstream_tamper_rejected)
@@ -239,7 +261,10 @@ fn main() {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report).expect("biology frontend serializes");
-    std::fs::write("docs/stage_h_source_biology_frontend.json", format!("{serialized}\n"))
-        .expect("biology frontend report writes");
+    std::fs::write(
+        "docs/stage_h_source_biology_frontend.json",
+        format!("{serialized}\n"),
+    )
+    .expect("biology frontend report writes");
     println!("{serialized}");
 }

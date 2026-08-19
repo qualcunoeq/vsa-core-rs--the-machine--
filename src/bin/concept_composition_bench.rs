@@ -1,9 +1,7 @@
 //! Run the bounded validated-concept composition benchmark.
 
 use std::io::Write;
-use the_machine::concept_composition_benchmark::{
-    evaluate, evaluate_budget_sweep_with_stages,
-};
+use the_machine::concept_composition_benchmark::{evaluate, evaluate_budget_sweep_with_stages};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();

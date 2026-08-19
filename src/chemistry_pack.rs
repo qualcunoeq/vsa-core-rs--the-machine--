@@ -24,9 +24,8 @@ const MAX_COEFFICIENT: u32 = 100;
 const MAX_ATOMS: u32 = 500;
 
 const ELEMENTS: &[&str] = &[
-    "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si",
-    "P", "S", "Cl", "Ar", "K", "Ca", "Fe", "Co", "Ni", "Cu", "Zn", "Br", "Ag", "I",
-    "Ba", "Au", "Hg", "Pb",
+    "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne", "Na", "Mg", "Al", "Si", "P", "S", "Cl",
+    "Ar", "K", "Ca", "Fe", "Co", "Ni", "Cu", "Zn", "Br", "Ag", "I", "Ba", "Au", "Hg", "Pb",
 ];
 
 fn source() -> SourceCitation {
@@ -103,7 +102,10 @@ pub struct ChemistryResult {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("chemistry serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("chemistry serializes"))
+    )
 }
 
 fn payload(result: &ChemistryResult) -> impl Serialize + '_ {
@@ -201,7 +203,9 @@ impl FormulaParser {
             return Ok(1);
         }
         let value: String = self.chars[start..self.position].iter().collect();
-        let value = value.parse::<u32>().map_err(|_| "invalid subscript".to_string())?;
+        let value = value
+            .parse::<u32>()
+            .map_err(|_| "invalid subscript".to_string())?;
         if value == 0 || value > MAX_COEFFICIENT {
             return Err("subscripts must be positive and bounded".into());
         }
@@ -249,7 +253,9 @@ impl FormulaParser {
                     add_atoms(&mut atoms, &name, multiplier)?;
                 }
                 Some(value) if value.is_ascii_digit() => {
-                    return Err(format!("leading coefficient {value} is not part of a formula"));
+                    return Err(format!(
+                        "leading coefficient {value} is not part of a formula"
+                    ));
                 }
                 Some(value) => return Err(format!("unsupported formula character {value}")),
             }

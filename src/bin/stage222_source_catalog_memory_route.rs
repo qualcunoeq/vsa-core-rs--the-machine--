@@ -226,7 +226,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let corpus_sha256 = digest(
         &cases
             .iter()
-            .map(|case| (&case.id, &case.text, case.domain, case.version, case.expected, case.conflict))
+            .map(|case| {
+                (
+                    &case.id,
+                    &case.text,
+                    case.domain,
+                    case.version,
+                    case.expected,
+                    case.conflict,
+                )
+            })
             .collect::<Vec<_>>(),
     );
     let mut exact_decisions = 0;
@@ -248,7 +257,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for case in &cases {
         let mut memory = base.clone();
         if case.conflict {
-            let catalog = catalogs.iter().find(|catalog| catalog.domain == case.domain).unwrap();
+            let catalog = catalogs
+                .iter()
+                .find(|catalog| catalog.domain == case.domain)
+                .unwrap();
             let payload = serde_json::to_string(&catalog.records)?;
             assert_eq!(
                 memory.append(MemoryRecord {

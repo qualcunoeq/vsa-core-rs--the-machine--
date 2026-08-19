@@ -62,7 +62,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut cases: Vec<(String, MarkovRequest, MarkovStatus, Option<MarkovArtifact>)> = Vec::new();
     let one_step = Some(MarkovArtifact::Distribution(vec![q(3, 4), q(1, 4)]));
     for i in 0..40 {
-        cases.push((format!("one_step_{i}"), request(MarkovOperation::OneStep), MarkovStatus::Complete, one_step.clone()));
+        cases.push((
+            format!("one_step_{i}"),
+            request(MarkovOperation::OneStep),
+            MarkovStatus::Complete,
+            one_step.clone(),
+        ));
     }
     let mut horizon = request(MarkovOperation::FiniteHorizon);
     horizon.steps = 3;
@@ -72,26 +77,51 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         vec![q(43, 64), q(21, 64)],
     ]));
     for i in 0..40 {
-        cases.push((format!("finite_horizon_{i}"), horizon.clone(), MarkovStatus::Complete, horizon_artifact.clone()));
+        cases.push((
+            format!("finite_horizon_{i}"),
+            horizon.clone(),
+            MarkovStatus::Complete,
+            horizon_artifact.clone(),
+        ));
     }
     let stationary_artifact = Some(MarkovArtifact::Distribution(vec![q(2, 3), q(1, 3)]));
     for i in 0..40 {
-        cases.push((format!("stationary_{i}"), request(MarkovOperation::StationaryDistribution), MarkovStatus::Complete, stationary_artifact.clone()));
+        cases.push((
+            format!("stationary_{i}"),
+            request(MarkovOperation::StationaryDistribution),
+            MarkovStatus::Complete,
+            stationary_artifact.clone(),
+        ));
     }
     for i in 0..20 {
         let mut r = request(MarkovOperation::OneStep);
         r.row_stochastic = None;
-        cases.push((format!("missing_convention_{i}"), r, MarkovStatus::Ambiguous, None));
+        cases.push((
+            format!("missing_convention_{i}"),
+            r,
+            MarkovStatus::Ambiguous,
+            None,
+        ));
     }
     for i in 0..20 {
         let mut r = request(MarkovOperation::StationaryDistribution);
         r.transition = vec![vec![q(1, 1), q(0, 1)], vec![q(0, 1), q(1, 1)]];
-        cases.push((format!("nonunique_stationary_{i}"), r, MarkovStatus::NonUniqueStationary, None));
+        cases.push((
+            format!("nonunique_stationary_{i}"),
+            r,
+            MarkovStatus::NonUniqueStationary,
+            None,
+        ));
     }
     for i in 0..20 {
         let mut r = request(MarkovOperation::FiniteHorizon);
         r.steps = 9;
-        cases.push((format!("over_budget_{i}"), r, MarkovStatus::BudgetExceeded, None));
+        cases.push((
+            format!("over_budget_{i}"),
+            r,
+            MarkovStatus::BudgetExceeded,
+            None,
+        ));
     }
     for i in 0..20 {
         let mut r = request(MarkovOperation::StationaryDistribution);
@@ -101,12 +131,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             vec![q(1, 4), q(1, 4), q(1, 2)],
         ];
         r.initial = vec![q(1, 3), q(1, 3), q(1, 3)];
-        cases.push((format!("larger_stationary_{i}"), r, MarkovStatus::Unsupported, None));
+        cases.push((
+            format!("larger_stationary_{i}"),
+            r,
+            MarkovStatus::Unsupported,
+            None,
+        ));
     }
     for i in 0..40 {
         let mut r = request(MarkovOperation::OneStep);
         r.transition[0][0] = q(3, 2);
-        cases.push((format!("invalid_transition_{i}"), r, MarkovStatus::InvalidTransition, None));
+        cases.push((
+            format!("invalid_transition_{i}"),
+            r,
+            MarkovStatus::InvalidTransition,
+            None,
+        ));
     }
     assert_eq!(cases.len(), 240);
     let corpus_sha256 = hash(&cases);
@@ -132,17 +172,51 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         });
     }
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == MarkovStatus::Complete).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == MarkovStatus::Ambiguous).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == MarkovStatus::Complete)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == MarkovStatus::Ambiguous)
+        .count();
     let refused = cases - supported - ambiguous;
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let replay_verified = receipts.iter().filter(|r| r.replay).count();
     let tamper_rejections = receipts.iter().filter(|r| r.tamper_rejected).count();
     let false_authorizations = receipts.iter().filter(|r| r.false_authorization).count();
-    let false_denials = receipts.iter().filter(|r| r.expected == MarkovStatus::Complete && !r.exact).count();
-    assert_eq!((exact_decisions, replay_verified, tamper_rejections, false_authorizations, false_denials), (240, 240, 240, 0, 0));
-    let report = Report { schema: "phase71-finite-markov-pack-v1", corpus_sha256, cases, supported, ambiguous, refused, exact_decisions, replay_verified, tamper_rejections, false_authorizations, false_denials, receipts };
-    fs::write("docs/stage_a_finite_markov_pack.json", serde_json::to_vec_pretty(&report)?)?;
+    let false_denials = receipts
+        .iter()
+        .filter(|r| r.expected == MarkovStatus::Complete && !r.exact)
+        .count();
+    assert_eq!(
+        (
+            exact_decisions,
+            replay_verified,
+            tamper_rejections,
+            false_authorizations,
+            false_denials
+        ),
+        (240, 240, 240, 0, 0)
+    );
+    let report = Report {
+        schema: "phase71-finite-markov-pack-v1",
+        corpus_sha256,
+        cases,
+        supported,
+        ambiguous,
+        refused,
+        exact_decisions,
+        replay_verified,
+        tamper_rejections,
+        false_authorizations,
+        false_denials,
+        receipts,
+    };
+    fs::write(
+        "docs/stage_a_finite_markov_pack.json",
+        serde_json::to_vec_pretty(&report)?,
+    )?;
     println!("{}", serde_json::to_string_pretty(&report)?);
     Ok(())
 }

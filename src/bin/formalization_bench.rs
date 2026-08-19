@@ -17,7 +17,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .cloned()
         .unwrap_or_else(|| "/tmp/formalization_bench.jsonl".into());
     let commit = args.get(2).cloned().unwrap_or_else(|| "unknown".into());
-    let corpus: FormalizationCorpus = serde_json::from_str(&std::fs::read_to_string(&corpus_path)?)?;
+    let corpus: FormalizationCorpus =
+        serde_json::from_str(&std::fs::read_to_string(&corpus_path)?)?;
     let errors = corpus.validation_errors();
     if !errors.is_empty() {
         return Err(format!("formalization corpus validation failed: {errors:?}").into());

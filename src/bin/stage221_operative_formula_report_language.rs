@@ -210,7 +210,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut has_target = false;
         let mut has_excluded = false;
         for catalog in &catalogs {
-            let result = formalize_source_formula_report(&case.text, catalog.domain, &catalog.records);
+            let result =
+                formalize_source_formula_report(&case.text, catalog.domain, &catalog.records);
             report_invocations += 1;
             all_replayed &= report_replay_verified(&result);
             let mut tampered = result.clone();
@@ -218,10 +219,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             all_tampered &= !report_replay_verified(&tampered);
             let status = result.frontend.status;
             has_target |= result.regions.iter().any(|region| {
-                matches!(region.role, the_machine::source_formula_frontend::FormulaRegionRole::Target)
+                matches!(
+                    region.role,
+                    the_machine::source_formula_frontend::FormulaRegionRole::Target
+                )
             });
             has_excluded |= result.regions.iter().any(|region| {
-                matches!(region.role, the_machine::source_formula_frontend::FormulaRegionRole::Definition)
+                matches!(
+                    region.role,
+                    the_machine::source_formula_frontend::FormulaRegionRole::Definition
+                )
             });
             if result.frontend.status == FrontendStatus::Complete {
                 complete.push((catalog, result));

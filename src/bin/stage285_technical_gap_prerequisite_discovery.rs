@@ -87,7 +87,11 @@ fn mapping(family: &str) -> (&'static str, &'static str, bool) {
             true,
         ),
         "missing_mobius_indexing" => ("mobius_source_boundary", "mobius_inversion_sequence", true),
-        "malformed_constraints" => ("frontend_missing_required_field", "row_stochastic_transition", true),
+        "malformed_constraints" => (
+            "frontend_missing_required_field",
+            "row_stochastic_transition",
+            true,
+        ),
         _ => ("unknown_semantic_residual", "unknown_artifact", false),
     }
 }
@@ -138,7 +142,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         } else {
             CapabilityGapStatus::UnsupportedBoundary
         };
-        let Some(gap) = propose_capability_gap(&residual.gate, status, vec![residual.id.clone()]) else {
+        let Some(gap) = propose_capability_gap(&residual.gate, status, vec![residual.id.clone()])
+        else {
             unknown_gate_refusals += 1;
             continue;
         };
@@ -149,17 +154,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         proposal_tamper_rejections += usize::from(!capability_gap_replay_verified(&tampered));
         let discovery = discover(&manifest, std::slice::from_ref(&residual.artifact));
         if residual.known_gate {
-            known_artifact_discoveries += usize::from(discovery.status == DiscoveryStatus::Complete);
+            known_artifact_discoveries +=
+                usize::from(discovery.status == DiscoveryStatus::Complete);
         } else {
-            unknown_artifact_refusals += usize::from(discovery.status == DiscoveryStatus::UnknownArtifact);
+            unknown_artifact_refusals +=
+                usize::from(discovery.status == DiscoveryStatus::UnknownArtifact);
         }
         acyclic_dependency_checks += 1;
         if !residual.known_gate {
-            cycle_rejections += usize::from(!the_machine::prerequisite_discovery::proposed_edge_is_acyclic(
-                &manifest,
-                "source_derived_bounded_unit_conversion",
-                "unknown_curriculum_pack",
-            ));
+            cycle_rejections += usize::from(
+                !the_machine::prerequisite_discovery::proposed_edge_is_acyclic(
+                    &manifest,
+                    "source_derived_bounded_unit_conversion",
+                    "unknown_curriculum_pack",
+                ),
+            );
         }
     }
     let report = Report {

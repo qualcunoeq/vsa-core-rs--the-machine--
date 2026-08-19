@@ -4,15 +4,15 @@
 //! missing modeling steps.  It only expands the unique capability selected
 //! for an already-grounded target and returns its dependency-first closure.
 
-use crate::capabilities::{CapabilityIoType, CapabilityRegistry, CapabilitySelection, CapabilitySpec};
+use crate::capabilities::{
+    CapabilityIoType, CapabilityRegistry, CapabilitySelection, CapabilitySpec,
+};
 use crate::constant_rate_model::{ModelArtifactType, ModelConstructorRegistry, ModelSelection};
 use crate::equation_classification::{
     execute_equation_classification, route_classified_equation, EquationClassificationFailure,
     EquationClassificationReceipt, EquationRoutingFailure,
 };
-use crate::equation_normalization::{
-    execute_equation_normalization, EquationNormalizationFailure,
-};
+use crate::equation_normalization::{execute_equation_normalization, EquationNormalizationFailure};
 use crate::evidence::{
     DerivedFact, DerivedFactIndex, FactConflict, FactDerivationRejection, FactIndexInsert,
     FactIndexQueryFailure, FactIndexRejection, FactPolicy, FactPolicyRejection, FactStatus,
@@ -141,12 +141,28 @@ pub struct CapabilityChainPreferenceReceipt {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainExplanationNote {
-    LowestCost { candidate_id: String },
-    EqualCost { candidate_ids: Vec<String> },
-    HigherCost { candidate_id: String, cost: PlanCost },
-    VerificationEvidence { candidate_id: String, cases: usize },
-    ContractBurden { candidate_id: String, requirements: usize },
-    QualityFailures { candidate_id: String, failures: usize },
+    LowestCost {
+        candidate_id: String,
+    },
+    EqualCost {
+        candidate_ids: Vec<String>,
+    },
+    HigherCost {
+        candidate_id: String,
+        cost: PlanCost,
+    },
+    VerificationEvidence {
+        candidate_id: String,
+        cases: usize,
+    },
+    ContractBurden {
+        candidate_id: String,
+        requirements: usize,
+    },
+    QualityFailures {
+        candidate_id: String,
+        failures: usize,
+    },
 }
 
 /// Structured, deterministic explanation of a preference receipt. Notes are
@@ -268,17 +284,12 @@ pub fn propose_capability_chain_repairs(
             goal: execution.plan.goal,
             steps,
         };
-        let original_cost = execution
-            .plan
-            .cost(registry)
-            .map_err(|error| CapabilityChainRepairFailure::UnknownCapability(format!(
-                "{error:?}"
-            )))?;
-        let replacement_cost = proposed_plan
-            .cost(registry)
-            .map_err(|error| CapabilityChainRepairFailure::UnknownCapability(format!(
-                "{error:?}"
-            )))?;
+        let original_cost = execution.plan.cost(registry).map_err(|error| {
+            CapabilityChainRepairFailure::UnknownCapability(format!("{error:?}"))
+        })?;
+        let replacement_cost = proposed_plan.cost(registry).map_err(|error| {
+            CapabilityChainRepairFailure::UnknownCapability(format!("{error:?}"))
+        })?;
         let evaluation = PlanRepairEvaluation {
             plan_id: execution.execution_id.clone(),
             old_cost: original_cost,
@@ -378,9 +389,11 @@ pub fn validate_capability_chain_repair(
     repaired_execution: &CapabilityChainExecutionReceipt,
 ) -> Result<CapabilityChainRepairValidationReceipt, CapabilityChainRepairValidationFailure> {
     if repaired_execution.status != CapabilityChainExecutionStatus::Succeeded {
-        return Err(CapabilityChainRepairValidationFailure::ExecutionNotSucceeded(
-            repaired_execution.status,
-        ));
+        return Err(
+            CapabilityChainRepairValidationFailure::ExecutionNotSucceeded(
+                repaired_execution.status,
+            ),
+        );
     }
     if repaired_execution.plan != candidate.proposed_plan {
         return Err(CapabilityChainRepairValidationFailure::PlanMismatch);
@@ -508,17 +521,18 @@ impl CapabilityChainRepairInstallationLedger {
         installation_id: impl Into<String>,
         approval: &CapabilityChainRepairApprovalReceipt,
         plan: CapabilityChainPlan,
-    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure>
+    {
         let installation_id = installation_id.into();
         if self.installations.contains_key(&installation_id) {
-            return Err(CapabilityChainRepairInstallationFailure::DuplicateInstallation(
-                installation_id,
-            ));
+            return Err(
+                CapabilityChainRepairInstallationFailure::DuplicateInstallation(installation_id),
+            );
         }
         if approval.decision != CapabilityChainRepairApprovalDecision::Approved {
-            return Err(CapabilityChainRepairInstallationFailure::ApprovalNotGranted(
-                approval.decision,
-            ));
+            return Err(
+                CapabilityChainRepairInstallationFailure::ApprovalNotGranted(approval.decision),
+            );
         }
         if plan != approval.proposed_plan {
             return Err(CapabilityChainRepairInstallationFailure::PlanMismatch);
@@ -539,13 +553,11 @@ impl CapabilityChainRepairInstallationLedger {
         &mut self,
         installation_id: &str,
         verification_receipt: impl Into<String>,
-    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
-        let receipt = self
-            .installations
-            .get_mut(installation_id)
-            .ok_or_else(|| CapabilityChainRepairInstallationFailure::UnknownInstallation(
-                installation_id.into(),
-            ))?;
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure>
+    {
+        let receipt = self.installations.get_mut(installation_id).ok_or_else(|| {
+            CapabilityChainRepairInstallationFailure::UnknownInstallation(installation_id.into())
+        })?;
         if receipt.status != CapabilityChainRepairInstallationStatus::Prepared {
             return Err(CapabilityChainRepairInstallationFailure::InvalidTransition(
                 receipt.status,
@@ -564,13 +576,11 @@ impl CapabilityChainRepairInstallationLedger {
         &mut self,
         installation_id: &str,
         reason: impl Into<String>,
-    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
-        let receipt = self
-            .installations
-            .get_mut(installation_id)
-            .ok_or_else(|| CapabilityChainRepairInstallationFailure::UnknownInstallation(
-                installation_id.into(),
-            ))?;
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure>
+    {
+        let receipt = self.installations.get_mut(installation_id).ok_or_else(|| {
+            CapabilityChainRepairInstallationFailure::UnknownInstallation(installation_id.into())
+        })?;
         if receipt.status != CapabilityChainRepairInstallationStatus::Prepared {
             return Err(CapabilityChainRepairInstallationFailure::InvalidTransition(
                 receipt.status,
@@ -584,13 +594,11 @@ impl CapabilityChainRepairInstallationLedger {
     pub fn rollback(
         &mut self,
         installation_id: &str,
-    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure> {
-        let receipt = self
-            .installations
-            .get_mut(installation_id)
-            .ok_or_else(|| CapabilityChainRepairInstallationFailure::UnknownInstallation(
-                installation_id.into(),
-            ))?;
+    ) -> Result<CapabilityChainRepairInstallationReceipt, CapabilityChainRepairInstallationFailure>
+    {
+        let receipt = self.installations.get_mut(installation_id).ok_or_else(|| {
+            CapabilityChainRepairInstallationFailure::UnknownInstallation(installation_id.into())
+        })?;
         if receipt.status != CapabilityChainRepairInstallationStatus::Applied {
             return Err(CapabilityChainRepairInstallationFailure::InvalidTransition(
                 receipt.status,
@@ -611,11 +619,9 @@ impl CapabilityChainPlan {
         let mut dependency_edges = 0;
         let mut verification_steps = 0;
         for capability_id in &self.steps {
-            let capability = registry
-                .get(capability_id)
-                .ok_or_else(|| CapabilityChainPlanningFailure::UnknownCapability(
-                    capability_id.clone(),
-                ))?;
+            let capability = registry.get(capability_id).ok_or_else(|| {
+                CapabilityChainPlanningFailure::UnknownCapability(capability_id.clone())
+            })?;
             dependency_edges += capability.dependencies.len();
             if !capability.verifier.trim().is_empty() {
                 verification_steps += 1;
@@ -637,11 +643,9 @@ impl CapabilityChainPlan {
         let mut contract_burden = 0;
         let mut quality_failures = 0;
         for capability_id in &self.steps {
-            let capability = registry
-                .get(capability_id)
-                .ok_or_else(|| CapabilityChainPlanningFailure::UnknownCapability(
-                    capability_id.clone(),
-                ))?;
+            let capability = registry.get(capability_id).ok_or_else(|| {
+                CapabilityChainPlanningFailure::UnknownCapability(capability_id.clone())
+            })?;
             verification_evidence += capability.regression_cases.len();
             contract_burden += capability.input_requirements.len();
             quality_failures += capability.quality_gate.false_authorizations;
@@ -840,10 +844,16 @@ pub struct CapabilityChainProofSynthesisReceipt {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofSynthesisFailure {
     NoProofOrCapabilityPlan,
-    CapabilityPlanInsufficientProofSteps { required: usize, available: usize },
+    CapabilityPlanInsufficientProofSteps {
+        required: usize,
+        available: usize,
+    },
     PrefixNotIndexed(String),
     UnverifiedPrefix(String),
-    IncompatibleHandoff { produced: Vec<String>, handoff: Vec<String> },
+    IncompatibleHandoff {
+        produced: Vec<String>,
+        handoff: Vec<String>,
+    },
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -1266,7 +1276,10 @@ impl CapabilityChainStrategicRouteComparisonReceipt {
                 CapabilityChainStrategicRouteDecision::ExploreFresh(fresh_id)
             }
             (true, None, _) => CapabilityChainStrategicRouteDecision::Ambiguous(
-                frontier.iter().map(|candidate| candidate.candidate_id.clone()).collect(),
+                frontier
+                    .iter()
+                    .map(|candidate| candidate.candidate_id.clone())
+                    .collect(),
             ),
         };
         CapabilityChainStrategicRouteDecisionReceipt {
@@ -1424,10 +1437,7 @@ impl CapabilityChainProofConceptStrategyIndex {
                 ),
             );
         }
-        let entries = self
-            .context_evidence
-            .entry(strategy_id.into())
-            .or_default();
+        let entries = self.context_evidence.entry(strategy_id.into()).or_default();
         let duplicate = entries.iter().any(|existing| {
             existing.domain == evidence.domain
                 && existing.contract_signature == evidence.contract_signature
@@ -1538,8 +1548,8 @@ impl CapabilityChainProofConceptStrategyIndex {
             let global_supporting_instances = strategy.supporting_instances;
             let contextual_supporting_instances =
                 context.map(|context| self.contextual_support(&strategy.strategy_id, context));
-            let supporting_instances = contextual_supporting_instances
-                .unwrap_or(global_supporting_instances);
+            let supporting_instances =
+                contextual_supporting_instances.unwrap_or(global_supporting_instances);
             candidates.push(CapabilityChainStrategicRouteCandidate {
                 candidate_id: strategy.strategy_id.clone(),
                 source: CapabilityChainStrategicRouteSource::StoredStrategy,
@@ -1552,8 +1562,7 @@ impl CapabilityChainProofConceptStrategyIndex {
             });
         }
         if let Some(plan) = fresh_plan.filter(|plan| plan.goal == goal_artifact) {
-            if let (Ok(cost), Ok(diagnostics)) = (plan.cost(registry), plan.diagnostics(registry))
-            {
+            if let (Ok(cost), Ok(diagnostics)) = (plan.cost(registry), plan.diagnostics(registry)) {
                 candidates.push(CapabilityChainStrategicRouteCandidate {
                     candidate_id: "fresh-capability-plan".into(),
                     source: CapabilityChainStrategicRouteSource::FreshCapabilityPlan,
@@ -1584,10 +1593,9 @@ impl CapabilityChainProofConceptStrategyIndex {
         let mut frontier_candidate_ids = Vec::new();
         let mut dominated_candidate_ids = Vec::new();
         for candidate in &candidates {
-            if candidates
-                .iter()
-                .any(|other| other.candidate_id != candidate.candidate_id && dominates(other, candidate))
-            {
+            if candidates.iter().any(|other| {
+                other.candidate_id != candidate.candidate_id && dominates(other, candidate)
+            }) {
                 dominated_candidate_ids.push(candidate.candidate_id.clone());
             } else {
                 frontier_candidate_ids.push(candidate.candidate_id.clone());
@@ -1642,9 +1650,7 @@ impl CapabilityChainProofConceptPlanningReceipt {
                     .map(|proposal| proposal.concept_id.clone())
                     .collect::<Vec<_>>();
                 if tied.len() == 1 {
-                    CapabilityChainProofConceptPlanningPreference::Preferred(
-                        tied[0].clone(),
-                    )
+                    CapabilityChainProofConceptPlanningPreference::Preferred(tied[0].clone())
                 } else {
                     CapabilityChainProofConceptPlanningPreference::Ambiguous(tied)
                 }
@@ -1705,19 +1711,16 @@ impl CapabilityChainProofConceptDiscoveryReceipt {
     pub fn extract_contracts(
         &self,
         registry: &CapabilityRegistry,
-    ) -> Result<Vec<CapabilityChainProofConceptContract>,
-        CapabilityChainProofConceptContractFailure> {
+    ) -> Result<Vec<CapabilityChainProofConceptContract>, CapabilityChainProofConceptContractFailure>
+    {
         self.schemas
             .iter()
             .map(|schema| {
-                let first = schema
-                    .capabilities
-                    .first()
-                    .ok_or_else(|| {
-                        CapabilityChainProofConceptContractFailure::EmptyConcept(
-                            schema.concept_id.clone(),
-                        )
-                    })?;
+                let first = schema.capabilities.first().ok_or_else(|| {
+                    CapabilityChainProofConceptContractFailure::EmptyConcept(
+                        schema.concept_id.clone(),
+                    )
+                })?;
                 let last = schema
                     .capabilities
                     .last()
@@ -1810,8 +1813,10 @@ pub fn compose_validated_proof_concepts(
     left_validation: &CapabilityChainProofConceptValidationReceipt,
     right: &CapabilityChainProofConceptContract,
     right_validation: &CapabilityChainProofConceptValidationReceipt,
-) -> Result<CapabilityChainProofConceptCompositionReceipt,
-    CapabilityChainProofConceptCompositionFailure> {
+) -> Result<
+    CapabilityChainProofConceptCompositionReceipt,
+    CapabilityChainProofConceptCompositionFailure,
+> {
     if !left_validation.passed || left_validation.concept_id != left.concept_id {
         return Err(
             CapabilityChainProofConceptCompositionFailure::ValidationNotPassed(
@@ -1827,9 +1832,11 @@ pub fn compose_validated_proof_concepts(
         );
     }
     if left.concept_id == right.concept_id {
-        return Err(CapabilityChainProofConceptCompositionFailure::DuplicateConcept(
-            left.concept_id.clone(),
-        ));
+        return Err(
+            CapabilityChainProofConceptCompositionFailure::DuplicateConcept(
+                left.concept_id.clone(),
+            ),
+        );
     }
     if !left
         .output_artifacts
@@ -1941,9 +1948,9 @@ impl CapabilityChainProofConceptIndex {
         validation: &CapabilityChainProofConceptValidationReceipt,
     ) -> Result<String, CapabilityChainProofConceptIndexFailure> {
         if validation.concept_id != contract.concept_id || !validation.passed {
-            return Err(CapabilityChainProofConceptIndexFailure::ValidationNotPassed(
-                contract.concept_id,
-            ));
+            return Err(
+                CapabilityChainProofConceptIndexFailure::ValidationNotPassed(contract.concept_id),
+            );
         }
         if self.concepts.contains_key(&contract.concept_id) {
             return Err(CapabilityChainProofConceptIndexFailure::DuplicateConcept(
@@ -2006,9 +2013,7 @@ impl CapabilityChainProofConceptIndex {
             .concepts
             .values()
             .filter(|concept| {
-                concept
-                    .output_artifacts
-                    .contains(&goal_artifact)
+                concept.output_artifacts.contains(&goal_artifact)
                     && concept
                         .input_artifacts
                         .iter()
@@ -2104,7 +2109,11 @@ impl CapabilityChainProofConceptIndex {
                 rejected = true;
             }
             for (from, to) in specs.iter().zip(specs.iter().skip(1)) {
-                if !from.produces.iter().any(|output| to.consumes.contains(output)) {
+                if !from
+                    .produces
+                    .iter()
+                    .any(|output| to.consumes.contains(output))
+                {
                     rejections.push(
                         CapabilityChainProofConceptPlanningRejection::IncompatibleHandoff {
                             concept_id: contract.concept_id.clone(),
@@ -2236,7 +2245,12 @@ impl CapabilityChainProofConceptIndex {
         }
         proposals.sort_by(|left, right| left.concept_id.cmp(&right.concept_id));
         CapabilityChainProofConceptPlanningReceipt {
-            available_inputs: available_inputs.iter().copied().collect::<BTreeSet<_>>().into_iter().collect(),
+            available_inputs: available_inputs
+                .iter()
+                .copied()
+                .collect::<BTreeSet<_>>()
+                .into_iter()
+                .collect(),
             goal_artifact,
             proposals,
             rejections,
@@ -2699,7 +2713,10 @@ pub struct CapabilityChainProofAbstractionTrajectoryReceipt {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum CapabilityChainProofAbstractionTrajectoryPlanningFailure {
     DuplicateExperiment(String),
-    DuplicateUnlockFamily { experiment_id: String, family_id: String },
+    DuplicateUnlockFamily {
+        experiment_id: String,
+        family_id: String,
+    },
     ZeroValidationCost(String),
 }
 
@@ -2754,8 +2771,7 @@ pub enum CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure {
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Default)]
 pub struct CapabilityChainProofAbstractionUnlockCalibrationLedger {
-    observations:
-        BTreeMap<String, CapabilityChainProofAbstractionUnlockCalibrationObservation>,
+    observations: BTreeMap<String, CapabilityChainProofAbstractionUnlockCalibrationObservation>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -3075,9 +3091,9 @@ impl CapabilityChainProofIndex {
         }
         for step in &proof.steps {
             if step.verification_receipt.trim().is_empty() {
-                return Err(CapabilityChainProofIndexFailure::MissingVerificationReceipt(
-                    step.step_index,
-                ));
+                return Err(
+                    CapabilityChainProofIndexFailure::MissingVerificationReceipt(step.step_index),
+                );
             }
         }
         let mut seen_retrievals = BTreeSet::new();
@@ -3097,12 +3113,10 @@ impl CapabilityChainProofIndex {
             }
             let key = (fact.capability.clone(), fact.fact_id.clone());
             if !seen_retrievals.insert(key) {
-                return Err(
-                    CapabilityChainProofIndexFailure::DuplicateFactRetrieval {
-                        capability: fact.capability.clone(),
-                        fact_id: fact.fact_id.clone(),
-                    },
-                );
+                return Err(CapabilityChainProofIndexFailure::DuplicateFactRetrieval {
+                    capability: fact.capability.clone(),
+                    fact_id: fact.fact_id.clone(),
+                });
             }
         }
         let fingerprint = proof.reasoning_fingerprint();
@@ -3130,10 +3144,7 @@ impl CapabilityChainProofIndex {
     /// validity remain governed by the existing verification policies. A tie
     /// at the minimum cost is reported as ambiguous rather than resolved by
     /// map or insertion order.
-    pub fn rank_goal_proofs(
-        &self,
-        goal_artifact: &str,
-    ) -> CapabilityChainProofPreferenceReceipt {
+    pub fn rank_goal_proofs(&self, goal_artifact: &str) -> CapabilityChainProofPreferenceReceipt {
         let mut candidates = self
             .proofs
             .iter()
@@ -3143,23 +3154,21 @@ impl CapabilityChainProofIndex {
                     .iter()
                     .any(|artifact| artifact == goal_artifact)
             })
-            .map(|(fingerprint, proof)| CapabilityChainProofPreferenceCandidate {
-                fingerprint: fingerprint.clone(),
-                cost: CapabilityChainProofCost {
-                    proof_steps: proof.steps.len(),
-                    retrieved_facts: proof.retrieved_facts.len(),
+            .map(
+                |(fingerprint, proof)| CapabilityChainProofPreferenceCandidate {
+                    fingerprint: fingerprint.clone(),
+                    cost: CapabilityChainProofCost {
+                        proof_steps: proof.steps.len(),
+                        retrieved_facts: proof.retrieved_facts.len(),
+                    },
                 },
-            })
+            )
             .collect::<Vec<_>>();
         candidates.sort_by(|left, right| {
             left.cost
                 .proof_steps
                 .cmp(&right.cost.proof_steps)
-                .then_with(|| {
-                    left.cost
-                        .retrieved_facts
-                        .cmp(&right.cost.retrieved_facts)
-                })
+                .then_with(|| left.cost.retrieved_facts.cmp(&right.cost.retrieved_facts))
                 .then_with(|| left.fingerprint.cmp(&right.fingerprint))
         });
         let minimum = candidates.first().map(|candidate| &candidate.cost);
@@ -3241,8 +3250,8 @@ impl CapabilityChainProofIndex {
                 capabilities.clone(),
                 proof.final_artifacts.clone(),
             );
-            let encoded = serde_json::to_vec(&signature)
-                .expect("proof abstraction signature must serialize");
+            let encoded =
+                serde_json::to_vec(&signature).expect("proof abstraction signature must serialize");
             let pattern_id = format!("{:x}", Sha256::digest(encoded));
             grouped
                 .entry(pattern_id.clone())
@@ -3329,16 +3338,16 @@ impl CapabilityChainProofIndex {
         &self,
         pattern_id: &str,
         minimum_instances: usize,
-    ) -> Result<CapabilityChainProofAbstractionProposal, CapabilityChainProofAbstractionProposalFailure>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionProposal,
+        CapabilityChainProofAbstractionProposalFailure,
+    > {
         let pattern = self
             .abstract_proof_shapes()
             .into_iter()
             .find(|pattern| pattern.pattern_id == pattern_id)
             .ok_or_else(|| {
-                CapabilityChainProofAbstractionProposalFailure::UnknownPattern(
-                    pattern_id.into(),
-                )
+                CapabilityChainProofAbstractionProposalFailure::UnknownPattern(pattern_id.into())
             })?;
         if pattern.instances < minimum_instances {
             return Err(
@@ -3351,8 +3360,8 @@ impl CapabilityChainProofIndex {
         Ok(CapabilityChainProofAbstractionProposal {
             pattern,
             minimum_instances,
-            expected_effect:
-                "repeatedly observed proof shape may support a reusable abstraction".into(),
+            expected_effect: "repeatedly observed proof shape may support a reusable abstraction"
+                .into(),
             risk: ImprovementRisk::Medium,
             validation_requirements: vec![
                 "reproduce the proof shape on held-out inputs".into(),
@@ -3534,11 +3543,7 @@ impl CapabilityChainProofIndex {
             left.cost
                 .proof_steps
                 .cmp(&right.cost.proof_steps)
-                .then_with(|| {
-                    left.cost
-                        .retrieved_facts
-                        .cmp(&right.cost.retrieved_facts)
-                })
+                .then_with(|| left.cost.retrieved_facts.cmp(&right.cost.retrieved_facts))
                 .then_with(|| left.candidate_id.cmp(&right.candidate_id))
         });
         let minimum = candidates.first().map(|candidate| &candidate.cost);
@@ -3629,8 +3634,7 @@ impl CapabilityChainProofIndex {
                     {
                         continue;
                     }
-                    let Ok(composed) = compose_capability_chain_proofs(current, candidate)
-                    else {
+                    let Ok(composed) = compose_capability_chain_proofs(current, candidate) else {
                         continue;
                     };
                     let fingerprint = composed.reasoning_fingerprint();
@@ -3678,23 +3682,23 @@ impl CapabilityChainProofAbstractionProposal {
             .filter(|capability| {
                 capability.id != candidate.id && capability.produces.contains(&self.pattern.goal)
             })
-            .map(|capability| CapabilityChainProofAbstractionValueAlternative {
-                capability_id: capability.id.clone(),
-                score: CapabilityChainProofAbstractionValueScore {
-                    proof_steps: 1,
-                    dependency_count: capability.dependencies.len(),
-                    contract_burden: capability.input_requirements.len(),
-                    replay_failures: capability.quality_gate.replay_failures,
-                    false_authorizations: capability.quality_gate.false_authorizations,
+            .map(
+                |capability| CapabilityChainProofAbstractionValueAlternative {
+                    capability_id: capability.id.clone(),
+                    score: CapabilityChainProofAbstractionValueScore {
+                        proof_steps: 1,
+                        dependency_count: capability.dependencies.len(),
+                        contract_burden: capability.input_requirements.len(),
+                        replay_failures: capability.quality_gate.replay_failures,
+                        false_authorizations: capability.quality_gate.false_authorizations,
+                    },
                 },
-            })
+            )
             .collect::<Vec<_>>();
         alternatives.sort_by(|left, right| left.capability_id.cmp(&right.capability_id));
         let decision = if alternatives.is_empty() {
             CapabilityChainProofAbstractionValueDecision::NoBaseline
-        } else if candidate_score.replay_failures > 0
-            || candidate_score.false_authorizations > 0
-        {
+        } else if candidate_score.replay_failures > 0 || candidate_score.false_authorizations > 0 {
             CapabilityChainProofAbstractionValueDecision::NotPreferred
         } else {
             let candidate_key = candidate_score.ordering_key();
@@ -3836,8 +3840,10 @@ impl CapabilityChainProofAbstractionValueScore {
 /// or authorization decision; equal maxima remain explicitly ambiguous.
 pub fn rank_proof_abstraction_priorities(
     inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
-) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
-{
+) -> Result<
+    CapabilityChainProofAbstractionPriorityReceipt,
+    CapabilityChainProofAbstractionPriorityFailure,
+> {
     rank_proof_abstraction_priorities_internal(inputs, None)
 }
 
@@ -3847,29 +3853,33 @@ pub fn rank_proof_abstraction_priorities(
 pub fn rank_proof_abstraction_priorities_with_meta_learning(
     inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
     profile: &CapabilityChainProofAbstractionMetaLearningProfile,
-) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
-{
+) -> Result<
+    CapabilityChainProofAbstractionPriorityReceipt,
+    CapabilityChainProofAbstractionPriorityFailure,
+> {
     rank_proof_abstraction_priorities_internal(inputs, Some(profile))
 }
 
 fn rank_proof_abstraction_priorities_internal(
     inputs: Vec<CapabilityChainProofAbstractionPriorityInput>,
     profile: Option<&CapabilityChainProofAbstractionMetaLearningProfile>,
-) -> Result<CapabilityChainProofAbstractionPriorityReceipt, CapabilityChainProofAbstractionPriorityFailure>
-{
+) -> Result<
+    CapabilityChainProofAbstractionPriorityReceipt,
+    CapabilityChainProofAbstractionPriorityFailure,
+> {
     let mut seen = BTreeSet::new();
     let mut candidates = Vec::with_capacity(inputs.len());
     for input in inputs {
         let pattern_id = input.proposal.pattern.pattern_id.clone();
         if input.value.pattern_id != pattern_id {
-            return Err(CapabilityChainProofAbstractionPriorityFailure::PatternMismatch(
-                pattern_id,
-            ));
+            return Err(
+                CapabilityChainProofAbstractionPriorityFailure::PatternMismatch(pattern_id),
+            );
         }
         if !seen.insert(pattern_id.clone()) {
-            return Err(CapabilityChainProofAbstractionPriorityFailure::DuplicatePattern(
-                pattern_id,
-            ));
+            return Err(
+                CapabilityChainProofAbstractionPriorityFailure::DuplicatePattern(pattern_id),
+            );
         }
         let value_signal = match input.value.decision {
             CapabilityChainProofAbstractionValueDecision::Preferred => 100,
@@ -3944,8 +3954,7 @@ fn rank_proof_abstraction_priorities_internal(
                 .iter()
                 .filter(|candidate| {
                     (candidate.score.efficiency_numerator as u128) * (denominator as u128)
-                        == (numerator as u128)
-                            * (candidate.score.efficiency_denominator as u128)
+                        == (numerator as u128) * (candidate.score.efficiency_denominator as u128)
                 })
                 .map(|candidate| candidate.pattern_id.clone())
                 .collect::<Vec<_>>()
@@ -4075,8 +4084,10 @@ struct InformationGainPortfolioState {
 pub fn select_calibration_experiment_portfolio(
     candidates: Vec<CapabilityChainProofAbstractionInformationGainCandidate>,
     budget: usize,
-) -> Result<CapabilityChainProofAbstractionInformationGainPortfolioReceipt,
-    CapabilityChainProofAbstractionInformationGainFailure> {
+) -> Result<
+    CapabilityChainProofAbstractionInformationGainPortfolioReceipt,
+    CapabilityChainProofAbstractionInformationGainFailure,
+> {
     let mut seen = BTreeSet::new();
     for candidate in &candidates {
         if candidate.validation_cost == 0 {
@@ -4167,20 +4178,20 @@ pub fn select_calibration_experiment_portfolio(
         } else if state.uncertainty_reduction == selected.uncertainty_reduction
             && state.validation_cost == selected.validation_cost
         {
-            selected.tied_portfolios = merge_portfolio_solutions(
-                selected.tied_portfolios,
-                state.tied_portfolios,
-            );
+            selected.tied_portfolios =
+                merge_portfolio_solutions(selected.tied_portfolios, state.tied_portfolios);
         }
     }
-    Ok(CapabilityChainProofAbstractionInformationGainPortfolioReceipt {
-        budget,
-        selected_experiment_ids: selected.experiment_ids,
-        selected_uncertainty_reduction: selected.uncertainty_reduction,
-        selected_validation_cost: selected.validation_cost,
-        ambiguous: selected.tied_portfolios.len() > 1,
-        tied_portfolios: selected.tied_portfolios,
-    })
+    Ok(
+        CapabilityChainProofAbstractionInformationGainPortfolioReceipt {
+            budget,
+            selected_experiment_ids: selected.experiment_ids,
+            selected_uncertainty_reduction: selected.uncertainty_reduction,
+            selected_validation_cost: selected.validation_cost,
+            ambiguous: selected.tied_portfolios.len() > 1,
+            tied_portfolios: selected.tied_portfolios,
+        },
+    )
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -4191,10 +4202,7 @@ struct ParetoPortfolioState {
     experiment_ids: Vec<String>,
 }
 
-fn pareto_state_dominates(
-    left: &ParetoPortfolioState,
-    right: &ParetoPortfolioState,
-) -> bool {
+fn pareto_state_dominates(left: &ParetoPortfolioState, right: &ParetoPortfolioState) -> bool {
     left.capability_gain >= right.capability_gain
         && left.uncertainty_reduction >= right.uncertainty_reduction
         && (left.capability_gain > right.capability_gain
@@ -4209,11 +4217,7 @@ fn prune_pareto_states(mut states: Vec<ParetoPortfolioState>) -> Vec<ParetoPortf
         right
             .capability_gain
             .cmp(&left.capability_gain)
-            .then_with(|| {
-                right
-                    .uncertainty_reduction
-                    .cmp(&left.uncertainty_reduction)
-            })
+            .then_with(|| right.uncertainty_reduction.cmp(&left.uncertainty_reduction))
             .then_with(|| left.validation_cost.cmp(&right.validation_cost))
             .then_with(|| left.experiment_ids.cmp(&right.experiment_ids))
     });
@@ -4242,8 +4246,10 @@ fn prune_pareto_states(mut states: Vec<ParetoPortfolioState>) -> Vec<ParetoPortf
 pub fn plan_dual_objective_experiment_frontier(
     candidates: Vec<CapabilityChainProofAbstractionDualObjectiveCandidate>,
     budget: usize,
-) -> Result<CapabilityChainProofAbstractionParetoPortfolioReceipt,
-    CapabilityChainProofAbstractionParetoPlanningFailure> {
+) -> Result<
+    CapabilityChainProofAbstractionParetoPortfolioReceipt,
+    CapabilityChainProofAbstractionParetoPlanningFailure,
+> {
     let mut seen = BTreeSet::new();
     for candidate in &candidates {
         if candidate.validation_cost == 0 {
@@ -4263,8 +4269,7 @@ pub fn plan_dual_objective_experiment_frontier(
     }
     let mut candidates = candidates;
     candidates.sort_by(|left, right| left.experiment_id.cmp(&right.experiment_id));
-    let mut states: Vec<Vec<ParetoPortfolioState>> =
-        vec![Vec::new(); budget.saturating_add(1)];
+    let mut states: Vec<Vec<ParetoPortfolioState>> = vec![Vec::new(); budget.saturating_add(1)];
     states[0].push(ParetoPortfolioState {
         capability_gain: 0,
         uncertainty_reduction: 0,
@@ -4355,11 +4360,7 @@ fn prune_trajectory_states(
         right
             .capability_gain
             .cmp(&left.capability_gain)
-            .then_with(|| {
-                right
-                    .uncertainty_reduction
-                    .cmp(&left.uncertainty_reduction)
-            })
+            .then_with(|| right.uncertainty_reduction.cmp(&left.uncertainty_reduction))
             .then_with(|| {
                 right
                     .expected_future_value()
@@ -4395,8 +4396,10 @@ fn prune_trajectory_states(
 pub fn plan_research_trajectory_frontier(
     candidates: Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
     budget: usize,
-) -> Result<CapabilityChainProofAbstractionTrajectoryReceipt,
-    CapabilityChainProofAbstractionTrajectoryPlanningFailure> {
+) -> Result<
+    CapabilityChainProofAbstractionTrajectoryReceipt,
+    CapabilityChainProofAbstractionTrajectoryPlanningFailure,
+> {
     let mut seen = BTreeSet::new();
     for candidate in &candidates {
         if candidate.validation_cost == 0 {
@@ -4427,8 +4430,7 @@ pub fn plan_research_trajectory_frontier(
     }
     let mut candidates = candidates;
     candidates.sort_by(|left, right| left.experiment_id.cmp(&right.experiment_id));
-    let mut states: Vec<Vec<TrajectoryPortfolioState>> =
-        vec![Vec::new(); budget.saturating_add(1)];
+    let mut states: Vec<Vec<TrajectoryPortfolioState>> = vec![Vec::new(); budget.saturating_add(1)];
     states[0].push(TrajectoryPortfolioState {
         capability_gain: 0,
         uncertainty_reduction: 0,
@@ -4502,13 +4504,13 @@ pub fn plan_calibrated_research_trajectory_frontier(
     candidates: Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
     fallback_probability_basis_points: usize,
     budget: usize,
-) -> Result<CapabilityChainProofAbstractionTrajectoryReceipt,
-    CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure> {
+) -> Result<
+    CapabilityChainProofAbstractionTrajectoryReceipt,
+    CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure,
+> {
     let calibrated = ledger
         .calibrate_trajectory_candidates(candidates, fallback_probability_basis_points)
-        .map_err(
-            CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure::Calibration,
-        )?;
+        .map_err(CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure::Calibration)?;
     plan_research_trajectory_frontier(calibrated, budget)
         .map_err(CapabilityChainProofAbstractionCalibratedTrajectoryPlanningFailure::Planning)
 }
@@ -4554,14 +4556,14 @@ impl CapabilityChainProofAbstractionApprovalLedger {
         experiment: &CapabilityChainProofAbstractionExperimentReceipt,
         decision: CapabilityChainProofAbstractionApprovalDecision,
         rationale: impl Into<String>,
-    ) -> Result<CapabilityChainProofAbstractionApprovalReceipt, CapabilityChainProofAbstractionApprovalRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionApprovalReceipt,
+        CapabilityChainProofAbstractionApprovalRejection,
+    > {
         let approval_id = approval_id.into();
         if self.approvals.contains_key(&approval_id) {
             return Err(
-                CapabilityChainProofAbstractionApprovalRejection::DuplicateApproval(
-                    approval_id,
-                ),
+                CapabilityChainProofAbstractionApprovalRejection::DuplicateApproval(approval_id),
             );
         }
         let recommendation = experiment.recommendation();
@@ -4586,7 +4588,10 @@ impl CapabilityChainProofAbstractionApprovalLedger {
         Ok(receipt)
     }
 
-    pub fn receipt(&self, approval_id: &str) -> Option<&CapabilityChainProofAbstractionApprovalReceipt> {
+    pub fn receipt(
+        &self,
+        approval_id: &str,
+    ) -> Option<&CapabilityChainProofAbstractionApprovalReceipt> {
         self.approvals.get(approval_id)
     }
 
@@ -4604,8 +4609,10 @@ impl CapabilityChainProofAbstractionDeploymentLedger {
         approval: &CapabilityChainProofAbstractionApprovalReceipt,
         previous_revision: impl Into<String>,
         proposed_revision: impl Into<String>,
-    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionDeploymentReceipt,
+        CapabilityChainProofAbstractionDeploymentRejection,
+    > {
         let deployment_id = deployment_id.into();
         if self.deployments.contains_key(&deployment_id) {
             return Err(
@@ -4640,8 +4647,10 @@ impl CapabilityChainProofAbstractionDeploymentLedger {
         &mut self,
         deployment_id: &str,
         verification_receipt: impl Into<String>,
-    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionDeploymentReceipt,
+        CapabilityChainProofAbstractionDeploymentRejection,
+    > {
         let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
             CapabilityChainProofAbstractionDeploymentRejection::UnknownDeployment(
                 deployment_id.into(),
@@ -4669,8 +4678,10 @@ impl CapabilityChainProofAbstractionDeploymentLedger {
         &mut self,
         deployment_id: &str,
         reason: impl Into<String>,
-    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionDeploymentReceipt,
+        CapabilityChainProofAbstractionDeploymentRejection,
+    > {
         let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
             CapabilityChainProofAbstractionDeploymentRejection::UnknownDeployment(
                 deployment_id.into(),
@@ -4692,8 +4703,10 @@ impl CapabilityChainProofAbstractionDeploymentLedger {
         &mut self,
         deployment_id: &str,
         reason: impl Into<String>,
-    ) -> Result<CapabilityChainProofAbstractionDeploymentReceipt, CapabilityChainProofAbstractionDeploymentRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionDeploymentReceipt,
+        CapabilityChainProofAbstractionDeploymentRejection,
+    > {
         let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
             CapabilityChainProofAbstractionDeploymentRejection::UnknownDeployment(
                 deployment_id.into(),
@@ -4730,8 +4743,10 @@ impl CapabilityChainProofAbstractionDeploymentReceipt {
     pub fn materialize_capability(
         &self,
         approval: &CapabilityChainProofAbstractionApprovalReceipt,
-    ) -> Result<CapabilityChainProofAbstractionCapability, CapabilityChainProofAbstractionMaterializationRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionCapability,
+        CapabilityChainProofAbstractionMaterializationRejection,
+    > {
         if self.status != CapabilityChainProofAbstractionDeploymentStatus::Applied {
             return Err(
                 CapabilityChainProofAbstractionMaterializationRejection::DeploymentNotApplied(
@@ -4739,24 +4754,17 @@ impl CapabilityChainProofAbstractionDeploymentReceipt {
                 ),
             );
         }
-        if approval.approval_id != self.approval_id
-            || approval.pattern_id != self.pattern_id
-        {
-            return Err(
-                CapabilityChainProofAbstractionMaterializationRejection::ApprovalMismatch,
-            );
+        if approval.approval_id != self.approval_id || approval.pattern_id != self.pattern_id {
+            return Err(CapabilityChainProofAbstractionMaterializationRejection::ApprovalMismatch);
         }
         if approval.decision != CapabilityChainProofAbstractionApprovalDecision::Approved {
             return Err(
                 CapabilityChainProofAbstractionMaterializationRejection::ApprovalNotGranted,
             );
         }
-        let verification_receipt = self
-            .verification_receipt
-            .clone()
-            .ok_or(
-                CapabilityChainProofAbstractionMaterializationRejection::MissingVerificationReceipt,
-            )?;
+        let verification_receipt = self.verification_receipt.clone().ok_or(
+            CapabilityChainProofAbstractionMaterializationRejection::MissingVerificationReceipt,
+        )?;
         let proposal = &approval.recommendation.proposal.pattern;
         Ok(CapabilityChainProofAbstractionCapability {
             capability_id: self.proposed_revision.clone(),
@@ -4776,8 +4784,10 @@ impl CapabilityChainProofAbstractionExperimentLedger {
         &mut self,
         experiment_id: impl Into<String>,
         receipt: CapabilityChainProofAbstractionExperimentReceipt,
-    ) -> Result<CapabilityChainProofAbstractionExperimentReceipt, CapabilityChainProofAbstractionExperimentLedgerRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionExperimentReceipt,
+        CapabilityChainProofAbstractionExperimentLedgerRejection,
+    > {
         let experiment_id = experiment_id.into();
         if self.receipts.contains_key(&experiment_id) {
             return Err(
@@ -4806,7 +4816,8 @@ impl CapabilityChainProofAbstractionExperimentLedger {
     /// Summarize observed outcomes by declared risk class.  Counts are kept
     /// as integers so consumers can choose their own statistical policy.
     pub fn meta_learning_profile(&self) -> CapabilityChainProofAbstractionMetaLearningProfile {
-        let mut summaries = BTreeMap::<u8, CapabilityChainProofAbstractionExperimentRiskSummary>::new();
+        let mut summaries =
+            BTreeMap::<u8, CapabilityChainProofAbstractionExperimentRiskSummary>::new();
         for receipt in self.receipts.values() {
             let risk = receipt.proposal.risk;
             let key = match risk {
@@ -4829,7 +4840,11 @@ impl CapabilityChainProofAbstractionExperimentLedger {
         let risk_summaries = summaries.into_values().collect::<Vec<_>>();
         CapabilityChainProofAbstractionMetaLearningProfile {
             total_experiments: self.receipts.len(),
-            total_passed: self.receipts.values().filter(|receipt| receipt.passed).count(),
+            total_passed: self
+                .receipts
+                .values()
+                .filter(|receipt| receipt.passed)
+                .count(),
             risk_summaries,
         }
     }
@@ -4850,8 +4865,8 @@ impl CapabilityChainProofAbstractionMetaLearningProfile {
                     attempts: summary.attempts,
                     passed: summary.passed,
                     safety_failures: summary.safety_failures,
-                    empirical_pass_rate_basis_points:
-                        summary.passed.saturating_mul(10_000) / denominator,
+                    empirical_pass_rate_basis_points: summary.passed.saturating_mul(10_000)
+                        / denominator,
                     empirical_safety_rate_basis_points: summary
                         .attempts
                         .saturating_sub(summary.safety_failures)
@@ -4868,9 +4883,7 @@ impl CapabilityChainProofAbstractionMetaLearningProfile {
                         .saturating_mul(10_000)
                         .saturating_add(5_000 * PRIOR_WEIGHT)
                         / posterior_denominator,
-                    evidence_strength_basis_points: summary
-                        .attempts
-                        .saturating_mul(10_000)
+                    evidence_strength_basis_points: summary.attempts.saturating_mul(10_000)
                         / posterior_denominator,
                 }
             })
@@ -4882,8 +4895,10 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
     pub fn record(
         &mut self,
         observation: CapabilityChainProofAbstractionCalibrationObservation,
-    ) -> Result<CapabilityChainProofAbstractionCalibrationObservation, CapabilityChainProofAbstractionCalibrationLedgerRejection>
-    {
+    ) -> Result<
+        CapabilityChainProofAbstractionCalibrationObservation,
+        CapabilityChainProofAbstractionCalibrationLedgerRejection,
+    > {
         if self.observations.contains_key(&observation.observation_id) {
             return Err(
                 CapabilityChainProofAbstractionCalibrationLedgerRejection::DuplicateObservation(
@@ -4894,9 +4909,7 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
         if observation.predicted_pass_rate_basis_points > 10_000
             || observation.predicted_safety_rate_basis_points > 10_000
         {
-            return Err(
-                CapabilityChainProofAbstractionCalibrationLedgerRejection::RateOutOfRange,
-            );
+            return Err(CapabilityChainProofAbstractionCalibrationLedgerRejection::RateOutOfRange);
         }
         self.observations
             .insert(observation.observation_id.clone(), observation.clone());
@@ -4933,8 +4946,7 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
         let mut safety_error = 0usize;
         let mut pass_overconfidence = 0usize;
         let mut safety_overconfidence = 0usize;
-        let mut risk_totals =
-            BTreeMap::<u8, (ImprovementRisk, usize, usize, usize, usize)>::new();
+        let mut risk_totals = BTreeMap::<u8, (ImprovementRisk, usize, usize, usize, usize)>::new();
         for observation in self.observations.values() {
             let actual_pass = usize::from(observation.actual_passed) * 10_000;
             let actual_safety = usize::from(observation.actual_safety_preserved) * 10_000;
@@ -4944,12 +4956,10 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
             safety_error += observation
                 .predicted_safety_rate_basis_points
                 .abs_diff(actual_safety);
-            pass_overconfidence += usize::from(
-                observation.predicted_pass_rate_basis_points > actual_pass,
-            );
-            safety_overconfidence += usize::from(
-                observation.predicted_safety_rate_basis_points > actual_safety,
-            );
+            pass_overconfidence +=
+                usize::from(observation.predicted_pass_rate_basis_points > actual_pass);
+            safety_overconfidence +=
+                usize::from(observation.predicted_safety_rate_basis_points > actual_safety);
             let risk_key = match observation.risk {
                 ImprovementRisk::Low => 0,
                 ImprovementRisk::Medium => 1,
@@ -5009,7 +5019,10 @@ impl CapabilityChainProofAbstractionCalibrationLedger {
             .advisory_priors()
             .into_iter()
             .map(|prior| {
-                let summary = report.risk_summaries.iter().find(|summary| summary.risk == prior.risk);
+                let summary = report
+                    .risk_summaries
+                    .iter()
+                    .find(|summary| summary.risk == prior.risk);
                 let (observed, calibration_error) = match summary {
                     Some(summary) => (
                         summary.observations,
@@ -5050,8 +5063,10 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
     pub fn record(
         &mut self,
         observation: CapabilityChainProofAbstractionUnlockCalibrationObservation,
-    ) -> Result<CapabilityChainProofAbstractionUnlockCalibrationObservation,
-        CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection> {
+    ) -> Result<
+        CapabilityChainProofAbstractionUnlockCalibrationObservation,
+        CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection,
+    > {
         if self.observations.contains_key(&observation.observation_id) {
             return Err(
                 CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::DuplicateObservation(
@@ -5102,17 +5117,14 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
                 .predicted_unlock_probability_basis_points
                 .abs_diff(actual);
             total_error = total_error.saturating_add(error);
-            overconfidence += usize::from(
-                observation.predicted_unlock_probability_basis_points > actual,
-            );
+            overconfidence +=
+                usize::from(observation.predicted_unlock_probability_basis_points > actual);
             let totals = family_totals
                 .entry(observation.family_id.clone())
                 .or_insert((0, 0, 0));
             totals.0 += 1;
             totals.1 = totals.1.saturating_add(error);
-            totals.2 += usize::from(
-                observation.predicted_unlock_probability_basis_points > actual,
-            );
+            totals.2 += usize::from(observation.predicted_unlock_probability_basis_points > actual);
         }
         let mean_error = total_error / observations;
         let family_summaries = family_totals
@@ -5139,9 +5151,7 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
     /// Produce smoothed, family-specific unlock priors for trajectory review.
     /// These priors are advisory and require a separate caller decision before
     /// they can influence any planning request.
-    pub fn advisory_priors(
-        &self,
-    ) -> Vec<CapabilityChainProofAbstractionUnlockCalibrationPrior> {
+    pub fn advisory_priors(&self) -> Vec<CapabilityChainProofAbstractionUnlockCalibrationPrior> {
         const PRIOR_WEIGHT: usize = 10;
         let report = self.assess(usize::MAX);
         let mut totals = BTreeMap::<String, (usize, usize)>::new();
@@ -5170,11 +5180,9 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
                         .saturating_mul(10_000)
                         .saturating_add(5_000 * PRIOR_WEIGHT)
                         / posterior_denominator,
-                    evidence_strength_basis_points: attempts
-                        .saturating_mul(10_000)
+                    evidence_strength_basis_points: attempts.saturating_mul(10_000)
                         / posterior_denominator,
-                    calibration_error_basis_points: summary
-                        .mean_absolute_error_basis_points,
+                    calibration_error_basis_points: summary.mean_absolute_error_basis_points,
                 }
             })
             .collect()
@@ -5187,8 +5195,10 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
         &self,
         candidates: Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
         fallback_probability_basis_points: usize,
-    ) -> Result<Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
-        CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection> {
+    ) -> Result<
+        Vec<CapabilityChainProofAbstractionTrajectoryCandidate>,
+        CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection,
+    > {
         if fallback_probability_basis_points > 10_000 {
             return Err(
                 CapabilityChainProofAbstractionUnlockCalibrationLedgerRejection::RateOutOfRange,
@@ -5209,13 +5219,10 @@ impl CapabilityChainProofAbstractionUnlockCalibrationLedger {
                             )
                         })
                         .unwrap_or((fallback_probability_basis_points, 0));
-                    let effective_probability = posterior
-                        .saturating_mul(evidence)
-                        .saturating_add(
-                            fallback_probability_basis_points
-                                .saturating_mul(10_000usize.saturating_sub(evidence)),
-                        )
-                        / 10_000;
+                    let effective_probability = posterior.saturating_mul(evidence).saturating_add(
+                        fallback_probability_basis_points
+                            .saturating_mul(10_000usize.saturating_sub(evidence)),
+                    ) / 10_000;
                     unlock.expected_future_value = unlock
                         .expected_future_value
                         .saturating_mul(effective_probability)
@@ -5245,9 +5252,7 @@ impl CapabilityRegistryEvolutionLedger {
         if !generalization.passed {
             return Err(CapabilityRegistryEvolutionRejection::GeneralizationNotValidated);
         }
-        if novelty.pattern_id != descriptor.pattern_id
-            || novelty.candidate_id != candidate.id
-        {
+        if novelty.pattern_id != descriptor.pattern_id || novelty.candidate_id != candidate.id {
             return Err(CapabilityRegistryEvolutionRejection::NoveltyPatternMismatch);
         }
         if !novelty.passed {
@@ -5309,9 +5314,9 @@ impl CapabilityRegistryEvolutionLedger {
             return Err(CapabilityRegistryEvolutionRejection::CandidateNotExecutable);
         }
         if registry.get(&candidate.id).is_some() {
-            return Err(CapabilityRegistryEvolutionRejection::CapabilityAlreadyRegistered(
-                candidate.id,
-            ));
+            return Err(
+                CapabilityRegistryEvolutionRejection::CapabilityAlreadyRegistered(candidate.id),
+            );
         }
         let receipt = CapabilityRegistryEvolutionReceipt {
             evolution_id: evolution_id.clone(),
@@ -5339,17 +5344,19 @@ impl CapabilityRegistryEvolutionLedger {
             CapabilityRegistryEvolutionRejection::UnknownEvolution(evolution_id.into())
         })?;
         if receipt.status != CapabilityRegistryEvolutionStatus::Prepared {
-            return Err(CapabilityRegistryEvolutionRejection::EvolutionAlreadyTerminal(
-                receipt.status,
-            ));
+            return Err(
+                CapabilityRegistryEvolutionRejection::EvolutionAlreadyTerminal(receipt.status),
+            );
         }
         if &receipt.candidate != candidate {
             return Err(CapabilityRegistryEvolutionRejection::CandidateMismatch);
         }
         if registry.get(&candidate.id).is_some() {
-            return Err(CapabilityRegistryEvolutionRejection::CapabilityAlreadyRegistered(
-                candidate.id.clone(),
-            ));
+            return Err(
+                CapabilityRegistryEvolutionRejection::CapabilityAlreadyRegistered(
+                    candidate.id.clone(),
+                ),
+            );
         }
         let verification_receipt = verification_receipt.into();
         if verification_receipt.trim().is_empty() {
@@ -5370,9 +5377,9 @@ impl CapabilityRegistryEvolutionLedger {
             CapabilityRegistryEvolutionRejection::UnknownEvolution(evolution_id.into())
         })?;
         if receipt.status != CapabilityRegistryEvolutionStatus::Prepared {
-            return Err(CapabilityRegistryEvolutionRejection::EvolutionAlreadyTerminal(
-                receipt.status,
-            ));
+            return Err(
+                CapabilityRegistryEvolutionRejection::EvolutionAlreadyTerminal(receipt.status),
+            );
         }
         receipt.status = CapabilityRegistryEvolutionStatus::Failed;
         receipt.failure_reason = Some(reason.into());
@@ -5627,9 +5634,9 @@ impl VerifiedArtifactPolicy {
         }
         for step in &proof.steps {
             if step.verification_receipt.trim().is_empty() {
-                return Err(VerifiedArtifactPolicyFailure::MissingStepVerificationReceipt(
-                    step.step_index,
-                ));
+                return Err(
+                    VerifiedArtifactPolicyFailure::MissingStepVerificationReceipt(step.step_index),
+                );
             }
         }
         for fact in &proof.retrieved_facts {
@@ -5676,10 +5683,16 @@ pub enum CapabilityChainProofFailure {
         produced: Vec<String>,
         required: Vec<String>,
     },
-    IncompleteSteps { expected: usize, recorded: usize },
+    IncompleteSteps {
+        expected: usize,
+        recorded: usize,
+    },
     MissingVerificationReceipt(usize),
     MissingFactRetrievalReceipt(String),
-    DuplicateFactRetrieval { capability: String, fact_id: String },
+    DuplicateFactRetrieval {
+        capability: String,
+        fact_id: String,
+    },
 }
 
 /// Compose independently recorded step receipts into one proof artifact.
@@ -5888,8 +5901,10 @@ pub fn validate_mixed_synthesis_execution<T>(
     execution: &CapabilityChainExecutionReceipt,
     artifact: T,
     policy: &VerifiedArtifactPolicy,
-) -> Result<CapabilityChainProofSynthesisValidationReceipt<T>, CapabilityChainProofSynthesisValidationFailure>
-{
+) -> Result<
+    CapabilityChainProofSynthesisValidationReceipt<T>,
+    CapabilityChainProofSynthesisValidationFailure,
+> {
     let CapabilityChainProofSynthesisSource::MixedPrefixPlanPending {
         prefix,
         handoff_artifacts,
@@ -5951,8 +5966,10 @@ pub fn publish_validated_mixed_synthesis<T>(
     proof_index: &mut CapabilityChainProofIndex,
     fact_index: &mut DerivedFactIndex,
     fact_policy: &FactPolicy,
-) -> Result<CapabilityChainProofSynthesisPublicationReceipt, CapabilityChainProofSynthesisPublicationFailure>
-{
+) -> Result<
+    CapabilityChainProofSynthesisPublicationReceipt,
+    CapabilityChainProofSynthesisPublicationFailure,
+> {
     let (fact, bridge) = derive_fact_from_verified_artifact(
         &validation.artifact,
         trust_policy,
@@ -6032,10 +6049,9 @@ impl CapabilityChainExecutionLedger {
         execution_id: &str,
         step: CapabilityChainStepReceipt,
     ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
-        let receipt = self
-            .executions
-            .get_mut(execution_id)
-            .ok_or_else(|| CapabilityChainExecutionRejection::UnknownExecution(execution_id.into()))?;
+        let receipt = self.executions.get_mut(execution_id).ok_or_else(|| {
+            CapabilityChainExecutionRejection::UnknownExecution(execution_id.into())
+        })?;
         if receipt.status != CapabilityChainExecutionStatus::Running {
             return Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
                 receipt.status,
@@ -6072,10 +6088,9 @@ impl CapabilityChainExecutionLedger {
         &mut self,
         execution_id: &str,
     ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
-        let receipt = self
-            .executions
-            .get_mut(execution_id)
-            .ok_or_else(|| CapabilityChainExecutionRejection::UnknownExecution(execution_id.into()))?;
+        let receipt = self.executions.get_mut(execution_id).ok_or_else(|| {
+            CapabilityChainExecutionRejection::UnknownExecution(execution_id.into())
+        })?;
         if receipt.status != CapabilityChainExecutionStatus::Running {
             return Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
                 receipt.status,
@@ -6097,10 +6112,9 @@ impl CapabilityChainExecutionLedger {
         failed_step: usize,
         reason: impl Into<String>,
     ) -> Result<CapabilityChainExecutionReceipt, CapabilityChainExecutionRejection> {
-        let receipt = self
-            .executions
-            .get_mut(execution_id)
-            .ok_or_else(|| CapabilityChainExecutionRejection::UnknownExecution(execution_id.into()))?;
+        let receipt = self.executions.get_mut(execution_id).ok_or_else(|| {
+            CapabilityChainExecutionRejection::UnknownExecution(execution_id.into())
+        })?;
         if receipt.status != CapabilityChainExecutionStatus::Running {
             return Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
                 receipt.status,
@@ -6401,8 +6415,7 @@ impl PlanDependencyIndex {
             .keys()
             .filter_map(|plan_id| {
                 let lifecycle = self.lifecycle(plan_id, index)?;
-                (lifecycle.status == PlanStatus::Stale)
-                    .then(|| (plan_id.clone(), lifecycle))
+                (lifecycle.status == PlanStatus::Stale).then(|| (plan_id.clone(), lifecycle))
             })
             .collect()
     }
@@ -6685,11 +6698,9 @@ impl ImprovementApprovalLedger {
                 approval_id,
             ));
         }
-        let recommendation = experiments
-            .recommendation(experiment_id)
-            .ok_or_else(|| ImprovementApprovalLedgerRejection::UnknownExperiment(
-                experiment_id.into(),
-            ))?;
+        let recommendation = experiments.recommendation(experiment_id).ok_or_else(|| {
+            ImprovementApprovalLedgerRejection::UnknownExperiment(experiment_id.into())
+        })?;
         if decision == ImprovementApprovalDecision::Approved
             && recommendation.action != ImprovementRecommendationAction::ReviewForApproval
         {
@@ -6774,9 +6785,9 @@ impl ImprovementDeploymentLedger {
                 deployment_id,
             ));
         }
-        let approval = approvals
-            .receipt(approval_id)
-            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownApproval(approval_id.into()))?;
+        let approval = approvals.receipt(approval_id).ok_or_else(|| {
+            ImprovementDeploymentLedgerRejection::UnknownApproval(approval_id.into())
+        })?;
         if approval.decision != ImprovementApprovalDecision::Approved {
             return Err(ImprovementDeploymentLedgerRejection::ApprovalNotGranted(
                 approval_id.into(),
@@ -6802,14 +6813,13 @@ impl ImprovementDeploymentLedger {
         deployment_id: &str,
         verification_receipt: impl Into<String>,
     ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
-        let receipt = self
-            .deployments
-            .get_mut(deployment_id)
-            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into()))?;
+        let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
+            ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into())
+        })?;
         if receipt.status != ImprovementDeploymentStatus::Prepared {
-            return Err(ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
-                receipt.status,
-            ));
+            return Err(
+                ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(receipt.status),
+            );
         }
         let verification_receipt = verification_receipt.into();
         if verification_receipt.trim().is_empty() {
@@ -6825,14 +6835,13 @@ impl ImprovementDeploymentLedger {
         deployment_id: &str,
         reason: impl Into<String>,
     ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
-        let receipt = self
-            .deployments
-            .get_mut(deployment_id)
-            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into()))?;
+        let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
+            ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into())
+        })?;
         if receipt.status != ImprovementDeploymentStatus::Prepared {
-            return Err(ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
-                receipt.status,
-            ));
+            return Err(
+                ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(receipt.status),
+            );
         }
         receipt.status = ImprovementDeploymentStatus::Failed;
         receipt.failure_reason = Some(reason.into());
@@ -6844,10 +6853,9 @@ impl ImprovementDeploymentLedger {
         deployment_id: &str,
         reason: impl Into<String>,
     ) -> Result<ImprovementDeploymentReceipt, ImprovementDeploymentLedgerRejection> {
-        let receipt = self
-            .deployments
-            .get_mut(deployment_id)
-            .ok_or_else(|| ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into()))?;
+        let receipt = self.deployments.get_mut(deployment_id).ok_or_else(|| {
+            ImprovementDeploymentLedgerRejection::UnknownDeployment(deployment_id.into())
+        })?;
         if receipt.status != ImprovementDeploymentStatus::Applied {
             return Err(ImprovementDeploymentLedgerRejection::RollbackRequiresApplied);
         }
@@ -7232,15 +7240,15 @@ impl PlanExecutionLedger {
         }
         grouped
             .into_iter()
-            .map(|((plan_id, failed_step, kind), (occurrences, reasons))| {
-                ExecutionFailurePattern {
+            .map(
+                |((plan_id, failed_step, kind), (occurrences, reasons))| ExecutionFailurePattern {
                     plan_id,
                     failed_step,
                     kind,
                     occurrences,
                     reasons: reasons.into_iter().collect(),
-                }
-            })
+                },
+            )
             .collect()
     }
 
@@ -7339,14 +7347,8 @@ impl PlanRepairCandidate {
             .iter()
             .map(|step| step.capability_id.clone())
             .collect::<BTreeSet<_>>();
-        let added_capabilities = replacement_steps
-            .difference(&old_steps)
-            .cloned()
-            .collect();
-        let removed_capabilities = old_steps
-            .difference(&replacement_steps)
-            .cloned()
-            .collect();
+        let added_capabilities = replacement_steps.difference(&old_steps).cloned().collect();
+        let removed_capabilities = old_steps.difference(&replacement_steps).cloned().collect();
         let invalidated_fact_ids = self
             .stale_plan
             .invalidations
@@ -7438,9 +7440,7 @@ impl RepairDecisionPolicy {
                 || evaluation.cost_delta.dependency_edges > 0
                 || evaluation.cost_delta.verification_steps > 0)
         {
-            rejections.push(RepairDecisionRejection::CostIncrease(
-                evaluation.cost_delta,
-            ));
+            rejections.push(RepairDecisionRejection::CostIncrease(evaluation.cost_delta));
         }
         if self.require_verification {
             rejections.extend(
@@ -7449,9 +7449,9 @@ impl RepairDecisionPolicy {
                     .steps
                     .iter()
                     .filter(|step| step.verifier.is_empty())
-                    .map(|step| RepairDecisionRejection::MissingVerifier(
-                        step.capability_id.clone(),
-                    )),
+                    .map(|step| {
+                        RepairDecisionRejection::MissingVerifier(step.capability_id.clone())
+                    }),
             );
         }
         PlanRepairDecision {
@@ -7515,10 +7515,7 @@ fn plan_lifecycle(proofs: &[DerivedFactProof], index: &DerivedFactIndex) -> Plan
     plan_lifecycle_for_ids(&fact_ids, index)
 }
 
-fn plan_lifecycle_for_ids(
-    fact_ids: &BTreeSet<String>,
-    index: &DerivedFactIndex,
-) -> PlanLifecycle {
+fn plan_lifecycle_for_ids(fact_ids: &BTreeSet<String>, index: &DerivedFactIndex) -> PlanLifecycle {
     let mut invalidations = Vec::new();
     for fact_id in fact_ids {
         let issue = match index.lifecycle(fact_id) {
@@ -7575,7 +7572,10 @@ fn plan_metadata(
     let cost = PlanCost {
         steps: steps.len(),
         dependency_edges: dependency_proofs.len(),
-        verification_steps: steps.iter().filter(|step| !step.verifier.is_empty()).count(),
+        verification_steps: steps
+            .iter()
+            .filter(|step| !step.verifier.is_empty())
+            .count(),
     };
     (cost, dependency_proofs, input_proofs)
 }
@@ -7597,7 +7597,9 @@ fn dependency_steps(
         .get(id)
         .ok_or_else(|| CapabilityPlanningFailure::DependencyUnavailable(id.to_string()))?;
     if !capability.quality_gate.enabled() {
-        return Err(CapabilityPlanningFailure::DependencyUnavailable(id.to_string()));
+        return Err(CapabilityPlanningFailure::DependencyUnavailable(
+            id.to_string(),
+        ));
     }
     for dependency in &capability.dependencies {
         dependency_steps(dependency, registry, visiting, visited, steps)?;
@@ -7641,8 +7643,7 @@ pub fn plan_target(
         &mut BTreeSet::new(),
         &mut steps,
     )?;
-    let (cost, dependency_proofs, input_proofs) =
-        plan_metadata(&selected, &steps, registry, None);
+    let (cost, dependency_proofs, input_proofs) = plan_metadata(&selected, &steps, registry, None);
     Ok(CapabilityPlan {
         operation: target.operation,
         subject_type,
@@ -7690,7 +7691,10 @@ pub fn plan_capability_chain(
         if candidates.len() != 1 {
             return Err(CapabilityChainPlanningFailure::AmbiguousProducers {
                 goal,
-                candidates: candidates.iter().map(|capability| capability.id.clone()).collect(),
+                candidates: candidates
+                    .iter()
+                    .map(|capability| capability.id.clone())
+                    .collect(),
             });
         }
         let capability = candidates[0];
@@ -7869,16 +7873,16 @@ pub fn plan_equation_chain_with_policy(
         ));
     };
     if !solver.quality_gate.enabled()
-        || !solver.consumes.contains(&CapabilityIoType::NormalizedEquation)
+        || !solver
+            .consumes
+            .contains(&CapabilityIoType::NormalizedEquation)
         || !solver.consumes.contains(&CapabilityIoType::TargetVariable)
     {
         return Err(EquationChainPlanningFailure::CapabilityUnavailable(
             solver.id.clone(),
         ));
     }
-    if goal == CapabilityIoType::VerifiedSolutionSet
-        || goal == CapabilityIoType::VerifiedArtifact
-    {
+    if goal == CapabilityIoType::VerifiedSolutionSet || goal == CapabilityIoType::VerifiedArtifact {
         let Some(verifier) = registry.get("solution_set_verification") else {
             return Err(EquationChainPlanningFailure::CapabilityUnavailable(
                 "solution_set_verification".into(),
@@ -7902,9 +7906,7 @@ pub fn plan_equation_chain_with_policy(
         "equation_classification".into(),
         selected_solver.clone(),
     ];
-    if goal == CapabilityIoType::VerifiedSolutionSet
-        || goal == CapabilityIoType::VerifiedArtifact
-    {
+    if goal == CapabilityIoType::VerifiedSolutionSet || goal == CapabilityIoType::VerifiedArtifact {
         steps.push("solution_set_verification".into());
     }
     let mut chain_goal = goal;
@@ -8061,11 +8063,17 @@ pub fn plan_for_goal_with_context(
             .filter(|input| !context.available_inputs.contains(input))
             .copied()
             .collect();
-        return Err(CapabilityPlanningFailure::MissingInputs { capability: capability.id.clone(), missing });
+        return Err(CapabilityPlanningFailure::MissingInputs {
+            capability: capability.id.clone(),
+            missing,
+        });
     }
     if candidates.len() > 1 {
         return Err(CapabilityPlanningFailure::AmbiguousCapabilities(
-            candidates.into_iter().map(|capability| capability.id.clone()).collect(),
+            candidates
+                .into_iter()
+                .map(|capability| capability.id.clone())
+                .collect(),
         ));
     }
     let selected = candidates[0];
@@ -8077,8 +8085,12 @@ pub fn plan_for_goal_with_context(
         &mut BTreeSet::new(),
         &mut steps,
     )?;
-    let (cost, dependency_proofs, input_proofs) =
-        plan_metadata(&selected.id, &steps, registry, Some(&context.available_inputs));
+    let (cost, dependency_proofs, input_proofs) = plan_metadata(
+        &selected.id,
+        &steps,
+        registry,
+        Some(&context.available_inputs),
+    );
     Ok(GoalCapabilityPlan {
         goal,
         available_inputs: context.available_inputs.iter().copied().collect(),
@@ -8088,7 +8100,9 @@ pub fn plan_for_goal_with_context(
         selection_reason: PlanSelectionReason::UniqueGoalProducer,
         dependency_proofs,
         input_proofs,
-        derived_fact_proofs: candidate_fact_proofs.remove(&selected.id).unwrap_or_default(),
+        derived_fact_proofs: candidate_fact_proofs
+            .remove(&selected.id)
+            .unwrap_or_default(),
     })
 }
 
@@ -8144,9 +8158,9 @@ mod tests {
     use crate::capabilities::{
         CapabilityIoType, CapabilityRegistry, CapabilitySpec, InputRequirement,
     };
+    use crate::constant_rate_model::ModelConstructorRegistry;
     use crate::evidence::{DerivedFact, DerivedFactIndex, FactIndexInsert, FactPolicy};
     use crate::formalization::assess_prompt;
-    use crate::constant_rate_model::ModelConstructorRegistry;
 
     #[test]
     fn typed_chain_planner_composes_unique_dataflow_steps() {
@@ -8289,11 +8303,11 @@ mod tests {
         );
         let explanation = receipt.explain();
         assert!(explanation.preferred_because.is_empty());
-        assert!(explanation.tradeoffs.contains(
-            &CapabilityChainExplanationNote::EqualCost {
+        assert!(explanation
+            .tradeoffs
+            .contains(&CapabilityChainExplanationNote::EqualCost {
                 candidate_ids: vec!["a".into(), "b".into()]
-            }
-        ));
+            }));
     }
 
     #[test]
@@ -8370,12 +8384,13 @@ mod tests {
             parent_lineage: vec!["source-expression".into()],
             retrieval_receipt: Some("fact_index_retrieval:expression:indexed-expression".into()),
         };
-        let proof_with_retrieval = compose_capability_chain_proof_with_retrieved_facts(
-            &completed,
-            &[retrieved.clone()],
-        )
-        .unwrap();
-        assert_eq!(proof_with_retrieval.retrieved_facts, vec![retrieved.clone()]);
+        let proof_with_retrieval =
+            compose_capability_chain_proof_with_retrieved_facts(&completed, &[retrieved.clone()])
+                .unwrap();
+        assert_eq!(
+            proof_with_retrieval.retrieved_facts,
+            vec![retrieved.clone()]
+        );
         let retrieved_second = DerivedFactProof {
             capability: "expression_simplification".into(),
             fact_id: "indexed-aaa".into(),
@@ -8406,10 +8421,7 @@ mod tests {
             ..proof_with_retrieval.retrieved_facts[0].clone()
         };
         assert_eq!(
-            compose_capability_chain_proof_with_retrieved_facts(
-                &completed,
-                &[missing_receipt],
-            ),
+            compose_capability_chain_proof_with_retrieved_facts(&completed, &[missing_receipt],),
             Err(CapabilityChainProofFailure::MissingFactRetrievalReceipt(
                 "indexed-expression".into()
             ))
@@ -8419,7 +8431,9 @@ mod tests {
         assert_eq!(verified.final_verification_receipt, "evaluation replay");
         assert!(matches!(
             ledger.complete_failure("chain-execution-1", 1, "late failure"),
-            Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(_))
+            Err(CapabilityChainExecutionRejection::ExecutionAlreadyTerminal(
+                _
+            ))
         ));
     }
 
@@ -8443,15 +8457,17 @@ mod tests {
                 },
             )
             .unwrap();
-        let first = compose_capability_chain_proof(
-            &ledger.complete_success("proof-index-run-1").unwrap(),
-        )
-        .unwrap();
+        let first =
+            compose_capability_chain_proof(&ledger.complete_success("proof-index-run-1").unwrap())
+                .unwrap();
         let mut second = first.clone();
         second.execution_id = "proof-index-run-2".into();
 
         assert!(first.same_reasoning(&second));
-        assert_eq!(first.reasoning_fingerprint(), second.reasoning_fingerprint());
+        assert_eq!(
+            first.reasoning_fingerprint(),
+            second.reasoning_fingerprint()
+        );
 
         let mut index = CapabilityChainProofIndex::default();
         let fingerprint = index.insert(first.clone()).unwrap();
@@ -8513,7 +8529,10 @@ mod tests {
             .iter()
             .find(|schema| {
                 schema.capabilities
-                    == vec!["shared_normalize".to_string(), "shared_classify".to_string()]
+                    == vec![
+                        "shared_normalize".to_string(),
+                        "shared_classify".to_string(),
+                    ]
             })
             .unwrap();
         assert_eq!(shared.source_pattern_ids.len(), 2);
@@ -8544,7 +8563,9 @@ mod tests {
             contracts[0].output_artifacts,
             vec![CapabilityIoType::ExactValue]
         );
-        assert!(contracts[0].parameterized_signature.contains("expression_simplification"));
+        assert!(contracts[0]
+            .parameterized_signature
+            .contains("expression_simplification"));
         assert!(contracts[0].diagnostic_only);
         let unknown_contract = CapabilityChainProofConceptDiscoveryReceipt {
             minimum_pattern_support: 2,
@@ -8605,10 +8626,7 @@ mod tests {
             &right_validation,
         )
         .unwrap();
-        assert_eq!(
-            composed_concept.capabilities,
-            vec!["normalize", "classify"]
-        );
+        assert_eq!(composed_concept.capabilities, vec!["normalize", "classify"]);
         assert_eq!(
             composed_concept.input_artifacts,
             vec![CapabilityIoType::Equation]
@@ -8630,12 +8648,12 @@ mod tests {
                 &incompatible,
                 &right_validation,
             ),
-            Err(
-                CapabilityChainProofConceptCompositionFailure::IncompatibleHandoff { .. }
-            )
+            Err(CapabilityChainProofConceptCompositionFailure::IncompatibleHandoff { .. })
         ));
         let mut concept_index = CapabilityChainProofConceptIndex::default();
-        concept_index.insert(left_concept.clone(), &left_validation).unwrap();
+        concept_index
+            .insert(left_concept.clone(), &left_validation)
+            .unwrap();
         concept_index
             .insert(right_concept.clone(), &right_validation)
             .unwrap();
@@ -8875,10 +8893,13 @@ mod tests {
             .insert(strategy.clone(), &strategy_validation)
             .unwrap();
         assert_eq!(strategy_index.len(), 1);
-        assert_eq!(strategy_index.retrieve_relevant(
-            &[CapabilityIoType::Equation],
-            CapabilityIoType::ExactValue,
-        ).strategies[0].strategy_id, strategy_id);
+        assert_eq!(
+            strategy_index
+                .retrieve_relevant(&[CapabilityIoType::Equation], CapabilityIoType::ExactValue,)
+                .strategies[0]
+                .strategy_id,
+            strategy_id
+        );
         let context = CapabilityChainStrategicRouteContext {
             domain: "equation".into(),
             contract_signature: "equation->exact_value".into(),
@@ -8992,9 +9013,7 @@ mod tests {
             assert_eq!(stored.supporting_instances, 0);
             assert_eq!(
                 comparison.diagnose_exploration(1).decision,
-                CapabilityChainStrategicRouteDecision::ExploreFresh(
-                    "fresh-capability-plan".into()
-                )
+                CapabilityChainStrategicRouteDecision::ExploreFresh("fresh-capability-plan".into())
             );
         }
         let mixed_decision = route_comparison.diagnose_exploration(3);
@@ -9005,9 +9024,7 @@ mod tests {
         let exploratory_decision = route_comparison.diagnose_exploration(5);
         assert_eq!(
             exploratory_decision.decision,
-            CapabilityChainStrategicRouteDecision::ExploreFresh(
-                "fresh-capability-plan".into()
-            )
+            CapabilityChainStrategicRouteDecision::ExploreFresh("fresh-capability-plan".into())
         );
     }
 
@@ -9082,9 +9099,7 @@ mod tests {
         assert_eq!(comparison.frontier_candidate_ids.len(), 2);
         assert_eq!(
             comparison.diagnose_exploration(2).decision,
-            CapabilityChainStrategicRouteDecision::ExploreFresh(
-                "fresh-capability-plan".into()
-            )
+            CapabilityChainStrategicRouteDecision::ExploreFresh("fresh-capability-plan".into())
         );
         assert_eq!(
             comparison.diagnose_exploration(1).decision,
@@ -9169,9 +9184,7 @@ mod tests {
         (index, strategy_id, context, fresh, registry)
     }
 
-    fn assert_contextual_mismatch_explores_fresh(
-        context: CapabilityChainStrategicRouteContext,
-    ) {
+    fn assert_contextual_mismatch_explores_fresh(context: CapabilityChainStrategicRouteContext) {
         let (index, strategy_id, base_context, fresh, registry) =
             contextual_support_adversarial_fixture();
         let comparison = index.compare_with_fresh_plan_in_context(
@@ -9191,9 +9204,7 @@ mod tests {
         assert_eq!(stored.supporting_instances, 0);
         assert_eq!(
             comparison.diagnose_exploration(1).decision,
-            CapabilityChainStrategicRouteDecision::ExploreFresh(
-                "fresh-capability-plan".into()
-            )
+            CapabilityChainStrategicRouteDecision::ExploreFresh("fresh-capability-plan".into())
         );
         assert_eq!(base_context.current_epoch, 20);
     }
@@ -9376,11 +9387,7 @@ mod tests {
         graph.insert(first.clone()).unwrap();
         graph.insert(second.clone()).unwrap();
         let reused = graph
-            .search_composed_proof(
-                &BTreeSet::from(["raw-expression".to_string()]),
-                "value",
-                2,
-            )
+            .search_composed_proof(&BTreeSet::from(["raw-expression".to_string()]), "value", 2)
             .unwrap();
         assert_eq!(reused.final_artifacts, vec!["value"]);
         assert_eq!(reused.steps.len(), 2);
@@ -9531,14 +9538,8 @@ mod tests {
         let synthesis_preference = policy_graph.rank_mixed_synthesis(
             "new-value",
             &[
-                (
-                    vec!["simplified-expression".into()],
-                    short_continuation,
-                ),
-                (
-                    vec!["simplified-expression".into()],
-                    long_continuation,
-                ),
+                (vec!["simplified-expression".into()], short_continuation),
+                (vec!["simplified-expression".into()], long_continuation),
             ],
             &strict_policy,
         );
@@ -9631,13 +9632,8 @@ mod tests {
             applied.status,
             CapabilityChainProofAbstractionDeploymentStatus::Applied
         );
-        let materialized = applied
-            .materialize_capability(&approval)
-            .unwrap();
-        assert_eq!(
-            materialized.capability_id,
-            "abstraction-v1"
-        );
+        let materialized = applied.materialize_capability(&approval).unwrap();
+        assert_eq!(materialized.capability_id, "abstraction-v1");
         assert_eq!(materialized.pattern_id, simplification_shape.pattern_id);
         assert_eq!(materialized.capabilities, vec!["expression_simplification"]);
         assert_eq!(
@@ -9670,13 +9666,12 @@ mod tests {
             .alternatives
             .iter()
             .any(|alternative| alternative.capability_id == "expression_evaluation"));
-        let priority = rank_proof_abstraction_priorities(vec![
-            CapabilityChainProofAbstractionPriorityInput {
+        let priority =
+            rank_proof_abstraction_priorities(vec![CapabilityChainProofAbstractionPriorityInput {
                 proposal: proposal.clone(),
                 value: value.clone(),
-            },
-        ])
-        .unwrap();
+            }])
+            .unwrap();
         assert_eq!(
             priority.preferred_pattern_ids,
             vec![simplification_shape.pattern_id.clone()]
@@ -9693,11 +9688,12 @@ mod tests {
             priority_score.efficiency_denominator,
             priority_score.validation_cost
         );
-        let portfolio = select_abstraction_experiment_portfolio(
-            &priority,
-            priority_score.validation_cost,
+        let portfolio =
+            select_abstraction_experiment_portfolio(&priority, priority_score.validation_cost);
+        assert_eq!(
+            portfolio.selected_expected_gain,
+            priority_score.expected_gain
         );
-        assert_eq!(portfolio.selected_expected_gain, priority_score.expected_gain);
         assert_eq!(
             portfolio.selected_pattern_ids,
             vec![simplification_shape.pattern_id.clone()]
@@ -9808,7 +9804,9 @@ mod tests {
             rolled_back_evolution.status,
             CapabilityRegistryEvolutionStatus::RolledBack
         );
-        assert!(evolution_registry.get(&materialized.capability_id).is_none());
+        assert!(evolution_registry
+            .get(&materialized.capability_id)
+            .is_none());
         let rolled_back = abstraction_deployments
             .rollback("abstraction-deployment-1", "regression detected")
             .unwrap();
@@ -9886,13 +9884,22 @@ mod tests {
             .unwrap();
         let calibration_report = calibration.assess(5_000);
         assert_eq!(calibration_report.observations, 2);
-        assert_eq!(calibration_report.mean_absolute_pass_error_basis_points, 5_000);
-        assert_eq!(calibration_report.mean_absolute_safety_error_basis_points, 5_000);
+        assert_eq!(
+            calibration_report.mean_absolute_pass_error_basis_points,
+            5_000
+        );
+        assert_eq!(
+            calibration_report.mean_absolute_safety_error_basis_points,
+            5_000
+        );
         assert_eq!(calibration_report.pass_overconfidence_count, 1);
         assert_eq!(calibration_report.safety_overconfidence_count, 1);
         assert!(calibration_report.calibrated);
         assert_eq!(calibration_report.risk_summaries.len(), 1);
-        assert_eq!(calibration_report.risk_summaries[0].risk, ImprovementRisk::Medium);
+        assert_eq!(
+            calibration_report.risk_summaries[0].risk,
+            ImprovementRisk::Medium
+        );
         assert_eq!(calibration_report.risk_summaries[0].observations, 2);
         assert!(matches!(
             calibration.record(CapabilityChainProofAbstractionCalibrationObservation {
@@ -9903,11 +9910,7 @@ mod tests {
                 actual_passed: true,
                 actual_safety_preserved: true,
             }),
-            Err(
-                CapabilityChainProofAbstractionCalibrationLedgerRejection::DuplicateObservation(
-                    _
-                )
-            )
+            Err(CapabilityChainProofAbstractionCalibrationLedgerRejection::DuplicateObservation(_))
         ));
         assert!(matches!(
             calibration.record(CapabilityChainProofAbstractionCalibrationObservation {
@@ -9929,9 +9932,7 @@ mod tests {
         )
         .unwrap();
         assert_eq!(
-            meta_priority.candidates[0]
-                .score
-                .historical_success_signal,
+            meta_priority.candidates[0].score.historical_success_signal,
             25
         );
         let uncertainty = calibration.uncertainty_priorities(&profile);
@@ -9969,31 +9970,29 @@ mod tests {
             5,
         )
         .unwrap();
-        assert_eq!(
-            information_portfolio.selected_uncertainty_reduction,
-            9
-        );
+        assert_eq!(information_portfolio.selected_uncertainty_reduction, 9);
         assert_eq!(information_portfolio.selected_validation_cost, 4);
         assert!(information_portfolio.ambiguous);
         assert_eq!(information_portfolio.tied_portfolios.len(), 2);
         assert!(matches!(
             select_calibration_experiment_portfolio(
-                vec![CapabilityChainProofAbstractionInformationGainCandidate {
-                    experiment_id: "duplicate".into(),
-                    risk: ImprovementRisk::Low,
-                    expected_uncertainty_reduction: 1,
-                    validation_cost: 1,
-                }, CapabilityChainProofAbstractionInformationGainCandidate {
-                    experiment_id: "duplicate".into(),
-                    risk: ImprovementRisk::Low,
-                    expected_uncertainty_reduction: 1,
-                    validation_cost: 1,
-                }],
+                vec![
+                    CapabilityChainProofAbstractionInformationGainCandidate {
+                        experiment_id: "duplicate".into(),
+                        risk: ImprovementRisk::Low,
+                        expected_uncertainty_reduction: 1,
+                        validation_cost: 1,
+                    },
+                    CapabilityChainProofAbstractionInformationGainCandidate {
+                        experiment_id: "duplicate".into(),
+                        risk: ImprovementRisk::Low,
+                        expected_uncertainty_reduction: 1,
+                        validation_cost: 1,
+                    }
+                ],
                 1,
             ),
-            Err(
-                CapabilityChainProofAbstractionInformationGainFailure::DuplicateExperiment(_)
-            )
+            Err(CapabilityChainProofAbstractionInformationGainFailure::DuplicateExperiment(_))
         ));
         assert!(matches!(
             select_calibration_experiment_portfolio(
@@ -10005,9 +10004,7 @@ mod tests {
                 }],
                 1,
             ),
-            Err(
-                CapabilityChainProofAbstractionInformationGainFailure::ZeroValidationCost(_)
-            )
+            Err(CapabilityChainProofAbstractionInformationGainFailure::ZeroValidationCost(_))
         ));
         let dual_frontier = plan_dual_objective_experiment_frontier(
             vec![
@@ -10073,9 +10070,7 @@ mod tests {
                 ],
                 1,
             ),
-            Err(
-                CapabilityChainProofAbstractionParetoPlanningFailure::DuplicateExperiment(_)
-            )
+            Err(CapabilityChainProofAbstractionParetoPlanningFailure::DuplicateExperiment(_))
         ));
         let trajectory_frontier = plan_research_trajectory_frontier(
             vec![
@@ -10145,28 +10140,30 @@ mod tests {
                 1,
             ),
             Err(
-                CapabilityChainProofAbstractionTrajectoryPlanningFailure::DuplicateUnlockFamily {
-                    ..
-                }
+                CapabilityChainProofAbstractionTrajectoryPlanningFailure::DuplicateUnlockFamily { .. }
             )
         ));
         let mut unlock_calibration =
             CapabilityChainProofAbstractionUnlockCalibrationLedger::default();
         unlock_calibration
-            .record(CapabilityChainProofAbstractionUnlockCalibrationObservation {
-                observation_id: "unlock-calibration-a".into(),
-                family_id: "family-a".into(),
-                predicted_unlock_probability_basis_points: 8_000,
-                actual_unlocked: true,
-            })
+            .record(
+                CapabilityChainProofAbstractionUnlockCalibrationObservation {
+                    observation_id: "unlock-calibration-a".into(),
+                    family_id: "family-a".into(),
+                    predicted_unlock_probability_basis_points: 8_000,
+                    actual_unlocked: true,
+                },
+            )
             .unwrap();
         unlock_calibration
-            .record(CapabilityChainProofAbstractionUnlockCalibrationObservation {
-                observation_id: "unlock-calibration-b".into(),
-                family_id: "family-b".into(),
-                predicted_unlock_probability_basis_points: 9_000,
-                actual_unlocked: false,
-            })
+            .record(
+                CapabilityChainProofAbstractionUnlockCalibrationObservation {
+                    observation_id: "unlock-calibration-b".into(),
+                    family_id: "family-b".into(),
+                    predicted_unlock_probability_basis_points: 9_000,
+                    actual_unlocked: false,
+                },
+            )
             .unwrap();
         let unlock_report = unlock_calibration.assess(5_500);
         assert_eq!(unlock_report.observations, 2);
@@ -10180,29 +10177,29 @@ mod tests {
         assert_eq!(unlock_priors[0].posterior_unlock_rate_basis_points, 5_454);
         assert_eq!(unlock_priors[0].evidence_strength_basis_points, 909);
         let raw_trajectory_candidates = vec![
-                    CapabilityChainProofAbstractionTrajectoryCandidate {
-                        experiment_id: "calibrated-a".into(),
-                        risk: ImprovementRisk::Low,
-                        expected_capability_gain: 1,
-                        expected_uncertainty_reduction: 1,
-                        unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
-                            family_id: "family-a".into(),
-                            expected_future_value: 100,
-                        }],
-                        validation_cost: 1,
-                    },
-                    CapabilityChainProofAbstractionTrajectoryCandidate {
-                        experiment_id: "calibrated-b".into(),
-                        risk: ImprovementRisk::Low,
-                        expected_capability_gain: 1,
-                        expected_uncertainty_reduction: 1,
-                        unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
-                            family_id: "unseen-family".into(),
-                            expected_future_value: 100,
-                        }],
-                        validation_cost: 1,
-                    },
-                ];
+            CapabilityChainProofAbstractionTrajectoryCandidate {
+                experiment_id: "calibrated-a".into(),
+                risk: ImprovementRisk::Low,
+                expected_capability_gain: 1,
+                expected_uncertainty_reduction: 1,
+                unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                    family_id: "family-a".into(),
+                    expected_future_value: 100,
+                }],
+                validation_cost: 1,
+            },
+            CapabilityChainProofAbstractionTrajectoryCandidate {
+                experiment_id: "calibrated-b".into(),
+                risk: ImprovementRisk::Low,
+                expected_capability_gain: 1,
+                expected_uncertainty_reduction: 1,
+                unlocks: vec![CapabilityChainProofAbstractionUnlockOpportunity {
+                    family_id: "unseen-family".into(),
+                    expected_future_value: 100,
+                }],
+                validation_cost: 1,
+            },
+        ];
         let calibrated_candidates = unlock_calibration
             .calibrate_trajectory_candidates(raw_trajectory_candidates.clone(), 4_000)
             .unwrap();
@@ -10274,9 +10271,7 @@ mod tests {
                 "must not cross the promotion boundary",
             ),
             Err(
-                CapabilityChainProofAbstractionApprovalRejection::RecommendationNotReviewable {
-                    ..
-                }
+                CapabilityChainProofAbstractionApprovalRejection::RecommendationNotReviewable { .. }
             )
         ));
         assert_eq!(
@@ -10332,7 +10327,9 @@ mod tests {
         let proof = compose_capability_chain_proof(&execution).unwrap();
         let verified = VerifiedArtifact::from_chain("value", proof).unwrap();
 
-        let receipt = VerifiedArtifactPolicy::default().evaluate(&verified).unwrap();
+        let receipt = VerifiedArtifactPolicy::default()
+            .evaluate(&verified)
+            .unwrap();
         assert_eq!(receipt.execution_id, "policy-proof-1");
         assert_eq!(receipt.proof_steps, 1);
         assert_eq!(receipt.retrieved_facts, 0);
@@ -10553,7 +10550,10 @@ mod tests {
         assert_eq!(proposals[0].failed_step, 0);
         let mut repaired_ledger = CapabilityChainExecutionLedger::default();
         repaired_ledger
-            .start("chain-repair-execution-1", proposals[0].proposed_plan.clone())
+            .start(
+                "chain-repair-execution-1",
+                proposals[0].proposed_plan.clone(),
+            )
             .unwrap();
         repaired_ledger
             .record_step(
@@ -10603,7 +10603,10 @@ mod tests {
             CapabilityChainRepairInstallationStatus::Applied
         );
         assert_eq!(
-            installations.rollback("repair-installation-1").unwrap().status,
+            installations
+                .rollback("repair-installation-1")
+                .unwrap()
+                .status,
             CapabilityChainRepairInstallationStatus::RolledBack
         );
     }
@@ -10692,7 +10695,10 @@ mod tests {
         assert!(!plan.steps[0].verifier.is_empty());
         assert_eq!(plan.cost.steps, 2);
         assert_eq!(plan.cost.dependency_edges, 1);
-        assert_eq!(plan.selection_reason, PlanSelectionReason::UniqueTargetCapability);
+        assert_eq!(
+            plan.selection_reason,
+            PlanSelectionReason::UniqueTargetCapability
+        );
         assert_eq!(
             plan.dependency_proofs,
             vec![DependencyProof {
@@ -10700,13 +10706,13 @@ mod tests {
                 dependency: "expression_evaluation".into(),
             }]
         );
-        assert_eq!(
-            plan.steps[0].produces,
-            vec![CapabilityIoType::ExactValue]
-        );
+        assert_eq!(plan.steps[0].produces, vec![CapabilityIoType::ExactValue]);
         assert_eq!(
             plan.steps[1].consumes,
-            vec![CapabilityIoType::FunctionDefinition, CapabilityIoType::BindingSet]
+            vec![
+                CapabilityIoType::FunctionDefinition,
+                CapabilityIoType::BindingSet
+            ]
         );
     }
 
@@ -10734,10 +10740,8 @@ mod tests {
 
     #[test]
     fn goal_planner_selects_substitution_from_typed_inputs() {
-        let available = BTreeSet::from([
-            CapabilityIoType::Expression,
-            CapabilityIoType::BindingSet,
-        ]);
+        let available =
+            BTreeSet::from([CapabilityIoType::Expression, CapabilityIoType::BindingSet]);
         let plan = plan_for_goal(
             CapabilityIoType::Expression,
             &available,
@@ -10833,20 +10837,14 @@ mod tests {
 
         let plan = plan_capability_chain(
             CapabilityIoType::SolutionSet,
-            &BTreeSet::from([
-                CapabilityIoType::Equation,
-                CapabilityIoType::TargetVariable,
-            ]),
+            &BTreeSet::from([CapabilityIoType::Equation, CapabilityIoType::TargetVariable]),
             &registry,
         )
         .unwrap();
 
         assert_eq!(
             plan.steps,
-            vec![
-                "equation_normalization",
-                "linear_equation_solve"
-            ]
+            vec!["equation_normalization", "linear_equation_solve"]
         );
     }
 
@@ -10857,20 +10855,14 @@ mod tests {
 
         let plan = plan_capability_chain(
             CapabilityIoType::SolutionSet,
-            &BTreeSet::from([
-                CapabilityIoType::Equation,
-                CapabilityIoType::TargetVariable,
-            ]),
+            &BTreeSet::from([CapabilityIoType::Equation, CapabilityIoType::TargetVariable]),
             &registry,
         )
         .unwrap();
 
         assert_eq!(
             plan.steps,
-            vec![
-                "equation_normalization",
-                "quadratic_equation_solve"
-            ]
+            vec!["equation_normalization", "quadratic_equation_solve"]
         );
     }
 
@@ -10885,10 +10877,7 @@ mod tests {
 
         assert_eq!(
             plan.steps,
-            vec![
-                "equation_normalization",
-                "equation_classification"
-            ]
+            vec!["equation_normalization", "equation_classification"]
         );
     }
 
@@ -10902,7 +10891,10 @@ mod tests {
         )
         .unwrap();
 
-        assert_eq!(plan.classification.class, crate::equation_classification::EquationClass::Linear);
+        assert_eq!(
+            plan.classification.class,
+            crate::equation_classification::EquationClass::Linear
+        );
         assert_eq!(plan.selected_solver, "linear_equation_solve");
         assert_eq!(
             plan.chain.steps,
@@ -11175,10 +11167,7 @@ mod tests {
             plan.derived_fact_proofs[0].parent_lineage,
             vec!["constant-rate-model"]
         );
-        assert_eq!(
-            plan.derived_fact_proofs[0].retrieval_receipt,
-            None
-        );
+        assert_eq!(plan.derived_fact_proofs[0].retrieval_receipt, None);
     }
 
     #[test]
@@ -11221,11 +11210,7 @@ mod tests {
         };
         let mut index = DerivedFactIndex::default();
         assert_eq!(
-            index.insert(
-                "distance",
-                fact,
-                &FactPolicy::verified_transformation(),
-            ),
+            index.insert("distance", fact, &FactPolicy::verified_transformation(),),
             Ok(FactIndexInsert::Added)
         );
         let plan = plan_for_goal_with_fact_index(
@@ -11297,17 +11282,10 @@ mod tests {
             assumptions: Vec::new(),
             domain: None,
         };
-        let context = ReasoningContext::with_derived_facts(
-            BTreeSet::new(),
-            vec![fact.clone()],
-        );
+        let context = ReasoningContext::with_derived_facts(BTreeSet::new(), vec![fact.clone()]);
         let mut index = DerivedFactIndex::default();
         assert_eq!(
-            index.insert(
-                "distance",
-                fact,
-                &FactPolicy::verified_transformation(),
-            ),
+            index.insert("distance", fact, &FactPolicy::verified_transformation(),),
             Ok(FactIndexInsert::Added)
         );
         let plan = plan_for_goal_with_context(
@@ -11384,10 +11362,7 @@ mod tests {
             assumptions: Vec::new(),
             domain: None,
         };
-        let context = ReasoningContext::with_derived_facts(
-            BTreeSet::new(),
-            vec![fact.clone()],
-        );
+        let context = ReasoningContext::with_derived_facts(BTreeSet::new(), vec![fact.clone()]);
         let plan = plan_for_goal_with_context(
             CapabilityIoType::ExactValue,
             &context,
@@ -11470,10 +11445,7 @@ mod tests {
         let receipt = experiment_ledger
             .record("runtime-reliability-1", experiment.clone(), result.clone())
             .unwrap();
-        assert_eq!(
-            receipt.decision,
-            ImprovementExperimentDecision::Passed
-        );
+        assert_eq!(receipt.decision, ImprovementExperimentDecision::Passed);
         let recommendation = receipt.recommendation();
         assert_eq!(
             recommendation.action,
@@ -11520,10 +11492,7 @@ mod tests {
                 "resolver-v2",
             )
             .unwrap();
-        assert_eq!(
-            prepared.status,
-            ImprovementDeploymentStatus::Prepared
-        );
+        assert_eq!(prepared.status, ImprovementDeploymentStatus::Prepared);
         assert!(matches!(
             deployment_ledger.mark_applied("deployment-1", ""),
             Err(ImprovementDeploymentLedgerRejection::MissingVerificationReceipt)
@@ -11535,16 +11504,15 @@ mod tests {
         let rolled_back = deployment_ledger
             .rollback("deployment-1", "post-deployment regression detected")
             .unwrap();
-        assert_eq!(
-            rolled_back.status,
-            ImprovementDeploymentStatus::RolledBack
-        );
+        assert_eq!(rolled_back.status, ImprovementDeploymentStatus::RolledBack);
         assert_eq!(deployment_ledger.receipts().count(), 1);
         assert!(matches!(
             deployment_ledger.mark_applied("deployment-1", "late retry"),
-            Err(ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
-                ImprovementDeploymentStatus::RolledBack
-            ))
+            Err(
+                ImprovementDeploymentLedgerRejection::DeploymentAlreadyTerminal(
+                    ImprovementDeploymentStatus::RolledBack
+                )
+            )
         ));
         assert_eq!(experiment_ledger.receipts().count(), 1);
         assert!(matches!(
@@ -11739,7 +11707,10 @@ mod tests {
         .unwrap();
         assert_eq!(candidate.plan_id, "distance-plan");
         assert_eq!(candidate.stale_plan.status, PlanStatus::Stale);
-        assert_eq!(candidate.replacement.lifecycle(&index).status, PlanStatus::Active);
+        assert_eq!(
+            candidate.replacement.lifecycle(&index).status,
+            PlanStatus::Active
+        );
         assert_eq!(
             candidate.replacement.derived_fact_proofs[0].fact_id,
             "derived-new"
@@ -11770,7 +11741,10 @@ mod tests {
         );
         assert_eq!(dependencies.replacement_history().len(), 1);
         assert_eq!(
-            dependencies.lifecycle("distance-plan", &index).unwrap().status,
+            dependencies
+                .lifecycle("distance-plan", &index)
+                .unwrap()
+                .status,
             PlanStatus::Active
         );
 
@@ -11780,12 +11754,10 @@ mod tests {
         assert!(!rejected.is_accepted());
         assert!(rejected
             .rejections
-            .contains(&RepairDecisionRejection::CostIncrease(
-                PlanCostDelta {
-                    steps: 1,
-                    dependency_edges: 0,
-                    verification_steps: 0,
-                }
-            )));
+            .contains(&RepairDecisionRejection::CostIncrease(PlanCostDelta {
+                steps: 1,
+                dependency_edges: 0,
+                verification_steps: 0,
+            })));
     }
 }

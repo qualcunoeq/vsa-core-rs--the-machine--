@@ -1631,9 +1631,7 @@ pub fn apply_theorem(theorem: &TheoremSchema, goal: &Proposition) -> Option<Appl
 #[cfg(test)]
 mod tests {
     use super::*;
-    
-    
-    
+
     use SymExpr::*;
 
     // ── Shared variable cache for tests ────────────────────────

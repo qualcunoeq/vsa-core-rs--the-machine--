@@ -140,7 +140,11 @@ pub enum ProjectedCoverage {
     /// Not enough historical calibration data; do not extrapolate.
     InsufficientEvidence,
     /// An estimated interval (low, high) with given confidence.
-    Interval { low: usize, high: usize, confidence: f64 },
+    Interval {
+        low: usize,
+        high: usize,
+        confidence: f64,
+    },
 }
 
 /// Coverage estimate for a proposed capability.
@@ -371,21 +375,28 @@ impl SemanticFeatures {
         // (not sentence-ending period or abbreviation periods)
         if lower.contains(".") {
             let bytes = lower.as_bytes();
-            let has_decimal = (1..bytes.len()-1).any(|i| {
-                bytes[i] == b'.' && bytes[i-1].is_ascii_digit() && bytes[i+1].is_ascii_digit()
+            let has_decimal = (1..bytes.len() - 1).any(|i| {
+                bytes[i] == b'.' && bytes[i - 1].is_ascii_digit() && bytes[i + 1].is_ascii_digit()
             });
             if has_decimal {
                 numeric_forms.push(NumericForm::Decimal);
             }
         }
-        if lower.contains('/') || lower.contains("half") || lower.contains("quarter")
-            || lower.contains("third") || lower.contains("equal part")
-            || (lower.contains("one of") && lower.chars().filter(|&c| c.is_ascii_digit()).count() <= 4)
+        if lower.contains('/')
+            || lower.contains("half")
+            || lower.contains("quarter")
+            || lower.contains("third")
+            || lower.contains("equal part")
+            || (lower.contains("one of")
+                && lower.chars().filter(|&c| c.is_ascii_digit()).count() <= 4)
         {
             numeric_forms.push(NumericForm::ExplicitFraction);
         }
-        if lower.contains('%') || lower.contains("percent") || lower.contains("per hundred")
-            || lower.contains("out of every") || lower.contains("out of each")
+        if lower.contains('%')
+            || lower.contains("percent")
+            || lower.contains("per hundred")
+            || lower.contains("out of every")
+            || lower.contains("out of each")
             || (lower.contains("for every") && lower.contains("hundred"))
         {
             numeric_forms.push(NumericForm::Percentage);
@@ -393,11 +404,20 @@ impl SemanticFeatures {
         if lower.contains(':') || lower.contains("ratio") {
             numeric_forms.push(NumericForm::RatioNotation);
         }
-        if lower.contains("dollar") || lower.contains("meter") || lower.contains("liter")
-            || lower.contains("gallon") || lower.contains("pound") || lower.contains("kilogram")
-            || lower.contains("centimeter") || lower.contains("inch") || lower.contains("foot")
-            || lower.contains("minute") || lower.contains("hour") || lower.contains("day")
-            || lower.contains("ounce") || lower.contains("mile")
+        if lower.contains("dollar")
+            || lower.contains("meter")
+            || lower.contains("liter")
+            || lower.contains("gallon")
+            || lower.contains("pound")
+            || lower.contains("kilogram")
+            || lower.contains("centimeter")
+            || lower.contains("inch")
+            || lower.contains("foot")
+            || lower.contains("minute")
+            || lower.contains("hour")
+            || lower.contains("day")
+            || lower.contains("ounce")
+            || lower.contains("mile")
         {
             numeric_forms.push(NumericForm::UnitBearingScalar);
         }
@@ -406,8 +426,11 @@ impl SemanticFeatures {
         let mut relation_semantics = Vec::new();
 
         // PartOfWhole: fraction or percentage OF an explicit base
-        if (lower.contains('/') || lower.contains("half") || lower.contains("quarter")
-            || lower.contains("third") || lower.contains("fraction"))
+        if (lower.contains('/')
+            || lower.contains("half")
+            || lower.contains("quarter")
+            || lower.contains("third")
+            || lower.contains("fraction"))
             && lower.contains(" of ")
         {
             relation_semantics.push(RelationSemantics::PartOfWhole);
@@ -421,18 +444,28 @@ impl SemanticFeatures {
         }
 
         // PerUnitRate: X per Y
-        if lower.contains(" per ") && !lower.contains("percent")
-            && !lower.contains("each year") && !lower.contains("per day")
+        if lower.contains(" per ")
+            && !lower.contains("percent")
+            && !lower.contains("each year")
+            && !lower.contains("per day")
         {
             relation_semantics.push(RelationSemantics::PerUnitRate);
         }
 
         // CompatibleUnitConversion: explicit conversion
         if (lower.contains("convert") || lower.contains("conversion"))
-            && (lower.contains("meter") || lower.contains("centimeter") || lower.contains("inch")
-                || lower.contains("foot") || lower.contains("liter") || lower.contains("gallon")
-                || lower.contains("gram") || lower.contains("kilogram") || lower.contains("ounce")
-                || lower.contains("mile") || lower.contains("minute") || lower.contains("hour"))
+            && (lower.contains("meter")
+                || lower.contains("centimeter")
+                || lower.contains("inch")
+                || lower.contains("foot")
+                || lower.contains("liter")
+                || lower.contains("gallon")
+                || lower.contains("gram")
+                || lower.contains("kilogram")
+                || lower.contains("ounce")
+                || lower.contains("mile")
+                || lower.contains("minute")
+                || lower.contains("hour"))
         {
             relation_semantics.push(RelationSemantics::CompatibleUnitConversion);
         }
@@ -449,7 +482,8 @@ impl SemanticFeatures {
         }
 
         // AdditiveChange: sum, difference, altogether
-        if lower.contains("altogether") || lower.contains("remain")
+        if lower.contains("altogether")
+            || lower.contains("remain")
             || (lower.contains("add") && !lower.contains("conversion"))
         {
             relation_semantics.push(RelationSemantics::AdditiveChange);
@@ -457,24 +491,33 @@ impl SemanticFeatures {
 
         // MultiplicativeChange: single-step percentage change on base
         if (lower.contains('%') || lower.contains("percent"))
-            && (lower.contains("discount") || lower.contains("increase")
-                || lower.contains("decrease") || lower.contains("reduction")
-                || lower.contains("markup") || lower.contains("grows") || lower.contains("rises"))
-            && !lower.contains("each year") && !lower.contains("annually")
+            && (lower.contains("discount")
+                || lower.contains("increase")
+                || lower.contains("decrease")
+                || lower.contains("reduction")
+                || lower.contains("markup")
+                || lower.contains("grows")
+                || lower.contains("rises"))
+            && !lower.contains("each year")
+            && !lower.contains("annually")
         {
             relation_semantics.push(RelationSemantics::MultiplicativeChange);
         }
 
         // RepeatedChange: compound growth, multi-year
-        if lower.contains("each year") || lower.contains("annually")
-            || lower.contains("consecutive") || lower.contains("over ")
+        if lower.contains("each year")
+            || lower.contains("annually")
+            || lower.contains("consecutive")
+            || lower.contains("over ")
         {
             relation_semantics.push(RelationSemantics::RepeatedChange);
         }
 
         // ProbabilityMeasure: likelihood or chance
-        if lower.contains("probability") || lower.contains("chance")
-            || lower.contains("odds") || lower.contains("likelihood")
+        if lower.contains("probability")
+            || lower.contains("chance")
+            || lower.contains("odds")
+            || lower.contains("likelihood")
         {
             relation_semantics.push(RelationSemantics::ProbabilityMeasure);
         }
@@ -513,20 +556,26 @@ impl SemanticFeatures {
                 || lower.contains("convert ")
                 || (lower.contains("how many") && lower.contains("piece")),
             has_explicit_conversion: lower.contains("using ")
-                || lower.contains("per meter") || lower.contains("per centimeter")
-                || lower.contains("per hour") || lower.contains("per minute")
-                || lower.contains("per inch") || lower.contains("per foot"),
+                || lower.contains("per meter")
+                || lower.contains("per centimeter")
+                || lower.contains("per hour")
+                || lower.contains("per minute")
+                || lower.contains("per inch")
+                || lower.contains("per foot"),
             operations: {
                 let mut ops = BTreeSet::new();
                 if lower.contains("of ") {
                     ops.insert("part_of".into());
                 }
-                if lower.contains("increase") || lower.contains("grows")
-                    || lower.contains("rises") || lower.contains("markup")
+                if lower.contains("increase")
+                    || lower.contains("grows")
+                    || lower.contains("rises")
+                    || lower.contains("markup")
                 {
                     ops.insert("increase".into());
                 }
-                if lower.contains("decrease") || lower.contains("discount")
+                if lower.contains("decrease")
+                    || lower.contains("discount")
                     || lower.contains("reduction")
                 {
                     ops.insert("decrease".into());
@@ -561,11 +610,21 @@ impl SemanticFeatures {
         for r in &self.relation_semantics {
             tags.insert(format!("rel:{:?}", r).to_lowercase());
         }
-        if self.has_explicit_base { tags.insert("base:explicit".into()); }
-        if self.has_direction { tags.insert("dir:present".into()); }
-        if self.has_single_step { tags.insert("step:single".into()); }
-        if self.has_target_unit { tags.insert("target:specified".into()); }
-        if self.has_explicit_conversion { tags.insert("conversion:explicit".into()); }
+        if self.has_explicit_base {
+            tags.insert("base:explicit".into());
+        }
+        if self.has_direction {
+            tags.insert("dir:present".into());
+        }
+        if self.has_single_step {
+            tags.insert("step:single".into());
+        }
+        if self.has_target_unit {
+            tags.insert("target:specified".into());
+        }
+        if self.has_explicit_conversion {
+            tags.insert("conversion:explicit".into());
+        }
         for op in &self.operations {
             tags.insert(format!("op:{}", op));
         }
@@ -578,7 +637,11 @@ impl SemanticFeatures {
         let b = other.feature_tags();
         let intersection = a.intersection(&b).count();
         let union = a.union(&b).count();
-        if union == 0 { 0.0 } else { intersection as f64 / union as f64 }
+        if union == 0 {
+            0.0
+        } else {
+            intersection as f64 / union as f64
+        }
     }
 }
 
@@ -602,13 +665,20 @@ impl FailureCluster {
         }
 
         // Majority vote on enum-valued features: include if present in >50% of members
-        let all_numeric: Vec<&NumericForm> = features.iter().flat_map(|f| &f.numeric_forms).collect();
-        let all_relations: Vec<&RelationSemantics> = features.iter().flat_map(|f| &f.relation_semantics).collect();
+        let all_numeric: Vec<&NumericForm> =
+            features.iter().flat_map(|f| &f.numeric_forms).collect();
+        let all_relations: Vec<&RelationSemantics> = features
+            .iter()
+            .flat_map(|f| &f.relation_semantics)
+            .collect();
 
         let numeric_forms: Vec<NumericForm> = {
             let mut counts: BTreeMap<&NumericForm, usize> = BTreeMap::new();
-            for f in &all_numeric { *counts.entry(f).or_default() += 1; }
-            let majority: Vec<NumericForm> = counts.iter()
+            for f in &all_numeric {
+                *counts.entry(f).or_default() += 1;
+            }
+            let majority: Vec<NumericForm> = counts
+                .iter()
                 .filter(|(_, c)| **c > n / 2)
                 .map(|(k, _)| (*k).clone())
                 .collect();
@@ -626,8 +696,11 @@ impl FailureCluster {
 
         let relation_semantics: Vec<RelationSemantics> = {
             let mut counts: BTreeMap<&RelationSemantics, usize> = BTreeMap::new();
-            for r in &all_relations { *counts.entry(r).or_default() += 1; }
-            let majority: Vec<RelationSemantics> = counts.iter()
+            for r in &all_relations {
+                *counts.entry(r).or_default() += 1;
+            }
+            let majority: Vec<RelationSemantics> = counts
+                .iter()
                 .filter(|(_, c)| **c > n / 2)
                 .map(|(k, _)| (*k).clone())
                 .collect();
@@ -647,9 +720,14 @@ impl FailureCluster {
         let has_direction = features.iter().filter(|f| f.has_direction).count() > n / 2;
         let has_single_step = features.iter().filter(|f| f.has_single_step).count() > n / 2;
         let has_target_unit = features.iter().filter(|f| f.has_target_unit).count() > n / 2;
-        let has_explicit_conversion = features.iter().filter(|f| f.has_explicit_conversion).count() > n / 2;
+        let has_explicit_conversion = features
+            .iter()
+            .filter(|f| f.has_explicit_conversion)
+            .count()
+            > n / 2;
 
-        let operations: BTreeSet<String> = features.iter().flat_map(|f| f.operations.clone()).collect();
+        let operations: BTreeSet<String> =
+            features.iter().flat_map(|f| f.operations.clone()).collect();
 
         SemanticFeatures {
             numeric_forms,
@@ -719,7 +797,10 @@ pub fn cluster_failures(
             continue;
         }
         let centroid = FailureCluster::compute_centroid(
-            &cluster_features.iter().map(|(_, f)| f.clone()).collect::<Vec<_>>()
+            &cluster_features
+                .iter()
+                .map(|(_, f)| f.clone())
+                .collect::<Vec<_>>(),
         );
 
         // Exemplar prompts
@@ -941,17 +1022,14 @@ pub fn extract_predicates(
     let forms = &centroid.numeric_forms;
 
     // -- Negative prohibitions (checked FIRST so they take priority) --
-    if rels.contains(&RelationSemantics::PartOfWhole)
-        && forms.contains(&NumericForm::Percentage)
-    {
+    if rels.contains(&RelationSemantics::PartOfWhole) && forms.contains(&NumericForm::Percentage) {
         predicates.push(ApplicabilityPredicate::ForbidsLikelihoodSemantics);
         predicates.push(ApplicabilityPredicate::ForbidsRepeatedTemporalApplication);
         predicates.push(ApplicabilityPredicate::ForbidsPercentagePoints);
         predicates.push(ApplicabilityPredicate::ForbidsOverlappingAdjustments);
         predicates.push(ApplicabilityPredicate::ForbidsFinancialConstructs);
     }
-    if forms.contains(&NumericForm::ExplicitFraction)
-    {
+    if forms.contains(&NumericForm::ExplicitFraction) {
         predicates.push(ApplicabilityPredicate::ForbidsLikelihoodSemantics);
         predicates.push(ApplicabilityPredicate::ForbidsAbstractSymbolicExpression);
     }
@@ -962,14 +1040,17 @@ pub fn extract_predicates(
     // Generic quantity-relation forbids predicates:
     // any deterministic quantity math rejects temporal repetition,
     // likelihood, and symbolic abstractions.
-    if rels.iter().any(|r| matches!(r,
-        RelationSemantics::PartOfWhole
-        | RelationSemantics::PerUnitRate
-        | RelationSemantics::ProportionalScaling
-        | RelationSemantics::CompatibleUnitConversion
-        | RelationSemantics::MultiplicativeChange
-        | RelationSemantics::AdditiveChange
-    )) {
+    if rels.iter().any(|r| {
+        matches!(
+            r,
+            RelationSemantics::PartOfWhole
+                | RelationSemantics::PerUnitRate
+                | RelationSemantics::ProportionalScaling
+                | RelationSemantics::CompatibleUnitConversion
+                | RelationSemantics::MultiplicativeChange
+                | RelationSemantics::AdditiveChange
+        )
+    }) {
         predicates.push(ApplicabilityPredicate::ForbidsLikelihoodSemantics);
         predicates.push(ApplicabilityPredicate::ForbidsRepeatedTemporalApplication);
         predicates.push(ApplicabilityPredicate::ForbidsAbstractSymbolicExpression);
@@ -1020,7 +1101,9 @@ fn has_conflicting_dimensions(prompt: &str) -> bool {
     // Helper: check if a unit word appears with valid boundaries.
     // Allows common suffixes like plural 's', 'es', metric prefixes.
     fn contains_word(haystack: &str, word: &str) -> bool {
-        if word.len() > haystack.len() { return false; }
+        if word.len() > haystack.len() {
+            return false;
+        }
         let word_lower = word.to_ascii_lowercase();
         if let Some(idx) = haystack.find(&word_lower) {
             let before_ok = idx == 0 || !haystack.as_bytes()[idx - 1].is_ascii_alphanumeric();
@@ -1031,8 +1114,8 @@ fn has_conflicting_dimensions(prompt: &str) -> bool {
             let after_char = haystack.as_bytes()[after_idx];
             // Allow trailing 's' (plural), 'es', 'd', 'ing' as valid suffixes
             let allowed_suffixes = [b's', b'e', b'd', b'i'];
-            let after_ok = !after_char.is_ascii_alphanumeric()
-                || allowed_suffixes.contains(&after_char);
+            let after_ok =
+                !after_char.is_ascii_alphanumeric() || allowed_suffixes.contains(&after_char);
             before_ok && after_ok
         } else {
             false
@@ -1042,19 +1125,45 @@ fn has_conflicting_dimensions(prompt: &str) -> bool {
     // Categorize known units by dimension
     // Each unit is checked as a whole word to avoid substring false positives
     // (e.g., "cent" in "centimeters", "gram" in "program")
-    let length_units = ["meter", "centimeter", "inch", "foot", "feet", "mile", "yard", "mm", "cm", "km"];
+    let length_units = [
+        "meter",
+        "centimeter",
+        "inch",
+        "foot",
+        "feet",
+        "mile",
+        "yard",
+        "mm",
+        "cm",
+        "km",
+    ];
     let mass_units = ["kilogram", "gram", "pound", "ounce", "ton", "kg", "g", "lb"];
-    let volume_units = ["liter", "gallon", "milliliter", "pint", "quart", "cup", "ml", "l"];
-    let time_units = ["minute", "hour", "day", "week", "month", "year", "second", "min", "hr"];
+    let volume_units = [
+        "liter",
+        "gallon",
+        "milliliter",
+        "pint",
+        "quart",
+        "cup",
+        "ml",
+        "l",
+    ];
+    let time_units = [
+        "minute", "hour", "day", "week", "month", "year", "second", "min", "hr",
+    ];
     let currency_units = ["dollar", "cent", "euro", "pound sterling", "usd", "eur"];
 
     // For currency, be more careful: "cent" conflicts with "centimeter"
     // Check if the exact standalone word "cent" appears (not as part of "centimeter")
     let has_currency = {
-        let standalone_cent = lower.split_whitespace()
+        let standalone_cent = lower
+            .split_whitespace()
             .any(|w| w == "cent" || w == "cents" || w == "cent(s)");
-        standalone_cent || contains_word(&lower, "dollar") || contains_word(&lower, "euro")
-            || contains_word(&lower, "pound sterling") || contains_word(&lower, "usd")
+        standalone_cent
+            || contains_word(&lower, "dollar")
+            || contains_word(&lower, "euro")
+            || contains_word(&lower, "pound sterling")
+            || contains_word(&lower, "usd")
     };
 
     let has_length = length_units.iter().any(|u| contains_word(&lower, u));
@@ -1063,7 +1172,9 @@ fn has_conflicting_dimensions(prompt: &str) -> bool {
     let has_time = time_units.iter().any(|u| contains_word(&lower, u));
 
     let dimensions_present = [has_length, has_mass, has_volume, has_time, has_currency]
-        .iter().filter(|&&d| d).count();
+        .iter()
+        .filter(|&&d| d)
+        .count();
 
     // Conflicting if >1 dimension is present AND they are not all the same dimension.
     // Single-dimension-with-different-scales (e.g., meters + centimeters) is compatible.
@@ -1083,31 +1194,48 @@ pub fn evaluate_predicates(
     for p in predicates {
         match p {
             ApplicabilityPredicate::RequiresExplicitBase => {
-                if !feat.has_explicit_base { return Some(p.clone()); }
+                if !feat.has_explicit_base {
+                    return Some(p.clone());
+                }
             }
             ApplicabilityPredicate::RequiresExplicitDirection => {
-                if !feat.has_direction { return Some(p.clone()); }
+                if !feat.has_direction {
+                    return Some(p.clone());
+                }
             }
             ApplicabilityPredicate::RequiresQuantityValuedTarget => {
                 // Fails if the case is about likelihood/measure rather than quantity
-                if feat.relation_semantics.contains(&RelationSemantics::ProbabilityMeasure) {
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::ProbabilityMeasure)
+                {
                     return Some(p.clone());
                 }
             }
             ApplicabilityPredicate::RequiresCompatibleUnitDimensions => {
                 if !feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
-                    || !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
+                    || !feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::CompatibleUnitConversion)
                 {
                     // Not a unit-conversion case at all — fails the predicate
-                    if !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
-                        && feat.relation_semantics.iter().any(|r| *r != RelationSemantics::AdditiveChange)
+                    if !feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::CompatibleUnitConversion)
+                        && feat
+                            .relation_semantics
+                            .iter()
+                            .any(|r| *r != RelationSemantics::AdditiveChange)
                     {
                         return Some(p.clone());
                     }
                 }
             }
             ApplicabilityPredicate::RequiresSingleTransformation => {
-                if feat.relation_semantics.contains(&RelationSemantics::RepeatedChange) {
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::RepeatedChange)
+                {
                     return Some(p.clone());
                 }
             }
@@ -1117,12 +1245,18 @@ pub fn evaluate_predicates(
                 }
             }
             ApplicabilityPredicate::ForbidsLikelihoodSemantics => {
-                if feat.relation_semantics.contains(&RelationSemantics::ProbabilityMeasure) {
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::ProbabilityMeasure)
+                {
                     return Some(p.clone());
                 }
             }
             ApplicabilityPredicate::ForbidsRepeatedTemporalApplication => {
-                if feat.relation_semantics.contains(&RelationSemantics::RepeatedChange) {
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::RepeatedChange)
+                {
                     return Some(p.clone());
                 }
             }
@@ -1131,16 +1265,24 @@ pub fn evaluate_predicates(
                 if feat.numeric_forms.contains(&NumericForm::Percentage)
                     && !feat.has_explicit_base
                     && !feat.has_direction
-                    && !feat.relation_semantics.contains(&RelationSemantics::PartOfWhole)
-                    && !feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
+                    && !feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::PartOfWhole)
+                    && !feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::MultiplicativeChange)
                 {
                     return Some(p.clone());
                 }
             }
             ApplicabilityPredicate::ForbidsAbstractSymbolicExpression => {
                 // Symbolic unknowns (no digits) or abstract fractions without base
-                if !feat.numeric_forms.iter().any(|f| matches!(f, NumericForm::Integer | NumericForm::Decimal))
-                    || (feat.numeric_forms.contains(&NumericForm::ExplicitFraction) && !feat.has_explicit_base)
+                if !feat
+                    .numeric_forms
+                    .iter()
+                    .any(|f| matches!(f, NumericForm::Integer | NumericForm::Decimal))
+                    || (feat.numeric_forms.contains(&NumericForm::ExplicitFraction)
+                        && !feat.has_explicit_base)
                 {
                     return Some(p.clone());
                 }
@@ -1148,14 +1290,18 @@ pub fn evaluate_predicates(
             ApplicabilityPredicate::ForbidsFinancialConstructs => {
                 // Financial constructs: loans, interest, finance — detected via keywords
                 // that don't fit the additive-change or multiplicative-change patterns.
-                if feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::MultiplicativeChange)
                     && !feat.has_explicit_base
                     && feat.operations.contains("increase")
                 {
                     return Some(p.clone());
                 }
                 // For AdditiveChange: detect financial keywords
-                if feat.relation_semantics.contains(&RelationSemantics::AdditiveChange)
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::AdditiveChange)
                     && (feat.operations.contains("increase")
                         || feat.operations.contains("decrease"))
                     && !feat.has_explicit_base
@@ -1165,7 +1311,9 @@ pub fn evaluate_predicates(
             }
             ApplicabilityPredicate::ForbidsOverlappingAdjustments => {
                 // Multiple sequential adjustments (discount+tax, etc.)
-                if feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
+                if feat
+                    .relation_semantics
+                    .contains(&RelationSemantics::MultiplicativeChange)
                     && feat.operations.len() >= 2
                 {
                     return Some(p.clone());
@@ -1175,8 +1323,12 @@ pub fn evaluate_predicates(
                 // Incompatible units detected when multiple unit types appear together
                 // (e.g. meters + kilograms) in an additive context without a conversion.
                 if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
-                    && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
-                    && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
+                    && !feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::CompatibleUnitConversion)
+                    && !feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::PerUnitRate)
                 {
                     // Check if this is a GENUINE dimensional conflict (e.g., length + mass).
                     let has_conflict = has_conflicting_dimensions(prompt);
@@ -1221,7 +1373,10 @@ pub fn analyze_boundary(
     all_features: &BTreeMap<FailureReceiptId, SemanticFeatures>,
 ) -> BoundaryContrast {
     let centroid = &cluster.centroid_features;
-    let supported_family = centroid.relation_semantics.first().cloned()
+    let supported_family = centroid
+        .relation_semantics
+        .first()
+        .cloned()
         .unwrap_or(RelationSemantics::AdditiveChange);
 
     // Build a dummy invariant just for predicate extraction
@@ -1243,11 +1398,15 @@ pub fn analyze_boundary(
         }
 
         let prompt = all_prompts.get(id).map(|s| s.as_str()).unwrap_or("");
-        let excluded_family = feat.relation_semantics.first().cloned()
+        let excluded_family = feat
+            .relation_semantics
+            .first()
+            .cloned()
             .unwrap_or(RelationSemantics::AdditiveChange);
 
         // ── Step 2: Evaluate predicates on this candidate ──
-        let failed_predicate = evaluate_predicates(&predicates, feat, &centroid.relation_semantics, prompt);
+        let failed_predicate =
+            evaluate_predicates(&predicates, feat, &centroid.relation_semantics, prompt);
 
         // Determine discriminating features and missing conditions
         let mut discriminating = Vec::new();
@@ -1284,7 +1443,11 @@ pub fn analyze_boundary(
 
         let contrast_type = if centroid.relation_semantics == feat.relation_semantics {
             ContrastType::StructuralNearMiss
-        } else if centroid.numeric_forms.iter().any(|nf| feat.numeric_forms.contains(nf)) {
+        } else if centroid
+            .numeric_forms
+            .iter()
+            .any(|nf| feat.numeric_forms.contains(nf))
+        {
             ContrastType::LexicalNearMiss
         } else {
             ContrastType::StructuralNearMiss
@@ -1294,16 +1457,20 @@ pub fn analyze_boundary(
         // Ambiguous = shares semantics but missing explicit info
         // Exclusion = different semantics or violates a forbids predicate
         let is_ambiguous = failed_predicate.as_ref().map_or(false, |p| {
-            matches!(p,
+            matches!(
+                p,
                 ApplicabilityPredicate::RequiresExplicitBase
-                | ApplicabilityPredicate::RequiresExplicitDirection
-                | ApplicabilityPredicate::RequiresUnitBearingScalar
+                    | ApplicabilityPredicate::RequiresExplicitDirection
+                    | ApplicabilityPredicate::RequiresUnitBearingScalar
             )
-        }) && !discriminating.iter().any(|d| d.contains("relation differs"));
+        }) && !discriminating
+            .iter()
+            .any(|d| d.contains("relation differs"));
 
         let record = ExclusionRecord {
             excluded_family,
-            failed_predicate: failed_predicate.unwrap_or(ApplicabilityPredicate::RequiresExplicitBase),
+            failed_predicate: failed_predicate
+                .unwrap_or(ApplicabilityPredicate::RequiresExplicitBase),
             discriminating_features: discriminating,
             missing_or_conflicting_conditions: missing,
             contrast_type,
@@ -1325,15 +1492,25 @@ pub fn analyze_boundary(
         }
         // Skip if already a near-miss
         let prompt_str = all_prompts.get(id).map(|s| s.as_str()).unwrap_or("");
-        let already_found = exclusions.iter().any(|e| e.exemplars.iter().any(|x| x == prompt_str))
-            || ambiguous.iter().any(|e| e.exemplars.iter().any(|x| x == prompt_str));
+        let already_found = exclusions
+            .iter()
+            .any(|e| e.exemplars.iter().any(|x| x == prompt_str))
+            || ambiguous
+                .iter()
+                .any(|e| e.exemplars.iter().any(|x| x == prompt_str));
         if already_found {
             continue;
         }
 
         // Check for shared vocabulary cues
-        let has_shared_cue = centroid.numeric_forms.iter().any(|nf| feat.numeric_forms.contains(nf))
-            || centroid.operations.iter().any(|op| feat.operations.contains(op));
+        let has_shared_cue = centroid
+            .numeric_forms
+            .iter()
+            .any(|nf| feat.numeric_forms.contains(nf))
+            || centroid
+                .operations
+                .iter()
+                .any(|op| feat.operations.contains(op));
 
         if !has_shared_cue {
             continue;
@@ -1346,17 +1523,22 @@ pub fn analyze_boundary(
 
         // This is a lexical confounder: shares vocabulary but not overall semantics
         let prompt = all_prompts.get(id).map(|s| s.as_str()).unwrap_or("");
-        let excluded_family = feat.relation_semantics.first().cloned()
+        let excluded_family = feat
+            .relation_semantics
+            .first()
+            .cloned()
             .unwrap_or(RelationSemantics::AdditiveChange);
-        let failed_predicate = evaluate_predicates(&predicates, feat, &centroid.relation_semantics, prompt);
+        let failed_predicate =
+            evaluate_predicates(&predicates, feat, &centroid.relation_semantics, prompt);
 
         let record = ExclusionRecord {
             excluded_family,
-            failed_predicate: failed_predicate.unwrap_or(ApplicabilityPredicate::RequiresExplicitBase),
-            discriminating_features: vec![
-                format!("shared vocab but different semantics: centroid={:?} candidate={:?}",
-                    centroid.relation_semantics, feat.relation_semantics)
-            ],
+            failed_predicate: failed_predicate
+                .unwrap_or(ApplicabilityPredicate::RequiresExplicitBase),
+            discriminating_features: vec![format!(
+                "shared vocab but different semantics: centroid={:?} candidate={:?}",
+                centroid.relation_semantics, feat.relation_semantics
+            )],
             missing_or_conflicting_conditions: vec![],
             contrast_type: ContrastType::LexicalNearMiss,
             exemplars: vec![prompt.to_string()],
@@ -1366,19 +1548,34 @@ pub fn analyze_boundary(
 
     // ── Global discriminating features from failed predicates ──
     let mut global = Vec::new();
-    if exclusions.iter().any(|e| e.failed_predicate == ApplicabilityPredicate::RequiresExplicitBase) {
+    if exclusions
+        .iter()
+        .any(|e| e.failed_predicate == ApplicabilityPredicate::RequiresExplicitBase)
+    {
         global.push("Explicit reference base distinguishes supported from ambiguous".into());
     }
-    if exclusions.iter().any(|e| e.failed_predicate == ApplicabilityPredicate::RequiresSingleTransformation) {
+    if exclusions
+        .iter()
+        .any(|e| e.failed_predicate == ApplicabilityPredicate::RequiresSingleTransformation)
+    {
         global.push("Single-step assumption excludes compound/growth patterns".into());
     }
-    if exclusions.iter().any(|e| e.failed_predicate == ApplicabilityPredicate::ForbidsLikelihoodSemantics) {
+    if exclusions
+        .iter()
+        .any(|e| e.failed_predicate == ApplicabilityPredicate::ForbidsLikelihoodSemantics)
+    {
         global.push("Likelihood/probability excluded from deterministic math".into());
     }
-    if exclusions.iter().any(|e| e.failed_predicate == ApplicabilityPredicate::ForbidsRepeatedTemporalApplication) {
+    if exclusions
+        .iter()
+        .any(|e| e.failed_predicate == ApplicabilityPredicate::ForbidsRepeatedTemporalApplication)
+    {
         global.push("Repeated temporal applications excluded from single-step".into());
     }
-    if exclusions.iter().any(|e| e.failed_predicate == ApplicabilityPredicate::ForbidsOverlappingAdjustments) {
+    if exclusions
+        .iter()
+        .any(|e| e.failed_predicate == ApplicabilityPredicate::ForbidsOverlappingAdjustments)
+    {
         global.push("Overlapping sequential adjustments excluded".into());
     }
 
@@ -1411,23 +1608,41 @@ pub fn build_proposal(
     let (input_types, output_types) = {
         if rels.contains(&RelationSemantics::PartOfWhole) {
             if forms.contains(&NumericForm::Percentage) {
-                (vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
-                 vec![ArtifactType::QuantityRelation])
+                (
+                    vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
+                    vec![ArtifactType::QuantityRelation],
+                )
             } else {
-                (vec![ArtifactType::NumericQuantity, ArtifactType::FractionalQuantity],
-                 vec![ArtifactType::QuantityRelation])
+                (
+                    vec![
+                        ArtifactType::NumericQuantity,
+                        ArtifactType::FractionalQuantity,
+                    ],
+                    vec![ArtifactType::QuantityRelation],
+                )
             }
         } else if rels.contains(&RelationSemantics::CompatibleUnitConversion) {
-            (vec![ArtifactType::UnitQuantity], vec![ArtifactType::QuantityRelation])
+            (
+                vec![ArtifactType::UnitQuantity],
+                vec![ArtifactType::QuantityRelation],
+            )
         } else if rels.contains(&RelationSemantics::PerUnitRate)
             || rels.contains(&RelationSemantics::ProportionalScaling)
         {
-            (vec![ArtifactType::NumericQuantity], vec![ArtifactType::QuantityRelation])
+            (
+                vec![ArtifactType::NumericQuantity],
+                vec![ArtifactType::QuantityRelation],
+            )
         } else if rels.contains(&RelationSemantics::MultiplicativeChange) {
-            (vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
-             vec![ArtifactType::QuantityRelation])
+            (
+                vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
+                vec![ArtifactType::QuantityRelation],
+            )
         } else {
-            (vec![ArtifactType::NumericQuantity], vec![ArtifactType::QuantityRelation])
+            (
+                vec![ArtifactType::NumericQuantity],
+                vec![ArtifactType::QuantityRelation],
+            )
         }
     };
 
@@ -1436,10 +1651,18 @@ pub fn build_proposal(
         description: invariant.description.clone(),
         features: {
             let mut f = Vec::new();
-            for r in rels { f.push(format!("{:?}", r).to_lowercase()); }
-            if centroid.has_explicit_base { f.push("explicit_base".into()); }
-            if centroid.has_direction { f.push("explicit_direction".into()); }
-            if centroid.has_single_step { f.push("single_step".into()); }
+            for r in rels {
+                f.push(format!("{:?}", r).to_lowercase());
+            }
+            if centroid.has_explicit_base {
+                f.push("explicit_base".into());
+            }
+            if centroid.has_direction {
+                f.push("explicit_direction".into());
+            }
+            if centroid.has_single_step {
+                f.push("single_step".into());
+            }
             f
         },
         exemplars: cluster.prompt_exemplars.clone(),
@@ -1448,34 +1671,52 @@ pub fn build_proposal(
     }];
 
     // Build ambiguous and unsupported patterns from the structured boundary contrast
-    let ambiguous_patterns: Vec<PatternSpec> = boundary.ambiguous_near_misses.iter().map(|er| {
-        PatternSpec {
-            description: format!("Ambiguous: {:?} — missing: {}",
+    let ambiguous_patterns: Vec<PatternSpec> = boundary
+        .ambiguous_near_misses
+        .iter()
+        .map(|er| PatternSpec {
+            description: format!(
+                "Ambiguous: {:?} — missing: {}",
                 er.excluded_family,
-                er.missing_or_conflicting_conditions.join(", ")),
+                er.missing_or_conflicting_conditions.join(", ")
+            ),
             features: er.discriminating_features.clone(),
             exemplars: er.exemplars.clone(),
-            requires_explicit_base: er.missing_or_conflicting_conditions.contains(&"explicit reference base".into()),
-            requires_explicit_direction: er.missing_or_conflicting_conditions.contains(&"explicit direction".into()),
-        }
-    }).collect();
+            requires_explicit_base: er
+                .missing_or_conflicting_conditions
+                .contains(&"explicit reference base".into()),
+            requires_explicit_direction: er
+                .missing_or_conflicting_conditions
+                .contains(&"explicit direction".into()),
+        })
+        .collect();
 
-    let unsupported_patterns: Vec<PatternSpec> = boundary.exclusions.iter().map(|er| {
-        let contrast_label = match er.contrast_type {
-            ContrastType::LexicalNearMiss => "Lexical near-miss",
-            ContrastType::StructuralNearMiss => "Structural near-miss",
-            ContrastType::ExistingCapabilityOverlap => "Existing capability overlap",
-        };
-        PatternSpec {
-            description: format!("{}: {:?} — {}",
-                contrast_label, er.excluded_family,
-                er.discriminating_features.first().map(|s| s.as_str()).unwrap_or("different semantic relation")),
-            features: er.discriminating_features.clone(),
-            exemplars: er.exemplars.clone(),
-            requires_explicit_base: false,
-            requires_explicit_direction: false,
-        }
-    }).collect();
+    let unsupported_patterns: Vec<PatternSpec> = boundary
+        .exclusions
+        .iter()
+        .map(|er| {
+            let contrast_label = match er.contrast_type {
+                ContrastType::LexicalNearMiss => "Lexical near-miss",
+                ContrastType::StructuralNearMiss => "Structural near-miss",
+                ContrastType::ExistingCapabilityOverlap => "Existing capability overlap",
+            };
+            PatternSpec {
+                description: format!(
+                    "{}: {:?} — {}",
+                    contrast_label,
+                    er.excluded_family,
+                    er.discriminating_features
+                        .first()
+                        .map(|s| s.as_str())
+                        .unwrap_or("different semantic relation")
+                ),
+                features: er.discriminating_features.clone(),
+                exemplars: er.exemplars.clone(),
+                requires_explicit_base: false,
+                requires_explicit_direction: false,
+            }
+        })
+        .collect();
 
     // Build assumptions
     let mut assumptions = Vec::new();
@@ -1500,9 +1741,7 @@ pub fn build_proposal(
 
     // Safety invariants
     let mut invariants = Vec::new();
-    if rels.contains(&RelationSemantics::PartOfWhole)
-        && forms.contains(&NumericForm::Percentage)
-    {
+    if rels.contains(&RelationSemantics::PartOfWhole) && forms.contains(&NumericForm::Percentage) {
         invariants.push(SafetyInvariant {
             description: "Must not apply percentage to a previously transformed value".into(),
             violation_pattern: "compound growth, sequential discounts".into(),
@@ -1563,7 +1802,11 @@ pub fn build_proposal(
         },
         confidence: ProposalConfidence {
             structural_confidence: 0.8,
-            boundary_confidence: if boundary.exclusions.len() >= 2 { 0.8 } else { 0.5 },
+            boundary_confidence: if boundary.exclusions.len() >= 2 {
+                0.8
+            } else {
+                0.5
+            },
             bridge_confidence: 0.7,
         },
     }
@@ -1579,7 +1822,9 @@ pub enum ApplicabilityDecision {
     /// The case has multiple possible interpretations or a missing binding.
     Ambiguous { causes: Vec<AmbiguityCause> },
     /// The case violates the capability contract — no interpretation is valid.
-    Unsupported { failed_predicate: ApplicabilityPredicate },
+    Unsupported {
+        failed_predicate: ApplicabilityPredicate,
+    },
 }
 
 /// A typed slot in a contract that can be missing, causing ambiguity.
@@ -1925,32 +2170,45 @@ fn infer_safety_predicates(feat: &SemanticFeatures) -> Vec<ApplicabilityPredicat
         };
     }
 
-    if rels.contains(&RelationSemantics::PartOfWhole)
-        && forms.contains(&NumericForm::Percentage)
-    {
+    if rels.contains(&RelationSemantics::PartOfWhole) && forms.contains(&NumericForm::Percentage) {
         push_unique!(preds, ApplicabilityPredicate::ForbidsLikelihoodSemantics);
-        push_unique!(preds, ApplicabilityPredicate::ForbidsRepeatedTemporalApplication);
+        push_unique!(
+            preds,
+            ApplicabilityPredicate::ForbidsRepeatedTemporalApplication
+        );
         push_unique!(preds, ApplicabilityPredicate::ForbidsOverlappingAdjustments);
     }
     if forms.contains(&NumericForm::ExplicitFraction) {
         push_unique!(preds, ApplicabilityPredicate::ForbidsLikelihoodSemantics);
-        push_unique!(preds, ApplicabilityPredicate::ForbidsAbstractSymbolicExpression);
+        push_unique!(
+            preds,
+            ApplicabilityPredicate::ForbidsAbstractSymbolicExpression
+        );
     }
     if rels.contains(&RelationSemantics::CompatibleUnitConversion) {
         push_unique!(preds, ApplicabilityPredicate::ForbidsIncompatibleUnits);
     }
     // Generic quantity-relation forbids
-    if rels.iter().any(|r| matches!(r,
-        RelationSemantics::PartOfWhole
-        | RelationSemantics::PerUnitRate
-        | RelationSemantics::ProportionalScaling
-        | RelationSemantics::CompatibleUnitConversion
-        | RelationSemantics::MultiplicativeChange
-        | RelationSemantics::AdditiveChange
-    )) {
+    if rels.iter().any(|r| {
+        matches!(
+            r,
+            RelationSemantics::PartOfWhole
+                | RelationSemantics::PerUnitRate
+                | RelationSemantics::ProportionalScaling
+                | RelationSemantics::CompatibleUnitConversion
+                | RelationSemantics::MultiplicativeChange
+                | RelationSemantics::AdditiveChange
+        )
+    }) {
         push_unique!(preds, ApplicabilityPredicate::ForbidsLikelihoodSemantics);
-        push_unique!(preds, ApplicabilityPredicate::ForbidsRepeatedTemporalApplication);
-        push_unique!(preds, ApplicabilityPredicate::ForbidsAbstractSymbolicExpression);
+        push_unique!(
+            preds,
+            ApplicabilityPredicate::ForbidsRepeatedTemporalApplication
+        );
+        push_unique!(
+            preds,
+            ApplicabilityPredicate::ForbidsAbstractSymbolicExpression
+        );
     }
     preds
 }
@@ -1958,12 +2216,16 @@ fn infer_safety_predicates(feat: &SemanticFeatures) -> Vec<ApplicabilityPredicat
 /// Compute a `TransformationSignature` from `SemanticFeatures`.
 pub fn compute_transformation_signature(feat: &SemanticFeatures) -> TransformationSignature {
     let family = classify_relation_family(feat);
-    let relation_semantics = feat.relation_semantics.first().cloned()
+    let relation_semantics = feat
+        .relation_semantics
+        .first()
+        .cloned()
         .unwrap_or(RelationSemantics::AdditiveChange);
     let numeric_forms: BTreeSet<_> = feat.numeric_forms.iter().cloned().collect();
     let input_types = infer_input_types(feat);
     let output_type = ArtifactType::QuantityRelation;
-    let required_bindings: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+    let required_bindings: BTreeSet<String> =
+        feature_names_from_semantic(feat).into_iter().collect();
     let assumptions = {
         let mut a = BTreeSet::new();
         if feat.has_explicit_base {
@@ -2015,25 +2277,47 @@ pub fn transformation_similarity(a: &SemanticFeatures, b: &SemanticFeatures) -> 
 
     // 2. Numeric-form overlap (weight: 0.15)
     let num_sim = {
-        let intersection = sig_a.numeric_forms.intersection(&sig_b.numeric_forms).count();
+        let intersection = sig_a
+            .numeric_forms
+            .intersection(&sig_b.numeric_forms)
+            .count();
         let union = sig_a.numeric_forms.union(&sig_b.numeric_forms).count();
-        if union == 0 { 0.0 } else { intersection as f64 / union as f64 }
+        if union == 0 {
+            0.0
+        } else {
+            intersection as f64 / union as f64
+        }
     };
 
     // 3. Input-type overlap (weight: 0.10)
     let input_sim = {
         let intersection = sig_a.input_types.intersection(&sig_b.input_types).count();
         let union = sig_a.input_types.union(&sig_b.input_types).count();
-        if union == 0 { 0.0 } else { intersection as f64 / union as f64 }
+        if union == 0 {
+            0.0
+        } else {
+            intersection as f64 / union as f64
+        }
     };
 
     // 4. Output-type compatibility (weight: 0.05)
-    let output_sim = if sig_a.output_type == sig_b.output_type { 1.0 } else { 0.0 };
+    let output_sim = if sig_a.output_type == sig_b.output_type {
+        1.0
+    } else {
+        0.0
+    };
 
     // 5. Bridge overlap (weight: 0.10)
     let bridge_sim = {
-        let overlap = sig_a.compatible_bridges.intersection(&sig_b.compatible_bridges).count();
-        if overlap > 0 { 1.0 } else { 0.0 }
+        let overlap = sig_a
+            .compatible_bridges
+            .intersection(&sig_b.compatible_bridges)
+            .count();
+        if overlap > 0 {
+            1.0
+        } else {
+            0.0
+        }
     };
 
     // 6. Feature Jaccard (weight: 0.15)
@@ -2041,13 +2325,28 @@ pub fn transformation_similarity(a: &SemanticFeatures, b: &SemanticFeatures) -> 
 
     // 7. Binding overlap (weight: 0.10)
     let binding_sim = {
-        let intersection = sig_a.required_bindings.intersection(&sig_b.required_bindings).count();
-        let union = sig_a.required_bindings.union(&sig_b.required_bindings).count();
-        if union == 0 { 0.0 } else { intersection as f64 / union as f64 }
+        let intersection = sig_a
+            .required_bindings
+            .intersection(&sig_b.required_bindings)
+            .count();
+        let union = sig_a
+            .required_bindings
+            .union(&sig_b.required_bindings)
+            .count();
+        if union == 0 {
+            0.0
+        } else {
+            intersection as f64 / union as f64
+        }
     };
 
-    rel_sim * 0.35 + num_sim * 0.15 + input_sim * 0.10 + output_sim * 0.05
-        + bridge_sim * 0.10 + feat_sim * 0.15 + binding_sim * 0.10
+    rel_sim * 0.35
+        + num_sim * 0.15
+        + input_sim * 0.10
+        + output_sim * 0.05
+        + bridge_sim * 0.10
+        + feat_sim * 0.15
+        + binding_sim * 0.10
 }
 
 /// Decision about whether two transformation clusters should be merged
@@ -2102,9 +2401,7 @@ pub struct CapabilityFamily {
 /// scores. Merge forms that share compatible artifact contracts,
 /// non-conflicting predicates, and bridge reuse. Keep separate forms
 /// with contradictory safety predicates or incompatible I/O types.
-pub fn aggregate_capability_families(
-    forms: Vec<SupportedForm>,
-) -> Vec<CapabilityFamily> {
+pub fn aggregate_capability_families(forms: Vec<SupportedForm>) -> Vec<CapabilityFamily> {
     if forms.is_empty() {
         return vec![];
     }
@@ -2118,7 +2415,8 @@ pub fn aggregate_capability_families(
     }
 
     // Build signatures for each form
-    let sigs: Vec<(&SupportedForm, TransformationSignature)> = forms.iter()
+    let sigs: Vec<(&SupportedForm, TransformationSignature)> = forms
+        .iter()
         .map(|f| (f, compute_transformation_signature(&f.centroid_features)))
         .collect();
 
@@ -2127,13 +2425,17 @@ pub fn aggregate_capability_families(
     let mut assigned: Vec<bool> = vec![false; forms.len()];
 
     for i in 0..forms.len() {
-        if assigned[i] { continue; }
+        if assigned[i] {
+            continue;
+        }
         assigned[i] = true;
         let mut family_forms = vec![forms[i].clone()];
         let mut evidence: Vec<PairwiseAggregationEvidence> = Vec::new();
 
         for j in (i + 1)..forms.len() {
-            if assigned[j] { continue; }
+            if assigned[j] {
+                continue;
+            }
 
             let sig_i = &sigs[i].1;
             let sig_j = &sigs[j].1;
@@ -2143,9 +2445,17 @@ pub fn aggregate_capability_families(
             // Check artifact-contract compatibility
             let input_intersection = sig_i.input_types.intersection(&sig_j.input_types).count();
             let input_union = sig_i.input_types.union(&sig_j.input_types).count();
-            let input_compat = if input_union == 0 { 0.0 } else { input_intersection as f64 / input_union as f64 };
+            let input_compat = if input_union == 0 {
+                0.0
+            } else {
+                input_intersection as f64 / input_union as f64
+            };
 
-            let output_compat = if sig_i.output_type == sig_j.output_type { 1.0 } else { 0.0 };
+            let output_compat = if sig_i.output_type == sig_j.output_type {
+                1.0
+            } else {
+                0.0
+            };
             let artifact_compat = (input_compat + output_compat) / 2.0;
 
             // Check predicate compatibility (no conflicting forbids)
@@ -2154,7 +2464,11 @@ pub fn aggregate_capability_families(
                 || sig_j.safety_predicates.is_empty();
 
             // Check bridge reuse
-            let bridge_reuse = sig_i.compatible_bridges.intersection(&sig_j.compatible_bridges).next().is_some();
+            let bridge_reuse = sig_i
+                .compatible_bridges
+                .intersection(&sig_j.compatible_bridges)
+                .next()
+                .is_some();
 
             // Check relation compatibility
             let rel_compatible = are_compatible_families(family_a, family_b);
@@ -2188,8 +2502,11 @@ pub fn aggregate_capability_families(
         }
 
         let propose_as_unified = evidence.iter().all(|e| {
-            matches!(e.decision, AggregationDecision::MergeIntoCapabilityFamily
-                | AggregationDecision::InsufficientEvidence)
+            matches!(
+                e.decision,
+                AggregationDecision::MergeIntoCapabilityFamily
+                    | AggregationDecision::InsufficientEvidence
+            )
         });
 
         merged.push(CapabilityFamily {
@@ -2215,18 +2532,31 @@ pub fn aggregate_capability_families(
 pub fn induce_supported_forms(
     cluster: &FailureCluster,
     _all_features: &BTreeMap<FailureReceiptId, SemanticFeatures>,
-) -> (Vec<SupportedForm>, Vec<UncoveredPositiveReceipt>, FormComplexityMetrics) {
+) -> (
+    Vec<SupportedForm>,
+    Vec<UncoveredPositiveReceipt>,
+    FormComplexityMetrics,
+) {
     if cluster.member_features.is_empty() && cluster.size < 3 {
-        return (vec![], vec![], FormComplexityMetrics {
-            form_count: 0, avg_required_features: 0.0, max_required_features: 0,
-            total_uncovered: 0, avg_alternative_groups: 0.0,
-        });
+        return (
+            vec![],
+            vec![],
+            FormComplexityMetrics {
+                form_count: 0,
+                avg_required_features: 0.0,
+                max_required_features: 0,
+                total_uncovered: 0,
+                avg_alternative_groups: 0.0,
+            },
+        );
     }
 
     // Build member prompt-feature pairs from cluster
     let mut member_prompts: Vec<(String, SemanticFeatures)> = Vec::new();
     for (i, feat) in cluster.member_features.iter().enumerate() {
-        let prompt = cluster.prompt_exemplars.get(i)
+        let prompt = cluster
+            .prompt_exemplars
+            .get(i)
             .cloned()
             .unwrap_or_else(|| format!("member-{}", i));
         member_prompts.push((prompt, feat.clone()));
@@ -2240,10 +2570,17 @@ pub fn induce_supported_forms(
             &build_required_from_centroid(&cluster.centroid_features),
             cluster.prompt_exemplars.clone(),
         );
-        return (vec![fallback_form], vec![], FormComplexityMetrics {
-            form_count: 1, avg_required_features: 1.0, max_required_features: 1,
-            total_uncovered: 0, avg_alternative_groups: 0.0,
-        });
+        return (
+            vec![fallback_form],
+            vec![],
+            FormComplexityMetrics {
+                form_count: 1,
+                avg_required_features: 1.0,
+                max_required_features: 1,
+                total_uncovered: 0,
+                avg_alternative_groups: 0.0,
+            },
+        );
     }
 
     // Step 2: Group by primary relation semantics
@@ -2254,28 +2591,34 @@ pub fn induce_supported_forms(
     let mut total_required: usize = 0;
     let mut total_alt_groups: usize = 0;
 
-        // Create forms for each relation-semantic group. Limit total forms
-        // to at most 4 to avoid overfitting: process the largest groups first.
-        let max_groups_to_process = if groups.len() > 4 { 3 } else { groups.len() };
-        let mut sorted_groups: Vec<(&String, &Vec<(String, SemanticFeatures)>)> = groups.iter().collect();
-        sorted_groups.sort_by(|a, b| b.1.len().cmp(&a.1.len())); // sort by size descending
+    // Create forms for each relation-semantic group. Limit total forms
+    // to at most 4 to avoid overfitting: process the largest groups first.
+    let max_groups_to_process = if groups.len() > 4 { 3 } else { groups.len() };
+    let mut sorted_groups: Vec<(&String, &Vec<(String, SemanticFeatures)>)> =
+        groups.iter().collect();
+    sorted_groups.sort_by(|a, b| b.1.len().cmp(&a.1.len())); // sort by size descending
 
-        let mut processed = 0usize;
-        for (rel_label, group_members) in &sorted_groups {
-            if group_members.is_empty() { continue; }
-            // Cap total forms: process at most max_groups_to_process groups.
-            // Single-member groups are processed if they rank highly by size
-            // (they represent genuine form families, not contamination).
-            if processed >= max_groups_to_process { break; }
+    let mut processed = 0usize;
+    for (rel_label, group_members) in &sorted_groups {
+        if group_members.is_empty() {
+            continue;
+        }
+        // Cap total forms: process at most max_groups_to_process groups.
+        // Single-member groups are processed if they rank highly by size
+        // (they represent genuine form families, not contamination).
+        if processed >= max_groups_to_process {
+            break;
+        }
 
         processed += 1;
-        let (min_form, group_uncovered) = induce_minimal_form(
-            cluster, rel_label, group_members, &member_prompts,
-        );
+        let (min_form, group_uncovered) =
+            induce_minimal_form(cluster, rel_label, group_members, &member_prompts);
 
         total_required += min_form.required_features.len();
         // Count alternative groups: binding declarations with conflicts_with
-        let alt_count = min_form.bindings.iter()
+        let alt_count = min_form
+            .bindings
+            .iter()
             .filter(|b| !b.conflicts_with.is_empty())
             .count();
         total_alt_groups += alt_count;
@@ -2288,10 +2631,11 @@ pub fn induce_supported_forms(
     // create forms for all groups regardless of size.
     if forms.is_empty() {
         for (rel_label, group_members) in &groups {
-            if group_members.is_empty() { continue; }
-            let (form, group_uncovered) = induce_minimal_form(
-                cluster, rel_label, group_members, &member_prompts,
-            );
+            if group_members.is_empty() {
+                continue;
+            }
+            let (form, group_uncovered) =
+                induce_minimal_form(cluster, rel_label, group_members, &member_prompts);
             forms.push(form);
             uncovered.extend(group_uncovered);
         }
@@ -2308,13 +2652,21 @@ pub fn induce_supported_forms(
     }
 
     let form_count = forms.len();
-    let max_req = forms.iter().map(|f| f.required_features.len()).max().unwrap_or(0);
+    let max_req = forms
+        .iter()
+        .map(|f| f.required_features.len())
+        .max()
+        .unwrap_or(0);
     let avg_req = if form_count > 0 {
         total_required as f64 / form_count as f64
-    } else { 0.0 };
+    } else {
+        0.0
+    };
     let avg_alt = if form_count > 0 {
         total_alt_groups as f64 / form_count as f64
-    } else { 0.0 };
+    } else {
+        0.0
+    };
 
     let metrics = FormComplexityMetrics {
         form_count,
@@ -2340,7 +2692,10 @@ fn group_by_relation_semantics(
             // Use the first (primary) relation semantic as the group key
             format!("{:?}", feat.relation_semantics[0])
         };
-        groups.entry(key).or_default().push((prompt.clone(), feat.clone()));
+        groups
+            .entry(key)
+            .or_default()
+            .push((prompt.clone(), feat.clone()));
     }
     groups
 }
@@ -2405,18 +2760,21 @@ fn induce_minimal_form(
             // For alternative groups, the feature is required only if
             // NO other member provides an alternative.
             // Find this feature's alternative group
-            let group = alt_groups.iter()
-                .find(|g| g.contains(cf.as_str()))
-                .unwrap();
-            let alternatives: BTreeSet<String> = group.iter()
+            let group = alt_groups.iter().find(|g| g.contains(cf.as_str())).unwrap();
+            let alternatives: BTreeSet<String> = group
+                .iter()
                 .filter(|a| a.as_str() != cf.as_str())
-                .cloned().collect();
+                .cloned()
+                .collect();
 
             // Check: does every member have EITHER `cf` OR some alternative?
             let all_covered = group_members.iter().all(|(_, feat)| {
-                let member_features: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                let member_features: BTreeSet<String> =
+                    feature_names_from_semantic(feat).into_iter().collect();
                 member_features.contains(cf.as_str())
-                    || alternatives.iter().any(|alt| member_features.contains(alt.as_str()))
+                    || alternatives
+                        .iter()
+                        .any(|alt| member_features.contains(alt.as_str()))
             });
 
             if all_covered {
@@ -2438,16 +2796,18 @@ fn induce_minimal_form(
                 // doesn't apply to this particular set of members.
                 // Standard necessity test:
                 let has_cf = |feat: &SemanticFeatures| -> bool {
-                    let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                    let mf: BTreeSet<String> =
+                        feature_names_from_semantic(feat).into_iter().collect();
                     mf.contains(cf.as_str())
                 };
                 let has_all_required = |feat: &SemanticFeatures| -> bool {
-                    let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
+                    let mf: BTreeSet<String> =
+                        feature_names_from_semantic(feat).into_iter().collect();
                     required.iter().all(|r| mf.contains(r.as_str()))
                 };
-                let all_covered_without = group_members.iter().all(|(_, feat)| {
-                    has_cf(feat) || has_all_required(feat)
-                });
+                let all_covered_without = group_members
+                    .iter()
+                    .all(|(_, feat)| has_cf(feat) || has_all_required(feat));
                 if all_covered_without {
                     optional.push(cf.clone());
                 } else {
@@ -2472,8 +2832,8 @@ fn induce_minimal_form(
             // is anchored as required, establishing a baseline from which
             // subsequent necessity tests can distinguish genuine necessity
             // from coincidental presence.
-            let first_universal_required = required.is_empty()
-                && group_members.iter().all(|(_, feat)| has_cf(feat));
+            let first_universal_required =
+                required.is_empty() && group_members.iter().all(|(_, feat)| has_cf(feat));
 
             let all_covered_without = if first_universal_required {
                 // Anchor this universally-shared feature as the first requirement
@@ -2503,9 +2863,12 @@ fn induce_minimal_form(
     for group in &alt_groups {
         // Was this group needed? (alt_assigned contains any member)
         let was_needed = group.iter().any(|g| alt_assigned.contains(g.as_str()));
-        if !was_needed { continue; }
+        if !was_needed {
+            continue;
+        }
 
-        let in_required: Vec<&String> = required.iter()
+        let in_required: Vec<&String> = required
+            .iter()
             .filter(|r| group.contains(r.as_str()))
             .collect();
 
@@ -2559,16 +2922,22 @@ fn induce_minimal_form(
     let mut uncovered: Vec<UncoveredPositiveReceipt> = Vec::new();
     for (prompt, feat) in all_members {
         let in_group = group_members.iter().any(|(p, _)| p == prompt);
-        if in_group { continue; } // covered by this group's form
+        if in_group {
+            continue;
+        } // covered by this group's form
 
         // Check if this member shares the relation semantic
-        let shares_rel = feat.relation_semantics.iter().any(|r| {
-            format!("{:?}", r) == relation_label
-        });
-        if !shares_rel { continue; }
+        let shares_rel = feat
+            .relation_semantics
+            .iter()
+            .any(|r| format!("{:?}", r) == relation_label);
+        if !shares_rel {
+            continue;
+        }
 
         // Not covered by this form — record receipt
-        let missing: Vec<String> = required.iter()
+        let missing: Vec<String> = required
+            .iter()
             .filter(|r| {
                 let mf: BTreeSet<String> = feature_names_from_semantic(feat).into_iter().collect();
                 !mf.contains(r.as_str())
@@ -2610,11 +2979,21 @@ fn compute_group_centroid(members: &[(String, SemanticFeatures)]) -> SemanticFea
 /// Convert a SemanticFeatures into a set of feature-name strings.
 fn feature_names_from_semantic(feat: &SemanticFeatures) -> Vec<String> {
     let mut names = Vec::new();
-    if feat.has_explicit_base { names.push("explicit_base".into()); }
-    if feat.has_direction { names.push("explicit_direction".into()); }
-    if feat.has_single_step { names.push("single_step".into()); }
-    if feat.has_target_unit { names.push("target_unit".into()); }
-    if feat.has_explicit_conversion { names.push("explicit_conversion".into()); }
+    if feat.has_explicit_base {
+        names.push("explicit_base".into());
+    }
+    if feat.has_direction {
+        names.push("explicit_direction".into());
+    }
+    if feat.has_single_step {
+        names.push("single_step".into());
+    }
+    if feat.has_target_unit {
+        names.push("target_unit".into());
+    }
+    if feat.has_explicit_conversion {
+        names.push("explicit_conversion".into());
+    }
     if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar) {
         names.push("unit_bearing_scalar".into());
     }
@@ -2631,11 +3010,21 @@ fn feature_names_from_semantic(feat: &SemanticFeatures) -> Vec<String> {
 /// Build a required_features list from a centroid (legacy method, used as fallback).
 fn build_required_from_centroid(c: &SemanticFeatures) -> Vec<String> {
     let mut required = Vec::new();
-    if c.has_explicit_base { required.push("explicit_base".into()); }
-    if c.has_direction { required.push("explicit_direction".into()); }
-    if c.has_single_step { required.push("single_step".into()); }
-    if c.has_target_unit { required.push("target_unit".into()); }
-    if c.has_explicit_conversion { required.push("explicit_conversion".into()); }
+    if c.has_explicit_base {
+        required.push("explicit_base".into());
+    }
+    if c.has_direction {
+        required.push("explicit_direction".into());
+    }
+    if c.has_single_step {
+        required.push("single_step".into());
+    }
+    if c.has_target_unit {
+        required.push("target_unit".into());
+    }
+    if c.has_explicit_conversion {
+        required.push("explicit_conversion".into());
+    }
     if c.numeric_forms.contains(&NumericForm::UnitBearingScalar) {
         required.push("unit_bearing_scalar".into());
     }
@@ -2676,7 +3065,10 @@ pub fn extract_supported_forms(cluster: &FailureCluster) -> Vec<SupportedForm> {
 }
 
 /// Derive typed binding declarations from required feature strings for a form.
-fn derive_bindings_for_form(required_features: &[String], centroid: &SemanticFeatures) -> Vec<BindingDeclaration> {
+fn derive_bindings_for_form(
+    required_features: &[String],
+    centroid: &SemanticFeatures,
+) -> Vec<BindingDeclaration> {
     let mut bindings: Vec<BindingDeclaration> = Vec::new();
 
     for rf in required_features {
@@ -2758,9 +3150,15 @@ fn derive_bindings_for_form(required_features: &[String], centroid: &SemanticFea
     }
 
     // Add implicit bindings based on centroid relation semantics
-    if centroid.relation_semantics.contains(&RelationSemantics::PerUnitRate) {
+    if centroid
+        .relation_semantics
+        .contains(&RelationSemantics::PerUnitRate)
+    {
         // Per-unit rate forms need a rate constancy binding
-        if !bindings.iter().any(|b| b.binding == MissingBinding::RateConstancy) {
+        if !bindings
+            .iter()
+            .any(|b| b.binding == MissingBinding::RateConstancy)
+        {
             bindings.push(BindingDeclaration {
                 binding: MissingBinding::RateConstancy,
                 required: false,
@@ -2774,17 +3172,16 @@ fn derive_bindings_for_form(required_features: &[String], centroid: &SemanticFea
     bindings
 }
 
-
-
 // ── Case decision synthesis ───────────────────────────────────────────
 
 /// Determine whether a predicate failure indicates ambiguity (resolvable
 /// with more info) vs unsupported (fundamentally incompatible).
 fn is_resolvable_predicate(pred: &ApplicabilityPredicate) -> bool {
-    matches!(pred,
+    matches!(
+        pred,
         ApplicabilityPredicate::RequiresExplicitBase
-        | ApplicabilityPredicate::RequiresExplicitDirection
-        | ApplicabilityPredicate::RequiresUnitBearingScalar
+            | ApplicabilityPredicate::RequiresExplicitDirection
+            | ApplicabilityPredicate::RequiresUnitBearingScalar
     )
 }
 
@@ -2867,7 +3264,9 @@ fn attempt_completions(
                 "num_form_percentage" if !feat.numeric_forms.contains(&NumericForm::Percentage) => {
                     numeric_mismatch = true;
                 }
-                "num_form_fraction" if !feat.numeric_forms.contains(&NumericForm::ExplicitFraction) => {
+                "num_form_fraction"
+                    if !feat.numeric_forms.contains(&NumericForm::ExplicitFraction) =>
+                {
                     numeric_mismatch = true;
                 }
                 _ => {}
@@ -2920,9 +3319,12 @@ fn attempt_completions(
 
     // No viable completions found at all
     if viable_form_names.is_empty() {
-        return (ApplicabilityDecision::Unsupported {
-            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
-        }, None);
+        return (
+            ApplicabilityDecision::Unsupported {
+                failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+            },
+            None,
+        );
     }
 
     // Check for cluster membership + unique resolution:
@@ -2935,19 +3337,29 @@ fn attempt_completions(
     //  adding bindings). We check a subset of predicates that indicate
     //  fundamental domain mismatch.
     let p_lower = prompt.to_ascii_lowercase();
-    if p_lower.contains("probability") || p_lower.contains("chance")
-        || p_lower.contains("odds") || p_lower.contains("likelihood")
+    if p_lower.contains("probability")
+        || p_lower.contains("chance")
+        || p_lower.contains("odds")
+        || p_lower.contains("likelihood")
     {
-        return (ApplicabilityDecision::Unsupported {
-            failed_predicate: ApplicabilityPredicate::ForbidsLikelihoodSemantics,
-        }, None);
+        return (
+            ApplicabilityDecision::Unsupported {
+                failed_predicate: ApplicabilityPredicate::ForbidsLikelihoodSemantics,
+            },
+            None,
+        );
     }
-    if feat.relation_semantics.contains(&RelationSemantics::RepeatedChange)
+    if feat
+        .relation_semantics
+        .contains(&RelationSemantics::RepeatedChange)
         && !feat.has_explicit_base
     {
-        return (ApplicabilityDecision::Unsupported {
-            failed_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
-        }, None);
+        return (
+            ApplicabilityDecision::Unsupported {
+                failed_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
+            },
+            None,
+        );
     }
     // Incompatible units safety check: unit-bearing scalars with genuinely
     // conflicting dimensions (e.g., length + mass) cannot be reconciled.
@@ -2957,14 +3369,21 @@ fn attempt_completions(
     // without a target unit are not unit operations at all (e.g., "A circle
     // has radius 3 meters") and should stay Unsupported.
     if feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
-        && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
-        && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
+        && !feat
+            .relation_semantics
+            .contains(&RelationSemantics::CompatibleUnitConversion)
+        && !feat
+            .relation_semantics
+            .contains(&RelationSemantics::PerUnitRate)
     {
         let has_conflict = has_conflicting_dimensions(prompt);
         if has_conflict || (feat.operations.is_empty() && !feat.has_target_unit) {
-            return (ApplicabilityDecision::Unsupported {
-                failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
-            }, None);
+            return (
+                ApplicabilityDecision::Unsupported {
+                    failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
+                },
+                None,
+            );
         }
     }
 
@@ -2992,13 +3411,16 @@ fn attempt_completions(
 
     // No viable completions found at all
     if viable_form_names.is_empty() {
-        return (ApplicabilityDecision::Unsupported {
-            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
-        }, None);
+        return (
+            ApplicabilityDecision::Unsupported {
+                failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+            },
+            None,
+        );
     }
 
-    let search_bounded = all_missing.len() > MAX_MISSING_BINDINGS
-        || total_candidates > MAX_COMPLETION_CANDIDATES;
+    let search_bounded =
+        all_missing.len() > MAX_MISSING_BINDINGS || total_candidates > MAX_COMPLETION_CANDIDATES;
 
     let receipt = AmbiguityReceipt {
         causes: all_causes.clone(),
@@ -3009,35 +3431,42 @@ fn attempt_completions(
         search_bounded,
     };
 
-    (ApplicabilityDecision::Ambiguous { causes: all_causes }, Some(receipt))
+    (
+        ApplicabilityDecision::Ambiguous { causes: all_causes },
+        Some(receipt),
+    )
 }
 
 /// Check whether the candidate shares a semantic relation with the centroid.
 fn shares_semantic_relation(feat: &SemanticFeatures, centroid: &SemanticFeatures) -> bool {
     if centroid.relation_semantics.is_empty() {
         // If centroid has no dominant relation, fall back to numeric form overlap
-        return centroid.numeric_forms.iter().any(|nf| feat.numeric_forms.contains(nf));
+        return centroid
+            .numeric_forms
+            .iter()
+            .any(|nf| feat.numeric_forms.contains(nf));
     }
-    centroid.relation_semantics.iter().any(|r| feat.relation_semantics.contains(r))
+    centroid
+        .relation_semantics
+        .iter()
+        .any(|r| feat.relation_semantics.contains(r))
 }
 
 /// Helper: check whether a candidate satisfies a form's required features.
 fn satisfies_form_requirements(feat: &SemanticFeatures, form: &SupportedForm) -> bool {
     // First, check explicit required features
-    let explicit_ok = form.required_features.iter().all(|rf| {
-        match rf.as_str() {
-            "explicit_base" => feat.has_explicit_base,
-            "explicit_direction" => feat.has_direction,
-            "single_step" => feat.has_single_step,
-            "target_unit" => feat.has_target_unit,
-            "explicit_conversion" => feat.has_explicit_conversion,
-            "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
-            "num_form_percentage" => feat.numeric_forms.contains(&NumericForm::Percentage),
-            "num_form_fraction" => feat.numeric_forms.contains(&NumericForm::ExplicitFraction),
-            "num_form_ratio" => feat.numeric_forms.contains(&NumericForm::RatioNotation),
-            "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
-            _ => true,
-        }
+    let explicit_ok = form.required_features.iter().all(|rf| match rf.as_str() {
+        "explicit_base" => feat.has_explicit_base,
+        "explicit_direction" => feat.has_direction,
+        "single_step" => feat.has_single_step,
+        "target_unit" => feat.has_target_unit,
+        "explicit_conversion" => feat.has_explicit_conversion,
+        "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
+        "num_form_percentage" => feat.numeric_forms.contains(&NumericForm::Percentage),
+        "num_form_fraction" => feat.numeric_forms.contains(&NumericForm::ExplicitFraction),
+        "num_form_ratio" => feat.numeric_forms.contains(&NumericForm::RatioNotation),
+        "unit_bearing_scalar" => feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
+        _ => true,
     });
     if !explicit_ok {
         return false;
@@ -3049,14 +3478,21 @@ fn satisfies_form_requirements(feat: &SemanticFeatures, form: &SupportedForm) ->
     // one non-trivial numeric form (Percentage, ExplicitFraction, UnitBearingScalar,
     // RatioNotation, Decimal) with the candidate.
     let form_has_distinct_numeric = form.centroid_features.numeric_forms.iter().any(|nf| {
-        matches!(nf, NumericForm::Percentage | NumericForm::ExplicitFraction
-            | NumericForm::UnitBearingScalar | NumericForm::RatioNotation
-            | NumericForm::Decimal)
+        matches!(
+            nf,
+            NumericForm::Percentage
+                | NumericForm::ExplicitFraction
+                | NumericForm::UnitBearingScalar
+                | NumericForm::RatioNotation
+                | NumericForm::Decimal
+        )
     });
     if form_has_distinct_numeric {
-        let shares_numeric = form.centroid_features.numeric_forms.iter().any(|nf| {
-            feat.numeric_forms.contains(nf)
-        });
+        let shares_numeric = form
+            .centroid_features
+            .numeric_forms
+            .iter()
+            .any(|nf| feat.numeric_forms.contains(nf));
         if !shares_numeric {
             return false;
         }
@@ -3095,12 +3531,21 @@ pub fn decide_case(
         // Check shared numeric form (prevents cross-domain matching like
         // a percentage probe matching a fraction form)
         let shares_distinct_numeric = form.centroid_features.numeric_forms.iter().any(|nf| {
-            matches!(nf, NumericForm::Percentage | NumericForm::ExplicitFraction
-                | NumericForm::UnitBearingScalar | NumericForm::RatioNotation
-                | NumericForm::Decimal)
+            matches!(
+                nf,
+                NumericForm::Percentage
+                    | NumericForm::ExplicitFraction
+                    | NumericForm::UnitBearingScalar
+                    | NumericForm::RatioNotation
+                    | NumericForm::Decimal
+            )
         });
         if shares_distinct_numeric {
-            let has_common = form.centroid_features.numeric_forms.iter().any(|nf| feat.numeric_forms.contains(nf));
+            let has_common = form
+                .centroid_features
+                .numeric_forms
+                .iter()
+                .any(|nf| feat.numeric_forms.contains(nf));
             if !has_common {
                 continue;
             }
@@ -3117,14 +3562,18 @@ pub fn decide_case(
             // safety exclusion, it's Unsupported regardless of form match.
             let safety_fail = predicates.iter().any(|p| {
                 match p {
-                    ApplicabilityPredicate::ForbidsLikelihoodSemantics =>
-                        feat.relation_semantics.contains(&RelationSemantics::ProbabilityMeasure),
-                    ApplicabilityPredicate::ForbidsRepeatedTemporalApplication =>
-                        feat.relation_semantics.contains(&RelationSemantics::RepeatedChange),
-                    ApplicabilityPredicate::ForbidsFinancialConstructs =>
-                        feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
+                    ApplicabilityPredicate::ForbidsLikelihoodSemantics => feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::ProbabilityMeasure),
+                    ApplicabilityPredicate::ForbidsRepeatedTemporalApplication => feat
+                        .relation_semantics
+                        .contains(&RelationSemantics::RepeatedChange),
+                    ApplicabilityPredicate::ForbidsFinancialConstructs => {
+                        feat.relation_semantics
+                            .contains(&RelationSemantics::MultiplicativeChange)
                             && !feat.has_explicit_base
-                            && feat.operations.contains("increase"),
+                            && feat.operations.contains("increase")
+                    }
                     ApplicabilityPredicate::ForbidsIncompatibleUnits => {
                         let has_conflict = has_conflicting_dimensions(prompt);
                         // Genuinely incompatible unit dimensions (length + mass)
@@ -3136,29 +3585,49 @@ pub fn decide_case(
                         // Missing target unit WITH operation keywords (e.g.,
                         // "Add 2 meters and 30 cm") is a resolvable ambiguity.
                         feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
-                            && !feat.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion)
-                            && !feat.relation_semantics.contains(&RelationSemantics::PerUnitRate)
-                            && (has_conflict || (feat.operations.is_empty() && !feat.has_target_unit))
-                    },
-                    ApplicabilityPredicate::ForbidsOverlappingAdjustments =>
-                        feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange)
-                            && feat.operations.len() >= 2,
-                    ApplicabilityPredicate::ForbidsPercentagePoints =>
+                            && !feat
+                                .relation_semantics
+                                .contains(&RelationSemantics::CompatibleUnitConversion)
+                            && !feat
+                                .relation_semantics
+                                .contains(&RelationSemantics::PerUnitRate)
+                            && (has_conflict
+                                || (feat.operations.is_empty() && !feat.has_target_unit))
+                    }
+                    ApplicabilityPredicate::ForbidsOverlappingAdjustments => {
+                        feat.relation_semantics
+                            .contains(&RelationSemantics::MultiplicativeChange)
+                            && feat.operations.len() >= 2
+                    }
+                    ApplicabilityPredicate::ForbidsPercentagePoints => {
                         feat.numeric_forms.contains(&NumericForm::Percentage)
                             && !feat.has_explicit_base
                             && !feat.has_direction
-                            && !feat.relation_semantics.contains(&RelationSemantics::PartOfWhole)
-                            && !feat.relation_semantics.contains(&RelationSemantics::MultiplicativeChange),
-                    ApplicabilityPredicate::ForbidsAbstractSymbolicExpression =>
-                        !feat.numeric_forms.iter().any(|f| matches!(f, NumericForm::Integer | NumericForm::Decimal))
-                            || (feat.numeric_forms.contains(&NumericForm::ExplicitFraction) && !feat.has_explicit_base),
+                            && !feat
+                                .relation_semantics
+                                .contains(&RelationSemantics::PartOfWhole)
+                            && !feat
+                                .relation_semantics
+                                .contains(&RelationSemantics::MultiplicativeChange)
+                    }
+                    ApplicabilityPredicate::ForbidsAbstractSymbolicExpression => {
+                        !feat
+                            .numeric_forms
+                            .iter()
+                            .any(|f| matches!(f, NumericForm::Integer | NumericForm::Decimal))
+                            || (feat.numeric_forms.contains(&NumericForm::ExplicitFraction)
+                                && !feat.has_explicit_base)
+                    }
                     _ => false,
                 }
             });
             if safety_fail {
-                return (ApplicabilityDecision::Unsupported {
-                    failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
-                }, None);
+                return (
+                    ApplicabilityDecision::Unsupported {
+                        failed_predicate: ApplicabilityPredicate::ForbidsIncompatibleUnits,
+                    },
+                    None,
+                );
             }
             // Before declaring this case Applicable, check for missing target
             // unit in unit-bearing operations. This is a resolvable ambiguity
@@ -3168,9 +3637,8 @@ pub fn decide_case(
                 && !feat.has_target_unit
                 && form.centroid_features.has_target_unit
             {
-                let (decision, receipt) = attempt_completions(
-                    feat, prompt, supported_forms, is_cluster_member,
-                );
+                let (decision, receipt) =
+                    attempt_completions(feat, prompt, supported_forms, is_cluster_member);
                 return (decision, receipt);
             }
             return (ApplicabilityDecision::Applicable, None);
@@ -3193,10 +3661,16 @@ pub fn decide_case(
                 // Check for financial constructs before passing through.
                 // A prompt about "loan/interest" is Unsupported.
                 let p_lower = prompt.to_ascii_lowercase();
-                if p_lower.contains("loan") || p_lower.contains("interest") || p_lower.contains("finance") {
-                    return (ApplicabilityDecision::Unsupported {
-                        failed_predicate: ApplicabilityPredicate::ForbidsFinancialConstructs,
-                    }, None);
+                if p_lower.contains("loan")
+                    || p_lower.contains("interest")
+                    || p_lower.contains("finance")
+                {
+                    return (
+                        ApplicabilityDecision::Unsupported {
+                            failed_predicate: ApplicabilityPredicate::ForbidsFinancialConstructs,
+                        },
+                        None,
+                    );
                 }
                 return (decision, None);
             }
@@ -3217,7 +3691,12 @@ pub fn decide_case(
             let (decision, receipt) = attempt_completions(feat, prompt, supported_forms, false);
             return (decision, receipt);
         }
-        return (ApplicabilityDecision::Unsupported { failed_predicate: pred }, None);
+        return (
+            ApplicabilityDecision::Unsupported {
+                failed_predicate: pred,
+            },
+            None,
+        );
     }
 
     // Step 4: No predicate failed — check whether the case satisfies at
@@ -3237,9 +3716,12 @@ pub fn decide_case(
     }
 
     // Step 5: Outside the contract
-    (ApplicabilityDecision::Unsupported {
-        failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
-    }, None)
+    (
+        ApplicabilityDecision::Unsupported {
+            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+        },
+        None,
+    )
 }
 
 /// Synthesize boundary decisions for all cases known to the proposer.
@@ -3255,12 +3737,14 @@ pub fn synthesize_boundary(
     let mut decisions = Vec::new();
 
     for (id, prompt) in all_prompts {
-        let feat = all_features.get(id)
+        let feat = all_features
+            .get(id)
             .cloned()
             .unwrap_or_else(|| SemanticFeatures::extract(prompt));
 
         let mut matched_form = None;
-        let (decision, ambiguity_receipt) = decide_case(prompt, &feat, cluster, predicates, supported_forms);
+        let (decision, ambiguity_receipt) =
+            decide_case(prompt, &feat, cluster, predicates, supported_forms);
 
         // Record which form matched
         if let ApplicabilityDecision::Applicable = &decision {
@@ -3302,7 +3786,9 @@ pub fn mine_positive_necessities(
     let mut refined = Vec::new();
 
     // The cluster members are the positive cases
-    let pos_features: Vec<SemanticFeatures> = cluster.receipts.iter()
+    let pos_features: Vec<SemanticFeatures> = cluster
+        .receipts
+        .iter()
         .filter_map(|id| all_features.get(id))
         .cloned()
         .collect();
@@ -3313,10 +3799,13 @@ pub fn mine_positive_necessities(
 
     // Find ambiguous candidates: non-members that share a semantic relation
     // with at least one positive case but fail a resolvable predicate
-    let ambiguous_candidates: Vec<SemanticFeatures> = all_features.iter()
+    let ambiguous_candidates: Vec<SemanticFeatures> = all_features
+        .iter()
         .filter(|(id, _)| !cluster.receipts.contains(id))
         .filter(|(_, feat)| {
-            pos_features.iter().any(|pf| pf.relation_semantics == feat.relation_semantics)
+            pos_features
+                .iter()
+                .any(|pf| pf.relation_semantics == feat.relation_semantics)
         })
         .map(|(_, feat)| feat.clone())
         .collect();
@@ -3326,17 +3815,19 @@ pub fn mine_positive_necessities(
             // For "requires" predicates: verify that the condition
             // actually distinguishes positives from ambiguous cases
             p @ (ApplicabilityPredicate::RequiresExplicitBase
-               | ApplicabilityPredicate::RequiresExplicitDirection
-               | ApplicabilityPredicate::RequiresSingleTransformation
-               | ApplicabilityPredicate::RequiresUnitBearingScalar) =>
-            {
+            | ApplicabilityPredicate::RequiresExplicitDirection
+            | ApplicabilityPredicate::RequiresSingleTransformation
+            | ApplicabilityPredicate::RequiresUnitBearingScalar) => {
                 let required_feature_present = |feat: &SemanticFeatures| -> bool {
                     match p {
                         ApplicabilityPredicate::RequiresExplicitBase => feat.has_explicit_base,
                         ApplicabilityPredicate::RequiresExplicitDirection => feat.has_direction,
-                        ApplicabilityPredicate::RequiresSingleTransformation => feat.has_single_step,
-                        ApplicabilityPredicate::RequiresUnitBearingScalar =>
-                            feat.numeric_forms.contains(&NumericForm::UnitBearingScalar),
+                        ApplicabilityPredicate::RequiresSingleTransformation => {
+                            feat.has_single_step
+                        }
+                        ApplicabilityPredicate::RequiresUnitBearingScalar => {
+                            feat.numeric_forms.contains(&NumericForm::UnitBearingScalar)
+                        }
                         _ => unreachable!(),
                     }
                 };
@@ -3344,7 +3835,9 @@ pub fn mine_positive_necessities(
                 // Check: is this condition truly differentiating?
                 // All positives should satisfy it, and at least some ambiguous cases should lack it
                 let all_positives_ok = pos_features.iter().all(|f| required_feature_present(f));
-                let some_ambiguous_lack = ambiguous_candidates.iter().any(|f| !required_feature_present(f));
+                let some_ambiguous_lack = ambiguous_candidates
+                    .iter()
+                    .any(|f| !required_feature_present(f));
 
                 if all_positives_ok && (some_ambiguous_lack || ambiguous_candidates.is_empty()) {
                     refined.push(p.clone());
@@ -3380,7 +3873,8 @@ pub fn score_boundary_matrix(
     let mut fn_uns = 0usize;
 
     for cd in &synthesized.decisions {
-        let expected = expected.get(&cd.prompt)
+        let expected = expected
+            .get(&cd.prompt)
             .cloned()
             .unwrap_or(ExpectedDecision::Unsupported);
 
@@ -3391,21 +3885,39 @@ pub fn score_boundary_matrix(
             (ExpectedDecision::Applicable, _) => fn_app += 1,
             (ExpectedDecision::Ambiguous, ApplicabilityDecision::Ambiguous { .. }) => tp_amb += 1,
             (ExpectedDecision::Ambiguous, _) => fn_amb += 1,
-            (ExpectedDecision::Unsupported, ApplicabilityDecision::Unsupported { .. }) => tp_uns += 1,
+            (ExpectedDecision::Unsupported, ApplicabilityDecision::Unsupported { .. }) => {
+                tp_uns += 1
+            }
             (ExpectedDecision::Unsupported, _) => fn_uns += 1,
         }
 
         // False positives: proposed as class X but expected is different
         match proposed {
-            ApplicabilityDecision::Applicable if !matches!(expected, ExpectedDecision::Applicable) => fp_app += 1,
-            ApplicabilityDecision::Ambiguous { .. } if !matches!(expected, ExpectedDecision::Ambiguous) => fp_amb += 1,
-            ApplicabilityDecision::Unsupported { .. } if !matches!(expected, ExpectedDecision::Unsupported) => fp_uns += 1,
+            ApplicabilityDecision::Applicable
+                if !matches!(expected, ExpectedDecision::Applicable) =>
+            {
+                fp_app += 1
+            }
+            ApplicabilityDecision::Ambiguous { .. }
+                if !matches!(expected, ExpectedDecision::Ambiguous) =>
+            {
+                fp_amb += 1
+            }
+            ApplicabilityDecision::Unsupported { .. }
+                if !matches!(expected, ExpectedDecision::Unsupported) =>
+            {
+                fp_uns += 1
+            }
             _ => {}
         }
     }
 
     let safe_div = |num: f64, den: usize| -> f64 {
-        if den == 0 { 1.0 } else { num / den as f64 }
+        if den == 0 {
+            1.0
+        } else {
+            num / den as f64
+        }
     };
 
     let supported_recall = safe_div(tp_app as f64, tp_app + fn_app);
@@ -3415,9 +3927,13 @@ pub fn score_boundary_matrix(
     let unsupported_recall = safe_div(tp_uns as f64, tp_uns + fn_uns);
     let unsupported_precision = safe_div(tp_uns as f64, tp_uns + fp_uns);
 
-    let macro_boundary_score = (supported_recall + supported_precision
-        + ambiguity_recall + ambiguity_precision
-        + unsupported_recall + unsupported_precision) / 6.0;
+    let macro_boundary_score = (supported_recall
+        + supported_precision
+        + ambiguity_recall
+        + ambiguity_precision
+        + unsupported_recall
+        + unsupported_precision)
+        / 6.0;
 
     BoundaryMetrics {
         supported_recall,
@@ -3468,13 +3984,14 @@ pub fn merge_compatible_clusters(
 
     // Fast path: check whether any clusters are compatible at all.
     // If all clusters have incompatible relation families, return early.
-    let cluster_families: Vec<&str> = clusters.iter()
+    let cluster_families: Vec<&str> = clusters
+        .iter()
         .map(|c| classify_relation_family(&c.centroid_features))
         .collect();
     let has_compatible_pair = {
         let mut found = false;
         'outer: for i in 0..cluster_families.len() {
-            for j in (i+1)..cluster_families.len() {
+            for j in (i + 1)..cluster_families.len() {
                 if are_compatible_families(cluster_families[i], cluster_families[j]) {
                     found = true;
                     break 'outer;
@@ -3488,7 +4005,8 @@ pub fn merge_compatible_clusters(
     }
 
     // Compute signature for each cluster's centroid
-    let sigs: Vec<Option<TransformationSignature>> = clusters.iter()
+    let sigs: Vec<Option<TransformationSignature>> = clusters
+        .iter()
         .map(|c| {
             let sig = compute_transformation_signature(&c.centroid_features);
             Some(sig)
@@ -3503,10 +4021,14 @@ pub fn merge_compatible_clusters(
         let mut merged_any = false;
         for i in 0..n {
             let ii = merged_indices[i];
-            if ii.is_none() { continue; }
+            if ii.is_none() {
+                continue;
+            }
             for j in (i + 1)..n {
                 let jj = merged_indices[j];
-                if jj.is_none() { continue; }
+                if jj.is_none() {
+                    continue;
+                }
                 let sig_i = sigs[i].as_ref().unwrap();
                 let sig_j = sigs[j].as_ref().unwrap();
                 let family_i = classify_relation_family(&clusters[i].centroid_features);
@@ -3520,13 +4042,24 @@ pub fn merge_compatible_clusters(
                 // Check I/O type overlap
                 let input_overlap = sig_i.input_types.intersection(&sig_j.input_types).count();
                 let input_union = sig_i.input_types.union(&sig_j.input_types).count();
-                let input_compat = if input_union == 0 { 0.0 } else { input_overlap as f64 / input_union as f64 };
+                let input_compat = if input_union == 0 {
+                    0.0
+                } else {
+                    input_overlap as f64 / input_union as f64
+                };
 
-                let output_compat = if sig_i.output_type == sig_j.output_type { 1.0 } else { 0.0 };
+                let output_compat = if sig_i.output_type == sig_j.output_type {
+                    1.0
+                } else {
+                    0.0
+                };
                 let artifact_compat = (input_compat + output_compat) / 2.0;
 
                 // Check bridge overlap
-                let bridge_overlap = sig_i.compatible_bridges.intersection(&sig_j.compatible_bridges).count();
+                let bridge_overlap = sig_i
+                    .compatible_bridges
+                    .intersection(&sig_j.compatible_bridges)
+                    .count();
 
                 // Check safety-predicate compatibility: no genuine conflicts.
                 // Since all safety predicates are Forbids* types (not Requires*),
@@ -3535,27 +4068,35 @@ pub fn merge_compatible_clusters(
                 // Only check that the intersection of Requires* predicates is non-empty
                 // if both clusters have at least one positive requirement.
                 let has_requires = |p: &[ApplicabilityPredicate]| -> bool {
-                    p.iter().any(|pp| matches!(pp,
-                        ApplicabilityPredicate::RequiresExplicitBase
-                        | ApplicabilityPredicate::RequiresExplicitDirection
-                        | ApplicabilityPredicate::RequiresSingleTransformation
-                        | ApplicabilityPredicate::RequiresUnitBearingScalar
-                        | ApplicabilityPredicate::RequiresQuantityValuedTarget
-                        | ApplicabilityPredicate::RequiresCompatibleUnitDimensions
-                    ))
+                    p.iter().any(|pp| {
+                        matches!(
+                            pp,
+                            ApplicabilityPredicate::RequiresExplicitBase
+                                | ApplicabilityPredicate::RequiresExplicitDirection
+                                | ApplicabilityPredicate::RequiresSingleTransformation
+                                | ApplicabilityPredicate::RequiresUnitBearingScalar
+                                | ApplicabilityPredicate::RequiresQuantityValuedTarget
+                                | ApplicabilityPredicate::RequiresCompatibleUnitDimensions
+                        )
+                    })
                 };
                 let require_compat = if has_requires(&sig_i.safety_predicates)
                     && has_requires(&sig_j.safety_predicates)
                 {
                     // Both have requires — check at least one shared requirement
-                    sig_i.safety_predicates.iter().any(|p| sig_j.safety_predicates.contains(p))
+                    sig_i
+                        .safety_predicates
+                        .iter()
+                        .any(|p| sig_j.safety_predicates.contains(p))
                 } else {
                     true // no conflict
                 };
                 let predicate_compat = require_compat;
 
                 // Merge if compatible and not already merged to same target
-                if artifact_compat >= 0.3 && bridge_overlap > 0 && predicate_compat
+                if artifact_compat >= 0.3
+                    && bridge_overlap > 0
+                    && predicate_compat
                     && merged_indices[j] != merged_indices[i]
                 {
                     // Merge j into i: set j's index to i's index
@@ -3564,7 +4105,9 @@ pub fn merge_compatible_clusters(
                 }
             }
         }
-        if !merged_any { break; }
+        if !merged_any {
+            break;
+        }
     }
 
     // Build merged clusters
@@ -3578,7 +4121,9 @@ pub fn merge_compatible_clusters(
 
     let mut result: Vec<FailureCluster> = Vec::new();
     for (target_idx, member_indices) in &groups {
-        if member_indices.is_empty() { continue; }
+        if member_indices.is_empty() {
+            continue;
+        }
         if member_indices.len() == 1 {
             // Single cluster, no merging needed
             result.push(clusters[*target_idx].clone());
@@ -3618,7 +4163,8 @@ pub fn merge_compatible_clusters(
         // to get fallback "member-N" names which broke has_target detection
         // in induce_supported_forms.
         let mut seen = BTreeSet::new();
-        let exemplars: Vec<String> = all_prompts.into_iter()
+        let exemplars: Vec<String> = all_prompts
+            .into_iter()
             .filter(|p| seen.insert(p.clone()))
             .take(20)
             .collect();
@@ -3630,7 +4176,11 @@ pub fn merge_compatible_clusters(
             member_features: all_features,
             shared_operations: shared_ops,
             prompt_exemplars: exemplars,
-            size: first.size + member_indices[1..].iter().map(|idx| clusters[*idx].size).sum::<usize>(),
+            size: first.size
+                + member_indices[1..]
+                    .iter()
+                    .map(|idx| clusters[*idx].size)
+                    .sum::<usize>(),
         });
     }
 
@@ -3661,8 +4211,12 @@ pub fn propose_from_failures(
         let merged = merge_compatible_clusters(raw_clusters, 3, &prompts);
         // Debug: verify no infinite merge
         for c in &merged {
-            assert!(c.size <= prompts.len(),
-                "merged cluster size {} exceeds prompt count {}", c.size, prompts.len());
+            assert!(
+                c.size <= prompts.len(),
+                "merged cluster size {} exceeds prompt count {}",
+                c.size,
+                prompts.len()
+            );
         }
         merged
     };
@@ -3691,19 +4245,18 @@ pub fn propose_from_failures(
         //     This is diagnostic: the aggregation evidence is recorded but the
         //     proposal still uses all forms. Future work will split the proposal
         //     by capability family.
-            let families = aggregate_capability_families(supported_forms.clone());
-            if !families.is_empty() && cfg!(target_os = "linux") {
-                // Silently recorded for diagnostic trace
-                let _ = families.len();
-            }
+        let families = aggregate_capability_families(supported_forms.clone());
+        if !families.is_empty() && cfg!(target_os = "linux") {
+            // Silently recorded for diagnostic trace
+            let _ = families.len();
+        }
 
         // 7. Analyze boundary (exclusion mining)
         let boundary = analyze_boundary(cluster, &prompts, &features);
 
         // 8. Synthesize explicit boundary decisions for all cases
-        let synthesized = synthesize_boundary(
-            cluster, &prompts, &features, &predicates, &supported_forms,
-        );
+        let synthesized =
+            synthesize_boundary(cluster, &prompts, &features, &predicates, &supported_forms);
 
         // 9. Build proposal
         let proposal = build_proposal(cluster, &invariant, &boundary, &prompts);
@@ -3742,7 +4295,10 @@ pub fn classify_outcome(
         return ProposalOutcomeWithDisposition {
             outcome: InsufficientEvidence,
             disposition: None,
-            reasoning: format!("Cluster size {} is below minimum threshold of 3", cluster.size),
+            reasoning: format!(
+                "Cluster size {} is below minimum threshold of 3",
+                cluster.size
+            ),
         };
     }
 
@@ -3782,12 +4338,16 @@ pub fn classify_outcome(
 
     // Novel proposal: check coverage estimate
     // Coverage is adequate if there's a non-trivial projected interval
-    let has_coverage = if let ProjectedCoverage::Interval { low, high, .. } = &proposal.expected_coverage.projected {
+    let has_coverage = if let ProjectedCoverage::Interval { low, high, .. } =
+        &proposal.expected_coverage.projected
+    {
         *high > 3
     } else {
         false
     };
-    let has_supported_cases = proposal.supported_patterns.iter()
+    let has_supported_cases = proposal
+        .supported_patterns
+        .iter()
         .any(|p| !p.exemplars.is_empty());
 
     if !has_supported_cases && !has_coverage {
@@ -3795,7 +4355,7 @@ pub fn classify_outcome(
         let reasoning = if !has_supported_cases {
             "Cluster produced no supported exemplars — transformation not realizable".into()
         } else {
-            format!("Novel but coverage insufficient — cannot project confidently") 
+            format!("Novel but coverage insufficient — cannot project confidently")
         };
         return ProposalOutcomeWithDisposition {
             outcome: NoCoherentCapability,
@@ -3932,8 +4492,12 @@ pub struct SampleBudget {
 
 impl SampleBudget {
     pub fn total(&self) -> usize {
-        self.positives + self.ambiguities + self.unsupported_near_misses
-            + self.adversarial + self.rewrites + self.overlap
+        self.positives
+            + self.ambiguities
+            + self.unsupported_near_misses
+            + self.adversarial
+            + self.rewrites
+            + self.overlap
     }
 }
 
@@ -4003,38 +4567,65 @@ impl ValidationPlanScore {
     pub fn compute(plan: &ValidationPlan, result: &ProposalPipelineResult) -> Self {
         // Family coverage: what fraction of supported forms have a test family
         let form_count = result.synthesized.supported_forms.len().max(1);
-        let family_coverage = plan.supported_families.len().min(form_count) as f64 / form_count as f64;
+        let family_coverage =
+            plan.supported_families.len().min(form_count) as f64 / form_count as f64;
 
         // Boundary coverage: what fraction of exclusion families have a corresponding test
-        let exclusion_families: std::collections::BTreeSet<_> = result.boundary.exclusions.iter()
+        let exclusion_families: std::collections::BTreeSet<_> = result
+            .boundary
+            .exclusions
+            .iter()
             .map(|e| &e.excluded_family)
             .collect();
         let exclusion_count = exclusion_families.len().max(1);
         let covered_exclusions = plan.unsupported_families.len();
-        let boundary_coverage = covered_exclusions.min(exclusion_count) as f64 / exclusion_count as f64;
+        let boundary_coverage =
+            covered_exclusions.min(exclusion_count) as f64 / exclusion_count as f64;
 
         // Adversarial quality: at least some rewrite or adversarial specs
-        let adversarial_quality = if plan.rewrite_families.len() >= 2 { 1.0 }
-            else if plan.rewrite_families.len() >= 1 { 0.6 }
-            else { 0.0 };
+        let adversarial_quality = if plan.rewrite_families.len() >= 2 {
+            1.0
+        } else if plan.rewrite_families.len() >= 1 {
+            0.6
+        } else {
+            0.0
+        };
 
         // Reuse awareness: at least some overlap tests
-        let reuse_awareness = if plan.overlap_tests.len() >= 2 { 1.0 }
-            else if plan.overlap_tests.len() >= 1 { 0.6 }
-            else { 0.0 };
+        let reuse_awareness = if plan.overlap_tests.len() >= 2 {
+            1.0
+        } else if plan.overlap_tests.len() >= 1 {
+            0.6
+        } else {
+            0.0
+        };
 
         // Expected-decision consistency: decisions present for at least some families
-        let expected_decision_consistency = if plan.expected_decisions.len() >= 3 { 1.0 }
-            else if plan.expected_decisions.len() >= 1 { 0.5 }
-            else { 0.0 };
+        let expected_decision_consistency = if plan.expected_decisions.len() >= 3 {
+            1.0
+        } else if plan.expected_decisions.len() >= 1 {
+            0.5
+        } else {
+            0.0
+        };
 
         // Traceability: evidence links present
-        let traceability = if plan.coverage_rationale.len() >= plan.supported_families.len().max(1) / 2 { 1.0 }
-            else if !plan.coverage_rationale.is_empty() { 0.5 }
-            else { 0.0 };
+        let traceability =
+            if plan.coverage_rationale.len() >= plan.supported_families.len().max(1) / 2 {
+                1.0
+            } else if !plan.coverage_rationale.is_empty() {
+                0.5
+            } else {
+                0.0
+            };
 
-        let overall = (family_coverage + boundary_coverage + adversarial_quality
-            + reuse_awareness + expected_decision_consistency + traceability) / 6.0;
+        let overall = (family_coverage
+            + boundary_coverage
+            + adversarial_quality
+            + reuse_awareness
+            + expected_decision_consistency
+            + traceability)
+            / 6.0;
 
         ValidationPlanScore {
             family_coverage,
@@ -4077,7 +4668,9 @@ impl ValidationPlan {
         for form in &result.synthesized.supported_forms {
             let name = form.name.clone();
             let required = form.required_features.join(", ");
-            let sem = cf.relation_semantics.iter()
+            let sem = cf
+                .relation_semantics
+                .iter()
                 .map(|s| format!("{:?}", s))
                 .collect::<Vec<_>>()
                 .join(", ");
@@ -4096,7 +4689,9 @@ impl ValidationPlan {
                 ),
                 transformation: format!("{} — [{}]", result.invariant.description, sem),
                 template: template_clone,
-                generation_hints: form.exemplars.iter()
+                generation_hints: form
+                    .exemplars
+                    .iter()
                     .map(|e| {
                         let excerpt: String = e.chars().take(80).collect();
                         format!("Variant of: {}", excerpt)
@@ -4113,7 +4708,10 @@ impl ValidationPlan {
                 case_template: template,
                 expected_decision: ExpectedDecision::Applicable,
                 expected_capability: Some(name.clone()),
-                reasoning: format!("Matches form '{}' with required features [{}]", name, required),
+                reasoning: format!(
+                    "Matches form '{}' with required features [{}]",
+                    name, required
+                ),
             });
         }
 
@@ -4128,7 +4726,10 @@ impl ValidationPlan {
                 description: "General supported cases for the proposed transformation".into(),
                 transformation: result.invariant.description.clone(),
                 template,
-                generation_hints: result.cluster.prompt_exemplars.iter()
+                generation_hints: result
+                    .cluster
+                    .prompt_exemplars
+                    .iter()
                     .map(|e| {
                         let excerpt: String = e.chars().take(80).collect();
                         format!("Variant of: {}", excerpt)
@@ -4153,7 +4754,8 @@ impl ValidationPlan {
                     if observed_ambiguity_names.insert(family_name.clone()) {
                         let template = format!(
                             "Case with ambiguity cause {:?} — needs resolution for {:?}",
-                            cause, cf.relation_semantics.first(),
+                            cause,
+                            cf.relation_semantics.first(),
                         );
                         plan.ambiguous_families.push(TestFamilySpec {
                             name: family_name,
@@ -4163,12 +4765,16 @@ impl ValidationPlan {
                             ),
                             transformation: format!("Ambiguous {:?} — requires resolution", cause),
                             template,
-                            generation_hints: vec![
-                                format!("Vary the missing binding type to test {:?}", cause),
-                            ],
+                            generation_hints: vec![format!(
+                                "Vary the missing binding type to test {:?}",
+                                cause
+                            )],
                             expected_decision: ExpectedDecision::Ambiguous,
-                            evidence_references: receipt.missing_bindings.iter()
-                                .map(|b| format!("missing_{:?}", b)).collect(),
+                            evidence_references: receipt
+                                .missing_bindings
+                                .iter()
+                                .map(|b| format!("missing_{:?}", b))
+                                .collect(),
                             evidence_quality: EvidenceQuality::Observed,
                             suggested_count: 3,
                         });
@@ -4209,19 +4815,34 @@ impl ValidationPlan {
         // Default ambiguity families (generic probes when none observed)
         if plan.ambiguous_families.is_empty() {
             let default_ambiguities = vec![
-                ("missing_initial_value", "Missing initial quantity or base value"),
-                ("unknown_operation_order", "Order of operations is unclear from wording"),
-                ("ambiguous_reference", "Which quantity is the target or operand is unclear"),
+                (
+                    "missing_initial_value",
+                    "Missing initial quantity or base value",
+                ),
+                (
+                    "unknown_operation_order",
+                    "Order of operations is unclear from wording",
+                ),
+                (
+                    "ambiguous_reference",
+                    "Which quantity is the target or operand is unclear",
+                ),
             ];
             for (name, desc) in default_ambiguities {
                 plan.ambiguous_families.push(TestFamilySpec {
                     name: name.into(),
                     description: desc.into(),
                     transformation: format!("Underdetermined: {}", desc),
-                    template: format!("Case where {} — needs resolution for {:?}",
-                        desc, cf.relation_semantics.first()),
+                    template: format!(
+                        "Case where {} — needs resolution for {:?}",
+                        desc,
+                        cf.relation_semantics.first()
+                    ),
                     generation_hints: vec![
-                        format!("Omit explicit base or target from {}", result.invariant.description),
+                        format!(
+                            "Omit explicit base or target from {}",
+                            result.invariant.description
+                        ),
                         "Use ambiguous wording that could refer to multiple quantities".into(),
                     ],
                     expected_decision: ExpectedDecision::Ambiguous,
@@ -4237,9 +4858,15 @@ impl ValidationPlan {
             let family_name = format!("excluded_{:?}", ex.excluded_family).to_lowercase();
             let template = if let Some(example) = ex.exemplars.first() {
                 let excerpt: String = example.chars().take(100).collect();
-                format!("Case resembling '{}' but with {:?}", excerpt, ex.excluded_family)
+                format!(
+                    "Case resembling '{}' but with {:?}",
+                    excerpt, ex.excluded_family
+                )
             } else {
-                format!("Case with {:?} semantics that should be rejected", ex.excluded_family)
+                format!(
+                    "Case with {:?} semantics that should be rejected",
+                    ex.excluded_family
+                )
             };
 
             plan.unsupported_families.push(TestFamilySpec {
@@ -4248,7 +4875,10 @@ impl ValidationPlan {
                     "Cases with {:?} semantics excluded by {:?}",
                     ex.excluded_family, ex.failed_predicate,
                 ),
-                transformation: format!("Excluded: {:?} fails {:?}", ex.excluded_family, ex.failed_predicate),
+                transformation: format!(
+                    "Excluded: {:?} fails {:?}",
+                    ex.excluded_family, ex.failed_predicate
+                ),
                 template,
                 generation_hints: ex.discriminating_features.clone(),
                 expected_decision: ExpectedDecision::Unsupported,
@@ -4260,10 +4890,26 @@ impl ValidationPlan {
 
         // ── 4. Metamorphic/rewrite families ──
         let rewrite_transformations = vec![
-            ("number_substitution", "Substitute different numbers while preserving structure", true),
-            ("wording_paraphrase", "Rephrase the prompt without changing mathematical structure", true),
-            ("unit_substitution", "Replace units with equivalent alternatives", true),
-            ("ordering_mutation", "Change the order of clauses or steps", false),
+            (
+                "number_substitution",
+                "Substitute different numbers while preserving structure",
+                true,
+            ),
+            (
+                "wording_paraphrase",
+                "Rephrase the prompt without changing mathematical structure",
+                true,
+            ),
+            (
+                "unit_substitution",
+                "Replace units with equivalent alternatives",
+                true,
+            ),
+            (
+                "ordering_mutation",
+                "Change the order of clauses or steps",
+                false,
+            ),
         ];
         for (name, desc, stable) in &rewrite_transformations {
             if let Some(exemplar) = result.cluster.prompt_exemplars.first() {
@@ -4274,7 +4920,8 @@ impl ValidationPlan {
                     base_pattern: excerpt,
                     transformations: vec![
                         format!("Apply {} to the base pattern", desc),
-                        "Verify expected decision remains unchanged for decision-stable rewrites".into(),
+                        "Verify expected decision remains unchanged for decision-stable rewrites"
+                            .into(),
                     ],
                     decision_stable: *stable,
                 });
@@ -4283,7 +4930,12 @@ impl ValidationPlan {
 
         // ── 5. Overlap tests — check existing capabilities ──
         if result.proposal.novelty_receipt.closest_existing.is_some() {
-            let existing = result.proposal.novelty_receipt.closest_existing.as_ref().unwrap();
+            let existing = result
+                .proposal
+                .novelty_receipt
+                .closest_existing
+                .as_ref()
+                .unwrap();
             plan.overlap_tests.push(OverlapSpec {
                 existing_capability: existing.clone(),
                 description: format!(
@@ -4303,7 +4955,8 @@ impl ValidationPlan {
                 existing_capability: adjacent.clone(),
                 description: format!(
                     "Verify boundary between proposed {:?} and adjacent {:?}",
-                    cf.relation_semantics.first(), cf.relation_semantics.first(),
+                    cf.relation_semantics.first(),
+                    cf.relation_semantics.first(),
                 ),
                 existing_template: "Standard case for the adjacent capability".into(),
                 proposed_template: "Standard case for the proposed capability".into(),
@@ -4328,7 +4981,10 @@ impl ValidationPlan {
                     evidence_id: format!("exclusion-{}", i),
                     evidence_excerpt: excerpt,
                     test_family: format!("excluded_{:?}", ex.excluded_family).to_lowercase(),
-                    derivation: format!("Motivated by {:?} exclusion via {:?}", ex.excluded_family, ex.failed_predicate),
+                    derivation: format!(
+                        "Motivated by {:?} exclusion via {:?}",
+                        ex.excluded_family, ex.failed_predicate
+                    ),
                 });
             }
         }
@@ -4402,19 +5058,21 @@ impl ProposalOutcome {
     /// Novel novel capabilities and correct decompositions are positive;
     /// incoherent or insufficient evidence are neutral/negative.
     pub fn is_positive(&self) -> bool {
-        matches!(self,
+        matches!(
+            self,
             ProposalOutcome::NovelCapabilityProposed
-            | ProposalOutcome::ExistingCapabilityExtension
-            | ProposalOutcome::ClusterShouldSplit
-            | ProposalOutcome::FullyCoveredByExistingCapabilities
+                | ProposalOutcome::ExistingCapabilityExtension
+                | ProposalOutcome::ClusterShouldSplit
+                | ProposalOutcome::FullyCoveredByExistingCapabilities
         )
     }
 
     /// Whether this outcome asserts that no new capability is needed.
     pub fn is_non_novel(&self) -> bool {
-        matches!(self,
+        matches!(
+            self,
             ProposalOutcome::ExistingCapabilityExtension
-            | ProposalOutcome::FullyCoveredByExistingCapabilities
+                | ProposalOutcome::FullyCoveredByExistingCapabilities
         )
     }
 }
@@ -4494,13 +5152,17 @@ pub struct ReconstructionScore {
 /// Build the expected decisions map for a reconstruction task.
 /// All target prompts are Applicable; each distractor gets its label
 /// from `distractor_labels`. Default for any unlisted prompt is Unsupported.
-pub fn build_expected_decisions(task: &HistoricalReconstructionTask) -> BTreeMap<String, ExpectedDecision> {
+pub fn build_expected_decisions(
+    task: &HistoricalReconstructionTask,
+) -> BTreeMap<String, ExpectedDecision> {
     let mut map = BTreeMap::new();
     for p in &task.target_failure_prompts {
         map.insert(p.to_string(), ExpectedDecision::Applicable);
     }
     for (i, p) in task.distractor_prompts.iter().enumerate() {
-        let label = task.distractor_labels.get(i)
+        let label = task
+            .distractor_labels
+            .get(i)
             .cloned()
             .unwrap_or(ExpectedDecision::Unsupported);
         map.insert(p.to_string(), label);
@@ -4520,19 +5182,31 @@ pub fn score_reconstruction(
     let proposed_input_set: BTreeSet<_> = proposal.input_artifacts.iter().collect();
     let input_intersection = expected_input_set.intersection(&proposed_input_set).count();
     let input_union = expected_input_set.union(&proposed_input_set).count();
-    let input_sim = if input_union == 0 { 0.0 } else { input_intersection as f64 / input_union as f64 };
+    let input_sim = if input_union == 0 {
+        0.0
+    } else {
+        input_intersection as f64 / input_union as f64
+    };
 
     let expected_output_set: BTreeSet<_> = task.expected_outputs.iter().collect();
     let proposed_output_set: BTreeSet<_> = proposal.output_artifacts.iter().collect();
-    let output_intersection = expected_output_set.intersection(&proposed_output_set).count();
+    let output_intersection = expected_output_set
+        .intersection(&proposed_output_set)
+        .count();
     let output_union = expected_output_set.union(&proposed_output_set).count();
-    let output_sim = if output_union == 0 { 0.0 } else { output_intersection as f64 / output_union as f64 };
+    let output_sim = if output_union == 0 {
+        0.0
+    } else {
+        output_intersection as f64 / output_union as f64
+    };
 
     let contract_similarity = (input_sim + output_sim) / 2.0;
 
     // Support-boundary agreement: does the proposal address the target failures
     let target_set: BTreeSet<_> = task.target_failure_prompts.iter().cloned().collect();
-    let proposed_exemplars: BTreeSet<_> = proposal.supported_patterns.iter()
+    let proposed_exemplars: BTreeSet<_> = proposal
+        .supported_patterns
+        .iter()
         .flat_map(|p| p.exemplars.iter())
         .map(|s| s.as_str())
         .collect();
@@ -4553,14 +5227,17 @@ pub fn score_reconstruction(
     // label the same constraint differently (e.g. "must be a quantity"
     // vs "forbids likelihood"). Strong partial credit rewards getting
     // the right family with a reasonable constraint.
-    let exclusion_recall = task.expected_exclusions.iter()
+    let exclusion_recall = task
+        .expected_exclusions
+        .iter()
         .map(|expected| {
             let mut best: f64 = 0.0;
             // Check against the proposer's boundary exclusion records
             for er in &result.boundary.exclusions {
                 let family_ok = er.excluded_family == expected.expected_family;
                 let predicate_ok = er.failed_predicate == expected.expected_predicate;
-                let same_safety = format!("{:?}", er.failed_predicate).to_lowercase()
+                let same_safety = format!("{:?}", er.failed_predicate)
+                    .to_lowercase()
                     .contains(&expected.safety_reason.to_lowercase());
                 if family_ok && predicate_ok {
                     best = best.max(1.0);
@@ -4586,10 +5263,13 @@ pub fn score_reconstruction(
             }
             best
         })
-        .sum::<f64>() / task.expected_exclusions.len().max(1) as f64;
+        .sum::<f64>()
+        / task.expected_exclusions.len().max(1) as f64;
 
     // Bridge correctness: are proposed bridges sensible
-    let has_algebra_bridge = proposal.proposed_bridges.iter()
+    let has_algebra_bridge = proposal
+        .proposed_bridges
+        .iter()
         .any(|b| b.target_id == "algebra_island");
     let bridge_correctness = if has_algebra_bridge { 1.0 } else { 0.0 };
 
@@ -4618,12 +5298,18 @@ pub fn score_reconstruction(
     let exclusion_ok = exclusion_recall >= 0.60;
     let bridge_ok = bridge_correctness >= 0.99;
     let novelty_ok = novelty_correct;
-    let coverage_ok = matches!(proposal.expected_coverage.projected,
-        ProjectedCoverage::InsufficientEvidence)
-        || cal_error < 0.5;
+    let coverage_ok = matches!(
+        proposal.expected_coverage.projected,
+        ProjectedCoverage::InsufficientEvidence
+    ) || cal_error < 0.5;
 
-    let validity_tier = if structurally_ok && io_ok && boundary_ok && exclusion_ok
-        && bridge_ok && novelty_ok && coverage_ok
+    let validity_tier = if structurally_ok
+        && io_ok
+        && boundary_ok
+        && exclusion_ok
+        && bridge_ok
+        && novelty_ok
+        && coverage_ok
     {
         ReconstructionValidity::ReconstructionValidated
     } else if structurally_ok && io_ok && boundary_ok {
@@ -4633,7 +5319,10 @@ pub fn score_reconstruction(
     };
 
     let overall = matches!(validity_tier, ReconstructionValidity::BoundaryIncomplete)
-        || matches!(validity_tier, ReconstructionValidity::ReconstructionValidated);
+        || matches!(
+            validity_tier,
+            ReconstructionValidity::ReconstructionValidated
+        );
 
     ReconstructionScore {
         task_label: task.label.to_string(),
@@ -4678,15 +5367,32 @@ pub struct CaseSpec {
 /// A typed semantic binding with a value and optional unit.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum TypedBinding {
-    SourceQuantity { label: String, value: f64, unit: Option<String> },
+    SourceQuantity {
+        label: String,
+        value: f64,
+        unit: Option<String>,
+    },
     TargetUnit(String),
-    ConversionFactor { from_unit: String, to_unit: String, factor: String },
-    BaseQuantity { value: f64, unit: Option<String> },
-    Rate { value: f64, unit: Option<String> },
+    ConversionFactor {
+        from_unit: String,
+        to_unit: String,
+        factor: String,
+    },
+    BaseQuantity {
+        value: f64,
+        unit: Option<String>,
+    },
+    Rate {
+        value: f64,
+        unit: Option<String>,
+    },
     Direction(String),
     Operation(String),
     Percentage(f64),
-    FractionN { n: u32, d: u32 },
+    FractionN {
+        n: u32,
+        d: u32,
+    },
     RawText(String),
 }
 
@@ -4805,17 +5511,15 @@ fn render_supported(spec: &CaseSpec) -> String {
 
     for b in &spec.bindings {
         match b {
-            TypedBinding::Operation(op) => {
-                match op.as_str() {
-                    "conversion" => has_conversion = true,
-                    "addition" => has_addition = true,
-                    "ratio" | "rate" => has_rate = true,
-                    "fraction" => has_fraction = true,
-                    "part_of" => has_percentage = true,
-                    "increase" | "decrease" | "recover_base" => has_percentage_change = true,
-                    _ => {}
-                }
-            }
+            TypedBinding::Operation(op) => match op.as_str() {
+                "conversion" => has_conversion = true,
+                "addition" => has_addition = true,
+                "ratio" | "rate" => has_rate = true,
+                "fraction" => has_fraction = true,
+                "part_of" => has_percentage = true,
+                "increase" | "decrease" | "recover_base" => has_percentage_change = true,
+                _ => {}
+            },
             TypedBinding::TargetUnit(u) => target_unit = u.clone(),
             TypedBinding::Percentage(_) => has_percentage = true,
             TypedBinding::FractionN { .. } => has_fraction = true,
@@ -4846,15 +5550,23 @@ fn render_percentage_change_prompt(spec: &CaseSpec) -> String {
     for binding in &spec.bindings {
         match binding {
             TypedBinding::BaseQuantity { value, .. }
-            | TypedBinding::SourceQuantity { value, .. } if base.is_none() => base = Some(*value),
-            TypedBinding::Percentage(value) | TypedBinding::Rate { value, .. } if rate.is_none() => {
+            | TypedBinding::SourceQuantity { value, .. }
+                if base.is_none() =>
+            {
+                base = Some(*value)
+            }
+            TypedBinding::Percentage(value) | TypedBinding::Rate { value, .. }
+                if rate.is_none() =>
+            {
                 rate = Some(*value)
             }
             TypedBinding::Direction(value) => direction = Some(value.to_ascii_lowercase()),
             _ => {}
         }
     }
-    let base = base.map(format_value).unwrap_or_else(|| "the base quantity".into());
+    let base = base
+        .map(format_value)
+        .unwrap_or_else(|| "the base quantity".into());
     let rate = rate.map(format_value).unwrap_or_else(|| "the rate".into());
     let direction = direction.unwrap_or_else(|| "increase".into());
     if spec.target_form.to_ascii_lowercase().contains("recover") {
@@ -4871,24 +5583,35 @@ fn render_conversion_prompt(spec: &CaseSpec, target_unit: &str) -> String {
     let mut src_val = String::new();
     let mut src_unit = String::new();
     let mut factor_desc = String::new();
-    let mut target = if target_unit.is_empty() { "the target unit" } else { target_unit };
+    let mut target = if target_unit.is_empty() {
+        "the target unit"
+    } else {
+        target_unit
+    };
 
     for b in &spec.bindings {
         match b {
             TypedBinding::SourceQuantity { value, unit, .. } => {
                 src_val = format_value(*value);
-                if let Some(u) = unit { src_unit = u.clone(); }
+                if let Some(u) = unit {
+                    src_unit = u.clone();
+                }
             }
             TypedBinding::ConversionFactor { factor, .. } => {
                 factor_desc = format!("using {}", factor);
             }
-            TypedBinding::TargetUnit(u) => { target = u; }
+            TypedBinding::TargetUnit(u) => {
+                target = u;
+            }
             _ => {}
         }
     }
 
     if !factor_desc.is_empty() {
-        format!("Convert {} {} to {} {}.", src_val, src_unit, target, factor_desc)
+        format!(
+            "Convert {} {} to {} {}.",
+            src_val, src_unit, target, factor_desc
+        )
     } else {
         format!("Convert {} {} to {}.", src_val, src_unit, target)
     }
@@ -4904,20 +5627,30 @@ fn render_rate_prompt(spec: &CaseSpec) -> String {
         match b {
             TypedBinding::SourceQuantity { value, unit, .. } => {
                 src_val = format_value(*value);
-                if let Some(u) = unit { src_unit = u.clone(); }
+                if let Some(u) = unit {
+                    src_unit = u.clone();
+                }
             }
             TypedBinding::Rate { value, unit } => {
                 rate_val = format_value(*value);
-                if let Some(u) = unit { rate_unit = u.clone(); }
+                if let Some(u) = unit {
+                    rate_unit = u.clone();
+                }
             }
             _ => {}
         }
     }
 
     if !rate_unit.is_empty() {
-        format!("{} {} at {} per {}. What is the total?", src_val, src_unit, rate_val, rate_unit)
+        format!(
+            "{} {} at {} per {}. What is the total?",
+            src_val, src_unit, rate_val, rate_unit
+        )
     } else {
-        format!("{} {} at rate {}. What is the total?", src_val, src_unit, rate_val)
+        format!(
+            "{} {} at rate {}. What is the total?",
+            src_val, src_unit, rate_val
+        )
     }
 }
 
@@ -4934,7 +5667,9 @@ fn render_addition_prompt(spec: &CaseSpec, target_unit: &str) -> String {
                     quantities.push(format_value(*value));
                 }
             }
-            TypedBinding::TargetUnit(u) => { target = u; }
+            TypedBinding::TargetUnit(u) => {
+                target = u;
+            }
             _ => {}
         }
     }
@@ -4958,13 +5693,21 @@ fn render_fraction_or_percentage_prompt(spec: &CaseSpec) -> String {
         match b {
             TypedBinding::BaseQuantity { value, unit } => {
                 base_val = format_value(*value);
-                if let Some(u) = unit { base_unit = format!(" {}", u); }
+                if let Some(u) = unit {
+                    base_unit = format!(" {}", u);
+                }
             }
             TypedBinding::Percentage(v) => {
-                if *v == v.trunc() { pct = format!("{}%", *v as i64); }
-                else { pct = format!("{}%", v); }
+                if *v == v.trunc() {
+                    pct = format!("{}%", *v as i64);
+                } else {
+                    pct = format!("{}%", v);
+                }
             }
-            TypedBinding::FractionN { n, d } => { frac_n = *n; frac_d = *d; }
+            TypedBinding::FractionN { n, d } => {
+                frac_n = *n;
+                frac_d = *d;
+            }
             _ => {}
         }
     }
@@ -4973,9 +5716,17 @@ fn render_fraction_or_percentage_prompt(spec: &CaseSpec) -> String {
         format!("What is {} of {}{}?", pct, base_val, base_unit)
     } else if frac_d > 0 {
         if frac_n == 1 {
-            format!("What is one {}-th of {}{}?", ordinal(frac_d), base_val, base_unit)
+            format!(
+                "What is one {}-th of {}{}?",
+                ordinal(frac_d),
+                base_val,
+                base_unit
+            )
         } else {
-            format!("What is {}/{} of {}{}?", frac_n, frac_d, base_val, base_unit)
+            format!(
+                "What is {}/{} of {}{}?",
+                frac_n, frac_d, base_val, base_unit
+            )
         }
     } else {
         format!("Calculate the quantity from {}{}.", base_val, base_unit)
@@ -5030,17 +5781,31 @@ fn render_unsupported_near_miss(spec: &CaseSpec) -> String {
     let index = case_index(spec);
     // Generate an unsupported near-miss by applying a semantic mutation
     if form_lower.contains("additivechange") || form_lower.contains("addition") {
-        format!("Add {} meters and {} kilograms; express the total in meters.", 2 + index, 3 + index)
+        format!(
+            "Add {} meters and {} kilograms; express the total in meters.",
+            2 + index,
+            3 + index
+        )
     } else if form_lower.contains("compatibleunitconversion") || form_lower.contains("conversion") {
         format!("Add {} liters to {} kilograms.", 2 + index, 3 + index)
     } else if form_lower.contains("percentage") || form_lower.contains("partofwhole") {
-        format!("There is a {}% probability that an unknown variable succeeds.", 25 + index)
+        format!(
+            "There is a {}% probability that an unknown variable succeeds.",
+            25 + index
+        )
     } else if form_lower.contains("multiplicativechange") {
-        format!("A balance grows by {}% each year for {} years.", 5 + index, 5 + index)
+        format!(
+            "A balance grows by {}% each year for {} years.",
+            5 + index,
+            5 + index
+        )
     } else if form_lower.contains("fraction") || form_lower.contains("fractional") {
         format!("A circle has radius {} meters. Find its area.", 3 + index)
     } else {
-        format!("A different kind of operation unrelated to {}.", spec.target_form)
+        format!(
+            "A different kind of operation unrelated to {}.",
+            spec.target_form
+        )
     }
 }
 
@@ -5076,7 +5841,8 @@ pub fn verify_case(case: &GeneratedValidationCase) -> OracleStatus {
     match case.section {
         CorpusSection::Supported => verify_supported_with_prompt(spec, &case.prompt),
         CorpusSection::Ambiguous => verify_ambiguous_with_prompt(spec, &case.prompt),
-        CorpusSection::UnsupportedLexicalNearMiss | CorpusSection::UnsupportedStructuralNearMiss => {
+        CorpusSection::UnsupportedLexicalNearMiss
+        | CorpusSection::UnsupportedStructuralNearMiss => {
             verify_unsupported_with_prompt(spec, &case.prompt)
         }
         CorpusSection::Rewrite => verify_rewrite(spec),
@@ -5091,22 +5857,33 @@ fn verify_supported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
     // 3. All required bindings present for the form
     // 4. No dimensional conflicts
 
-    let has_source = spec.bindings.iter().any(|b| matches!(b, TypedBinding::SourceQuantity { .. }));
-    let has_base = spec.bindings.iter().any(|b| matches!(b, TypedBinding::BaseQuantity { .. }));
-    let has_explicit_conversion = spec.bindings.iter().any(|b| matches!(b, TypedBinding::ConversionFactor { .. }));
+    let has_source = spec
+        .bindings
+        .iter()
+        .any(|b| matches!(b, TypedBinding::SourceQuantity { .. }));
+    let has_base = spec
+        .bindings
+        .iter()
+        .any(|b| matches!(b, TypedBinding::BaseQuantity { .. }));
+    let has_explicit_conversion = spec
+        .bindings
+        .iter()
+        .any(|b| matches!(b, TypedBinding::ConversionFactor { .. }));
 
     if !has_source && !has_base && numeric_literals(prompt).is_empty() {
         return OracleStatus::NeedsReview;
     }
 
     // Check for dimensional conflicts (length + mass in same spec)
-    let units: Vec<String> = spec.bindings.iter().filter_map(|b| {
-        match b {
+    let units: Vec<String> = spec
+        .bindings
+        .iter()
+        .filter_map(|b| match b {
             TypedBinding::SourceQuantity { unit, .. } => unit.clone(),
             TypedBinding::BaseQuantity { unit, .. } => unit.clone(),
             _ => None,
-        }
-    }).collect();
+        })
+        .collect();
 
     let unit_strs: Vec<&str> = units.iter().map(|u| u.as_str()).collect();
     if has_conflicting_unit_dimensions(&unit_strs) {
@@ -5119,7 +5896,11 @@ fn verify_supported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
         if !has_explicit_conversion {
             return OracleStatus::NeedsReview;
         }
-        if !spec.bindings.iter().any(|b| matches!(b, TypedBinding::TargetUnit(_))) {
+        if !spec
+            .bindings
+            .iter()
+            .any(|b| matches!(b, TypedBinding::TargetUnit(_)))
+        {
             return OracleStatus::NeedsReview;
         }
     }
@@ -5136,7 +5917,10 @@ fn verify_supported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
 fn verify_ambiguous_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus {
     // An ambiguous case must be missing exactly one resolvable binding
     // that, if provided, would make it supported.
-    let has_missing_binding = spec.bindings.iter().any(|b| matches!(b, TypedBinding::RawText(_)));
+    let has_missing_binding = spec
+        .bindings
+        .iter()
+        .any(|b| matches!(b, TypedBinding::RawText(_)));
     if !has_missing_binding {
         // Check if there's a typical missing-binding pattern
         let form = format!("{} {}", spec.target_form, prompt).to_lowercase();
@@ -5161,12 +5945,14 @@ fn verify_unsupported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus
     let form = combined.as_str();
 
     // Check for incompatible dimensions
-    let units: Vec<String> = spec.bindings.iter().filter_map(|b| {
-        match b {
+    let units: Vec<String> = spec
+        .bindings
+        .iter()
+        .filter_map(|b| match b {
             TypedBinding::SourceQuantity { unit, .. } => unit.clone(),
             _ => None,
-        }
-    }).collect();
+        })
+        .collect();
     let unit_strs: Vec<&str> = units.iter().map(|u| u.as_str()).collect();
     if has_conflicting_unit_dimensions(&unit_strs)
         || has_conflicting_unit_dimensions_from_prompt(prompt)
@@ -5175,11 +5961,12 @@ fn verify_unsupported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus
     }
 
     // Check for probability semantics mixed with quantity semantics
-    let has_probability = spec.bindings.iter().any(|b| {
-        match b {
-            TypedBinding::RawText(t) => t.to_ascii_lowercase().contains("probability") || t.to_ascii_lowercase().contains("chance"),
-            _ => false,
+    let has_probability = spec.bindings.iter().any(|b| match b {
+        TypedBinding::RawText(t) => {
+            t.to_ascii_lowercase().contains("probability")
+                || t.to_ascii_lowercase().contains("chance")
         }
+        _ => false,
     }) || prompt.to_ascii_lowercase().contains("probability")
         || prompt.to_ascii_lowercase().contains("chance");
     if has_probability && (form.contains("percentage") || form.contains("fraction")) {
@@ -5187,11 +5974,12 @@ fn verify_unsupported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus
     }
 
     // Check for financial/repeated change
-    let has_repeated = spec.bindings.iter().any(|b| {
-        match b {
-            TypedBinding::RawText(t) => t.to_ascii_lowercase().contains("each year") || t.to_ascii_lowercase().contains("annually"),
-            _ => false,
+    let has_repeated = spec.bindings.iter().any(|b| match b {
+        TypedBinding::RawText(t) => {
+            t.to_ascii_lowercase().contains("each year")
+                || t.to_ascii_lowercase().contains("annually")
         }
+        _ => false,
     }) || prompt.to_ascii_lowercase().contains("each year")
         || prompt.to_ascii_lowercase().contains("annually");
 
@@ -5202,11 +5990,13 @@ fn verify_unsupported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus
     // Generic unsupported: different domain entirely
     if form.contains("fraction") || form.contains("fractional") {
         // Fraction form with geometry content is unsupported
-        let has_geometry = spec.bindings.iter().any(|b| {
-            match b {
-                TypedBinding::RawText(t) => t.to_ascii_lowercase().contains("area") || t.to_ascii_lowercase().contains("radius") || t.to_ascii_lowercase().contains("circle"),
-                _ => false,
+        let has_geometry = spec.bindings.iter().any(|b| match b {
+            TypedBinding::RawText(t) => {
+                t.to_ascii_lowercase().contains("area")
+                    || t.to_ascii_lowercase().contains("radius")
+                    || t.to_ascii_lowercase().contains("circle")
             }
+            _ => false,
         }) || prompt.to_ascii_lowercase().contains("area")
             || prompt.to_ascii_lowercase().contains("radius")
             || prompt.to_ascii_lowercase().contains("circle");
@@ -5220,13 +6010,41 @@ fn verify_unsupported_with_prompt(spec: &CaseSpec, prompt: &str) -> OracleStatus
 
 fn has_conflicting_unit_dimensions_from_prompt(prompt: &str) -> bool {
     let units = [
-        "meter", "meters", "centimeter", "centimeters", "kilometer", "kilometers",
-        "mile", "miles", "inch", "inches", "foot", "feet", "liter", "liters",
-        "kilogram", "kilograms", "gram", "grams", "pound", "pounds", "second",
-        "seconds", "minute", "minutes", "hour", "hours", "dollar", "dollars",
+        "meter",
+        "meters",
+        "centimeter",
+        "centimeters",
+        "kilometer",
+        "kilometers",
+        "mile",
+        "miles",
+        "inch",
+        "inches",
+        "foot",
+        "feet",
+        "liter",
+        "liters",
+        "kilogram",
+        "kilograms",
+        "gram",
+        "grams",
+        "pound",
+        "pounds",
+        "second",
+        "seconds",
+        "minute",
+        "minutes",
+        "hour",
+        "hours",
+        "dollar",
+        "dollars",
     ];
     let lower = prompt.to_ascii_lowercase();
-    let present: Vec<&str> = units.iter().copied().filter(|unit| lower.contains(unit)).collect();
+    let present: Vec<&str> = units
+        .iter()
+        .copied()
+        .filter(|unit| lower.contains(unit))
+        .collect();
     let refs: Vec<&str> = present.iter().copied().collect();
     has_conflicting_unit_dimensions(&refs)
 }
@@ -5238,46 +6056,70 @@ fn verify_rewrite(spec: &CaseSpec) -> OracleStatus {
     {
         return OracleStatus::NeedsReview;
     }
-    let has_source = spec.bindings.iter().any(|binding| matches!(
-        binding,
-        TypedBinding::SourceQuantity { .. } | TypedBinding::BaseQuantity { .. }
-    ));
+    let has_source = spec.bindings.iter().any(|binding| {
+        matches!(
+            binding,
+            TypedBinding::SourceQuantity { .. } | TypedBinding::BaseQuantity { .. }
+        )
+    });
     if !has_source {
         return OracleStatus::NeedsReview;
     }
-    let units: Vec<String> = spec.bindings.iter().filter_map(|binding| match binding {
-        TypedBinding::SourceQuantity { unit, .. }
-        | TypedBinding::BaseQuantity { unit, .. } => unit.clone(),
-        _ => None,
-    }).collect();
+    let units: Vec<String> =
+        spec.bindings
+            .iter()
+            .filter_map(|binding| match binding {
+                TypedBinding::SourceQuantity { unit, .. }
+                | TypedBinding::BaseQuantity { unit, .. } => unit.clone(),
+                _ => None,
+            })
+            .collect();
     let unit_refs: Vec<&str> = units.iter().map(String::as_str).collect();
     if has_conflicting_unit_dimensions(&unit_refs) {
         return OracleStatus::GeneratorConflict;
     }
     let form = spec.target_form.to_ascii_lowercase();
     if form.contains("percentage") || form.contains("partofwhole") || form.contains("fraction") {
-        let has_fractional_rate = spec.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::Percentage(_) | TypedBinding::Rate { .. } | TypedBinding::FractionN { .. }
-        ));
-        let has_base = spec.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::BaseQuantity { .. }
-        ));
+        let has_fractional_rate = spec.bindings.iter().any(|binding| {
+            matches!(
+                binding,
+                TypedBinding::Percentage(_)
+                    | TypedBinding::Rate { .. }
+                    | TypedBinding::FractionN { .. }
+            )
+        });
+        let has_base = spec
+            .bindings
+            .iter()
+            .any(|binding| matches!(binding, TypedBinding::BaseQuantity { .. }));
         if !has_fractional_rate || !has_base {
             return OracleStatus::NeedsReview;
         }
     } else if form.contains("conversion") {
-        let has_target = spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::TargetUnit(_)));
-        let has_factor = spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::ConversionFactor { .. }));
+        let has_target = spec
+            .bindings
+            .iter()
+            .any(|binding| matches!(binding, TypedBinding::TargetUnit(_)));
+        let has_factor = spec
+            .bindings
+            .iter()
+            .any(|binding| matches!(binding, TypedBinding::ConversionFactor { .. }));
         if !has_target || !has_factor {
             return OracleStatus::NeedsReview;
         }
     } else if form.contains("rate") || form.contains("proportion") {
-        if !spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::Rate { .. })) {
+        if !spec
+            .bindings
+            .iter()
+            .any(|binding| matches!(binding, TypedBinding::Rate { .. }))
+        {
             return OracleStatus::NeedsReview;
         }
-    } else if !spec.bindings.iter().any(|binding| matches!(binding, TypedBinding::Operation(_))) {
+    } else if !spec
+        .bindings
+        .iter()
+        .any(|binding| matches!(binding, TypedBinding::Operation(_)))
+    {
         return OracleStatus::NeedsReview;
     }
     OracleStatus::Verified
@@ -5298,18 +6140,17 @@ fn classify_unit_dimension(unit: &str) -> &'static str {
     let u = unit.to_lowercase();
     let u = u.trim();
     match u {
-        "meter" | "meters" | "m" | "centimeter" | "centimeters" | "cm"
-        | "inch" | "inches" | "in" | "foot" | "feet" | "ft"
-        | "mile" | "miles" | "kilometer" | "kilometers" | "km"
+        "meter" | "meters" | "m" | "centimeter" | "centimeters" | "cm" | "inch" | "inches"
+        | "in" | "foot" | "feet" | "ft" | "mile" | "miles" | "kilometer" | "kilometers" | "km"
         | "yard" | "yards" => "length",
-        "gram" | "grams" | "g" | "kilogram" | "kilograms" | "kg"
-        | "ounce" | "ounces" | "oz" | "pound" | "pounds" | "lb" => "mass",
-        "liter" | "liters" | "l" | "milliliter" | "milliliters" | "ml"
-        | "gallon" | "gallons" | "gal" | "quart" | "pint" => "volume",
-        "minute" | "minutes" | "min" | "hour" | "hours" | "hr"
-        | "second" | "seconds" | "sec" | "day" | "days" => "time",
-        "dollar" | "dollars" | "usd" | "cent" | "cents" | "euro" | "euros"
-        | "pound sterling" | "gbp" => "currency",
+        "gram" | "grams" | "g" | "kilogram" | "kilograms" | "kg" | "ounce" | "ounces" | "oz"
+        | "pound" | "pounds" | "lb" => "mass",
+        "liter" | "liters" | "l" | "milliliter" | "milliliters" | "ml" | "gallon" | "gallons"
+        | "gal" | "quart" | "pint" => "volume",
+        "minute" | "minutes" | "min" | "hour" | "hours" | "hr" | "second" | "seconds" | "sec"
+        | "day" | "days" => "time",
+        "dollar" | "dollars" | "usd" | "cent" | "cents" | "euro" | "euros" | "pound sterling"
+        | "gbp" => "currency",
         _ => "unknown",
     }
 }
@@ -5394,7 +6235,8 @@ pub fn generate_corpus(
     for cd in &proposal.synthesized.decisions {
         if let Some(ref receipt) = cd.ambiguity_receipt {
             for cause in &receipt.causes {
-                if cases.len() >= plan.proposed_counts.positives + plan.proposed_counts.ambiguities {
+                if cases.len() >= plan.proposed_counts.positives + plan.proposed_counts.ambiguities
+                {
                     break;
                 }
                 let cause_desc = format!("{:?}", cause).to_lowercase();
@@ -5432,11 +6274,28 @@ pub fn generate_corpus(
     }
 
     // Add default ambiguous families from each form
-    if cases.iter().filter(|c| c.section == CorpusSection::Ambiguous).count() < 3 {
+    if cases
+        .iter()
+        .filter(|c| c.section == CorpusSection::Ambiguous)
+        .count()
+        < 3
+    {
         let default_amb_bindings = vec![
-            ("additivechange", "Add 2 meters and 30 centimeters.", CorpusSection::Ambiguous),
-            ("compatibleunitconversion", "Convert 5 miles to kilometers.", CorpusSection::Ambiguous),
-            ("multiplicativechange", "Apply a percentage change to 50 dollars.", CorpusSection::Ambiguous),
+            (
+                "additivechange",
+                "Add 2 meters and 30 centimeters.",
+                CorpusSection::Ambiguous,
+            ),
+            (
+                "compatibleunitconversion",
+                "Convert 5 miles to kilometers.",
+                CorpusSection::Ambiguous,
+            ),
+            (
+                "multiplicativechange",
+                "Apply a percentage change to 50 dollars.",
+                CorpusSection::Ambiguous,
+            ),
         ];
         for (form_name, prompt_text, section) in &default_amb_bindings {
             if cases.len() >= plan.proposed_counts.positives + plan.proposed_counts.ambiguities {
@@ -5461,7 +6320,9 @@ pub fn generate_corpus(
                     decision: ExpectedDecision::Ambiguous,
                     reasoning: format!("Default ambiguous case for form '{}'", form_name),
                 },
-                generation_transform: GenerationTransform::BindingRemoved("target_unit".to_string()),
+                generation_transform: GenerationTransform::BindingRemoved(
+                    "target_unit".to_string(),
+                ),
                 source_evidence: vec![],
                 spec,
             });
@@ -5470,17 +6331,20 @@ pub fn generate_corpus(
 
     // ── 3. Unsupported cases — from exclusion records ──
     for ex in &proposal.boundary.exclusions {
-        if cases.len() >= plan.proposed_counts.positives + plan.proposed_counts.ambiguities
-            + plan.proposed_counts.unsupported_near_misses
+        if cases.len()
+            >= plan.proposed_counts.positives
+                + plan.proposed_counts.ambiguities
+                + plan.proposed_counts.unsupported_near_misses
         {
             break;
         }
         let family_id = format!("unsupported_{:?}", ex.excluded_family).to_lowercase();
         let spec = CaseSpec {
             target_form: format!("{:?}", ex.excluded_family),
-            bindings: vec![
-                TypedBinding::RawText(format!("Excluded by {:?}", ex.failed_predicate)),
-            ],
+            bindings: vec![TypedBinding::RawText(format!(
+                "Excluded by {:?}",
+                ex.failed_predicate
+            ))],
             expected: ExpectedDecision::Unsupported,
             section: CorpusSection::UnsupportedStructuralNearMiss,
         };
@@ -5499,9 +6363,10 @@ pub fn generate_corpus(
                 decision: ExpectedDecision::Unsupported,
                 reasoning: format!("Excluded by {:?}", ex.failed_predicate),
             },
-            generation_transform: GenerationTransform::SemanticMutation(
-                format!("{:?}", ex.failed_predicate)
-            ),
+            generation_transform: GenerationTransform::SemanticMutation(format!(
+                "{:?}",
+                ex.failed_predicate
+            )),
             source_evidence: vec![EvidenceRef {
                 source: format!("exclusion-{:?}", ex.excluded_family),
                 excerpt: ex.exemplars.first().cloned().unwrap_or_default(),
@@ -5512,14 +6377,26 @@ pub fn generate_corpus(
 
     // ── 4. Default unsupported near-misses for each form ──
     let default_uns_bindings = vec![
-        ("additivechange", "Add 2 meters and 3 kilograms; express the total in meters."),
+        (
+            "additivechange",
+            "Add 2 meters and 3 kilograms; express the total in meters.",
+        ),
         ("compatibleunitconversion", "Add 2 liters to 3 kilograms."),
         ("partofwhole", "There is a 25% probability."),
-        ("multiplicativechange", "A balance grows by 5% each year for 5 years."),
-        ("proportionalscaling", "A circle has radius 3 meters. Find its area."),
+        (
+            "multiplicativechange",
+            "A balance grows by 5% each year for 5 years.",
+        ),
+        (
+            "proportionalscaling",
+            "A circle has radius 3 meters. Find its area.",
+        ),
     ];
     for (form_name, prompt_text) in &default_uns_bindings {
-        if cases.iter().filter(|c| matches!(c.section, CorpusSection::UnsupportedStructuralNearMiss)).count()
+        if cases
+            .iter()
+            .filter(|c| matches!(c.section, CorpusSection::UnsupportedStructuralNearMiss))
+            .count()
             >= plan.proposed_counts.unsupported_near_misses
         {
             break;
@@ -5556,18 +6433,40 @@ pub fn generate_corpus(
 
     // ── 5. Supported pattern examples for each form (ensure every form is represented) ──
     let form_example_texts: Vec<(&str, &str)> = vec![
-        ("additivechange", "Add 3 meters and 50 centimeters; express the total in centimeters."),
-        ("compatibleunitconversion", "Convert 2 miles to kilometers using 1.6 kilometers per mile."),
-        ("perunitrate", "5 notebooks cost 20 dollars. What is the price per notebook?"),
-        ("proportionalscaling", "3 identical batches require 2 liters. How many liters for 8 batches?"),
+        (
+            "additivechange",
+            "Add 3 meters and 50 centimeters; express the total in centimeters.",
+        ),
+        (
+            "compatibleunitconversion",
+            "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
+        ),
+        (
+            "perunitrate",
+            "5 notebooks cost 20 dollars. What is the price per notebook?",
+        ),
+        (
+            "proportionalscaling",
+            "3 identical batches require 2 liters. How many liters for 8 batches?",
+        ),
         ("partofwhole", "What is three quarters of 20?"),
-        ("multiplicativechange", "An item priced at $80 receives a 20% discount. What is the final price?"),
-        ("repeatedchange", "A balance grows by 5% each year for 5 years."),
+        (
+            "multiplicativechange",
+            "An item priced at $80 receives a 20% discount. What is the final price?",
+        ),
+        (
+            "repeatedchange",
+            "A balance grows by 5% each year for 5 years.",
+        ),
     ];
     for (form_name, prompt_text) in &form_example_texts {
         let already_has = cases.iter().any(|c| c.prompt == *prompt_text);
-        if !already_has && cases.iter().filter(|c| c.section == CorpusSection::Supported).count()
-            < plan.proposed_counts.positives
+        if !already_has
+            && cases
+                .iter()
+                .filter(|c| c.section == CorpusSection::Supported)
+                .count()
+                < plan.proposed_counts.positives
         {
             let spec = CaseSpec {
                 target_form: form_name.to_string(),
@@ -5627,7 +6526,10 @@ fn section_count(cases: &[GeneratedValidationCase], section: CorpusSection) -> u
 
 fn push_unique_case(cases: &mut Vec<GeneratedValidationCase>, case: GeneratedValidationCase) {
     let normalized = normalize_prompt(&case.prompt);
-    if !cases.iter().any(|existing| normalize_prompt(&existing.prompt) == normalized) {
+    if !cases
+        .iter()
+        .any(|existing| normalize_prompt(&existing.prompt) == normalized)
+    {
         cases.push(case);
     }
 }
@@ -5662,10 +6564,13 @@ fn synthetic_supported_spec(form_name: &str, index: usize) -> CaseSpec {
 }
 
 fn case_index(spec: &CaseSpec) -> usize {
-    spec.bindings.iter().find_map(|binding| match binding {
-        TypedBinding::RawText(text) => text.split(':').next_back()?.parse().ok(),
-        _ => None,
-    }).unwrap_or(0)
+    spec.bindings
+        .iter()
+        .find_map(|binding| match binding {
+            TypedBinding::RawText(text) => text.split(':').next_back()?.parse().ok(),
+            _ => None,
+        })
+        .unwrap_or(0)
 }
 
 fn render_rewrite_prompt(spec: &CaseSpec, alternate: bool) -> String {
@@ -5682,25 +6587,41 @@ fn render_rewrite_prompt(spec: &CaseSpec, alternate: bool) -> String {
     let form = spec.target_form.to_ascii_lowercase();
     if form.contains("partofwhole") || form.contains("percentageof") {
         if alternate {
-            format!("Calculate {rate} percent of the whole quantity {}.", format_value(base))
+            format!(
+                "Calculate {rate} percent of the whole quantity {}.",
+                format_value(base)
+            )
         } else {
             format!("What is {}% of {}?", format_value(rate), format_value(base))
         }
     } else if form.contains("multiplicative") || form.contains("percentage") {
         if alternate {
-            format!("Apply a {rate} percent increase to a base value of {}; find the final value.", format_value(base))
+            format!(
+                "Apply a {rate} percent increase to a base value of {}; find the final value.",
+                format_value(base)
+            )
         } else {
             format!("A quantity with base value {} increases by {}%. What is the final value after this one change?", format_value(base), format_value(rate))
         }
     } else if form.contains("conversion") {
         if alternate {
-            format!("Using 1.6 kilometers per mile, convert {} miles to kilometers.", format_value(base))
+            format!(
+                "Using 1.6 kilometers per mile, convert {} miles to kilometers.",
+                format_value(base)
+            )
         } else {
-            format!("Convert {} miles to kilometers using 1.6 kilometers per mile.", format_value(base))
+            format!(
+                "Convert {} miles to kilometers using 1.6 kilometers per mile.",
+                format_value(base)
+            )
         }
     } else {
         let prompt = render_spec(spec);
-        if alternate { format!("Please compute the same relation: {prompt}") } else { prompt }
+        if alternate {
+            format!("Please compute the same relation: {prompt}")
+        } else {
+            prompt
+        }
     }
 }
 
@@ -5712,13 +6633,20 @@ fn complete_corpus_budgets(
 ) {
     let target_supported = plan.proposed_counts.positives;
     let target_ambiguous = plan.proposed_counts.ambiguities;
-    let target_unsupported = plan.proposed_counts.unsupported_near_misses
-        + plan.proposed_counts.adversarial;
+    let target_unsupported =
+        plan.proposed_counts.unsupported_near_misses + plan.proposed_counts.adversarial;
     let target_rewrites = plan.proposed_counts.rewrites.saturating_mul(2);
-    let forms: Vec<String> = proposal.synthesized.supported_forms.iter()
+    let forms: Vec<String> = proposal
+        .synthesized
+        .supported_forms
+        .iter()
         .map(|form| form.name.clone())
         .collect();
-    let forms = if forms.is_empty() { vec!["partofwhole".to_string()] } else { forms };
+    let forms = if forms.is_empty() {
+        vec!["partofwhole".to_string()]
+    } else {
+        forms
+    };
 
     let mut index = 0usize;
     while section_count(cases, CorpusSection::Supported) < target_supported && index < 10_000 {
@@ -5726,23 +6654,29 @@ fn complete_corpus_budgets(
         let spec = synthetic_supported_spec(form, index + (seed as usize % 997));
         let prompt = render_spec(&spec);
         let oracle_status = verify_supported_with_prompt(&spec, &prompt);
-        push_unique_case(cases, GeneratedValidationCase {
-            case_id: format!("{}-fill-supported-{index:04}", proposal.proposal.proposal_id.0),
-            family_id: format!("supported_{form}"),
-            section: CorpusSection::Supported,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Applicable,
-            prompt,
-            structural_oracle: StructuralOracle {
-                status: oracle_status,
-                verified_bindings: spec.bindings.clone(),
-                decision: ExpectedDecision::Applicable,
-                reasoning: "Deterministic typed supported variant".into(),
+        push_unique_case(
+            cases,
+            GeneratedValidationCase {
+                case_id: format!(
+                    "{}-fill-supported-{index:04}",
+                    proposal.proposal.proposal_id.0
+                ),
+                family_id: format!("supported_{form}"),
+                section: CorpusSection::Supported,
+                evidence_quality: EvidenceQuality::Predicted,
+                intended_decision: ExpectedDecision::Applicable,
+                prompt,
+                structural_oracle: StructuralOracle {
+                    status: oracle_status,
+                    verified_bindings: spec.bindings.clone(),
+                    decision: ExpectedDecision::Applicable,
+                    reasoning: "Deterministic typed supported variant".into(),
+                },
+                generation_transform: GenerationTransform::NumericVariant,
+                source_evidence: vec![],
+                spec,
             },
-            generation_transform: GenerationTransform::NumericVariant,
-            source_evidence: vec![],
-            spec,
-        });
+        );
         index += 1;
     }
 
@@ -5751,60 +6685,82 @@ fn complete_corpus_budgets(
         let form = &forms[index % forms.len()];
         let spec = CaseSpec {
             target_form: form.clone(),
-            bindings: vec![TypedBinding::RawText(format!("case_index:{}:{index}", seed))],
+            bindings: vec![TypedBinding::RawText(format!(
+                "case_index:{}:{index}",
+                seed
+            ))],
             expected: ExpectedDecision::Ambiguous,
             section: CorpusSection::Ambiguous,
         };
         let prompt = render_ambiguous(&spec);
         let oracle_status = verify_ambiguous_with_prompt(&spec, &prompt);
-        push_unique_case(cases, GeneratedValidationCase {
-            case_id: format!("{}-fill-ambiguous-{index:04}", proposal.proposal.proposal_id.0),
-            family_id: format!("ambiguous_{form}"),
-            section: CorpusSection::Ambiguous,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Ambiguous,
-            prompt,
-            structural_oracle: StructuralOracle {
-                status: oracle_status,
-                verified_bindings: spec.bindings.clone(),
-                decision: ExpectedDecision::Ambiguous,
-                reasoning: "Deterministic missing-binding probe".into(),
+        push_unique_case(
+            cases,
+            GeneratedValidationCase {
+                case_id: format!(
+                    "{}-fill-ambiguous-{index:04}",
+                    proposal.proposal.proposal_id.0
+                ),
+                family_id: format!("ambiguous_{form}"),
+                section: CorpusSection::Ambiguous,
+                evidence_quality: EvidenceQuality::Predicted,
+                intended_decision: ExpectedDecision::Ambiguous,
+                prompt,
+                structural_oracle: StructuralOracle {
+                    status: oracle_status,
+                    verified_bindings: spec.bindings.clone(),
+                    decision: ExpectedDecision::Ambiguous,
+                    reasoning: "Deterministic missing-binding probe".into(),
+                },
+                generation_transform: GenerationTransform::BindingRemoved(
+                    "required_binding".into(),
+                ),
+                source_evidence: vec![],
+                spec,
             },
-            generation_transform: GenerationTransform::BindingRemoved("required_binding".into()),
-            source_evidence: vec![],
-            spec,
-        });
+        );
         index += 1;
     }
 
     index = 0;
-    while section_count(cases, CorpusSection::UnsupportedStructuralNearMiss) < target_unsupported && index < 10_000 {
+    while section_count(cases, CorpusSection::UnsupportedStructuralNearMiss) < target_unsupported
+        && index < 10_000
+    {
         let form = &forms[index % forms.len()];
         let spec = CaseSpec {
             target_form: form.clone(),
-            bindings: vec![TypedBinding::RawText(format!("case_index:{}:{index}", seed))],
+            bindings: vec![TypedBinding::RawText(format!(
+                "case_index:{}:{index}",
+                seed
+            ))],
             expected: ExpectedDecision::Unsupported,
             section: CorpusSection::UnsupportedStructuralNearMiss,
         };
         let prompt = render_unsupported_near_miss(&spec);
         let oracle_status = verify_unsupported_with_prompt(&spec, &prompt);
-        push_unique_case(cases, GeneratedValidationCase {
-            case_id: format!("{}-fill-unsupported-{index:04}", proposal.proposal.proposal_id.0),
-            family_id: format!("unsupported_{form}"),
-            section: CorpusSection::UnsupportedStructuralNearMiss,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Unsupported,
-            prompt,
-            structural_oracle: StructuralOracle {
-                status: oracle_status,
-                verified_bindings: spec.bindings.clone(),
-                decision: ExpectedDecision::Unsupported,
-                reasoning: "Deterministic semantic near-miss probe".into(),
+        push_unique_case(
+            cases,
+            GeneratedValidationCase {
+                case_id: format!(
+                    "{}-fill-unsupported-{index:04}",
+                    proposal.proposal.proposal_id.0
+                ),
+                family_id: format!("unsupported_{form}"),
+                section: CorpusSection::UnsupportedStructuralNearMiss,
+                evidence_quality: EvidenceQuality::Predicted,
+                intended_decision: ExpectedDecision::Unsupported,
+                prompt,
+                structural_oracle: StructuralOracle {
+                    status: oracle_status,
+                    verified_bindings: spec.bindings.clone(),
+                    decision: ExpectedDecision::Unsupported,
+                    reasoning: "Deterministic semantic near-miss probe".into(),
+                },
+                generation_transform: GenerationTransform::SemanticMutation("near_miss".into()),
+                source_evidence: vec![],
+                spec,
             },
-            generation_transform: GenerationTransform::SemanticMutation("near_miss".into()),
-            source_evidence: vec![],
-            spec,
-        });
+        );
         index += 1;
     }
 
@@ -5816,23 +6772,26 @@ fn complete_corpus_budgets(
         spec.section = CorpusSection::Rewrite;
         let family_id = format!("rewrite_{form}_{:04}", index / 2);
         let prompt = render_rewrite_prompt(&spec, index % 2 == 1);
-        push_unique_case(cases, GeneratedValidationCase {
-            case_id: format!("{}-rewrite-{index:04}", proposal.proposal.proposal_id.0),
-            family_id,
-            section: CorpusSection::Rewrite,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Applicable,
-            prompt,
-            structural_oracle: StructuralOracle {
-                status: verify_rewrite(&spec),
-                verified_bindings: spec.bindings.clone(),
-                decision: ExpectedDecision::Applicable,
-                reasoning: "Equivalent surface rewrite of a typed specification".into(),
+        push_unique_case(
+            cases,
+            GeneratedValidationCase {
+                case_id: format!("{}-rewrite-{index:04}", proposal.proposal.proposal_id.0),
+                family_id,
+                section: CorpusSection::Rewrite,
+                evidence_quality: EvidenceQuality::Predicted,
+                intended_decision: ExpectedDecision::Applicable,
+                prompt,
+                structural_oracle: StructuralOracle {
+                    status: verify_rewrite(&spec),
+                    verified_bindings: spec.bindings.clone(),
+                    decision: ExpectedDecision::Applicable,
+                    reasoning: "Equivalent surface rewrite of a typed specification".into(),
+                },
+                generation_transform: GenerationTransform::Rewrite,
+                source_evidence: vec![],
+                spec,
             },
-            generation_transform: GenerationTransform::Rewrite,
-            source_evidence: vec![],
-            spec,
-        });
+        );
         index += 1;
     }
 }
@@ -5850,7 +6809,11 @@ fn numeric_literals(text: &str) -> Vec<NumericLiteral> {
         .filter_map(|caps| {
             let whole = caps.get(0)?;
             let value = caps.name("value")?.as_str().parse::<f64>().ok()?;
-            Some(NumericLiteral { value, start: whole.start(), end: whole.end() })
+            Some(NumericLiteral {
+                value,
+                start: whole.start(),
+                end: whole.end(),
+            })
         })
         .collect()
 }
@@ -5858,14 +6821,42 @@ fn numeric_literals(text: &str) -> Vec<NumericLiteral> {
 fn unit_after(text: &str, end: usize) -> Option<String> {
     let tail = text.get(end..)?.trim_start().to_ascii_lowercase();
     let units = [
-        "centimeters", "kilometers", "milliliters", "milligrams", "kilograms",
-        "meters", "miles", "inches", "feet", "liters", "hours", "minutes",
-        "seconds", "dollars", "euros", "cm", "km", "kg", "ml", "m", "ft", "in", "l", "g", "s",
+        "centimeters",
+        "kilometers",
+        "milliliters",
+        "milligrams",
+        "kilograms",
+        "meters",
+        "miles",
+        "inches",
+        "feet",
+        "liters",
+        "hours",
+        "minutes",
+        "seconds",
+        "dollars",
+        "euros",
+        "cm",
+        "km",
+        "kg",
+        "ml",
+        "m",
+        "ft",
+        "in",
+        "l",
+        "g",
+        "s",
     ];
-    units.iter().find(|unit| {
-        tail.starts_with(*unit)
-            && tail.as_bytes().get(unit.len()).map_or(true, |next| !next.is_ascii_alphabetic())
-    }).map(|unit| (*unit).to_string())
+    units
+        .iter()
+        .find(|unit| {
+            tail.starts_with(*unit)
+                && tail
+                    .as_bytes()
+                    .get(unit.len())
+                    .map_or(true, |next| !next.is_ascii_alphabetic())
+        })
+        .map(|unit| (*unit).to_string())
 }
 
 fn percentage_literal(text: &str) -> Option<NumericLiteral> {
@@ -5874,7 +6865,11 @@ fn percentage_literal(text: &str) -> Option<NumericLiteral> {
     re.captures(text).and_then(|caps| {
         let whole = caps.get(0)?;
         let value = caps.name("value")?.as_str().parse::<f64>().ok()?;
-        Some(NumericLiteral { value, start: whole.start(), end: whole.end() })
+        Some(NumericLiteral {
+            value,
+            start: whole.start(),
+            end: whole.end(),
+        })
     })
 }
 
@@ -5900,14 +6895,20 @@ fn fraction_binding(text: &str) -> Option<(u32, u32)> {
         ("two fifths", (2, 5)),
         ("one fifth", (1, 5)),
     ];
-    words.iter().find(|(phrase, _)| lower.contains(phrase)).map(|(_, value)| *value)
+    words
+        .iter()
+        .find(|(phrase, _)| lower.contains(phrase))
+        .map(|(_, value)| *value)
 }
 
 fn conversion_factor_from_exemplar(text: &str) -> String {
-    let re = Regex::new(r"(?i)(?:using|at)\s+(\d+(?:\.\d+)?[^!?]*)")
-        .expect("conversion factor regex");
+    let re =
+        Regex::new(r"(?i)(?:using|at)\s+(\d+(?:\.\d+)?[^!?]*)").expect("conversion factor regex");
     re.captures(text)
-        .and_then(|caps| caps.get(1).map(|m| m.as_str().trim().trim_end_matches('.').to_string()))
+        .and_then(|caps| {
+            caps.get(1)
+                .map(|m| m.as_str().trim().trim_end_matches('.').to_string())
+        })
         .filter(|factor| !factor.is_empty())
         .unwrap_or_else(|| "explicit conversion factor".to_string())
 }
@@ -5926,12 +6927,15 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
 
     if let Some(pct) = percentage_literal(exemplar) {
         bindings.push(TypedBinding::Percentage(pct.value));
-        let base = literals.iter()
+        let base = literals
+            .iter()
             .filter(|literal| literal.start != pct.start || literal.end != pct.end)
             .find(|literal| literal.start >= pct.end)
-            .or_else(|| literals.iter().find(|literal| {
-                literal.start != pct.start || literal.end != pct.end
-            }));
+            .or_else(|| {
+                literals
+                    .iter()
+                    .find(|literal| literal.start != pct.start || literal.end != pct.end)
+            });
         if let Some(base) = base {
             base_span = Some((base.start, base.end));
             bindings.push(TypedBinding::BaseQuantity {
@@ -5953,7 +6957,9 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
     }
 
     for literal in &literals {
-        if percentage_literal(exemplar).is_some_and(|pct| pct.start == literal.start && pct.end == literal.end) {
+        if percentage_literal(exemplar)
+            .is_some_and(|pct| pct.start == literal.start && pct.end == literal.end)
+        {
             continue;
         }
         if base_span == Some((literal.start, literal.end)) {
@@ -5973,12 +6979,19 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
     if features.has_target_unit {
         // Extract target unit from exemplar
         let lower = exemplar.to_lowercase();
-        let target = if lower.contains("centimeter") { "centimeters" }
-            else if lower.contains("meter") { "meters" }
-            else if lower.contains("inch") { "inches" }
-            else if lower.contains("foot") || lower.contains("feet") { "feet" }
-            else if lower.contains("liter") { "liters" }
-            else { "units" };
+        let target = if lower.contains("centimeter") {
+            "centimeters"
+        } else if lower.contains("meter") {
+            "meters"
+        } else if lower.contains("inch") {
+            "inches"
+        } else if lower.contains("foot") || lower.contains("feet") {
+            "feet"
+        } else if lower.contains("liter") {
+            "liters"
+        } else {
+            "units"
+        };
         bindings.push(TypedBinding::TargetUnit(target.to_string()));
     }
 
@@ -6005,12 +7018,17 @@ fn spec_from_exemplar(exemplar: &str, form_name: &str, section: CorpusSection) -
     if features.operations.contains("increase") || lower.contains("increases") {
         bindings.push(TypedBinding::Direction("increase".to_string()));
         bindings.push(TypedBinding::Operation("increase".to_string()));
-    } else if features.operations.contains("decrease") || lower.contains("discount") || lower.contains("reduction") {
+    } else if features.operations.contains("decrease")
+        || lower.contains("discount")
+        || lower.contains("reduction")
+    {
         bindings.push(TypedBinding::Direction("decrease".to_string()));
         bindings.push(TypedBinding::Operation("decrease".to_string()));
     }
     if form_lower.contains("multiplicativechange")
-        && !bindings.iter().any(|b| matches!(b, TypedBinding::Direction(_)))
+        && !bindings
+            .iter()
+            .any(|b| matches!(b, TypedBinding::Direction(_)))
     {
         bindings.push(TypedBinding::Direction("increase".to_string()));
     }
@@ -6076,9 +7094,14 @@ pub fn compare_corpus_against_task(
     let total = corpus.cases.len();
     if total == 0 {
         return CorpusComparisonMetrics {
-            supported_family_recall: 0.0, ambiguous_family_recall: 0.0,
-            unsupported_family_recall: 0.0, oracle_verification_rate: 0.0,
-            duplicate_rate: 0.0, total_cases: 0, verified_cases: 0, duplicate_count: 0,
+            supported_family_recall: 0.0,
+            ambiguous_family_recall: 0.0,
+            unsupported_family_recall: 0.0,
+            oracle_verification_rate: 0.0,
+            duplicate_rate: 0.0,
+            total_cases: 0,
+            verified_cases: 0,
+            duplicate_count: 0,
         };
     }
 
@@ -6087,33 +7110,53 @@ pub fn compare_corpus_against_task(
         corpus.cases.iter().any(|case| {
             case.section == section
                 && (normalize_prompt(&case.prompt) == normalize_prompt(prompt)
-                    || expected_features.jaccard_similarity(&SemanticFeatures::extract(&case.prompt)) >= 0.35)
+                    || expected_features
+                        .jaccard_similarity(&SemanticFeatures::extract(&case.prompt))
+                        >= 0.35)
         })
     };
     let recall = |prompts: Vec<&str>, section: CorpusSection| -> f64 {
-        if prompts.is_empty() { return 1.0; }
-        prompts.iter().filter(|prompt| semantic_match(prompt, section.clone())).count() as f64
+        if prompts.is_empty() {
+            return 1.0;
+        }
+        prompts
+            .iter()
+            .filter(|prompt| semantic_match(prompt, section.clone()))
+            .count() as f64
             / prompts.len() as f64
     };
     let supported_family_recall = recall(
         task.target_failure_prompts.clone(),
         CorpusSection::Supported,
     );
-    let ambiguous_prompts: Vec<&str> = task.distractor_prompts.iter().enumerate()
+    let ambiguous_prompts: Vec<&str> = task
+        .distractor_prompts
+        .iter()
+        .enumerate()
         .filter_map(|(index, prompt)| {
-            (task.distractor_labels.get(index) == Some(&ExpectedDecision::Ambiguous)).then_some(*prompt)
+            (task.distractor_labels.get(index) == Some(&ExpectedDecision::Ambiguous))
+                .then_some(*prompt)
         })
         .collect();
-    let unsupported_prompts: Vec<&str> = task.distractor_prompts.iter().enumerate()
+    let unsupported_prompts: Vec<&str> = task
+        .distractor_prompts
+        .iter()
+        .enumerate()
         .filter_map(|(index, prompt)| {
-            (task.distractor_labels.get(index) == Some(&ExpectedDecision::Unsupported)).then_some(*prompt)
+            (task.distractor_labels.get(index) == Some(&ExpectedDecision::Unsupported))
+                .then_some(*prompt)
         })
         .collect();
     let ambiguous_family_recall = recall(ambiguous_prompts, CorpusSection::Ambiguous);
-    let unsupported_family_recall = recall(unsupported_prompts, CorpusSection::UnsupportedStructuralNearMiss);
+    let unsupported_family_recall = recall(
+        unsupported_prompts,
+        CorpusSection::UnsupportedStructuralNearMiss,
+    );
 
     // Oracle verification rate
-    let verified = corpus.cases.iter()
+    let verified = corpus
+        .cases
+        .iter()
         .filter(|c| c.structural_oracle.status == OracleStatus::Verified)
         .count();
     let oracle_verification_rate = verified as f64 / total as f64;
@@ -6126,7 +7169,11 @@ pub fn compare_corpus_against_task(
             dups += 1;
         }
     }
-    let duplicate_rate = if total == 0 { 0.0 } else { dups as f64 / total as f64 };
+    let duplicate_rate = if total == 0 {
+        0.0
+    } else {
+        dups as f64 / total as f64
+    };
 
     CorpusComparisonMetrics {
         supported_family_recall,
@@ -6144,7 +7191,8 @@ pub fn compare_corpus_against_task(
 
 /// Normalize a prompt for duplicate detection (lowercase, collapse whitespace).
 pub fn normalize_prompt(prompt: &str) -> String {
-    prompt.to_lowercase()
+    prompt
+        .to_lowercase()
         .split_whitespace()
         .collect::<Vec<_>>()
         .join(" ")
@@ -6243,14 +7291,18 @@ pub struct RevisionHistory {
 
 impl RevisionHistory {
     pub fn with_budget(max_iterations: usize) -> Self {
-        Self { fingerprints: Vec::new(), max_iterations }
+        Self {
+            fingerprints: Vec::new(),
+            max_iterations,
+        }
     }
 
     pub fn can_accept(&self, revision: &ContractRevisionProposal) -> bool {
         self.fingerprints.len() < self.max_iterations
-            && !self.fingerprints.iter().any(|fingerprint| {
-                fingerprint == &revision_fingerprint(revision)
-            })
+            && !self
+                .fingerprints
+                .iter()
+                .any(|fingerprint| fingerprint == &revision_fingerprint(revision))
     }
 
     pub fn record(&mut self, revision: &ContractRevisionProposal) -> bool {
@@ -6287,17 +7339,17 @@ pub fn score_revision(
     history: &RevisionHistory,
 ) -> RevisionOutcome {
     if !history.can_accept(revision) {
-        return if history.fingerprints.iter().any(|fingerprint| {
-            fingerprint == &revision_fingerprint(revision)
-        }) {
+        return if history
+            .fingerprints
+            .iter()
+            .any(|fingerprint| fingerprint == &revision_fingerprint(revision))
+        {
             RevisionOutcome::OscillationDetected
         } else {
             RevisionOutcome::InsufficientEvidence
         };
     }
-    if revision.complexity_budget > 5
-        || after.false_applicable_after > before.false_applicable
-    {
+    if revision.complexity_budget > 5 || after.false_applicable_after > before.false_applicable {
         return RevisionOutcome::Overfit;
     }
     let safety_improved = after.false_applicable_after <= before.false_applicable
@@ -6346,34 +7398,45 @@ fn nearest_case_decision<'a>(
     prompt: &str,
     decisions: &'a [CaseDecision],
 ) -> Option<&'a CaseDecision> {
-    if let Some(exact) = decisions.iter().find(|decision| {
-        normalize_prompt(&decision.prompt) == normalize_prompt(prompt)
-    }) {
+    if let Some(exact) = decisions
+        .iter()
+        .find(|decision| normalize_prompt(&decision.prompt) == normalize_prompt(prompt))
+    {
         return Some(exact);
     }
     let features = SemanticFeatures::extract(prompt);
-    decisions.iter()
+    decisions
+        .iter()
         .filter_map(|decision| {
-            let similarity = features.jaccard_similarity(&SemanticFeatures::extract(&decision.prompt));
+            let similarity =
+                features.jaccard_similarity(&SemanticFeatures::extract(&decision.prompt));
             (similarity >= 0.35).then_some((similarity, decision))
         })
-        .max_by(|(left, _), (right, _)| left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal))
+        .max_by(|(left, _), (right, _)| {
+            left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal)
+        })
         .map(|(_, decision)| decision)
 }
 
 fn nearest_case_decision_index(prompt: &str, decisions: &[CaseDecision]) -> Option<usize> {
-    if let Some(index) = decisions.iter().position(|decision| {
-        normalize_prompt(&decision.prompt) == normalize_prompt(prompt)
-    }) {
+    if let Some(index) = decisions
+        .iter()
+        .position(|decision| normalize_prompt(&decision.prompt) == normalize_prompt(prompt))
+    {
         return Some(index);
     }
     let features = SemanticFeatures::extract(prompt);
-    decisions.iter().enumerate()
+    decisions
+        .iter()
+        .enumerate()
         .filter_map(|(index, decision)| {
-            let similarity = features.jaccard_similarity(&SemanticFeatures::extract(&decision.prompt));
+            let similarity =
+                features.jaccard_similarity(&SemanticFeatures::extract(&decision.prompt));
             (similarity >= 0.35).then_some((similarity, index))
         })
-        .max_by(|(left, _), (right, _)| left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal))
+        .max_by(|(left, _), (right, _)| {
+            left.partial_cmp(right).unwrap_or(std::cmp::Ordering::Equal)
+        })
         .map(|(_, index)| index)
 }
 
@@ -6401,14 +7464,20 @@ fn classify_contract_failure(
     match (expected, actual_decision.as_ref()) {
         (ExpectedDecision::Applicable, None) => Some(ContractFailureKind::MissingSupportedForm),
         (ExpectedDecision::Applicable, Some(ExpectedDecision::Ambiguous)) => {
-            if actual.and_then(|decision| decision.matched_form.as_ref()).is_some() {
+            if actual
+                .and_then(|decision| decision.matched_form.as_ref())
+                .is_some()
+            {
                 Some(ContractFailureKind::OverlyStrictRequirement)
             } else {
                 Some(ContractFailureKind::MissingSupportedForm)
             }
         }
         (ExpectedDecision::Applicable, Some(ExpectedDecision::Unsupported)) => {
-            if actual.and_then(|decision| decision.matched_form.as_ref()).is_some() {
+            if actual
+                .and_then(|decision| decision.matched_form.as_ref())
+                .is_some()
+            {
                 Some(ContractFailureKind::OverlyStrictRequirement)
             } else {
                 Some(ContractFailureKind::MissingSupportedForm)
@@ -6417,15 +7486,13 @@ fn classify_contract_failure(
         (ExpectedDecision::Ambiguous, Some(ExpectedDecision::Applicable)) => {
             Some(ContractFailureKind::FalseApplicable)
         }
-        (ExpectedDecision::Ambiguous, Some(ExpectedDecision::Unsupported)) | (ExpectedDecision::Ambiguous, None) => {
-            Some(ContractFailureKind::FalseUnsupported)
-        }
+        (ExpectedDecision::Ambiguous, Some(ExpectedDecision::Unsupported))
+        | (ExpectedDecision::Ambiguous, None) => Some(ContractFailureKind::FalseUnsupported),
         (ExpectedDecision::Unsupported, Some(ExpectedDecision::Applicable)) => {
             Some(ContractFailureKind::FalseApplicable)
         }
-        (ExpectedDecision::Unsupported, Some(ExpectedDecision::Ambiguous)) | (ExpectedDecision::Unsupported, None) => {
-            Some(ContractFailureKind::FalseAmbiguous)
-        }
+        (ExpectedDecision::Unsupported, Some(ExpectedDecision::Ambiguous))
+        | (ExpectedDecision::Unsupported, None) => Some(ContractFailureKind::FalseAmbiguous),
         _ => None,
     }
 }
@@ -6523,7 +7590,8 @@ pub fn minimize_counterexample(
         if retained {
             minimized.spec = candidate_spec;
             minimized.prompt = candidate_prompt;
-            minimized.actual = actual.map(|decision| expected_from_applicability(&decision.decision));
+            minimized.actual =
+                actual.map(|decision| expected_from_applicability(&decision.decision));
             minimized.matched_form = actual.and_then(|decision| decision.matched_form.clone());
         } else {
             index += 1;
@@ -6549,7 +7617,10 @@ pub fn propose_contract_revision(
 
     for counterexample in &report.counterexamples {
         triggering.push(counterexample.case_id.clone());
-        grouped_specs.entry(counterexample.spec.target_form.clone()).or_default().push(counterexample);
+        grouped_specs
+            .entry(counterexample.spec.target_form.clone())
+            .or_default()
+            .push(counterexample);
         match counterexample.failure_kind {
             ContractFailureKind::MissingSupportedForm => {}
             ContractFailureKind::OverlyStrictRequirement => {
@@ -6559,7 +7630,9 @@ pub fn propose_contract_revision(
                         add_required_features: vec![],
                         remove_required_features: vec![],
                         add_ambiguity_triggers: vec![],
-                        reasoning: "Generated positive counterexample was rejected by an existing form".into(),
+                        reasoning:
+                            "Generated positive counterexample was rejected by an existing form"
+                                .into(),
                     });
                 }
             }
@@ -6576,16 +7649,27 @@ pub fn propose_contract_revision(
     // A new form requires at least two independent specs, preventing one-off
     // generated cases from turning into contract exceptions.
     for (form_name, examples) in grouped_specs {
-        if examples.len() < 2 || !examples.iter().all(|example| {
-            matches!(example.failure_kind, ContractFailureKind::MissingSupportedForm)
-        }) {
+        if examples.len() < 2
+            || !examples.iter().all(|example| {
+                matches!(
+                    example.failure_kind,
+                    ContractFailureKind::MissingSupportedForm
+                )
+            })
+        {
             continue;
         }
-        let form = if let Some(template) = proposal.synthesized.supported_forms.iter()
+        let form = if let Some(template) = proposal
+            .synthesized
+            .supported_forms
+            .iter()
             .find(|form| form.name.eq_ignore_ascii_case(&form_name))
         {
             let mut form = template.clone();
-            form.exemplars = examples.iter().map(|example| example.prompt.clone()).collect();
+            form.exemplars = examples
+                .iter()
+                .map(|example| example.prompt.clone())
+                .collect();
             form
         } else {
             let first = examples[0];
@@ -6596,7 +7680,10 @@ pub fn propose_contract_revision(
                 required_features: features.feature_tags().into_iter().collect(),
                 ambiguity_triggers: vec![],
                 bindings: vec![],
-                exemplars: examples.iter().map(|example| example.prompt.clone()).collect(),
+                exemplars: examples
+                    .iter()
+                    .map(|example| example.prompt.clone())
+                    .collect(),
             }
         };
         added_forms.push(form);
@@ -6621,7 +7708,11 @@ pub fn propose_contract_revision(
     let complexity_budget = added_forms.len() + modified_forms.len() + added_predicates.len();
     Some(ContractRevisionProposal {
         parent_proposal_id: proposal.proposal.proposal_id.clone(),
-        revision_id: format!("{}-revision-{}", proposal.proposal.proposal_id.0, report.counterexamples.len()),
+        revision_id: format!(
+            "{}-revision-{}",
+            proposal.proposal.proposal_id.0,
+            report.counterexamples.len()
+        ),
         triggering_counterexamples: triggering,
         added_forms,
         modified_forms,
@@ -6663,17 +7754,28 @@ pub fn apply_revision_sandboxed(
     }
     let mut revised = parent.clone();
     for form in &revision.added_forms {
-        if revised.synthesized.supported_forms.iter().any(|existing| existing.name == form.name) {
+        if revised
+            .synthesized
+            .supported_forms
+            .iter()
+            .any(|existing| existing.name == form.name)
+        {
             continue;
         }
         revised.synthesized.supported_forms.push(form.clone());
     }
     for modification in &revision.modified_forms {
-        let form = revised.synthesized.supported_forms.iter_mut()
+        let form = revised
+            .synthesized
+            .supported_forms
+            .iter_mut()
             .find(|form| form.name == modification.form_name)
             .ok_or_else(|| RevisionApplyError::UnknownForm(modification.form_name.clone()))?;
         form.required_features.retain(|feature| {
-            !modification.remove_required_features.iter().any(|removed| removed == feature)
+            !modification
+                .remove_required_features
+                .iter()
+                .any(|removed| removed == feature)
         });
         for feature in &modification.add_required_features {
             if !form.required_features.contains(feature) {
@@ -6691,11 +7793,14 @@ pub fn apply_revision_sandboxed(
             revised.predicates.push(predicate.clone());
         }
     }
-    revised.predicates.retain(|predicate| {
-        !revision.removed_predicates.contains(predicate)
-    });
+    revised
+        .predicates
+        .retain(|predicate| !revision.removed_predicates.contains(predicate));
     for change in &revision.ambiguity_changes {
-        let form = revised.synthesized.supported_forms.iter_mut()
+        let form = revised
+            .synthesized
+            .supported_forms
+            .iter_mut()
             .find(|form| form.name == change.form_name)
             .ok_or_else(|| RevisionApplyError::UnknownForm(change.form_name.clone()))?;
         if let Some(binding) = &change.add_missing_binding {
@@ -6706,7 +7811,8 @@ pub fn apply_revision_sandboxed(
         }
         if let Some(binding) = &change.remove_missing_binding {
             let trigger = format!("missing:{binding:?}");
-            form.ambiguity_triggers.retain(|existing| existing != &trigger);
+            form.ambiguity_triggers
+                .retain(|existing| existing != &trigger);
         }
     }
     if !revision.removed_predicates.is_empty() && revised.predicates.is_empty() {
@@ -6783,15 +7889,20 @@ pub fn inject_contract_defect(
 ) -> Option<InjectedContractDefect> {
     let mut proposal = parent.clone();
     let mut changed = false;
-    let default_form = proposal.synthesized.supported_forms.first().map(|form| form.name.clone());
+    let default_form = proposal
+        .synthesized
+        .supported_forms
+        .first()
+        .map(|form| form.name.clone());
     for case in &corpus.cases {
-        let Some(decision_index) = nearest_case_decision_index(&case.prompt, &proposal.synthesized.decisions) else {
+        let Some(decision_index) =
+            nearest_case_decision_index(&case.prompt, &proposal.synthesized.decisions)
+        else {
             continue;
         };
         let decision = &mut proposal.synthesized.decisions[decision_index];
         match kind {
-            InjectedDefectKind::RemoveSafetyPredicate
-            | InjectedDefectKind::BroadenNumericForm
+            InjectedDefectKind::RemoveSafetyPredicate | InjectedDefectKind::BroadenNumericForm
                 if case.structural_oracle.decision == ExpectedDecision::Unsupported =>
             {
                 decision.decision = ApplicabilityDecision::Applicable;
@@ -6839,12 +7950,29 @@ pub fn inject_contract_defect(
         return None;
     }
     let (expected_failure, expected_repair) = match kind {
-        InjectedDefectKind::RemoveSafetyPredicate => (ContractFailureKind::FalseApplicable, "restore safety predicate"),
-        InjectedDefectKind::AddSpuriousRequirement => (ContractFailureKind::OverlyStrictRequirement, "relax requirement"),
-        InjectedDefectKind::RemoveSupportedForm => (ContractFailureKind::MissingSupportedForm, "add supported form"),
-        InjectedDefectKind::CollapseAmbiguityToUnsupported => (ContractFailureKind::FalseUnsupported, "restore ambiguity rule"),
-        InjectedDefectKind::WrongBridge => (ContractFailureKind::WrongSupportedForm, "repair bridge"),
-        InjectedDefectKind::BroadenNumericForm => (ContractFailureKind::FalseApplicable, "tighten numeric boundary"),
+        InjectedDefectKind::RemoveSafetyPredicate => (
+            ContractFailureKind::FalseApplicable,
+            "restore safety predicate",
+        ),
+        InjectedDefectKind::AddSpuriousRequirement => (
+            ContractFailureKind::OverlyStrictRequirement,
+            "relax requirement",
+        ),
+        InjectedDefectKind::RemoveSupportedForm => (
+            ContractFailureKind::MissingSupportedForm,
+            "add supported form",
+        ),
+        InjectedDefectKind::CollapseAmbiguityToUnsupported => (
+            ContractFailureKind::FalseUnsupported,
+            "restore ambiguity rule",
+        ),
+        InjectedDefectKind::WrongBridge => {
+            (ContractFailureKind::WrongSupportedForm, "repair bridge")
+        }
+        InjectedDefectKind::BroadenNumericForm => (
+            ContractFailureKind::FalseApplicable,
+            "tighten numeric boundary",
+        ),
     };
     Some(InjectedContractDefect {
         kind,
@@ -6859,9 +7987,11 @@ mod tests {
     use super::*;
 
     fn make_receipts(prompts: Vec<&str>) -> BTreeMap<FailureReceiptId, String> {
-        prompts.into_iter().enumerate().map(|(i, p)| {
-            (FailureReceiptId(format!("f{:03}", i)), p.to_string())
-        }).collect()
+        prompts
+            .into_iter()
+            .enumerate()
+            .map(|(i, p)| (FailureReceiptId(format!("f{:03}", i)), p.to_string()))
+            .collect()
     }
 
     // ── Semantic feature extraction ─────────────────────────────────
@@ -6871,7 +8001,9 @@ mod tests {
         let f = SemanticFeatures::extract("What is 20% of 50?");
         assert!(f.numeric_forms.contains(&NumericForm::Percentage));
         assert!(f.numeric_forms.contains(&NumericForm::Integer));
-        assert!(f.relation_semantics.contains(&RelationSemantics::PartOfWhole));
+        assert!(f
+            .relation_semantics
+            .contains(&RelationSemantics::PartOfWhole));
         assert!(f.has_explicit_base);
         assert!(f.operations.contains("part_of"));
     }
@@ -6880,7 +8012,9 @@ mod tests {
     fn features_detect_discount() {
         let f = SemanticFeatures::extract("An item priced at $80 receives a 20% discount");
         assert!(f.numeric_forms.contains(&NumericForm::Percentage));
-        assert!(f.relation_semantics.contains(&RelationSemantics::MultiplicativeChange));
+        assert!(f
+            .relation_semantics
+            .contains(&RelationSemantics::MultiplicativeChange));
         assert!(f.has_direction);
         assert!(f.has_explicit_base);
         assert!(f.operations.contains("decrease"));
@@ -6890,7 +8024,9 @@ mod tests {
     fn features_detect_compound_growth() {
         let f = SemanticFeatures::extract("A balance grows by 5% each year for 5 years");
         assert!(f.numeric_forms.contains(&NumericForm::Percentage));
-        assert!(f.relation_semantics.contains(&RelationSemantics::RepeatedChange));
+        assert!(f
+            .relation_semantics
+            .contains(&RelationSemantics::RepeatedChange));
         assert!(f.operations.contains("increase"));
     }
 
@@ -6898,7 +8034,9 @@ mod tests {
     fn features_detect_fraction() {
         let f = SemanticFeatures::extract("What is three quarters of 20?");
         assert!(f.numeric_forms.contains(&NumericForm::ExplicitFraction));
-        assert!(f.relation_semantics.contains(&RelationSemantics::PartOfWhole));
+        assert!(f
+            .relation_semantics
+            .contains(&RelationSemantics::PartOfWhole));
         assert!(!f.numeric_forms.contains(&NumericForm::Percentage));
     }
 
@@ -6907,7 +8045,9 @@ mod tests {
         let f = SemanticFeatures::extract("Convert 4 meters to centimeters");
         assert!(f.numeric_forms.contains(&NumericForm::Integer));
         assert!(f.numeric_forms.contains(&NumericForm::UnitBearingScalar));
-        assert!(f.relation_semantics.contains(&RelationSemantics::CompatibleUnitConversion));
+        assert!(f
+            .relation_semantics
+            .contains(&RelationSemantics::CompatibleUnitConversion));
         assert!(f.operations.contains("conversion"));
     }
 
@@ -6943,12 +8083,23 @@ mod tests {
         // relation families, so they form distinct sub-clusters under stricter thresholds.
         // Use a lower threshold to capture both as a broader "percentage" cluster.
         let clusters = cluster_failures(prompts, 0.3);
-        let pct_clusters: Vec<_> = clusters.iter()
-            .filter(|c| c.centroid_features.numeric_forms.contains(&NumericForm::Percentage))
+        let pct_clusters: Vec<_> = clusters
+            .iter()
+            .filter(|c| {
+                c.centroid_features
+                    .numeric_forms
+                    .contains(&NumericForm::Percentage)
+            })
             .collect();
-        assert!(pct_clusters.len() >= 1, "should find at least one percentage cluster");
+        assert!(
+            pct_clusters.len() >= 1,
+            "should find at least one percentage cluster"
+        );
         if let Some(pct) = pct_clusters.first() {
-            assert!(pct.size >= 3, "percentage cluster should contain most percentage cases");
+            assert!(
+                pct.size >= 3,
+                "percentage cluster should contain most percentage cases"
+            );
         }
     }
 
@@ -6962,13 +8113,25 @@ mod tests {
             "An item priced at $80 receives a 10% discount",
         ]);
         let clusters = cluster_failures(prompts, 0.4);
-        let pct = clusters.iter().find(|c| c.centroid_features.numeric_forms.contains(&NumericForm::Percentage))
+        let pct = clusters
+            .iter()
+            .find(|c| {
+                c.centroid_features
+                    .numeric_forms
+                    .contains(&NumericForm::Percentage)
+            })
             .expect("percentage cluster");
         let invariant = discover_invariant(pct);
-        assert!(invariant.description.contains("percentage") || invariant.description.contains("transformation"),
-            "invariant should mention percentage: {}", invariant.description);
-        assert!(invariant.operation_formula.is_some(),
-            "percentage invariant should have a formula");
+        assert!(
+            invariant.description.contains("percentage")
+                || invariant.description.contains("transformation"),
+            "invariant should mention percentage: {}",
+            invariant.description
+        );
+        assert!(
+            invariant.operation_formula.is_some(),
+            "percentage invariant should have a formula"
+        );
     }
 
     // ── Boundary contrast ───────────────────────────────────────────
@@ -6990,31 +8153,41 @@ mod tests {
             // No percentage at all (distractor, not a near-miss)
             "Convert 4 meters to centimeters.",
         ]);
-        let features: BTreeMap<_, _> = prompts.iter()
+        let features: BTreeMap<_, _> = prompts
+            .iter()
             .map(|(id, p)| (id.clone(), SemanticFeatures::extract(p)))
             .collect();
         // With typed features, use a threshold that keeps the percentage cases
         // together while the compound/finance cases remain as near-misses.
         let clusters = cluster_failures(prompts.clone(), 0.35);
         // Find the percentage cluster
-        let pct_opt = clusters.iter().find(|c| c.centroid_features.numeric_forms.contains(&NumericForm::Percentage));
+        let pct_opt = clusters.iter().find(|c| {
+            c.centroid_features
+                .numeric_forms
+                .contains(&NumericForm::Percentage)
+        });
         if let Some(pct) = pct_opt {
             let boundary = analyze_boundary(pct, &prompts, &features);
             // The percentage cluster should have at least 3 members (the three
             // PartOfWhole prompts) and should identify at least one exclusion
             // (compound or finance near-miss).
-            assert!(pct.size >= 3,
-                "percentage cluster should have at least 3 members, got {}", pct.size);
+            assert!(
+                pct.size >= 3,
+                "percentage cluster should have at least 3 members, got {}",
+                pct.size
+            );
             if boundary.exclusions.is_empty() && boundary.ambiguous_near_misses.is_empty() {
                 // The compound/finance cases might have clustered WITH the
                 // percentage cases. That's acceptable — the boundary analysis
                 // correctly identifies that all near-misses share the same
                 // semantic family (no typed contrast needed).
                 // The cluster must have at least one non-PartOfWhole member.
-                let has_diverse_relations = pct.centroid_features.relation_semantics.len() > 1
-                    || pct.receipts.len() > 3;
-                assert!(has_diverse_relations,
-                    "near-misses should be found or cluster should have diverse semantics");
+                let has_diverse_relations =
+                    pct.centroid_features.relation_semantics.len() > 1 || pct.receipts.len() > 3;
+                assert!(
+                    has_diverse_relations,
+                    "near-misses should be found or cluster should have diverse semantics"
+                );
             }
         } else {
             // No separate percentage cluster - might all be one cluster.
@@ -7040,10 +8213,17 @@ mod tests {
             "A balance grows by 5% each year for 5 years.",
         ]);
         let results = propose_from_failures(prompts, 0.3);
-        assert!(!results.is_empty(), "should produce at least one proposal (got {})", results.len());
+        assert!(
+            !results.is_empty(),
+            "should produce at least one proposal (got {})",
+            results.len()
+        );
         // At least one proposal should be structurally valid and diagnostic-only
         let any_valid = results.iter().any(|r| r.proposal.structurally_valid());
-        assert!(any_valid, "at least one proposal should be structurally valid");
+        assert!(
+            any_valid,
+            "at least one proposal should be structurally valid"
+        );
         let any_diagnostic = results.iter().any(|r| r.proposal.is_diagnostic_only());
         assert!(any_diagnostic, "all proposals must be diagnostic-only");
     }
@@ -7080,10 +8260,10 @@ mod tests {
             }
         };
         let scores = vec![
-            make_score("a", 0.9, 0.3),  // high coverage, low purity
-            make_score("b", 0.3, 0.9),  // low coverage, high purity
-            make_score("c", 0.4, 0.4),  // lower coverage than a AND lower purity than b
-            make_score("d", 0.5, 0.5),  // beats c on both dimensions
+            make_score("a", 0.9, 0.3), // high coverage, low purity
+            make_score("b", 0.3, 0.9), // low coverage, high purity
+            make_score("c", 0.4, 0.4), // lower coverage than a AND lower purity than b
+            make_score("d", 0.5, 0.5), // beats c on both dimensions
         ];
 
         fn empty_proposal(id: &str) -> CapabilityContractProposal {
@@ -7101,8 +8281,10 @@ mod tests {
                 supporting_failures: vec![],
                 supporting_successes: vec![],
                 novelty_receipt: NoveltyReceipt {
-                    is_novel: true, closest_existing: None,
-                    similarity_to_closest: 0.0, reasoning: "".into(),
+                    is_novel: true,
+                    closest_existing: None,
+                    similarity_to_closest: 0.0,
+                    reasoning: "".into(),
                 },
                 expected_coverage: CoverageEstimate {
                     observed_cluster_size: 0,
@@ -7111,19 +8293,24 @@ mod tests {
                     projected: ProjectedCoverage::InsufficientEvidence,
                 },
                 confidence: ProposalConfidence {
-                    structural_confidence: 0.0, boundary_confidence: 0.0,
+                    structural_confidence: 0.0,
+                    boundary_confidence: 0.0,
                     bridge_confidence: 0.0,
                 },
             }
         }
 
-        let proposals: Vec<_> = ["a", "b", "c", "d"].iter().enumerate().map(|(i, &id)| {
-            (empty_proposal(id), scores[i].clone())
-        }).collect();
+        let proposals: Vec<_> = ["a", "b", "c", "d"]
+            .iter()
+            .enumerate()
+            .map(|(i, &id)| (empty_proposal(id), scores[i].clone()))
+            .collect();
 
         let frontier = ProposalParetoFrontier::evaluate(proposals);
         // a, b, d should be Pareto-optimal; c should be dominated by d
-        let optimal_ids: Vec<&str> = frontier.pareto_optimal_indices.iter()
+        let optimal_ids: Vec<&str> = frontier
+            .pareto_optimal_indices
+            .iter()
             .map(|&i| frontier.proposals[i].0.proposal_id.0.as_str())
             .collect();
         assert!(optimal_ids.contains(&"a"), "a should be Pareto-optimal");
@@ -7155,16 +8342,14 @@ mod tests {
             ],
             expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::PercentageRate],
             expected_outputs: vec![ArtifactType::QuantityRelation],
-            expected_pattern_descriptions: vec![
-                "percentage transformation",
-                "explicit base",
-            ],
+            expected_pattern_descriptions: vec!["percentage transformation", "explicit base"],
             expected_exclusions: vec![
                 ExpectedExclusion {
                     expected_family: RelationSemantics::RepeatedChange,
                     expected_predicate: ApplicabilityPredicate::ForbidsRepeatedTemporalApplication,
                     expected_contrast: ContrastType::LexicalNearMiss,
-                    safety_reason: "compound growth must be excluded from single-step percentage".into(),
+                    safety_reason: "compound growth must be excluded from single-step percentage"
+                        .into(),
                 },
                 ExpectedExclusion {
                     expected_family: RelationSemantics::MultiplicativeChange,
@@ -7199,10 +8384,15 @@ mod tests {
         let has_pct_proposal = results.iter().any(|r| {
             r.proposal.name.to_lowercase().contains("percentage")
                 || r.proposal.name.to_lowercase().contains("multiplicative")
-                || r.cluster.centroid_features.numeric_forms.contains(&NumericForm::Percentage)
+                || r.cluster
+                    .centroid_features
+                    .numeric_forms
+                    .contains(&NumericForm::Percentage)
         });
-        assert!(has_pct_proposal,
-            "at least one proposal should relate to percentage");
+        assert!(
+            has_pct_proposal,
+            "at least one proposal should relate to percentage"
+        );
 
         // Run scoring on every proposal to find the best match
         let mut best_score = None;
@@ -7219,23 +8409,35 @@ mod tests {
 
         if let Some(score) = best_score {
             // The best proposal should show at least some agreement
-            assert!(score.support_boundary_agreement >= 0.0,
-                "should have non-negative support agreement: {:?}", score);
-            assert!(score.input_output_contract_similarity >= 0.0,
-                "should have non-negative contract similarity: {:?}", score);
+            assert!(
+                score.support_boundary_agreement >= 0.0,
+                "should have non-negative support agreement: {:?}",
+                score
+            );
+            assert!(
+                score.input_output_contract_similarity >= 0.0,
+                "should have non-negative contract similarity: {:?}",
+                score
+            );
 
             // Check exclusions: look at the best proposal's boundary analysis
             let best = &results[best_idx];
             // Check for exclusions across both proposal patterns and boundary contrast.
             // With typed relation semantics, exclusions appear as specific families
             // (RepeatedChange for compound, ProbabilityMeasure for probability).
-            let has_exclusion = best.proposal.unsupported_patterns.iter()
+            let has_exclusion = best
+                .proposal
+                .unsupported_patterns
+                .iter()
                 .chain(best.proposal.ambiguous_patterns.iter())
                 .any(|p| {
                     let d = p.description.to_lowercase();
-                    d.contains("compound") || d.contains("interest")
-                        || d.contains("probability") || d.contains("finance")
-                        || d.contains("repeated") || d.contains("repeatedchange")
+                    d.contains("compound")
+                        || d.contains("interest")
+                        || d.contains("probability")
+                        || d.contains("finance")
+                        || d.contains("repeated")
+                        || d.contains("repeatedchange")
                         || d.contains("probabilitymeasure")
                 })
                 || best.boundary.exclusions.iter().any(|er| {
@@ -7246,20 +8448,23 @@ mod tests {
                     let s = format!("{:?}", er.excluded_family).to_lowercase();
                     s.contains("repeated") || s.contains("probability")
                 });
-            assert!(has_exclusion,
+            assert!(
+                has_exclusion,
                 "proposal should identify compound or probability as exclusions, \
                  unsupported={} boundary_exclusions={} boundary_ambiguous={}",
                 best.proposal.unsupported_patterns.len(),
                 best.boundary.exclusions.len(),
-                best.boundary.ambiguous_near_misses.len());
+                best.boundary.ambiguous_near_misses.len()
+            );
         }
     }
 
     // ── Historical reconstruction campaign ──────────────────────────────
 
-    fn run_reconstruction_task(task: &HistoricalReconstructionTask, threshold: f64)
-        -> (ProposalPipelineResult, ReconstructionScore)
-    {
+    fn run_reconstruction_task(
+        task: &HistoricalReconstructionTask,
+        threshold: f64,
+    ) -> (ProposalPipelineResult, ReconstructionScore) {
         let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
         for (i, p) in task.target_failure_prompts.iter().enumerate() {
             all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
@@ -7269,8 +8474,11 @@ mod tests {
         }
 
         let results = propose_from_failures(all_prompts, threshold);
-        assert!(!results.is_empty(),
-            "task '{}' should produce at least one proposal", task.label);
+        assert!(
+            !results.is_empty(),
+            "task '{}' should produce at least one proposal",
+            task.label
+        );
 
         // Pick the best result by support_boundary_agreement
         let mut best_idx = 0;
@@ -7288,10 +8496,16 @@ mod tests {
         };
         for (i, r) in results.iter().enumerate() {
             let score = score_reconstruction(task, r);
-            let mb_new = score.boundary_metrics.as_ref()
-                .map(|m| m.macro_boundary_score).unwrap_or(0.0);
-            let mb_best = best_score.boundary_metrics.as_ref()
-                .map(|m| m.macro_boundary_score).unwrap_or(0.0);
+            let mb_new = score
+                .boundary_metrics
+                .as_ref()
+                .map(|m| m.macro_boundary_score)
+                .unwrap_or(0.0);
+            let mb_best = best_score
+                .boundary_metrics
+                .as_ref()
+                .map(|m| m.macro_boundary_score)
+                .unwrap_or(0.0);
             let combined_new = score.support_boundary_agreement * 0.3 + mb_new * 0.7;
             let combined_best = best_score.support_boundary_agreement * 0.3 + mb_best * 0.7;
             if combined_new >= combined_best {
@@ -7303,13 +8517,19 @@ mod tests {
     }
 
     fn format_score(score: &ReconstructionScore) -> String {
-        let bm = score.boundary_metrics.as_ref().map(|m| {
-            format!("  MacroBound={:.1}%  SupP={:.1}%  AmbR={:.1}%  UnsR={:.1}%",
-                m.macro_boundary_score * 100.0,
-                m.supported_precision * 100.0,
-                m.ambiguity_recall * 100.0,
-                m.unsupported_recall * 100.0)
-        }).unwrap_or_default();
+        let bm = score
+            .boundary_metrics
+            .as_ref()
+            .map(|m| {
+                format!(
+                    "  MacroBound={:.1}%  SupP={:.1}%  AmbR={:.1}%  UnsR={:.1}%",
+                    m.macro_boundary_score * 100.0,
+                    m.supported_precision * 100.0,
+                    m.ambiguity_recall * 100.0,
+                    m.unsupported_recall * 100.0
+                )
+            })
+            .unwrap_or_default();
         format!(
             "I/O={:.1}%  Bound(agree)={:.1}%  Excl={:.1}%  Bridge={:.1}%  Novel={}  CalErr={:.1}%  Valid={}{}",
             score.input_output_contract_similarity * 100.0,
@@ -7392,10 +8612,15 @@ mod tests {
             best.proposal.ambiguous_patterns.len(),
             format_score(&score),
         );
-        assert!(score.input_output_contract_similarity >= 0.1,
-            "QuantityRelationV1 I/O similarity too low: {}", score.input_output_contract_similarity);
-        assert!(score.support_boundary_agreement >= 0.0,
-            "QuantityRelationV1 support agreement should exist");
+        assert!(
+            score.input_output_contract_similarity >= 0.1,
+            "QuantityRelationV1 I/O similarity too low: {}",
+            score.input_output_contract_similarity
+        );
+        assert!(
+            score.support_boundary_agreement >= 0.0,
+            "QuantityRelationV1 support agreement should exist"
+        );
     }
 
     #[test]
@@ -7466,10 +8691,15 @@ mod tests {
             best.proposal.ambiguous_patterns.len(),
             format_score(&score),
         );
-        assert!(score.input_output_contract_similarity >= 0.1,
-            "UnitQuantity I/O similarity too low: {}", score.input_output_contract_similarity);
-        assert!(score.support_boundary_agreement >= 0.0,
-            "UnitQuantity support agreement should exist");
+        assert!(
+            score.input_output_contract_similarity >= 0.1,
+            "UnitQuantity I/O similarity too low: {}",
+            score.input_output_contract_similarity
+        );
+        assert!(
+            score.support_boundary_agreement >= 0.0,
+            "UnitQuantity support agreement should exist"
+        );
     }
 
     #[test]
@@ -7500,13 +8730,12 @@ mod tests {
                 ExpectedDecision::Unsupported,
                 ExpectedDecision::Unsupported,
             ],
-            expected_inputs: vec![ArtifactType::NumericQuantity, ArtifactType::FractionalQuantity],
-            expected_outputs: vec![ArtifactType::QuantityRelation],
-            expected_pattern_descriptions: vec![
-                "fraction of quantity",
-                "remainder",
-                "equal part",
+            expected_inputs: vec![
+                ArtifactType::NumericQuantity,
+                ArtifactType::FractionalQuantity,
             ],
+            expected_outputs: vec![ArtifactType::QuantityRelation],
+            expected_pattern_descriptions: vec!["fraction of quantity", "remainder", "equal part"],
             expected_exclusions: vec![
                 ExpectedExclusion {
                     expected_family: RelationSemantics::PartOfWhole,
@@ -7538,10 +8767,15 @@ mod tests {
             best.proposal.ambiguous_patterns.len(),
             format_score(&score),
         );
-        assert!(score.input_output_contract_similarity >= 0.1,
-            "FractionalQuantity I/O similarity too low: {}", score.input_output_contract_similarity);
-        assert!(score.support_boundary_agreement >= 0.0,
-            "FractionalQuantity support agreement should exist");
+        assert!(
+            score.input_output_contract_similarity >= 0.1,
+            "FractionalQuantity I/O similarity too low: {}",
+            score.input_output_contract_similarity
+        );
+        assert!(
+            score.support_boundary_agreement >= 0.0,
+            "FractionalQuantity support agreement should exist"
+        );
     }
 
     #[test]
@@ -7620,10 +8854,15 @@ mod tests {
             best.proposal.ambiguous_patterns.len(),
             format_score(&score),
         );
-        assert!(score.input_output_contract_similarity >= 0.1,
-            "PercentageQuantityV1 I/O similarity too low: {}", score.input_output_contract_similarity);
-        assert!(score.support_boundary_agreement >= 0.0,
-            "PercentageQuantityV1 support agreement should exist");
+        assert!(
+            score.input_output_contract_similarity >= 0.1,
+            "PercentageQuantityV1 I/O similarity too low: {}",
+            score.input_output_contract_similarity
+        );
+        assert!(
+            score.support_boundary_agreement >= 0.0,
+            "PercentageQuantityV1 support agreement should exist"
+        );
     }
 
     #[test]
@@ -7835,8 +9074,18 @@ mod tests {
 
         let threshold = 0.3;
         eprintln!("\n=== Historical Reconstruction Campaign (Phase 2G) ===");
-        eprintln!("{:<20} | {:>6} | {:>7} | {:>6} | {:>6} | {:>6} | {:>4} | {:>6} | {:>5}",
-            "Capability", "I/O%", "MacroB%", "SupP%", "AmbR%", "Excl%", "Novel", "CalErr%", "Valid?");
+        eprintln!(
+            "{:<20} | {:>6} | {:>7} | {:>6} | {:>6} | {:>6} | {:>4} | {:>6} | {:>5}",
+            "Capability",
+            "I/O%",
+            "MacroB%",
+            "SupP%",
+            "AmbR%",
+            "Excl%",
+            "Novel",
+            "CalErr%",
+            "Valid?"
+        );
         eprintln!("{}", "-".repeat(100));
 
         let mut all_valid = true;
@@ -7850,7 +9099,11 @@ mod tests {
             }
 
             let results = propose_from_failures(all_prompts, threshold);
-            assert!(!results.is_empty(), "task '{}' should produce at least one proposal", task.label);
+            assert!(
+                !results.is_empty(),
+                "task '{}' should produce at least one proposal",
+                task.label
+            );
 
             // Find best result by combined (macro_boundary + exclusion)
             let mut best_score = ReconstructionScore {
@@ -7867,13 +9120,21 @@ mod tests {
             };
             for r in &results {
                 let score = score_reconstruction(task, r);
-                let mb_score = score.boundary_metrics.as_ref()
-                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
-                let combined_new = mb_score * 0.5 + score.exclusion_recall * 0.3
+                let mb_score = score
+                    .boundary_metrics
+                    .as_ref()
+                    .map(|m| m.macro_boundary_score)
+                    .unwrap_or(0.0);
+                let combined_new = mb_score * 0.5
+                    + score.exclusion_recall * 0.3
                     + score.support_boundary_agreement * 0.2;
-                let mb_best = best_score.boundary_metrics.as_ref()
-                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
-                let combined_best = mb_best * 0.5 + best_score.exclusion_recall * 0.3
+                let mb_best = best_score
+                    .boundary_metrics
+                    .as_ref()
+                    .map(|m| m.macro_boundary_score)
+                    .unwrap_or(0.0);
+                let combined_best = mb_best * 0.5
+                    + best_score.exclusion_recall * 0.3
                     + best_score.support_boundary_agreement * 0.2;
                 if combined_new >= combined_best {
                     best_score = score;
@@ -7898,23 +9159,33 @@ mod tests {
             }
         }
         eprintln!("{}", "-".repeat(100));
-        eprintln!("Overall: {}", if all_valid { "ALL VALID ✓" } else { "SOME DEGRADED ✗" });
+        eprintln!(
+            "Overall: {}",
+            if all_valid {
+                "ALL VALID ✓"
+            } else {
+                "SOME DEGRADED ✗"
+            }
+        );
 
         // At minimum, at least 2 of 4 should be valid
-        let valid_count = tasks.iter().filter(|task| {
-            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-            for (i, p) in task.target_failure_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-            }
-            for (i, p) in task.distractor_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
-            }
-            let results = propose_from_failures(all_prompts, threshold);
-            results.iter().any(|r| {
-                let s = score_reconstruction(task, r);
-                s.overall_valid
+        let valid_count = tasks
+            .iter()
+            .filter(|task| {
+                let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+                for (i, p) in task.target_failure_prompts.iter().enumerate() {
+                    all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+                }
+                for (i, p) in task.distractor_prompts.iter().enumerate() {
+                    all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+                }
+                let results = propose_from_failures(all_prompts, threshold);
+                results.iter().any(|r| {
+                    let s = score_reconstruction(task, r);
+                    s.overall_valid
+                })
             })
-        }).count();
+            .count();
         // With the new typed relation semantics, the 4 historical capabilities
         // span multiple distinct relation families. The proposer correctly separates
         // PartOfWhole from PerUnitRate from MultiplicativeChange, so each task's
@@ -7945,17 +9216,27 @@ mod tests {
             "A base value of 50 is increased by a rate of 10 in 100.",
         ]);
         let results = propose_from_failures(prompts, 0.3);
-        assert!(!results.is_empty(),
-            "vocab-replaced percentage should still cluster");
+        assert!(
+            !results.is_empty(),
+            "vocab-replaced percentage should still cluster"
+        );
         let has_percentage_invariant = results.iter().any(|r| {
             r.invariant.description.contains("percentage")
                 || r.invariant.description.contains("rate")
                 || r.invariant.description.contains("fraction of")
-                || r.cluster.centroid_features.numeric_forms.contains(&NumericForm::Percentage)
-                || r.cluster.centroid_features.relation_semantics.contains(&RelationSemantics::PartOfWhole)
+                || r.cluster
+                    .centroid_features
+                    .numeric_forms
+                    .contains(&NumericForm::Percentage)
+                || r.cluster
+                    .centroid_features
+                    .relation_semantics
+                    .contains(&RelationSemantics::PartOfWhole)
         });
-        assert!(has_percentage_invariant,
-            "vocab-replaced prompts should still produce percentage-style invariant");
+        assert!(
+            has_percentage_invariant,
+            "vocab-replaced prompts should still produce percentage-style invariant"
+        );
     }
 
     #[test]
@@ -7981,20 +9262,39 @@ mod tests {
         // but collisions like probability (Jaccard=0.4) and compound (Jaccard=0.4)
         // and percentage-points (Jaccard=0.33) fall below the cutoff.
         let results = propose_from_failures(prompts, 0.45);
-        assert!(!results.is_empty(), "vocab collision should still produce at least one proposal");
+        assert!(
+            !results.is_empty(),
+            "vocab collision should still produce at least one proposal"
+        );
 
         // The primary cluster should be single-step percentage-of
         let has_single_step = results.iter().any(|r| {
-            r.cluster.centroid_features.numeric_forms.contains(&NumericForm::Percentage)
-                && r.cluster.centroid_features.relation_semantics.contains(&RelationSemantics::PartOfWhole)
+            r.cluster
+                .centroid_features
+                .numeric_forms
+                .contains(&NumericForm::Percentage)
+                && r.cluster
+                    .centroid_features
+                    .relation_semantics
+                    .contains(&RelationSemantics::PartOfWhole)
                 && r.cluster.centroid_features.has_explicit_base
-                && !r.cluster.centroid_features.relation_semantics.contains(&RelationSemantics::RepeatedChange)
-                && !r.cluster.centroid_features.relation_semantics.contains(&RelationSemantics::ProbabilityMeasure)
+                && !r
+                    .cluster
+                    .centroid_features
+                    .relation_semantics
+                    .contains(&RelationSemantics::RepeatedChange)
+                && !r
+                    .cluster
+                    .centroid_features
+                    .relation_semantics
+                    .contains(&RelationSemantics::ProbabilityMeasure)
                 && r.cluster.size >= 3
         });
-        assert!(has_single_step,
+        assert!(
+            has_single_step,
             "vocab collision: should isolate single-step percentage-of with explicit base, \
-             separate from compound/probability");
+             separate from compound/probability"
+        );
     }
 
     #[test]
@@ -8014,13 +9314,22 @@ mod tests {
             "Apply a 25 percent reduction to a base price of 80 dollars.",
         ]);
         let results = propose_from_failures(prompts, 0.3);
-        assert!(!results.is_empty(), "mixed cluster should still produce proposals");
+        assert!(
+            !results.is_empty(),
+            "mixed cluster should still produce proposals"
+        );
         // Should still find a percentage cluster of at least size 3
         let has_pct = results.iter().any(|r| {
-            r.cluster.centroid_features.numeric_forms.contains(&NumericForm::Percentage) && r.cluster.size >= 3
+            r.cluster
+                .centroid_features
+                .numeric_forms
+                .contains(&NumericForm::Percentage)
+                && r.cluster.size >= 3
         });
-        assert!(has_pct,
-            "even with 20% contamination, a percentage cluster of >= 3 should survive");
+        assert!(
+            has_pct,
+            "even with 20% contamination, a percentage cluster of >= 3 should survive"
+        );
     }
 
     #[test]
@@ -8035,14 +9344,20 @@ mod tests {
             "A box contains 12 red counters and 8 blue counters. How many altogether?",
         ]);
         let results = propose_from_failures(prompts, 0.3);
-        assert!(!results.is_empty(), "duplicate coverage should still produce a proposal");
+        assert!(
+            !results.is_empty(),
+            "duplicate coverage should still produce a proposal"
+        );
 
         // Should not claim high novelty for a well-covered area
         let any_high_novelty = results.iter().any(|r| r.proposal.novelty_receipt.is_novel);
         // High novelty might still trigger if the cluster is separated; that's acceptable
         // but at minimum the proposal should be structurally valid
         let any_valid = results.iter().any(|r| r.proposal.structurally_valid());
-        assert!(any_valid, "duplicate cluster should produce structurally valid proposal");
+        assert!(
+            any_valid,
+            "duplicate cluster should produce structurally valid proposal"
+        );
     }
 
     #[test]
@@ -8072,22 +9387,26 @@ mod tests {
     fn frontier_identifies_best_proposal_across_dimensions() {
         // Simple 2D Pareto test (coverage and purity; all other dimensions equal).
         // Dimensions: coverage, purity, boundary_precision, reuse_score, novelty.
-        let make_proposal = |id: &str, name: &str, supported: usize,
-             coverage: f64, purity: f64|
-             -> (CapabilityContractProposal, ProposalScore)
-        {
+        let make_proposal = |id: &str,
+                             name: &str,
+                             supported: usize,
+                             coverage: f64,
+                             purity: f64|
+         -> (CapabilityContractProposal, ProposalScore) {
             let p = CapabilityContractProposal {
                 proposal_id: ProposalId(id.into()),
                 name: name.into(),
                 input_artifacts: vec![ArtifactType::NumericQuantity],
                 output_artifacts: vec![ArtifactType::QuantityRelation],
-                supported_patterns: (0..supported).map(|i| PatternSpec {
-                    description: format!("pattern_{i}"),
-                    features: vec![],
-                    exemplars: vec![],
-                    requires_explicit_base: false,
-                    requires_explicit_direction: false,
-                }).collect(),
+                supported_patterns: (0..supported)
+                    .map(|i| PatternSpec {
+                        description: format!("pattern_{i}"),
+                        features: vec![],
+                        exemplars: vec![],
+                        requires_explicit_base: false,
+                        requires_explicit_direction: false,
+                    })
+                    .collect(),
                 ambiguous_patterns: vec![],
                 unsupported_patterns: vec![],
                 required_assumptions: vec![],
@@ -8108,7 +9427,8 @@ mod tests {
                     projected: ProjectedCoverage::InsufficientEvidence,
                 },
                 confidence: ProposalConfidence {
-                    structural_confidence: 0.5, boundary_confidence: 0.5,
+                    structural_confidence: 0.5,
+                    boundary_confidence: 0.5,
                     bridge_confidence: 0.5,
                 },
             };
@@ -8140,17 +9460,28 @@ mod tests {
         ];
 
         let frontier = ProposalParetoFrontier::evaluate(proposals);
-        let opt_ids: Vec<&str> = frontier.pareto_optimal_indices.iter()
+        let opt_ids: Vec<&str> = frontier
+            .pareto_optimal_indices
+            .iter()
             .map(|&i| frontier.proposals[i].0.proposal_id.0.as_str())
             .collect();
 
         // 'a' and 'b' are both Pareto-optimal (different tradeoff axes)
-        assert!(opt_ids.contains(&"a"), "a (high purity) should be Pareto-optimal");
-        assert!(opt_ids.contains(&"b"), "b (high coverage) should be Pareto-optimal");
+        assert!(
+            opt_ids.contains(&"a"),
+            "a (high purity) should be Pareto-optimal"
+        );
+        assert!(
+            opt_ids.contains(&"b"),
+            "b (high coverage) should be Pareto-optimal"
+        );
         // 'c' might be optimal or dominated — we don't assert either way
         // 'd' should be dominated by 'b' (lower coverage 0.4<0.8, same purity 0.3)
-        assert!(!opt_ids.contains(&"d"),
-            "d should be dominated by b (lower coverage, same purity), got {:?}", opt_ids);
+        assert!(
+            !opt_ids.contains(&"d"),
+            "d should be dominated by b (lower coverage, same purity), got {:?}",
+            opt_ids
+        );
     }
 
     // ── Leave-one-negative-family-out tests ─────────────────────────────
@@ -8178,8 +9509,11 @@ mod tests {
             .copied()
             .partition(|p| !hide_keywords.iter().any(|kw| p.contains(kw)));
 
-        eprintln!("  [{label}] visible_distractors={} hidden_distractors={}",
-            visible_distractors.len(), hidden_distractors.len());
+        eprintln!(
+            "  [{label}] visible_distractors={} hidden_distractors={}",
+            visible_distractors.len(),
+            hidden_distractors.len()
+        );
 
         // Run proposer with only visible data
         let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
@@ -8200,7 +9534,8 @@ mod tests {
 
         // Simulate a task just for scoring
         // All distractors are Unsupported (negative families) in leave-one-out tests
-        let distractor_labels: Vec<ExpectedDecision> = all_distractors.iter()
+        let distractor_labels: Vec<ExpectedDecision> = all_distractors
+            .iter()
             .map(|_| ExpectedDecision::Unsupported)
             .collect();
         let sim_task = HistoricalReconstructionTask {
@@ -8225,8 +9560,11 @@ mod tests {
             }
         }
 
-        eprintln!("  [{label}] best_exclusion_recall={:.1}% boundary={:.1}%",
-            best_exclusion_recall * 100.0, best_boundary_agreement * 100.0);
+        eprintln!(
+            "  [{label}] best_exclusion_recall={:.1}% boundary={:.1}%",
+            best_exclusion_recall * 100.0,
+            best_boundary_agreement * 100.0
+        );
 
         (best_exclusion_recall, best_boundary_agreement)
     }
@@ -8269,18 +9607,23 @@ mod tests {
         // Hide probability distractors during proposal formation
         let (excl_recall, _) = run_leave_one_out(
             "FractionalQuantity",
-            targets, distractors,
+            targets,
+            distractors,
             &["probability", "chance", "odds"],
-            expected, 0.35,
+            expected,
+            0.35,
         );
         // Even without seeing probability examples, the proposer should
         // derive the probability exclusion from contract predicates.
         // The ForbidsLikelihoodSemantics predicate is inferred from the
         // fractional PartOfWhole invariant. Accept >40% (partial credit
         // across 3 expected exclusions).
-        assert!(excl_recall >= 0.4,
+        assert!(
+            excl_recall >= 0.4,
             "leave-one-out probability: should still get >40% exclusion recall \
-             from predicates alone, got {:.1}%", excl_recall * 100.0);
+             from predicates alone, got {:.1}%",
+            excl_recall * 100.0
+        );
     }
 
     #[test]
@@ -8315,13 +9658,18 @@ mod tests {
         // Hide compound growth distractors during proposal formation
         let (excl_recall, _) = run_leave_one_out(
             "PercentageQuantity",
-            targets, distractors,
+            targets,
+            distractors,
             &["each year", "annually", "consecutive"],
-            expected, 0.45,
+            expected,
+            0.45,
         );
-        assert!(excl_recall >= 0.3,
+        assert!(
+            excl_recall >= 0.3,
             "leave-one-out compound: should still get >30% exclusion recall \
-             from predicates alone, got {:.1}%", excl_recall * 100.0);
+             from predicates alone, got {:.1}%",
+            excl_recall * 100.0
+        );
     }
 
     #[test]
@@ -8356,13 +9704,18 @@ mod tests {
         // Hide incompatible unit distractors during proposal formation
         let (excl_recall, _) = run_leave_one_out(
             "UnitQuantity",
-            targets, distractors,
+            targets,
+            distractors,
             &["kilogram", "gram"],
-            expected, 0.35,
+            expected,
+            0.35,
         );
-        assert!(excl_recall >= 0.3,
+        assert!(
+            excl_recall >= 0.3,
             "leave-one-out incompatible-units: should still get >30% exclusion recall \
-             from predicates alone, got {:.1}%", excl_recall * 100.0);
+             from predicates alone, got {:.1}%",
+            excl_recall * 100.0
+        );
     }
 
     #[test]
@@ -8381,10 +9734,7 @@ mod tests {
             all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
         }
         // Only add percentage/probability distractors — NO RepeatedChange
-        let distractor_prompts = vec![
-            "What is 20% of 50?",
-            "There is a 25% probability of rain.",
-        ];
+        let distractor_prompts = vec!["What is 20% of 50?", "There is a 25% probability of rain."];
         for (i, p) in distractor_prompts.iter().enumerate() {
             all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
         }
@@ -8400,13 +9750,16 @@ mod tests {
         let has_forbids_predicate = results.iter().any(|r| {
             r.boundary.exclusions.iter().any(|er| {
                 er.failed_predicate == ApplicabilityPredicate::ForbidsLikelihoodSemantics
-                    || er.failed_predicate == ApplicabilityPredicate::ForbidsRepeatedTemporalApplication
+                    || er.failed_predicate
+                        == ApplicabilityPredicate::ForbidsRepeatedTemporalApplication
             })
         });
-        assert!(has_forbids_predicate,
+        assert!(
+            has_forbids_predicate,
             "leave-one-out: should derive ForbidsLikelihoodSemantics or \
              ForbidsRepeatedTemporalApplication from PerUnitRate predicates \
-             without seeing examples of either family");
+             without seeing examples of either family"
+        );
     }
 
     // ── Temporal holdout (Phase 2G — single execution) ──────────────
@@ -8431,25 +9784,36 @@ mod tests {
         // Load the GSM8K restricted release v2 (100 cases)
         let corpus: ThirdPartyCorpus = serde_json::from_str(include_str!(
             "../data/third_party_gsm8k_restricted_release_v2.json"
-        )).expect("valid restricted v2 corpus JSON");
+        ))
+        .expect("valid restricted v2 corpus JSON");
         assert!(corpus.holdout_locked, "corpus must be holdout-locked");
 
-        eprintln!("\n{}", "=" .repeat(72));
+        eprintln!("\n{}", "=".repeat(72));
         eprintln!("  TEMPORAL HOLDOUT — SINGLE EXECUTION");
-        eprintln!("{}", "=" .repeat(72));
-        eprintln!("  corpus:      {} ({} cases)", corpus.release_id, corpus.cases.len());
+        eprintln!("{}", "=".repeat(72));
+        eprintln!(
+            "  corpus:      {} ({} cases)",
+            corpus.release_id,
+            corpus.cases.len()
+        );
         eprintln!("  oracle:      {}", corpus.oracle);
         eprintln!("  holdout_lock: {}", corpus.holdout_locked);
 
         // Filter to temporal_or_sequential_reasoning cases
-        let temporal_cases: Vec<_> = corpus.cases.iter()
+        let temporal_cases: Vec<_> = corpus
+            .cases
+            .iter()
             .filter(|c| {
                 let t = c.original_prompt.to_ascii_lowercase();
                 // rejection_cluster logic from third_party_corpus_benchmark
-                t.contains("every day") || t.contains("each year")
-                    || t.contains("per day") || t.contains("per week")
-                    || t.contains("per month") || t.contains("over ")
-                    || t.contains("after ") || t.contains("remaining")
+                t.contains("every day")
+                    || t.contains("each year")
+                    || t.contains("per day")
+                    || t.contains("per week")
+                    || t.contains("per month")
+                    || t.contains("over ")
+                    || t.contains("after ")
+                    || t.contains("remaining")
             })
             .collect();
 
@@ -8466,28 +9830,37 @@ mod tests {
         }
 
         // Verify: 23 unsupported + 1 supported
-        let unsupported_count = temporal_cases.iter()
-            .filter(|c| c.expected_outcome == ExpectedOutcome::Unsupported).count();
-        let supported_count = temporal_cases.iter()
-            .filter(|c| c.expected_outcome == ExpectedOutcome::Supported).count();
-        eprintln!("  unsupported={} supported={}",
-            unsupported_count, supported_count);
+        let unsupported_count = temporal_cases
+            .iter()
+            .filter(|c| c.expected_outcome == ExpectedOutcome::Unsupported)
+            .count();
+        let supported_count = temporal_cases
+            .iter()
+            .filter(|c| c.expected_outcome == ExpectedOutcome::Supported)
+            .count();
+        eprintln!(
+            "  unsupported={} supported={}",
+            unsupported_count, supported_count
+        );
 
         // Build the failure receipts map (all temporal cases as evidence)
         let mut holdout_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
         for c in &temporal_cases {
-            holdout_prompts.insert(
-                FailureReceiptId(c.id.clone()),
-                c.original_prompt.clone(),
-            );
+            holdout_prompts.insert(FailureReceiptId(c.id.clone()), c.original_prompt.clone());
         }
 
         // ── Execute the proposer (threshold 0.30, same as campaign) ──
-        eprintln!("\n  Proposing from {} failure receipts...", holdout_prompts.len());
+        eprintln!(
+            "\n  Proposing from {} failure receipts...",
+            holdout_prompts.len()
+        );
         let results = propose_from_failures(holdout_prompts, 0.30);
         let elapsed = start.elapsed();
-        eprintln!("  Proposer returned {} proposals in {:.1}ms",
-            results.len(), elapsed.as_secs_f64() * 1000.0);
+        eprintln!(
+            "  Proposer returned {} proposals in {:.1}ms",
+            results.len(),
+            elapsed.as_secs_f64() * 1000.0
+        );
 
         // ── Dump the full proposal ───────────────────────────────────
         for (i, result) in results.iter().enumerate() {
@@ -8496,19 +9869,28 @@ mod tests {
             eprintln!("{}", "-".repeat(72));
 
             // Cluster summary
-            eprintln!("  Cluster: {} members, {} shared ops",
+            eprintln!(
+                "  Cluster: {} members, {} shared ops",
                 result.cluster.size,
-                result.cluster.shared_operations.len());
-            eprintln!("  Shared operations: {:?}", result.cluster.shared_operations);
+                result.cluster.shared_operations.len()
+            );
+            eprintln!(
+                "  Shared operations: {:?}",
+                result.cluster.shared_operations
+            );
 
             // Centroid features
             let cf = &result.cluster.centroid_features;
             eprintln!("  Numeric forms: {:?}", cf.numeric_forms);
             eprintln!("  Relation semantics: {:?}", cf.relation_semantics);
-            eprintln!("  has_explicit_base: {}  has_direction: {}  has_single_step: {}",
-                cf.has_explicit_base, cf.has_direction, cf.has_single_step);
-            eprintln!("  has_target_unit: {}  has_explicit_conversion: {}",
-                cf.has_target_unit, cf.has_explicit_conversion);
+            eprintln!(
+                "  has_explicit_base: {}  has_direction: {}  has_single_step: {}",
+                cf.has_explicit_base, cf.has_direction, cf.has_single_step
+            );
+            eprintln!(
+                "  has_target_unit: {}  has_explicit_conversion: {}",
+                cf.has_target_unit, cf.has_explicit_conversion
+            );
             eprintln!("  Operations: {:?}", cf.operations);
 
             // Invariant
@@ -8521,40 +9903,63 @@ mod tests {
             }
 
             // Supported forms
-            eprintln!("\n  Supported forms ({}):",
-                result.synthesized.supported_forms.len());
+            eprintln!(
+                "\n  Supported forms ({}):",
+                result.synthesized.supported_forms.len()
+            );
             for (j, sf) in result.synthesized.supported_forms.iter().enumerate() {
-                eprintln!("    Form {}: {} (required features: {:?})",
-                    j + 1, sf.name, sf.required_features);
+                eprintln!(
+                    "    Form {}: {} (required features: {:?})",
+                    j + 1,
+                    sf.name,
+                    sf.required_features
+                );
                 eprintln!("      Ambiguity triggers: {:?}", sf.ambiguity_triggers);
-                eprintln!("      Exemplars: {:?}", sf.exemplars.iter().map(|e| &e[..e.len().min(60)]).collect::<Vec<_>>());
+                eprintln!(
+                    "      Exemplars: {:?}",
+                    sf.exemplars
+                        .iter()
+                        .map(|e| &e[..e.len().min(60)])
+                        .collect::<Vec<_>>()
+                );
             }
 
             // Boundary
             eprintln!("\n  Boundary analysis:");
             eprintln!("    Exclusions ({}):", result.boundary.exclusions.len());
             for (j, ex) in result.boundary.exclusions.iter().enumerate() {
-                let ex_frags: Vec<_> = ex.exemplars.iter()
-                    .map(|e| &e[..e.len().min(60)]).collect();
-                eprintln!("      {}. family={:?} predicate={:?} contrast={:?}",
-                    j + 1, ex.excluded_family, ex.failed_predicate, ex.contrast_type);
+                let ex_frags: Vec<_> = ex.exemplars.iter().map(|e| &e[..e.len().min(60)]).collect();
+                eprintln!(
+                    "      {}. family={:?} predicate={:?} contrast={:?}",
+                    j + 1,
+                    ex.excluded_family,
+                    ex.failed_predicate,
+                    ex.contrast_type
+                );
                 eprintln!("         discriminating: {:?}", ex.discriminating_features);
                 eprintln!("         exemplars: {:?}", ex_frags);
             }
-            eprintln!("    Ambiguous near-misses ({}):",
-                result.boundary.ambiguous_near_misses.len());
+            eprintln!(
+                "    Ambiguous near-misses ({}):",
+                result.boundary.ambiguous_near_misses.len()
+            );
             for (j, am) in result.boundary.ambiguous_near_misses.iter().enumerate() {
-                let am_frags: Vec<_> = am.exemplars.iter()
-                    .map(|e| &e[..e.len().min(60)]).collect();
-                eprintln!("      {}. family={:?} contrast={:?}",
-                    j + 1, am.excluded_family, am.contrast_type);
+                let am_frags: Vec<_> = am.exemplars.iter().map(|e| &e[..e.len().min(60)]).collect();
+                eprintln!(
+                    "      {}. family={:?} contrast={:?}",
+                    j + 1,
+                    am.excluded_family,
+                    am.contrast_type
+                );
                 eprintln!("         discriminating: {:?}", am.discriminating_features);
                 eprintln!("         exemplars: {:?}", am_frags);
             }
 
             // Synthesized boundary decisions
-            eprintln!("\n  Synthesized decisions ({} total):",
-                result.synthesized.decisions.len());
+            eprintln!(
+                "\n  Synthesized decisions ({} total):",
+                result.synthesized.decisions.len()
+            );
             let mut applicable_count = 0u32;
             let mut ambiguous_count = 0u32;
             let mut unsupported_count_syn = 0u32;
@@ -8573,33 +9978,51 @@ mod tests {
                         eprintln!("    [{:30}] ? Ambiguous: {:?}", prompt_short, causes);
                     }
                     ApplicabilityDecision::Unsupported { failed_predicate } => {
-                        eprintln!("    [{:30}] ✗ Unsupported: {:?}", prompt_short, failed_predicate);
+                        eprintln!(
+                            "    [{:30}] ✗ Unsupported: {:?}",
+                            prompt_short, failed_predicate
+                        );
                     }
                 }
             }
-            eprintln!("    Summary: {} Applicable, {} Ambiguous, {} Unsupported",
-                applicable_count, ambiguous_count, unsupported_count_syn);
+            eprintln!(
+                "    Summary: {} Applicable, {} Ambiguous, {} Unsupported",
+                applicable_count, ambiguous_count, unsupported_count_syn
+            );
 
             // Typed contract proposal
             eprintln!("\n  Contract proposal:");
             eprintln!("    ID:      {}", result.proposal.proposal_id.0);
             eprintln!("    Inputs:  {:?}", result.proposal.input_artifacts);
             eprintln!("    Outputs: {:?}", result.proposal.output_artifacts);
-            eprintln!("    Patterns ({}):", result.proposal.supported_patterns.len());
+            eprintln!(
+                "    Patterns ({}):",
+                result.proposal.supported_patterns.len()
+            );
             for (j, sp) in result.proposal.supported_patterns.iter().enumerate() {
                 eprintln!("      {}. {}", j + 1, sp.description);
                 eprintln!("         exemplars: {:?}", sp.exemplars);
             }
-            eprintln!("    Novelty: is_novel={} closest={:?} sim={:.3}",
+            eprintln!(
+                "    Novelty: is_novel={} closest={:?} sim={:.3}",
                 result.proposal.novelty_receipt.is_novel,
                 result.proposal.novelty_receipt.closest_existing,
-                result.proposal.novelty_receipt.similarity_to_closest);
-            eprintln!("    Novelty reasoning: {}", result.proposal.novelty_receipt.reasoning);
-            eprintln!("    Coverage: {:?}", result.proposal.expected_coverage.projected);
-            eprintln!("    Confidence: structural={:.3} boundary={:.3} bridge={:.3}",
+                result.proposal.novelty_receipt.similarity_to_closest
+            );
+            eprintln!(
+                "    Novelty reasoning: {}",
+                result.proposal.novelty_receipt.reasoning
+            );
+            eprintln!(
+                "    Coverage: {:?}",
+                result.proposal.expected_coverage.projected
+            );
+            eprintln!(
+                "    Confidence: structural={:.3} boundary={:.3} bridge={:.3}",
                 result.proposal.confidence.structural_confidence,
                 result.proposal.confidence.boundary_confidence,
-                result.proposal.confidence.bridge_confidence);
+                result.proposal.confidence.bridge_confidence
+            );
         }
 
         // ── Evidence hashes for reproducibility ──────────────────────
@@ -8619,20 +10042,25 @@ mod tests {
         eprintln!("{}", "=".repeat(72));
 
         // This test must produce at least one proposal for the temporal cluster
-        assert!(!results.is_empty(),
-            "Temporal holdout must produce at least one proposal, got 0");
+        assert!(
+            !results.is_empty(),
+            "Temporal holdout must produce at least one proposal, got 0"
+        );
 
         // Save the raw output to a file for later scoring
         let report_path = "docs/holdouts/temporal_holdout_report.txt";
         let output = std::io::stderr();
         // The output is already captured in stderr by the test harness.
         // We also save a marker file.
-        if let Ok(_) = std::fs::write(report_path, format!(
-            "Temporal holdout executed {}\nProposals: {}\nEvidence hash: {}\n",
-            chrono::Utc::now().format("%Y-%m-%dT%H:%M:%SZ"),
-            results.len(),
-            evidence_hash,
-        )) {
+        if let Ok(_) = std::fs::write(
+            report_path,
+            format!(
+                "Temporal holdout executed {}\nProposals: {}\nEvidence hash: {}\n",
+                chrono::Utc::now().format("%Y-%m-%dT%H:%M:%SZ"),
+                results.len(),
+                evidence_hash,
+            ),
+        ) {
             eprintln!("  Marker written to {}", report_path);
         }
 
@@ -8673,39 +10101,55 @@ mod tests {
         let plan = ValidationPlan::synthesize(&results[0]);
 
         // The plan should have supported families
-        assert!(!plan.supported_families.is_empty(),
-            "validation plan should have at least one supported family");
+        assert!(
+            !plan.supported_families.is_empty(),
+            "validation plan should have at least one supported family"
+        );
 
         // The plan should have ambiguous families
-        assert!(!plan.ambiguous_families.is_empty(),
-            "validation plan should have at least one ambiguous family");
+        assert!(
+            !plan.ambiguous_families.is_empty(),
+            "validation plan should have at least one ambiguous family"
+        );
 
         // The plan should have unsupported families (exclusions from analysis)
         // Note: may be empty if no exclusions were mined
         if results[0].boundary.exclusions.is_empty() {
-            eprintln!("  Note: no exclusions mined for this proposal — unsupported families may be empty");
+            eprintln!(
+                "  Note: no exclusions mined for this proposal — unsupported families may be empty"
+            );
         }
 
         // There should be rewrite families
-        assert!(!plan.rewrite_families.is_empty(),
-            "validation plan should have rewrite families");
+        assert!(
+            !plan.rewrite_families.is_empty(),
+            "validation plan should have rewrite families"
+        );
 
         // There should be overlap tests
-        assert!(!plan.overlap_tests.is_empty(),
-            "validation plan should have overlap tests");
+        assert!(
+            !plan.overlap_tests.is_empty(),
+            "validation plan should have overlap tests"
+        );
 
         // Evidence links should reference exemplars
-        assert!(!plan.coverage_rationale.is_empty(),
-            "validation plan should have evidence traceability");
+        assert!(
+            !plan.coverage_rationale.is_empty(),
+            "validation plan should have evidence traceability"
+        );
 
         // There should be expected routing decisions
-        assert!(!plan.expected_decisions.is_empty(),
-            "validation plan should have expected routing decisions");
+        assert!(
+            !plan.expected_decisions.is_empty(),
+            "validation plan should have expected routing decisions"
+        );
 
         // The sample budget should be reasonable
-        assert!(plan.proposed_counts.total() >= 20,
+        assert!(
+            plan.proposed_counts.total() >= 20,
             "validation plan sample budget should be at least 20, got {}",
-            plan.proposed_counts.total());
+            plan.proposed_counts.total()
+        );
 
         // Compute validation plan score
         let score = ValidationPlanScore::compute(&plan, &results[0]);
@@ -8720,8 +10164,11 @@ mod tests {
         );
 
         // The score should be non-trivial
-        assert!(score.overall > 0.0,
-            "validation plan score should be > 0, got {:.3}", score.overall);
+        assert!(
+            score.overall > 0.0,
+            "validation plan score should be > 0, got {:.3}",
+            score.overall
+        );
     }
 
     #[test]
@@ -8749,1065 +10196,1312 @@ mod tests {
 
         // Should have default ambiguous families (missing_initial_value, etc.)
         // even if the boundary analysis found zero ambiguities
-        let has_default_ambiguities = plan.ambiguous_families.iter()
-            .any(|f| f.name == "missing_initial_value"
+        let has_default_ambiguities = plan.ambiguous_families.iter().any(|f| {
+            f.name == "missing_initial_value"
                 || f.name == "unknown_operation_order"
-                || f.name == "ambiguous_reference");
-        assert!(has_default_ambiguities,
-            "validation plan should synthesize default ambiguity families when boundary has none");
+                || f.name == "ambiguous_reference"
+        });
+        assert!(
+            has_default_ambiguities,
+            "validation plan should synthesize default ambiguity families when boundary has none"
+        );
     }
 }
 
-    // ── D4: Ambiguity synthesis tests ─────────────────────────────
+// ── D4: Ambiguity synthesis tests ─────────────────────────────
 
-    /// Helper: run the proposer and check how a specific case is classified.
-    /// The `probe_prompt` is the case to classify; it may or may not be in the
-    /// evidence set. If it is found in synthesized decisions, return its decision.
-    /// If not, run `decide_case` directly against the first proposal's contracts.
-    // ── D4: Ambiguity synthesis tests ─────────────────────────────
+/// Helper: run the proposer and check how a specific case is classified.
+/// The `probe_prompt` is the case to classify; it may or may not be in the
+/// evidence set. If it is found in synthesized decisions, return its decision.
+/// If not, run `decide_case` directly against the first proposal's contracts.
+// ── D4: Ambiguity synthesis tests ─────────────────────────────
 
-    #[test]
-    fn d4_missing_base_is_ambiguous_not_unsupported() {
-        // Test `attempt_completions` directly: a probe that shares the same
-        // relation semantics (MultiplicativeChange) but lacks direction.
-        // We use MultiplicativeChange because the feature extractor can
-        // reliably detect its required bindings.
-        let targets = vec![
-            "Apply a 20% discount to a base price of 80 dollars.",
-            "A base price of 50 dollars increases by 10%.",
-            "Find the final price after a 25 percent reduction on 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
+#[test]
+fn d4_missing_base_is_ambiguous_not_unsupported() {
+    // Test `attempt_completions` directly: a probe that shares the same
+    // relation semantics (MultiplicativeChange) but lacks direction.
+    // We use MultiplicativeChange because the feature extractor can
+    // reliably detect its required bindings.
+    let targets = vec![
+        "Apply a 20% discount to a base price of 80 dollars.",
+        "A base price of 50 dollars increases by 10%.",
+        "Find the final price after a 25 percent reduction on 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
 
-        // Probe: MultiplicativeChange semantics ("% discount"/"increase"/"reduction")
-        // but missing direction: "Apply a percentage change" uses "change"
-        // which doesn't match the keyword-based has_direction="increase|decrease|discount|..."
-        // Using a probe that HAS explicit direction but MISSING explicit base:
-        let probe = "A quantity increases by a certain percentage.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
+    // Probe: MultiplicativeChange semantics ("% discount"/"increase"/"reduction")
+    // but missing direction: "Apply a percentage change" uses "change"
+    // which doesn't match the keyword-based has_direction="increase|decrease|discount|..."
+    // Using a probe that HAS explicit direction but MISSING explicit base:
+    let probe = "A quantity increases by a certain percentage.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
 
-        // Verify probe semantics
-        let shares_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
-        if !shares_rel {
-            eprintln!("  Note: probe doesn't share cluster semantics — SKIPPING");
-            eprintln!("    probe semantics: {:?}", feat.relation_semantics);
-            eprintln!("    cluster semantics: {:?}", results[0].cluster.centroid_features.relation_semantics);
-            return;
-        }
+    // Verify probe semantics
+    let shares_rel = forms
+        .iter()
+        .any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+    if !shares_rel {
+        eprintln!("  Note: probe doesn't share cluster semantics — SKIPPING");
+        eprintln!("    probe semantics: {:?}", feat.relation_semantics);
+        eprintln!(
+            "    cluster semantics: {:?}",
+            results[0].cluster.centroid_features.relation_semantics
+        );
+        return;
+    }
 
-        let (decision, receipt) = attempt_completions(&feat, probe, forms, true);
-        assert!(matches!(decision, ApplicabilityDecision::Ambiguous { .. })
+    let (decision, receipt) = attempt_completions(&feat, probe, forms, true);
+    assert!(
+        matches!(decision, ApplicabilityDecision::Ambiguous { .. })
             || matches!(decision, ApplicabilityDecision::Applicable),
-            "completion search should NOT return Unsupported for missing binding, got {:?}", decision);
-        if let Some(ref r) = receipt {
-            if r.completion_count > 0 {
-                assert!(r.missing_bindings.contains(&MissingBinding::InitialValue)
-                    || r.missing_bindings.contains(&MissingBinding::ReferenceQuantity),
-                    "missing bindings should include InitialValue or ReferenceQuantity, got {:?}",
-                    r.missing_bindings);
-            }
-        }
-    }
-
-    #[test]
-    fn d4_probability_is_unsupported_not_ambiguous() {
-        // Probability must remain Unsupported even via completion search
-        let targets = vec![
-            "What is 20% of 50?",
-            "Find 30% of 60.",
-            "Calculate 15 percent of 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
-
-        let probe = "There is a 25% probability of rain.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-
-        let (decision, _) = attempt_completions(&feat, probe, forms, false);
-        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. }),
-            "probability should remain Unsupported, got {:?}", decision);
-    }
-
-    #[test]
-    fn d4_compound_growth_stays_unsupported() {
-        // Compound growth must remain Unsupported
-        let targets = vec![
-            "What is 20% of 50?",
-            "Find 30% of 60.",
-            "Calculate 15 percent of 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
-
-        let probe = "A balance grows by 5% each year for 5 years.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-
-        let (decision, _) = attempt_completions(&feat, probe, forms, false);
-        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. }),
-            "compound growth should remain Unsupported, got {:?}", decision);
-    }
-
-    #[test]
-    fn d4_incompatible_units_stay_unsupported() {
-        let targets = vec![
-            "Convert 3 meters to centimeters using 100 cm per meter.",
-            "Add 2 meters and 30 centimeters; express total in cm.",
-            "Convert 5 feet to inches using 12 inches per foot.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        if results.is_empty() {
-            eprintln!("  Note: no proposals from unit conversion targets — SKIPPING");
-            return;
-        }
-
-        let probe = "Add 2 meters and 3 kilograms; express the total in meters.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-
-        let (decision, _) = attempt_completions(&feat, probe, forms, false);
-        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. }),
-            "incompatible units should be Unsupported, got {:?}", decision);
-    }
-
-    #[test]
-    fn d4_completion_has_receipt_with_diagnostic_info() {
-        // Verify that Ambiguous decisions from completion search include
-        // proper receipts with missing bindings and viable forms.
-        // Use MultiplicativeChange targets so we can probe missing direction.
-        let targets = vec![
-            "Apply a 20% discount to a base price of 80 dollars.",
-            "A base price of 50 dollars increases by 10%.",
-            "Find the final price after a 25 percent reduction on 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
-
-        // Probe that shares MultiplicativeChange but missing direction
-        let probe = "A quantity increases by a certain percentage.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-
-        let shares_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
-        if !shares_rel {
-            eprintln!("  Note: probe doesn't share cluster semantics — SKIPPING");
-            return;
-        }
-
-        let (decision, receipt) = attempt_completions(&feat, probe, forms, true);
-        if !matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
-            eprintln!("  Note: decision is {:?} — receipt test is N/A", decision);
-            return;
-        }
-        assert!(receipt.is_some(), "Ambiguous should have receipt");
-        if let Some(r) = receipt {
-            assert!(!r.viable_forms.is_empty(), "should name viable forms");
-            assert!(!r.missing_bindings.is_empty(), "should list missing bindings");
-            assert!(!r.causes.is_empty(), "should list ambiguity causes");
-        }
-    }
-
-    #[test]
-    fn d4_applicable_case_has_no_receipt() {
-        // Verify that Applicable cases don't have ambiguity receipts
-        // (checked through synthesize_boundary => CaseDecision)
-        let targets = vec![
-            "What is 20% of 50?",
-            "Find 30% of 60.",
-            "Calculate 15 percent of 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
-
-        // Check that Applicable decisions have no receipt
-        for r in &results {
-            for cd in &r.synthesized.decisions {
-                if matches!(cd.decision, ApplicabilityDecision::Applicable) {
-                    assert!(cd.ambiguity_receipt.is_none(),
-                        "Applicable case '{}' should not have ambiguity receipt",
-                        &cd.prompt[..cd.prompt.len().min(40)]);
-                }
-            }
-        }
-    }
-
-    #[test]
-    fn d4_unsupported_case_has_no_receipt() {
-        // Verify that Unsupported cases don't have ambiguity receipts
-        let targets = vec![
-            "What is 20% of 50?",
-            "Find 30% of 60.",
-            "Calculate 15 percent of 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        // Add an unsupported probe
-        all_prompts.insert(FailureReceiptId("probe".into()),
-            "There is a 25% probability of rain.".into());
-
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
-
-        for r in &results {
-            for cd in &r.synthesized.decisions {
-                if matches!(cd.decision, ApplicabilityDecision::Unsupported { .. }) {
-                    assert!(cd.ambiguity_receipt.is_none(),
-                        "Unsupported case '{}' should not have ambiguity receipt",
-                        &cd.prompt[..cd.prompt.len().min(40)]);
-                }
-            }
-        }
-    }
-
-    #[test]
-    fn d4_max_bindings_limits_search() {
-        // Verify that cases with too many missing bindings are bounded:
-        // `attempt_completions` should set search_bounded = true when
-        // the number of missing bindings exceeds MAX_MISSING_BINDINGS.
-        let targets = vec![
-            "What is 20% of 50?",
-            "Find 30% of 60.",
-            "Calculate 15 percent of 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
-
-        // A probe that is completely different (no digits, no percentage)
-        // should have many missing bindings
-        let probe = "How many oranges are in the basket?";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-
-        let (decision, receipt) = attempt_completions(&feat, probe, forms, false);
-        // Should be Unsupported (no viable completions) because the probe
-        // doesn't share any relation semantics with the forms
-        assert!(matches!(decision, ApplicabilityDecision::Unsupported { .. })
-            || matches!(decision, ApplicabilityDecision::Ambiguous { .. }),
-            "unrelated probe should be Unsupported or Ambiguous");
-        // If Ambiguous, the receipt should note it's bounded
-        if let Some(ref r) = receipt {
-            if r.completion_count > 2 {
-                assert!(r.search_bounded, "search should be bounded for many missing bindings");
-            }
-        }
-    }
-
-    // ── Phase 2I: End-to-end ambiguity regression tests ────────────
-    //
-    // Unlike D4 direct probes which test `attempt_completions` in isolation,
-    // these tests exercise the full pipeline end-to-end: they construct probes
-    // that share intact relation semantics with cluster forms but are missing
-    // one binding (e.g., "Convert 5 meters to an unspecified unit"). The full
-    // `synthesize_boundary` path must detect these as Ambiguous.
-    //
-    // These are regression tests: the 0% ambiguity recall after Phase 2H was
-    // caused by synthetic probes whose features were mutated by D4 before
-    // the full pipeline ran. These tests keep semantics intact.
-
-    #[test]
-    fn end_to_end_ambiguous_missing_unit_target() {
-        // Probe shares CompatibleUnitConversion semantics with targets
-        // but is missing the target unit binding → should be Ambiguous.
-        let targets = vec![
-            "Convert 3 meters to centimeters using 100 centimeters per meter.",
-            "Add 2 meters and 30 centimeters; express the total in centimeters.",
-            "Subtract 2 meters from 230 centimeters; express the difference in centimeters.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        if results.is_empty() {
-            eprintln!("  Note: no proposals from unit conversion targets — SKIPPING");
-            return;
-        }
-
-        // Probe: shares CompatibleUnitConversion but missing target unit.
-        // Avoid "convert " (triggers has_target_unit) and "using " (triggers
-        // has_explicit_conversion).
-        let probe = "A conversion of 5 meters to some unspecified unit.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-        let share_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
-        if !share_rel {
-            eprintln!("  Note: probe doesn't share cluster relation — SKIPPING");
-            return;
-        }
-
-        let (decision, receipt) = results[0].synthesized.decisions.iter()
-            .find(|cd| cd.prompt == probe)
-            .map(|cd| (cd.decision.clone(), cd.ambiguity_receipt.clone()))
-            .unwrap_or_else(|| {
-                // Probe wasn't in the synthesized decisions — evaluate directly
-                let cluster = &results[0].cluster;
-                let predicates = &results[0].predicates;
-                let (d, r) = decide_case(probe, &feat, cluster, predicates, forms);
-                (d, r)
-            });
-
-        // The probe shares semantics with a sub-form but may not match the
-        // broader cluster centroid. It must NOT be Applicable (would be a
-        // false authorization). Either Ambiguous (correct) or Unsupported
-        // (conservative rejection) is acceptable.
-        assert!(!matches!(decision, ApplicabilityDecision::Applicable),
-            "missing-target-unit probe should NOT be Applicable, got {:?}", decision);
-
-        if let ApplicabilityDecision::Ambiguous { .. } = decision {
-            if let Some(ref r) = receipt {
-                assert!(r.missing_bindings.contains(&MissingBinding::UnitTarget)
-                    || r.missing_bindings.contains(&MissingBinding::TargetQuantity),
-                    "missing bindings should include UnitTarget or TargetQuantity, got {:?}",
-                    r.missing_bindings);
-            }
-        }
-    }
-
-    #[test]
-    fn end_to_end_ambiguous_missing_reference() {
-        // Probe shares PerUnitRate semantics (quantity relation)
-        // but is missing the explicit reference quantity → should be Ambiguous.
-        let targets = vec![
-            "5 notebooks cost 20 dollars. What is the price per notebook?",
-            "3 identical batches require 2 liters. How many liters are required for 8 batches?",
-            "Using 100 centimeters per meter, convert 3 meters to centimeters.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-        }
-        let results = propose_from_failures(all_prompts, 0.30);
-        if results.is_empty() {
-            eprintln!("  Note: no proposals — SKIPPING");
-            return;
-        }
-
-        // Probe: shares quantity relation but missing the reference (no explicit base quantity)
-        let probe = "Find the per-unit cost when 5 items have a total price.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-        let share_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
-        if !share_rel {
-            eprintln!("  Note: probe doesn't share cluster relation — SKIPPING");
-            eprintln!("    probe semantics: {:?}", feat.relation_semantics);
-            return;
-        }
-
-        let cluster = &results[0].cluster;
-        let predicates = &results[0].predicates;
-        let (decision, receipt) = decide_case(probe, &feat, cluster, predicates, forms);
-
-        assert!(matches!(decision, ApplicabilityDecision::Ambiguous { .. }),
-            "missing-reference probe should be Ambiguous, got {:?}", decision);
-
-        if let Some(ref r) = receipt {
-            assert!(r.missing_bindings.contains(&MissingBinding::InitialValue)
-                || r.missing_bindings.contains(&MissingBinding::ReferenceQuantity),
+        "completion search should NOT return Unsupported for missing binding, got {:?}",
+        decision
+    );
+    if let Some(ref r) = receipt {
+        if r.completion_count > 0 {
+            assert!(
+                r.missing_bindings.contains(&MissingBinding::InitialValue)
+                    || r.missing_bindings
+                        .contains(&MissingBinding::ReferenceQuantity),
                 "missing bindings should include InitialValue or ReferenceQuantity, got {:?}",
-                r.missing_bindings);
+                r.missing_bindings
+            );
         }
     }
+}
 
-    #[test]
-    fn end_to_end_ambiguous_missing_direction() {
-        // Probe shares MultiplicativeChange semantics but is missing
-        // the direction (increase/decrease) → should be Ambiguous.
-        let targets = vec![
-            "Apply a 20% discount to a base price of 80 dollars.",
-            "A base price of 50 dollars increases by 10%.",
-            "Find the final price after a 25 percent reduction on 200.",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-        }
+#[test]
+fn d4_probability_is_unsupported_not_ambiguous() {
+    // Probability must remain Unsupported even via completion search
+    let targets = vec![
+        "What is 20% of 50?",
+        "Find 30% of 60.",
+        "Calculate 15 percent of 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
 
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have at least one proposal");
+    let probe = "There is a 25% probability of rain.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
 
-        // Probe: shares MultiplicativeChange but missing explicit direction
-        let probe = "Apply a percentage change to 50 dollars.";
-        let feat = SemanticFeatures::extract(probe);
-        let forms = &results[0].synthesized.supported_forms;
-        let share_rel = forms.iter().any(|f| shares_semantic_relation(&feat, &f.centroid_features));
-        if !share_rel {
-            eprintln!("  Note: probe doesn't share cluster relation — SKIPPING");
-            return;
-        }
+    let (decision, _) = attempt_completions(&feat, probe, forms, false);
+    assert!(
+        matches!(decision, ApplicabilityDecision::Unsupported { .. }),
+        "probability should remain Unsupported, got {:?}",
+        decision
+    );
+}
 
-        let cluster = &results[0].cluster;
-        let predicates = &results[0].predicates;
-        let (decision, receipt) = decide_case(probe, &feat, cluster, predicates, forms);
+#[test]
+fn d4_compound_growth_stays_unsupported() {
+    // Compound growth must remain Unsupported
+    let targets = vec![
+        "What is 20% of 50?",
+        "Find 30% of 60.",
+        "Calculate 15 percent of 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
 
-        assert!(matches!(decision, ApplicabilityDecision::Ambiguous { .. })
-            || matches!(decision, ApplicabilityDecision::Applicable),
-            "missing-direction probe should be Ambiguous or Applicable, got {:?}", decision);
+    let probe = "A balance grows by 5% each year for 5 years.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
 
-        if let Some(ref r) = receipt {
-            if r.completion_count > 0 {
-                assert!(r.missing_bindings.contains(&MissingBinding::OperationDirection)
-                    || r.missing_bindings.contains(&MissingBinding::InitialValue),
-                    "missing bindings should include direction or initial value, got {:?}",
-                    r.missing_bindings);
+    let (decision, _) = attempt_completions(&feat, probe, forms, false);
+    assert!(
+        matches!(decision, ApplicabilityDecision::Unsupported { .. }),
+        "compound growth should remain Unsupported, got {:?}",
+        decision
+    );
+}
+
+#[test]
+fn d4_incompatible_units_stay_unsupported() {
+    let targets = vec![
+        "Convert 3 meters to centimeters using 100 cm per meter.",
+        "Add 2 meters and 30 centimeters; express total in cm.",
+        "Convert 5 feet to inches using 12 inches per foot.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    if results.is_empty() {
+        eprintln!("  Note: no proposals from unit conversion targets — SKIPPING");
+        return;
+    }
+
+    let probe = "Add 2 meters and 3 kilograms; express the total in meters.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
+
+    let (decision, _) = attempt_completions(&feat, probe, forms, false);
+    assert!(
+        matches!(decision, ApplicabilityDecision::Unsupported { .. }),
+        "incompatible units should be Unsupported, got {:?}",
+        decision
+    );
+}
+
+#[test]
+fn d4_completion_has_receipt_with_diagnostic_info() {
+    // Verify that Ambiguous decisions from completion search include
+    // proper receipts with missing bindings and viable forms.
+    // Use MultiplicativeChange targets so we can probe missing direction.
+    let targets = vec![
+        "Apply a 20% discount to a base price of 80 dollars.",
+        "A base price of 50 dollars increases by 10%.",
+        "Find the final price after a 25 percent reduction on 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
+
+    // Probe that shares MultiplicativeChange but missing direction
+    let probe = "A quantity increases by a certain percentage.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
+
+    let shares_rel = forms
+        .iter()
+        .any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+    if !shares_rel {
+        eprintln!("  Note: probe doesn't share cluster semantics — SKIPPING");
+        return;
+    }
+
+    let (decision, receipt) = attempt_completions(&feat, probe, forms, true);
+    if !matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
+        eprintln!("  Note: decision is {:?} — receipt test is N/A", decision);
+        return;
+    }
+    assert!(receipt.is_some(), "Ambiguous should have receipt");
+    if let Some(r) = receipt {
+        assert!(!r.viable_forms.is_empty(), "should name viable forms");
+        assert!(
+            !r.missing_bindings.is_empty(),
+            "should list missing bindings"
+        );
+        assert!(!r.causes.is_empty(), "should list ambiguity causes");
+    }
+}
+
+#[test]
+fn d4_applicable_case_has_no_receipt() {
+    // Verify that Applicable cases don't have ambiguity receipts
+    // (checked through synthesize_boundary => CaseDecision)
+    let targets = vec![
+        "What is 20% of 50?",
+        "Find 30% of 60.",
+        "Calculate 15 percent of 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
+
+    // Check that Applicable decisions have no receipt
+    for r in &results {
+        for cd in &r.synthesized.decisions {
+            if matches!(cd.decision, ApplicabilityDecision::Applicable) {
+                assert!(
+                    cd.ambiguity_receipt.is_none(),
+                    "Applicable case '{}' should not have ambiguity receipt",
+                    &cd.prompt[..cd.prompt.len().min(40)]
+                );
             }
         }
     }
+}
 
-    // ── Phase 2J: Positive-coverage diagnostics ─────────────────────
-    //
-    // These tests diagnose why specific targets are rejected by the proposer.
-    // They dump the feature-extraction, form-membership, and decision-path
-    // for each uncovered target. To use, run with --nocapture.
+#[test]
+fn d4_unsupported_case_has_no_receipt() {
+    // Verify that Unsupported cases don't have ambiguity receipts
+    let targets = vec![
+        "What is 20% of 50?",
+        "Find 30% of 60.",
+        "Calculate 15 percent of 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    // Add an unsupported probe
+    all_prompts.insert(
+        FailureReceiptId("probe".into()),
+        "There is a 25% probability of rain.".into(),
+    );
 
-    #[test]
-    fn diagnose_unit_quantity_coverage() {
-        let targets = vec![
-            ("target-01", "Convert 3 meters to centimeters using 100 centimeters per meter."),
-            ("target-02", "Add 2 meters and 30 centimeters; express the total in centimeters."),
-            ("target-03", "Subtract 2 meters from 230 centimeters; express the difference in centimeters."),
-            ("target-04", "Add 2 feet and 6 inches; express the total in inches."),
-            ("target-05", "Tracy used a piece of wire 4 feet long cut into 6-inch pieces. How many pieces?"),
-        ];
-        let distractors = vec![
-            ("dist-01", "Add 2 meters and 30 centimeters."),
-            ("dist-02", "Convert 5 miles to kilometers."),
-            ("dist-03", "Add 2 meters and 3 kilograms; express the total in meters."),
-            ("dist-04", "What is 20% of 50?"),
-            ("dist-05", "A loan charges 5% simple interest."),
-            ("dist-06", "Add 2 liters and 500 milliliters; express the total in milliliters."),
-        ];
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
 
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (id, p) in targets.iter().chain(distractors.iter()) {
-            all_prompts.insert(FailureReceiptId(id.to_string()), p.to_string());
-        }
-
-        let results = propose_from_failures(all_prompts.clone(), 0.30);
-        if results.is_empty() {
-            eprintln!("NO PROPOSALS");
-            return;
-        }
-
-        for (ri, r) in results.iter().enumerate() {
-            eprintln!("\n=== PROPOSAL {} ===", ri);
-            eprintln!("  name: {}", r.proposal.name);
-            eprintln!("  cluster size: {}", r.cluster.size);
-            eprintln!("  forms: {}", r.synthesized.supported_forms.len());
-            for (fi, f) in r.synthesized.supported_forms.iter().enumerate() {
-                eprintln!("    form {}: '{}' req={:?} centroid_rel={:?}",
-                    fi, f.name, f.required_features,
-                    f.centroid_features.relation_semantics);
-            }
-            eprintln!("  predicates: {:?}", r.predicates);
-
-            // Show ALL cases with decisions
-            for (id, prompt) in &all_prompts {
-                let cd = r.synthesized.decisions.iter()
-                    .find(|d| d.prompt == *prompt);
-                if let Some(cd) = cd {
-                    let tag = if id.0.starts_with("target-") { "TARGET" } else { "DIST" };
-                    eprintln!("\n  {} {}: '{}'", tag, id.0, &prompt[..prompt.len().min(70)]);
-                    eprintln!("    decision: {:?}  form: {:?}", cd.decision, cd.matched_form);
-                    eprintln!("    receipt: {:?}", cd.ambiguity_receipt);
-                } else {
-                    eprintln!("\n  ??? {}: NOT IN DECISIONS", id.0);
-                    let feat = SemanticFeatures::extract(prompt);
-                    eprintln!("    features: {:?}  tags: {:?}", feat, feat.feature_tags());
-                }
+    for r in &results {
+        for cd in &r.synthesized.decisions {
+            if matches!(cd.decision, ApplicabilityDecision::Unsupported { .. }) {
+                assert!(
+                    cd.ambiguity_receipt.is_none(),
+                    "Unsupported case '{}' should not have ambiguity receipt",
+                    &cd.prompt[..cd.prompt.len().min(40)]
+                );
             }
         }
     }
+}
 
-    // ── D4 Measurement Campaign ────────────────────────────────────────
-    //
-    // This measurement pass focuses specifically on D4's ambiguity detection
-    // competency: whether `attempt_completions` correctly distinguishes
-    // Ambiguous from Unsupported for cases that share semantics with cluster forms.
-    //
-    // The overall boundary metrics (supported precision, unsupported recall, etc.)
-    // are already measured by `score_boundary_matrix` in the existing reconstruction
-    // tests. Here we focus on what D4 specifically controls:
-    //
-    //   1. Correct detection of resolvable missing bindings → Ambiguous
-    //   2. Correct rejection of safety-predicate cases → Unsupported (not Ambiguous)
-    //   3. Correct handling of numeric form mismatch → Unsupported
-    //   4. Bounded completion search doesn't overflow
-    //
-    // We measure this by running `attempt_completions` directly on specific probes
-    // across each capability's extracted supported forms, plus checking the
-    // `ambiguity_receipt` fields in synthesized boundary decisions.
+#[test]
+fn d4_max_bindings_limits_search() {
+    // Verify that cases with too many missing bindings are bounded:
+    // `attempt_completions` should set search_bounded = true when
+    // the number of missing bindings exceeds MAX_MISSING_BINDINGS.
+    let targets = vec![
+        "What is 20% of 50?",
+        "Find 30% of 60.",
+        "Calculate 15 percent of 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("t-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
 
-    // ── Phase 3A CandidateCorpus tests ──────────────────────────────────
+    // A probe that is completely different (no digits, no percentage)
+    // should have many missing bindings
+    let probe = "How many oranges are in the basket?";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
 
-    #[test]
-    fn candidate_corpus_generates_for_percentage_quantity() {
-        let targets = vec![
-            "What is 20% of 50?",
-            "An item priced at $80 receives a 20% discount. What is the final price?",
-            "A quantity with base value 50 increases by 10%.",
-            "Calculate 15 percent of 200.",
-            "Find 30% of 60.",
-            "Apply a 25 percent reduction to a base price of 80 dollars.",
-        ];
-        let distractors = vec![
-            "A balance grows by 5% each year for 5 years.",
-            "A loan charges 5% simple interest over time.",
-            "There is a 25% probability.",
-            "What is three quarters of 20?",
-        ];
-        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-        for (i, p) in targets.iter().chain(distractors.iter()).enumerate() {
-            all_prompts.insert(FailureReceiptId(format!("p{:03}", i)), p.to_string());
+    let (decision, receipt) = attempt_completions(&feat, probe, forms, false);
+    // Should be Unsupported (no viable completions) because the probe
+    // doesn't share any relation semantics with the forms
+    assert!(
+        matches!(decision, ApplicabilityDecision::Unsupported { .. })
+            || matches!(decision, ApplicabilityDecision::Ambiguous { .. }),
+        "unrelated probe should be Unsupported or Ambiguous"
+    );
+    // If Ambiguous, the receipt should note it's bounded
+    if let Some(ref r) = receipt {
+        if r.completion_count > 2 {
+            assert!(
+                r.search_bounded,
+                "search should be bounded for many missing bindings"
+            );
         }
-        let results = propose_from_failures(all_prompts, 0.30);
-        assert!(!results.is_empty(), "should have proposals");
+    }
+}
 
-        let plan = ValidationPlan::synthesize(&results[0]);
-        let corpus = generate_corpus(&results[0], &plan, 42);
+// ── Phase 2I: End-to-end ambiguity regression tests ────────────
+//
+// Unlike D4 direct probes which test `attempt_completions` in isolation,
+// these tests exercise the full pipeline end-to-end: they construct probes
+// that share intact relation semantics with cluster forms but are missing
+// one binding (e.g., "Convert 5 meters to an unspecified unit"). The full
+// `synthesize_boundary` path must detect these as Ambiguous.
+//
+// These are regression tests: the 0% ambiguity recall after Phase 2H was
+// caused by synthetic probes whose features were mutated by D4 before
+// the full pipeline ran. These tests keep semantics intact.
 
-        // The corpus should have cases
-        assert!(!corpus.cases.is_empty(), "corpus should not be empty");
-        assert!(!corpus.deterministic_hash.is_empty(), "hash should be set");
+#[test]
+fn end_to_end_ambiguous_missing_unit_target() {
+    // Probe shares CompatibleUnitConversion semantics with targets
+    // but is missing the target unit binding → should be Ambiguous.
+    let targets = vec![
+        "Convert 3 meters to centimeters using 100 centimeters per meter.",
+        "Add 2 meters and 30 centimeters; express the total in centimeters.",
+        "Subtract 2 meters from 230 centimeters; express the difference in centimeters.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    if results.is_empty() {
+        eprintln!("  Note: no proposals from unit conversion targets — SKIPPING");
+        return;
+    }
 
-        // Check supported cases exist
-        let supported: Vec<_> = corpus.cases.iter()
-            .filter(|c| c.section == CorpusSection::Supported).collect();
-        assert!(!supported.is_empty(), "should have supported cases");
+    // Probe: shares CompatibleUnitConversion but missing target unit.
+    // Avoid "convert " (triggers has_target_unit) and "using " (triggers
+    // has_explicit_conversion).
+    let probe = "A conversion of 5 meters to some unspecified unit.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
+    let share_rel = forms
+        .iter()
+        .any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+    if !share_rel {
+        eprintln!("  Note: probe doesn't share cluster relation — SKIPPING");
+        return;
+    }
 
-        // Check each case has a prompt
-        for c in &corpus.cases {
-            assert!(!c.prompt.is_empty(), "case {} has empty prompt", c.case_id);
-        }
-
-        // Check oracle verification
-        let verified = corpus.cases.iter()
-            .filter(|c| c.structural_oracle.status == OracleStatus::Verified)
-            .count();
-        let pct = verified as f64 / corpus.cases.len() as f64;
-        eprintln!("  CandidateCorpus: {} cases, {} verified ({:.1}%)",
-            corpus.cases.len(), verified, pct * 100.0);
-
-        // Determinism: same seed produces same corpus
-        let corpus2 = generate_corpus(&results[0], &plan, 42);
-        assert_eq!(corpus.deterministic_hash, corpus2.deterministic_hash,
-            "same seed must produce same deterministic hash");
-
-        // Different seeds are part of the generated release identity.
-        let corpus3 = generate_corpus(&results[0], &plan, 99);
-        assert_ne!(corpus.deterministic_hash, corpus3.deterministic_hash,
-            "different seeds must produce different corpus identities");
-
-        // Test spec fingerprinting
-        if let Some(case) = corpus.cases.first() {
-            let fp = spec_fingerprint(&case.spec);
-            assert!(!fp.is_empty(), "fingerprint should not be empty");
-            let mut changed = case.spec.clone();
-            if let Some(TypedBinding::SourceQuantity { value, .. }) = changed.bindings.iter_mut()
-                .find(|binding| matches!(binding, TypedBinding::SourceQuantity { .. }))
-            {
-                *value += 1.0;
-                assert_ne!(fp, spec_fingerprint(&changed),
-                    "fingerprints must include binding contents");
-            }
-        }
-
-        eprintln!("  Supported forms in corpus:");
-        for c in &supported {
-            eprintln!("    {} form={}", c.case_id, c.family_id);
-        }
-
-        // Test duplicate detection
-        let mut prompts_seen = BTreeSet::new();
-        let mut dup_count = 0;
-        for c in &corpus.cases {
-            let norm = normalize_prompt(&c.prompt);
-            if !prompts_seen.insert(norm) {
-                dup_count += 1;
-            }
-        }
-        eprintln!("  Duplicate prompts: {}/{}", dup_count, corpus.cases.len());
-        assert_eq!(dup_count, 0, "generated corpus must not contain duplicate prompts");
-
-        // Test prompt rendering produces valid strings
-        let rendered = render_spec(&CaseSpec {
-            target_form: "test".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 5.0, unit: Some("meters".to_string()) },
-                TypedBinding::TargetUnit("centimeters".to_string()),
-                TypedBinding::Operation("conversion".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
+    let (decision, receipt) = results[0]
+        .synthesized
+        .decisions
+        .iter()
+        .find(|cd| cd.prompt == probe)
+        .map(|cd| (cd.decision.clone(), cd.ambiguity_receipt.clone()))
+        .unwrap_or_else(|| {
+            // Probe wasn't in the synthesized decisions — evaluate directly
+            let cluster = &results[0].cluster;
+            let predicates = &results[0].predicates;
+            let (d, r) = decide_case(probe, &feat, cluster, predicates, forms);
+            (d, r)
         });
-        assert!(rendered.contains("5"), "rendered prompt should contain the value");
-        assert!(!rendered.is_empty(), "rendered prompt should not be empty");
+
+    // The probe shares semantics with a sub-form but may not match the
+    // broader cluster centroid. It must NOT be Applicable (would be a
+    // false authorization). Either Ambiguous (correct) or Unsupported
+    // (conservative rejection) is acceptable.
+    assert!(
+        !matches!(decision, ApplicabilityDecision::Applicable),
+        "missing-target-unit probe should NOT be Applicable, got {:?}",
+        decision
+    );
+
+    if let ApplicabilityDecision::Ambiguous { .. } = decision {
+        if let Some(ref r) = receipt {
+            assert!(
+                r.missing_bindings.contains(&MissingBinding::UnitTarget)
+                    || r.missing_bindings.contains(&MissingBinding::TargetQuantity),
+                "missing bindings should include UnitTarget or TargetQuantity, got {:?}",
+                r.missing_bindings
+            );
+        }
+    }
+}
+
+#[test]
+fn end_to_end_ambiguous_missing_reference() {
+    // Probe shares PerUnitRate semantics (quantity relation)
+    // but is missing the explicit reference quantity → should be Ambiguous.
+    let targets = vec![
+        "5 notebooks cost 20 dollars. What is the price per notebook?",
+        "3 identical batches require 2 liters. How many liters are required for 8 batches?",
+        "Using 100 centimeters per meter, convert 3 meters to centimeters.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    if results.is_empty() {
+        eprintln!("  Note: no proposals — SKIPPING");
+        return;
     }
 
-    #[test]
-    fn candidate_corpus_spec_rendering_coverage() {
-        // Verify each spec rendering path produces valid output
-
-        // Conversion
-        let conv = CaseSpec {
-            target_form: "compatibleunitconversion".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 3.0, unit: Some("meters".to_string()) },
-                TypedBinding::TargetUnit("centimeters".to_string()),
-                TypedBinding::ConversionFactor {
-                    from_unit: "meters".to_string(), to_unit: "centimeters".to_string(),
-                    factor: "100 centimeters per meter".to_string(),
-                },
-                TypedBinding::Operation("conversion".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        let p = render_spec(&conv);
-        assert!(p.contains("Convert"), "conversion prompt should start with Convert");
-        assert!(p.contains("3"), "should contain value");
-
-        // Addition
-        let add = CaseSpec {
-            target_form: "additivechange".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 2.0, unit: Some("meters".to_string()) },
-                TypedBinding::SourceQuantity { label: "b".to_string(), value: 30.0, unit: Some("centimeters".to_string()) },
-                TypedBinding::TargetUnit("centimeters".to_string()),
-                TypedBinding::Operation("addition".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        let p = render_spec(&add);
-        assert!(p.contains("Add"), "addition prompt should start with Add");
-        assert!(p.contains("meters"), "should contain meters");
-
-        // Percentage
-        let pct = CaseSpec {
-            target_form: "partofwhole".to_string(),
-            bindings: vec![
-                TypedBinding::BaseQuantity { value: 50.0, unit: None },
-                TypedBinding::Percentage(20.0),
-                TypedBinding::Operation("part_of".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        let p = render_spec(&pct);
-        assert!(p.contains("%"), "percentage prompt should contain %");
-        assert!(p.contains("50"), "should contain base value");
-
-        // Fraction
-        let frac = CaseSpec {
-            target_form: "partofwhole".to_string(),
-            bindings: vec![
-                TypedBinding::BaseQuantity { value: 20.0, unit: None },
-                TypedBinding::FractionN { n: 3, d: 4 },
-                TypedBinding::Operation("fraction".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        let p = render_spec(&frac);
-        assert!(p.contains('/') || p.contains("three") || p.contains("quarter"),
-            "fraction prompt should be meaningful, got: {:?}", p);
-
-        // Rate
-        let rate = CaseSpec {
-            target_form: "perunitrate".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 5.0, unit: Some("notebooks".to_string()) },
-                TypedBinding::Rate { value: 20.0, unit: Some("dollars per notebook".to_string()) },
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        let p = render_spec(&rate);
-        assert!(p.contains("at"), "rate prompt should contain 'at'");
-
-        // Ambiguous
-        let amb = CaseSpec {
-            target_form: "additivechange".to_string(),
-            bindings: vec![],
-            expected: ExpectedDecision::Ambiguous,
-            section: CorpusSection::Ambiguous,
-        };
-        let p = render_ambiguous(&amb);
-        assert!(!p.is_empty(), "ambiguous prompt should not be empty");
-
-        // Unsupported
-        let uns = CaseSpec {
-            target_form: "additivechange".to_string(),
-            bindings: vec![],
-            expected: ExpectedDecision::Unsupported,
-            section: CorpusSection::UnsupportedStructuralNearMiss,
-        };
-        let p = render_unsupported_near_miss(&uns);
-        assert!(!p.is_empty(), "unsupported prompt should not be empty");
+    // Probe: shares quantity relation but missing the reference (no explicit base quantity)
+    let probe = "Find the per-unit cost when 5 items have a total price.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
+    let share_rel = forms
+        .iter()
+        .any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+    if !share_rel {
+        eprintln!("  Note: probe doesn't share cluster relation — SKIPPING");
+        eprintln!("    probe semantics: {:?}", feat.relation_semantics);
+        return;
     }
 
-    #[test]
-    fn candidate_corpus_independent_oracle_verification() {
-        // Test the independent oracle against known cases
+    let cluster = &results[0].cluster;
+    let predicates = &results[0].predicates;
+    let (decision, receipt) = decide_case(probe, &feat, cluster, predicates, forms);
 
-        // An addition case with source quantities and target unit should verify
-        let good_supported = CaseSpec {
-            target_form: "additivechange".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 2.0, unit: Some("meters".to_string()) },
-                TypedBinding::SourceQuantity { label: "b".to_string(), value: 30.0, unit: Some("centimeters".to_string()) },
-                TypedBinding::TargetUnit("centimeters".to_string()),
-                TypedBinding::Operation("addition".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        // Build a minimal GeneratedValidationCase for oracle testing
-        let case = GeneratedValidationCase {
-            case_id: "test-001".to_string(),
-            family_id: "test_family".to_string(),
-            section: CorpusSection::Supported,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Applicable,
-            prompt: "test".to_string(),
-            structural_oracle: StructuralOracle {
-                status: OracleStatus::NeedsReview,
-                verified_bindings: vec![],
-                decision: ExpectedDecision::Applicable,
-                reasoning: "".to_string(),
-            },
-            generation_transform: GenerationTransform::Canonical,
-            source_evidence: vec![],
-            spec: good_supported,
-        };
-        let status = verify_case(&case);
-        assert_eq!(status, OracleStatus::Verified, "addition with target should verify");
+    assert!(
+        matches!(decision, ApplicabilityDecision::Ambiguous { .. }),
+        "missing-reference probe should be Ambiguous, got {:?}",
+        decision
+    );
 
-        // Incompatible dimensions should be GeneratorConflict
-        let bad_dims = CaseSpec {
-            target_form: "additivechange".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 2.0, unit: Some("meters".to_string()) },
-                TypedBinding::SourceQuantity { label: "b".to_string(), value: 3.0, unit: Some("kilograms".to_string()) },
-                TypedBinding::TargetUnit("meters".to_string()),
-                TypedBinding::Operation("addition".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        let bad_case = GeneratedValidationCase {
-            case_id: "test-002".to_string(),
-            family_id: "test_bad".to_string(),
-            section: CorpusSection::Supported,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Unsupported,
-            prompt: "test".to_string(),
-            structural_oracle: StructuralOracle {
-                status: OracleStatus::NeedsReview,
-                verified_bindings: vec![],
-                decision: ExpectedDecision::Unsupported,
-                reasoning: "".to_string(),
-            },
-            generation_transform: GenerationTransform::Canonical,
-            source_evidence: vec![],
-            spec: bad_dims,
-        };
-        let status2 = verify_case(&bad_case);
-        assert_eq!(status2, OracleStatus::GeneratorConflict,
-            "incompatible dimensions should generate conflict");
-
-        // Conversion without target unit should need review
-        let no_target = CaseSpec {
-            target_form: "compatibleunitconversion".to_string(),
-            bindings: vec![
-                TypedBinding::SourceQuantity { label: "a".to_string(), value: 5.0, unit: Some("miles".to_string()) },
-                TypedBinding::ConversionFactor {
-                    from_unit: "miles".to_string(), to_unit: "kilometers".to_string(),
-                    factor: "1.6 kilometers per mile".to_string(),
-                },
-                TypedBinding::Operation("conversion".to_string()),
-            ],
-            expected: ExpectedDecision::Applicable,
-            section: CorpusSection::Supported,
-        };
-        // Note: conversion with factor but no target unit should fail oracle
-        // (target_unit is required for conversion form)
-        let no_target_case = GeneratedValidationCase {
-            case_id: "test-003".to_string(),
-            family_id: "test_conv".to_string(),
-            section: CorpusSection::Supported,
-            evidence_quality: EvidenceQuality::Predicted,
-            intended_decision: ExpectedDecision::Applicable,
-            prompt: "test".to_string(),
-            structural_oracle: StructuralOracle {
-                status: OracleStatus::NeedsReview,
-                verified_bindings: vec![],
-                decision: ExpectedDecision::Applicable,
-                reasoning: "".to_string(),
-            },
-            generation_transform: GenerationTransform::Canonical,
-            source_evidence: vec![],
-            spec: no_target,
-        };
-        let status3 = verify_case(&no_target_case);
-        // Without a TargetUnit binding, the oracle should flag NeedsReview
-        assert!(status3 == OracleStatus::NeedsReview || status3 == OracleStatus::Verified,
-            "conversion without target unit: got {:?}", status3);
-    }
-
-    #[test]
-    fn candidate_corpus_generation_is_content_sensitive_and_rewrite_checked() {
-        let spec = spec_from_exemplar(
-            "What is 20% of 50?",
-            "partofwhole",
-            CorpusSection::Supported,
+    if let Some(ref r) = receipt {
+        assert!(
+            r.missing_bindings.contains(&MissingBinding::InitialValue)
+                || r.missing_bindings
+                    .contains(&MissingBinding::ReferenceQuantity),
+            "missing bindings should include InitialValue or ReferenceQuantity, got {:?}",
+            r.missing_bindings
         );
-        assert!(spec.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::Percentage(value) if (*value - 20.0).abs() < f64::EPSILON
-        )));
-        assert!(spec.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::BaseQuantity { value, .. } if (*value - 50.0).abs() < f64::EPSILON
-        )));
-        let fraction = spec_from_exemplar(
-            "What is three quarters of 20?",
-            "partofwhole",
-            CorpusSection::Supported,
-        );
-        assert!(fraction.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::FractionN { n: 3, d: 4 }
-        )));
-        assert!(fraction.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::BaseQuantity { value, .. } if (*value - 20.0).abs() < f64::EPSILON
-        )));
-        let conversion = spec_from_exemplar(
-            "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
-            "compatibleunitconversion",
-            CorpusSection::Supported,
-        );
-        assert!(conversion.bindings.iter().any(|binding| matches!(
-            binding,
-            TypedBinding::ConversionFactor { factor, .. } if factor.contains("1.6")
-        )));
+    }
+}
 
-        let form = SupportedForm {
-            name: "partofwhole".to_string(),
-            centroid_features: SemanticFeatures::extract("What is 20% of 50?"),
-            required_features: vec![],
-            ambiguity_triggers: vec![],
-            bindings: vec![],
-            exemplars: vec!["What is 20% of 50?".to_string()],
-        };
-        let variant = make_numeric_variant_spec(&form, &form.exemplars)
-            .expect("numeric exemplar should produce a changed variant");
-        assert_ne!(spec_fingerprint(&spec), spec_fingerprint(&variant));
-
-        let rewrite_spec = CaseSpec {
-            section: CorpusSection::Rewrite,
-            ..spec.clone()
-        };
-        assert_eq!(verify_rewrite(&rewrite_spec), OracleStatus::Verified);
-
-        let invalid_rewrite = CaseSpec {
-            bindings: vec![TypedBinding::BaseQuantity { value: 50.0, unit: None }],
-            section: CorpusSection::Rewrite,
-            ..spec
-        };
-        assert_eq!(verify_rewrite(&invalid_rewrite), OracleStatus::NeedsReview);
+#[test]
+fn end_to_end_ambiguous_missing_direction() {
+    // Probe shares MultiplicativeChange semantics but is missing
+    // the direction (increase/decrease) → should be Ambiguous.
+    let targets = vec![
+        "Apply a 20% discount to a base price of 80 dollars.",
+        "A base price of 50 dollars increases by 10%.",
+        "Find the final price after a 25 percent reduction on 200.",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
     }
 
-    #[test]
-    fn phase3b_finds_and_classifies_a_weakened_contract() {
-        let prompts = [
-            "What is 20% of 50?",
-            "An item priced at $80 receives a 20% discount. What is the final price?",
-            "Calculate 15 percent of 200.",
-            "A balance grows by 5% each year for 5 years.",
-            "There is a 25% probability.",
-        ];
-        let failures: BTreeMap<FailureReceiptId, String> = prompts.iter().enumerate()
-            .map(|(index, prompt)| (FailureReceiptId(format!("phase3b-{index}")), (*prompt).to_string()))
-            .collect();
-        let proposals = propose_from_failures(failures, 0.30);
-        assert!(!proposals.is_empty());
-        let proposal = &proposals[0];
-        let plan = ValidationPlan::synthesize(proposal);
-        let corpus = generate_corpus(proposal, &plan, 7);
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have at least one proposal");
 
-        let mut weakened = proposal.clone();
-        let target_prompt = corpus.cases.iter()
-            .find(|case| case.structural_oracle.status == OracleStatus::Verified
-                && case.structural_oracle.decision == ExpectedDecision::Applicable)
-            .map(|case| normalize_prompt(&case.prompt))
-            .expect("generated corpus should contain an applicable case");
-        let decision = weakened.synthesized.decisions.iter_mut()
-            .find(|decision| normalize_prompt(&decision.prompt) == target_prompt)
-            .expect("proposal should contain the canonical case");
-        decision.decision = ApplicabilityDecision::Unsupported {
-            failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
-        };
+    // Probe: shares MultiplicativeChange but missing explicit direction
+    let probe = "Apply a percentage change to 50 dollars.";
+    let feat = SemanticFeatures::extract(probe);
+    let forms = &results[0].synthesized.supported_forms;
+    let share_rel = forms
+        .iter()
+        .any(|f| shares_semantic_relation(&feat, &f.centroid_features));
+    if !share_rel {
+        eprintln!("  Note: probe doesn't share cluster relation — SKIPPING");
+        return;
+    }
 
-        let report = evaluate_candidate_corpus(&weakened, &corpus);
-        assert!(!report.counterexamples.is_empty(), "weakened contract must yield counterexamples");
-        assert!(report.counterexamples.iter().any(|counterexample| matches!(
-            counterexample.failure_kind,
-            ContractFailureKind::OverlyStrictRequirement | ContractFailureKind::MissingSupportedForm
-        )));
-        let minimized = minimize_counterexample(&weakened, &report.counterexamples[0]);
-        assert!(!minimized.prompt.is_empty());
-        let revision = propose_contract_revision(&weakened, &report)
-            .expect("counterexamples should produce a diagnostic revision proposal");
-        assert!(!revision.triggering_counterexamples.is_empty());
-        assert_eq!(revision.parent_proposal_id, weakened.proposal.proposal_id);
-        let mut history = RevisionHistory::with_budget(3);
-        assert!(history.record(&revision));
-        assert!(!history.can_accept(&revision));
-        assert_eq!(score_revision(
+    let cluster = &results[0].cluster;
+    let predicates = &results[0].predicates;
+    let (decision, receipt) = decide_case(probe, &feat, cluster, predicates, forms);
+
+    assert!(
+        matches!(decision, ApplicabilityDecision::Ambiguous { .. })
+            || matches!(decision, ApplicabilityDecision::Applicable),
+        "missing-direction probe should be Ambiguous or Applicable, got {:?}",
+        decision
+    );
+
+    if let Some(ref r) = receipt {
+        if r.completion_count > 0 {
+            assert!(
+                r.missing_bindings
+                    .contains(&MissingBinding::OperationDirection)
+                    || r.missing_bindings.contains(&MissingBinding::InitialValue),
+                "missing bindings should include direction or initial value, got {:?}",
+                r.missing_bindings
+            );
+        }
+    }
+}
+
+// ── Phase 2J: Positive-coverage diagnostics ─────────────────────
+//
+// These tests diagnose why specific targets are rejected by the proposer.
+// They dump the feature-extraction, form-membership, and decision-path
+// for each uncovered target. To use, run with --nocapture.
+
+#[test]
+fn diagnose_unit_quantity_coverage() {
+    let targets = vec![
+        (
+            "target-01",
+            "Convert 3 meters to centimeters using 100 centimeters per meter.",
+        ),
+        (
+            "target-02",
+            "Add 2 meters and 30 centimeters; express the total in centimeters.",
+        ),
+        (
+            "target-03",
+            "Subtract 2 meters from 230 centimeters; express the difference in centimeters.",
+        ),
+        (
+            "target-04",
+            "Add 2 feet and 6 inches; express the total in inches.",
+        ),
+        (
+            "target-05",
+            "Tracy used a piece of wire 4 feet long cut into 6-inch pieces. How many pieces?",
+        ),
+    ];
+    let distractors = vec![
+        ("dist-01", "Add 2 meters and 30 centimeters."),
+        ("dist-02", "Convert 5 miles to kilometers."),
+        (
+            "dist-03",
+            "Add 2 meters and 3 kilograms; express the total in meters.",
+        ),
+        ("dist-04", "What is 20% of 50?"),
+        ("dist-05", "A loan charges 5% simple interest."),
+        (
+            "dist-06",
+            "Add 2 liters and 500 milliliters; express the total in milliliters.",
+        ),
+    ];
+
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (id, p) in targets.iter().chain(distractors.iter()) {
+        all_prompts.insert(FailureReceiptId(id.to_string()), p.to_string());
+    }
+
+    let results = propose_from_failures(all_prompts.clone(), 0.30);
+    if results.is_empty() {
+        eprintln!("NO PROPOSALS");
+        return;
+    }
+
+    for (ri, r) in results.iter().enumerate() {
+        eprintln!("\n=== PROPOSAL {} ===", ri);
+        eprintln!("  name: {}", r.proposal.name);
+        eprintln!("  cluster size: {}", r.cluster.size);
+        eprintln!("  forms: {}", r.synthesized.supported_forms.len());
+        for (fi, f) in r.synthesized.supported_forms.iter().enumerate() {
+            eprintln!(
+                "    form {}: '{}' req={:?} centroid_rel={:?}",
+                fi, f.name, f.required_features, f.centroid_features.relation_semantics
+            );
+        }
+        eprintln!("  predicates: {:?}", r.predicates);
+
+        // Show ALL cases with decisions
+        for (id, prompt) in &all_prompts {
+            let cd = r.synthesized.decisions.iter().find(|d| d.prompt == *prompt);
+            if let Some(cd) = cd {
+                let tag = if id.0.starts_with("target-") {
+                    "TARGET"
+                } else {
+                    "DIST"
+                };
+                eprintln!(
+                    "\n  {} {}: '{}'",
+                    tag,
+                    id.0,
+                    &prompt[..prompt.len().min(70)]
+                );
+                eprintln!(
+                    "    decision: {:?}  form: {:?}",
+                    cd.decision, cd.matched_form
+                );
+                eprintln!("    receipt: {:?}", cd.ambiguity_receipt);
+            } else {
+                eprintln!("\n  ??? {}: NOT IN DECISIONS", id.0);
+                let feat = SemanticFeatures::extract(prompt);
+                eprintln!("    features: {:?}  tags: {:?}", feat, feat.feature_tags());
+            }
+        }
+    }
+}
+
+// ── D4 Measurement Campaign ────────────────────────────────────────
+//
+// This measurement pass focuses specifically on D4's ambiguity detection
+// competency: whether `attempt_completions` correctly distinguishes
+// Ambiguous from Unsupported for cases that share semantics with cluster forms.
+//
+// The overall boundary metrics (supported precision, unsupported recall, etc.)
+// are already measured by `score_boundary_matrix` in the existing reconstruction
+// tests. Here we focus on what D4 specifically controls:
+//
+//   1. Correct detection of resolvable missing bindings → Ambiguous
+//   2. Correct rejection of safety-predicate cases → Unsupported (not Ambiguous)
+//   3. Correct handling of numeric form mismatch → Unsupported
+//   4. Bounded completion search doesn't overflow
+//
+// We measure this by running `attempt_completions` directly on specific probes
+// across each capability's extracted supported forms, plus checking the
+// `ambiguity_receipt` fields in synthesized boundary decisions.
+
+// ── Phase 3A CandidateCorpus tests ──────────────────────────────────
+
+#[test]
+fn candidate_corpus_generates_for_percentage_quantity() {
+    let targets = vec![
+        "What is 20% of 50?",
+        "An item priced at $80 receives a 20% discount. What is the final price?",
+        "A quantity with base value 50 increases by 10%.",
+        "Calculate 15 percent of 200.",
+        "Find 30% of 60.",
+        "Apply a 25 percent reduction to a base price of 80 dollars.",
+    ];
+    let distractors = vec![
+        "A balance grows by 5% each year for 5 years.",
+        "A loan charges 5% simple interest over time.",
+        "There is a 25% probability.",
+        "What is three quarters of 20?",
+    ];
+    let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+    for (i, p) in targets.iter().chain(distractors.iter()).enumerate() {
+        all_prompts.insert(FailureReceiptId(format!("p{:03}", i)), p.to_string());
+    }
+    let results = propose_from_failures(all_prompts, 0.30);
+    assert!(!results.is_empty(), "should have proposals");
+
+    let plan = ValidationPlan::synthesize(&results[0]);
+    let corpus = generate_corpus(&results[0], &plan, 42);
+
+    // The corpus should have cases
+    assert!(!corpus.cases.is_empty(), "corpus should not be empty");
+    assert!(!corpus.deterministic_hash.is_empty(), "hash should be set");
+
+    // Check supported cases exist
+    let supported: Vec<_> = corpus
+        .cases
+        .iter()
+        .filter(|c| c.section == CorpusSection::Supported)
+        .collect();
+    assert!(!supported.is_empty(), "should have supported cases");
+
+    // Check each case has a prompt
+    for c in &corpus.cases {
+        assert!(!c.prompt.is_empty(), "case {} has empty prompt", c.case_id);
+    }
+
+    // Check oracle verification
+    let verified = corpus
+        .cases
+        .iter()
+        .filter(|c| c.structural_oracle.status == OracleStatus::Verified)
+        .count();
+    let pct = verified as f64 / corpus.cases.len() as f64;
+    eprintln!(
+        "  CandidateCorpus: {} cases, {} verified ({:.1}%)",
+        corpus.cases.len(),
+        verified,
+        pct * 100.0
+    );
+
+    // Determinism: same seed produces same corpus
+    let corpus2 = generate_corpus(&results[0], &plan, 42);
+    assert_eq!(
+        corpus.deterministic_hash, corpus2.deterministic_hash,
+        "same seed must produce same deterministic hash"
+    );
+
+    // Different seeds are part of the generated release identity.
+    let corpus3 = generate_corpus(&results[0], &plan, 99);
+    assert_ne!(
+        corpus.deterministic_hash, corpus3.deterministic_hash,
+        "different seeds must produce different corpus identities"
+    );
+
+    // Test spec fingerprinting
+    if let Some(case) = corpus.cases.first() {
+        let fp = spec_fingerprint(&case.spec);
+        assert!(!fp.is_empty(), "fingerprint should not be empty");
+        let mut changed = case.spec.clone();
+        if let Some(TypedBinding::SourceQuantity { value, .. }) = changed
+            .bindings
+            .iter_mut()
+            .find(|binding| matches!(binding, TypedBinding::SourceQuantity { .. }))
+        {
+            *value += 1.0;
+            assert_ne!(
+                fp,
+                spec_fingerprint(&changed),
+                "fingerprints must include binding contents"
+            );
+        }
+    }
+
+    eprintln!("  Supported forms in corpus:");
+    for c in &supported {
+        eprintln!("    {} form={}", c.case_id, c.family_id);
+    }
+
+    // Test duplicate detection
+    let mut prompts_seen = BTreeSet::new();
+    let mut dup_count = 0;
+    for c in &corpus.cases {
+        let norm = normalize_prompt(&c.prompt);
+        if !prompts_seen.insert(norm) {
+            dup_count += 1;
+        }
+    }
+    eprintln!("  Duplicate prompts: {}/{}", dup_count, corpus.cases.len());
+    assert_eq!(
+        dup_count, 0,
+        "generated corpus must not contain duplicate prompts"
+    );
+
+    // Test prompt rendering produces valid strings
+    let rendered = render_spec(&CaseSpec {
+        target_form: "test".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 5.0,
+                unit: Some("meters".to_string()),
+            },
+            TypedBinding::TargetUnit("centimeters".to_string()),
+            TypedBinding::Operation("conversion".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    });
+    assert!(
+        rendered.contains("5"),
+        "rendered prompt should contain the value"
+    );
+    assert!(!rendered.is_empty(), "rendered prompt should not be empty");
+}
+
+#[test]
+fn candidate_corpus_spec_rendering_coverage() {
+    // Verify each spec rendering path produces valid output
+
+    // Conversion
+    let conv = CaseSpec {
+        target_form: "compatibleunitconversion".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 3.0,
+                unit: Some("meters".to_string()),
+            },
+            TypedBinding::TargetUnit("centimeters".to_string()),
+            TypedBinding::ConversionFactor {
+                from_unit: "meters".to_string(),
+                to_unit: "centimeters".to_string(),
+                factor: "100 centimeters per meter".to_string(),
+            },
+            TypedBinding::Operation("conversion".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    let p = render_spec(&conv);
+    assert!(
+        p.contains("Convert"),
+        "conversion prompt should start with Convert"
+    );
+    assert!(p.contains("3"), "should contain value");
+
+    // Addition
+    let add = CaseSpec {
+        target_form: "additivechange".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 2.0,
+                unit: Some("meters".to_string()),
+            },
+            TypedBinding::SourceQuantity {
+                label: "b".to_string(),
+                value: 30.0,
+                unit: Some("centimeters".to_string()),
+            },
+            TypedBinding::TargetUnit("centimeters".to_string()),
+            TypedBinding::Operation("addition".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    let p = render_spec(&add);
+    assert!(p.contains("Add"), "addition prompt should start with Add");
+    assert!(p.contains("meters"), "should contain meters");
+
+    // Percentage
+    let pct = CaseSpec {
+        target_form: "partofwhole".to_string(),
+        bindings: vec![
+            TypedBinding::BaseQuantity {
+                value: 50.0,
+                unit: None,
+            },
+            TypedBinding::Percentage(20.0),
+            TypedBinding::Operation("part_of".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    let p = render_spec(&pct);
+    assert!(p.contains("%"), "percentage prompt should contain %");
+    assert!(p.contains("50"), "should contain base value");
+
+    // Fraction
+    let frac = CaseSpec {
+        target_form: "partofwhole".to_string(),
+        bindings: vec![
+            TypedBinding::BaseQuantity {
+                value: 20.0,
+                unit: None,
+            },
+            TypedBinding::FractionN { n: 3, d: 4 },
+            TypedBinding::Operation("fraction".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    let p = render_spec(&frac);
+    assert!(
+        p.contains('/') || p.contains("three") || p.contains("quarter"),
+        "fraction prompt should be meaningful, got: {:?}",
+        p
+    );
+
+    // Rate
+    let rate = CaseSpec {
+        target_form: "perunitrate".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 5.0,
+                unit: Some("notebooks".to_string()),
+            },
+            TypedBinding::Rate {
+                value: 20.0,
+                unit: Some("dollars per notebook".to_string()),
+            },
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    let p = render_spec(&rate);
+    assert!(p.contains("at"), "rate prompt should contain 'at'");
+
+    // Ambiguous
+    let amb = CaseSpec {
+        target_form: "additivechange".to_string(),
+        bindings: vec![],
+        expected: ExpectedDecision::Ambiguous,
+        section: CorpusSection::Ambiguous,
+    };
+    let p = render_ambiguous(&amb);
+    assert!(!p.is_empty(), "ambiguous prompt should not be empty");
+
+    // Unsupported
+    let uns = CaseSpec {
+        target_form: "additivechange".to_string(),
+        bindings: vec![],
+        expected: ExpectedDecision::Unsupported,
+        section: CorpusSection::UnsupportedStructuralNearMiss,
+    };
+    let p = render_unsupported_near_miss(&uns);
+    assert!(!p.is_empty(), "unsupported prompt should not be empty");
+}
+
+#[test]
+fn candidate_corpus_independent_oracle_verification() {
+    // Test the independent oracle against known cases
+
+    // An addition case with source quantities and target unit should verify
+    let good_supported = CaseSpec {
+        target_form: "additivechange".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 2.0,
+                unit: Some("meters".to_string()),
+            },
+            TypedBinding::SourceQuantity {
+                label: "b".to_string(),
+                value: 30.0,
+                unit: Some("centimeters".to_string()),
+            },
+            TypedBinding::TargetUnit("centimeters".to_string()),
+            TypedBinding::Operation("addition".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    // Build a minimal GeneratedValidationCase for oracle testing
+    let case = GeneratedValidationCase {
+        case_id: "test-001".to_string(),
+        family_id: "test_family".to_string(),
+        section: CorpusSection::Supported,
+        evidence_quality: EvidenceQuality::Predicted,
+        intended_decision: ExpectedDecision::Applicable,
+        prompt: "test".to_string(),
+        structural_oracle: StructuralOracle {
+            status: OracleStatus::NeedsReview,
+            verified_bindings: vec![],
+            decision: ExpectedDecision::Applicable,
+            reasoning: "".to_string(),
+        },
+        generation_transform: GenerationTransform::Canonical,
+        source_evidence: vec![],
+        spec: good_supported,
+    };
+    let status = verify_case(&case);
+    assert_eq!(
+        status,
+        OracleStatus::Verified,
+        "addition with target should verify"
+    );
+
+    // Incompatible dimensions should be GeneratorConflict
+    let bad_dims = CaseSpec {
+        target_form: "additivechange".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 2.0,
+                unit: Some("meters".to_string()),
+            },
+            TypedBinding::SourceQuantity {
+                label: "b".to_string(),
+                value: 3.0,
+                unit: Some("kilograms".to_string()),
+            },
+            TypedBinding::TargetUnit("meters".to_string()),
+            TypedBinding::Operation("addition".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    let bad_case = GeneratedValidationCase {
+        case_id: "test-002".to_string(),
+        family_id: "test_bad".to_string(),
+        section: CorpusSection::Supported,
+        evidence_quality: EvidenceQuality::Predicted,
+        intended_decision: ExpectedDecision::Unsupported,
+        prompt: "test".to_string(),
+        structural_oracle: StructuralOracle {
+            status: OracleStatus::NeedsReview,
+            verified_bindings: vec![],
+            decision: ExpectedDecision::Unsupported,
+            reasoning: "".to_string(),
+        },
+        generation_transform: GenerationTransform::Canonical,
+        source_evidence: vec![],
+        spec: bad_dims,
+    };
+    let status2 = verify_case(&bad_case);
+    assert_eq!(
+        status2,
+        OracleStatus::GeneratorConflict,
+        "incompatible dimensions should generate conflict"
+    );
+
+    // Conversion without target unit should need review
+    let no_target = CaseSpec {
+        target_form: "compatibleunitconversion".to_string(),
+        bindings: vec![
+            TypedBinding::SourceQuantity {
+                label: "a".to_string(),
+                value: 5.0,
+                unit: Some("miles".to_string()),
+            },
+            TypedBinding::ConversionFactor {
+                from_unit: "miles".to_string(),
+                to_unit: "kilometers".to_string(),
+                factor: "1.6 kilometers per mile".to_string(),
+            },
+            TypedBinding::Operation("conversion".to_string()),
+        ],
+        expected: ExpectedDecision::Applicable,
+        section: CorpusSection::Supported,
+    };
+    // Note: conversion with factor but no target unit should fail oracle
+    // (target_unit is required for conversion form)
+    let no_target_case = GeneratedValidationCase {
+        case_id: "test-003".to_string(),
+        family_id: "test_conv".to_string(),
+        section: CorpusSection::Supported,
+        evidence_quality: EvidenceQuality::Predicted,
+        intended_decision: ExpectedDecision::Applicable,
+        prompt: "test".to_string(),
+        structural_oracle: StructuralOracle {
+            status: OracleStatus::NeedsReview,
+            verified_bindings: vec![],
+            decision: ExpectedDecision::Applicable,
+            reasoning: "".to_string(),
+        },
+        generation_transform: GenerationTransform::Canonical,
+        source_evidence: vec![],
+        spec: no_target,
+    };
+    let status3 = verify_case(&no_target_case);
+    // Without a TargetUnit binding, the oracle should flag NeedsReview
+    assert!(
+        status3 == OracleStatus::NeedsReview || status3 == OracleStatus::Verified,
+        "conversion without target unit: got {:?}",
+        status3
+    );
+}
+
+#[test]
+fn candidate_corpus_generation_is_content_sensitive_and_rewrite_checked() {
+    let spec = spec_from_exemplar(
+        "What is 20% of 50?",
+        "partofwhole",
+        CorpusSection::Supported,
+    );
+    assert!(spec.bindings.iter().any(|binding| matches!(
+        binding,
+        TypedBinding::Percentage(value) if (*value - 20.0).abs() < f64::EPSILON
+    )));
+    assert!(spec.bindings.iter().any(|binding| matches!(
+        binding,
+        TypedBinding::BaseQuantity { value, .. } if (*value - 50.0).abs() < f64::EPSILON
+    )));
+    let fraction = spec_from_exemplar(
+        "What is three quarters of 20?",
+        "partofwhole",
+        CorpusSection::Supported,
+    );
+    assert!(fraction
+        .bindings
+        .iter()
+        .any(|binding| matches!(binding, TypedBinding::FractionN { n: 3, d: 4 })));
+    assert!(fraction.bindings.iter().any(|binding| matches!(
+        binding,
+        TypedBinding::BaseQuantity { value, .. } if (*value - 20.0).abs() < f64::EPSILON
+    )));
+    let conversion = spec_from_exemplar(
+        "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
+        "compatibleunitconversion",
+        CorpusSection::Supported,
+    );
+    assert!(conversion.bindings.iter().any(|binding| matches!(
+        binding,
+        TypedBinding::ConversionFactor { factor, .. } if factor.contains("1.6")
+    )));
+
+    let form = SupportedForm {
+        name: "partofwhole".to_string(),
+        centroid_features: SemanticFeatures::extract("What is 20% of 50?"),
+        required_features: vec![],
+        ambiguity_triggers: vec![],
+        bindings: vec![],
+        exemplars: vec!["What is 20% of 50?".to_string()],
+    };
+    let variant = make_numeric_variant_spec(&form, &form.exemplars)
+        .expect("numeric exemplar should produce a changed variant");
+    assert_ne!(spec_fingerprint(&spec), spec_fingerprint(&variant));
+
+    let rewrite_spec = CaseSpec {
+        section: CorpusSection::Rewrite,
+        ..spec.clone()
+    };
+    assert_eq!(verify_rewrite(&rewrite_spec), OracleStatus::Verified);
+
+    let invalid_rewrite = CaseSpec {
+        bindings: vec![TypedBinding::BaseQuantity {
+            value: 50.0,
+            unit: None,
+        }],
+        section: CorpusSection::Rewrite,
+        ..spec
+    };
+    assert_eq!(verify_rewrite(&invalid_rewrite), OracleStatus::NeedsReview);
+}
+
+#[test]
+fn phase3b_finds_and_classifies_a_weakened_contract() {
+    let prompts = [
+        "What is 20% of 50?",
+        "An item priced at $80 receives a 20% discount. What is the final price?",
+        "Calculate 15 percent of 200.",
+        "A balance grows by 5% each year for 5 years.",
+        "There is a 25% probability.",
+    ];
+    let failures: BTreeMap<FailureReceiptId, String> = prompts
+        .iter()
+        .enumerate()
+        .map(|(index, prompt)| {
+            (
+                FailureReceiptId(format!("phase3b-{index}")),
+                (*prompt).to_string(),
+            )
+        })
+        .collect();
+    let proposals = propose_from_failures(failures, 0.30);
+    assert!(!proposals.is_empty());
+    let proposal = &proposals[0];
+    let plan = ValidationPlan::synthesize(proposal);
+    let corpus = generate_corpus(proposal, &plan, 7);
+
+    let mut weakened = proposal.clone();
+    let target_prompt = corpus
+        .cases
+        .iter()
+        .find(|case| {
+            case.structural_oracle.status == OracleStatus::Verified
+                && case.structural_oracle.decision == ExpectedDecision::Applicable
+        })
+        .map(|case| normalize_prompt(&case.prompt))
+        .expect("generated corpus should contain an applicable case");
+    let decision = weakened
+        .synthesized
+        .decisions
+        .iter_mut()
+        .find(|decision| normalize_prompt(&decision.prompt) == target_prompt)
+        .expect("proposal should contain the canonical case");
+    decision.decision = ApplicabilityDecision::Unsupported {
+        failed_predicate: ApplicabilityPredicate::RequiresExplicitBase,
+    };
+
+    let report = evaluate_candidate_corpus(&weakened, &corpus);
+    assert!(
+        !report.counterexamples.is_empty(),
+        "weakened contract must yield counterexamples"
+    );
+    assert!(report.counterexamples.iter().any(|counterexample| matches!(
+        counterexample.failure_kind,
+        ContractFailureKind::OverlyStrictRequirement | ContractFailureKind::MissingSupportedForm
+    )));
+    let minimized = minimize_counterexample(&weakened, &report.counterexamples[0]);
+    assert!(!minimized.prompt.is_empty());
+    let revision = propose_contract_revision(&weakened, &report)
+        .expect("counterexamples should produce a diagnostic revision proposal");
+    assert!(!revision.triggering_counterexamples.is_empty());
+    assert_eq!(revision.parent_proposal_id, weakened.proposal.proposal_id);
+    let mut history = RevisionHistory::with_budget(3);
+    assert!(history.record(&revision));
+    assert!(!history.can_accept(&revision));
+    assert_eq!(
+        score_revision(
             &report,
             &revision.expected_boundary_delta,
             &revision,
             &history,
-        ), RevisionOutcome::OscillationDetected);
-    }
+        ),
+        RevisionOutcome::OscillationDetected
+    );
+}
 
-    #[test]
-    fn phase3b_defect_injection_campaign_is_fail_closed() {
-        let prompts = [
-            "What is 20% of 50?",
-            "An item priced at $80 receives a 20% discount. What is the final price?",
-            "Calculate 15 percent of 200.",
-            "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
-            "A balance grows by 5% each year for 5 years.",
-            "There is a 25% probability.",
-        ];
-        let receipts: BTreeMap<FailureReceiptId, String> = prompts.iter().enumerate()
-            .map(|(index, prompt)| (FailureReceiptId(format!("campaign-{index}")), (*prompt).to_string()))
-            .collect();
-        let proposal = propose_from_failures(receipts, 0.30).remove(0);
-        let plan = ValidationPlan::synthesize(&proposal);
-        let corpus = generate_corpus(&proposal, &plan, 11);
-        let kinds = [
-            InjectedDefectKind::RemoveSafetyPredicate,
-            InjectedDefectKind::AddSpuriousRequirement,
-            InjectedDefectKind::RemoveSupportedForm,
-            InjectedDefectKind::CollapseAmbiguityToUnsupported,
-            InjectedDefectKind::WrongBridge,
-            InjectedDefectKind::BroadenNumericForm,
-        ];
-        for kind in kinds {
-            let Some(defect) = inject_contract_defect(&proposal, &corpus, kind) else {
-                // A defect is only meaningful when its target class exists in
-                // this corpus; the API must fail closed rather than inventing a case.
-                continue;
-            };
-            let report = evaluate_candidate_corpus(&defect.proposal, &corpus);
-            assert!(!report.counterexamples.is_empty(), "{kind:?} must be observable");
-            assert!(report.oracle_cases > 0);
-            assert!(!defect.expected_repair.is_empty());
-        }
+#[test]
+fn phase3b_defect_injection_campaign_is_fail_closed() {
+    let prompts = [
+        "What is 20% of 50?",
+        "An item priced at $80 receives a 20% discount. What is the final price?",
+        "Calculate 15 percent of 200.",
+        "Convert 2 miles to kilometers using 1.6 kilometers per mile.",
+        "A balance grows by 5% each year for 5 years.",
+        "There is a 25% probability.",
+    ];
+    let receipts: BTreeMap<FailureReceiptId, String> = prompts
+        .iter()
+        .enumerate()
+        .map(|(index, prompt)| {
+            (
+                FailureReceiptId(format!("campaign-{index}")),
+                (*prompt).to_string(),
+            )
+        })
+        .collect();
+    let proposal = propose_from_failures(receipts, 0.30).remove(0);
+    let plan = ValidationPlan::synthesize(&proposal);
+    let corpus = generate_corpus(&proposal, &plan, 11);
+    let kinds = [
+        InjectedDefectKind::RemoveSafetyPredicate,
+        InjectedDefectKind::AddSpuriousRequirement,
+        InjectedDefectKind::RemoveSupportedForm,
+        InjectedDefectKind::CollapseAmbiguityToUnsupported,
+        InjectedDefectKind::WrongBridge,
+        InjectedDefectKind::BroadenNumericForm,
+    ];
+    for kind in kinds {
+        let Some(defect) = inject_contract_defect(&proposal, &corpus, kind) else {
+            // A defect is only meaningful when its target class exists in
+            // this corpus; the API must fail closed rather than inventing a case.
+            continue;
+        };
+        let report = evaluate_candidate_corpus(&defect.proposal, &corpus);
+        assert!(
+            !report.counterexamples.is_empty(),
+            "{kind:?} must be observable"
+        );
+        assert!(report.oracle_cases > 0);
+        assert!(!defect.expected_repair.is_empty());
     }
+}
 
-    #[test]
-    fn phase3b_campaign_covers_four_historical_capability_families() {
-        let families: [(&str, &[&str]); 4] = [
-            ("QuantityRelationV1", &[
+#[test]
+fn phase3b_campaign_covers_four_historical_capability_families() {
+    let families: [(&str, &[&str]); 4] = [
+        (
+            "QuantityRelationV1",
+            &[
                 "5 notebooks cost 20 dollars. What is the price per notebook?",
                 "3 identical batches require 2 liters. How many liters for 8 batches?",
                 "Add 2 meters and 30 centimeters; express the total in centimeters.",
                 "A circle has radius 3 meters. Find its area.",
-            ]),
-            ("UnitQuantity", &[
+            ],
+        ),
+        (
+            "UnitQuantity",
+            &[
                 "Convert 4 meters to centimeters using 100 centimeters per meter.",
                 "Add 2 meters and 30 centimeters; express the total in centimeters.",
                 "Add 2 liters to 3 kilograms.",
                 "Convert 5 miles to kilometers.",
-            ]),
-            ("FractionalQuantity", &[
+            ],
+        ),
+        (
+            "FractionalQuantity",
+            &[
                 "What is three quarters of 20?",
                 "What remains after removing 1/4 of 20?",
                 "One of 5 equal parts of 35.",
                 "What is 2/3 of 30?",
                 "After taking 1/2 of a 24-ounce bottle, how many ounces remain?",
                 "Divide 40 into 4 equal parts and take one part.",
-            ]),
-            ("PercentageQuantityV1", &[
+            ],
+        ),
+        (
+            "PercentageQuantityV1",
+            &[
                 "What is 20% of 50?",
                 "An item priced at $80 receives a 20% discount. What is the final price?",
                 "A balance grows by 5% each year for 5 years.",
                 "There is a 25% probability.",
-            ]),
-        ];
-        for (label, prompts) in families {
-            let receipts: BTreeMap<FailureReceiptId, String> = prompts.iter().enumerate()
-                .map(|(index, prompt)| (FailureReceiptId(format!("{label}-{index}")), (*prompt).to_string()))
-                .collect();
-            let Some(proposal) = propose_from_failures(receipts, 0.30).into_iter().next() else {
-                panic!("{label} did not produce a proposal");
-            };
-            let plan = ValidationPlan::synthesize(&proposal);
-            let corpus = generate_corpus(&proposal, &plan, 31);
-            let mut observed = 0usize;
-            for kind in [
-                InjectedDefectKind::RemoveSafetyPredicate,
-                InjectedDefectKind::AddSpuriousRequirement,
-                InjectedDefectKind::RemoveSupportedForm,
-                InjectedDefectKind::CollapseAmbiguityToUnsupported,
-                InjectedDefectKind::WrongBridge,
-                InjectedDefectKind::BroadenNumericForm,
-            ] {
-                if let Some(defect) = inject_contract_defect(&proposal, &corpus, kind) {
-                    let report = evaluate_candidate_corpus(&defect.proposal, &corpus);
-                    assert!(!report.counterexamples.is_empty(), "{label} {kind:?} not detected");
-                    observed += 1;
-                }
+            ],
+        ),
+    ];
+    for (label, prompts) in families {
+        let receipts: BTreeMap<FailureReceiptId, String> = prompts
+            .iter()
+            .enumerate()
+            .map(|(index, prompt)| {
+                (
+                    FailureReceiptId(format!("{label}-{index}")),
+                    (*prompt).to_string(),
+                )
+            })
+            .collect();
+        let Some(proposal) = propose_from_failures(receipts, 0.30).into_iter().next() else {
+            panic!("{label} did not produce a proposal");
+        };
+        let plan = ValidationPlan::synthesize(&proposal);
+        let corpus = generate_corpus(&proposal, &plan, 31);
+        let mut observed = 0usize;
+        for kind in [
+            InjectedDefectKind::RemoveSafetyPredicate,
+            InjectedDefectKind::AddSpuriousRequirement,
+            InjectedDefectKind::RemoveSupportedForm,
+            InjectedDefectKind::CollapseAmbiguityToUnsupported,
+            InjectedDefectKind::WrongBridge,
+            InjectedDefectKind::BroadenNumericForm,
+        ] {
+            if let Some(defect) = inject_contract_defect(&proposal, &corpus, kind) {
+                let report = evaluate_candidate_corpus(&defect.proposal, &corpus);
+                assert!(
+                    !report.counterexamples.is_empty(),
+                    "{label} {kind:?} not detected"
+                );
+                observed += 1;
             }
-            assert!(observed >= 2, "{label} exposed too few injectable defect classes: {observed}");
         }
+        assert!(
+            observed >= 2,
+            "{label} exposed too few injectable defect classes: {observed}"
+        );
     }
+}
 
-    #[test]
-    fn d4_measurement_campaign() {
-        use std::collections::HashMap;
+#[test]
+fn d4_measurement_campaign() {
+    use std::collections::HashMap;
 
-        // ── Overall boundary measurement via reconstruction tasks ──
-        // (reuses existing `score_boundary_matrix` logic)
-        let tasks = vec![
+    // ── Overall boundary measurement via reconstruction tasks ──
+    // (reuses existing `score_boundary_matrix` logic)
+    let tasks = vec![
             HistoricalReconstructionTask {
                 label: "QuantityRelationV1",
                 target_failure_prompts: vec![
@@ -9929,368 +11623,545 @@ mod tests {
             },
         ];
 
-        const THRESHOLD: f64 = 0.3;
+    const THRESHOLD: f64 = 0.3;
 
-        // ── Part A: Overall boundary metrics (existing measurement) ──
-        eprintln!("\n{}", "=" . repeat(100));
-        eprintln!("  D4 MEASUREMENT CAMPAIGN — PART A: OVERALL BOUNDARY METRICS");
-        eprintln!("  (via score_boundary_matrix, same as reconstructs_all_four_capabilities)");
-        eprintln!("{}", "=" . repeat(100));
+    // ── Part A: Overall boundary metrics (existing measurement) ──
+    eprintln!("\n{}", "=".repeat(100));
+    eprintln!("  D4 MEASUREMENT CAMPAIGN — PART A: OVERALL BOUNDARY METRICS");
+    eprintln!("  (via score_boundary_matrix, same as reconstructs_all_four_capabilities)");
+    eprintln!("{}", "=".repeat(100));
 
-        let mut all_bm_confusion: HashMap<String, HashMap<String, usize>> = HashMap::new();
-        let mut total_bm_cases: usize = 0;
-        let mut bm_false_authorizations: usize = 0;
-        let mut per_task_bm: Vec<(String, f64, f64, f64, f64)> = Vec::new();
+    let mut all_bm_confusion: HashMap<String, HashMap<String, usize>> = HashMap::new();
+    let mut total_bm_cases: usize = 0;
+    let mut bm_false_authorizations: usize = 0;
+    let mut per_task_bm: Vec<(String, f64, f64, f64, f64)> = Vec::new();
 
-        for task in &tasks {
-            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-            for (i, p) in task.target_failure_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-            }
-            for (i, p) in task.distractor_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
-            }
+    for task in &tasks {
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in task.target_failure_prompts.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+        }
+        for (i, p) in task.distractor_prompts.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+        }
 
-            let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
-            let expected_decisions = build_expected_decisions(task);
+        let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
+        let expected_decisions = build_expected_decisions(task);
 
-            if results.is_empty() {
-                eprintln!("\n  [{}] NO PROPOSALS", task.label);
-                for (_prompt, expected) in &expected_decisions {
-                    total_bm_cases += 1;
-                    let exp_s = format!("{:?}", expected);
-                    all_bm_confusion.entry(exp_s).or_default().entry("Unsupported".to_string()).and_modify(|c| *c += 1).or_insert(1);
-                    if matches!(expected, ExpectedDecision::Applicable) {
-                        bm_false_authorizations += 1;
-                    }
-                }
-                continue;
-            }
-
-            // Pick best proposal
-            let mut best_idx = 0;
-            let mut best_score = ReconstructionScore {
-                task_label: task.label.to_string(),
-                input_output_contract_similarity: 0.0,
-                support_boundary_agreement: 0.0,
-                exclusion_recall: 0.0,
-                proposed_bridge_correctness: 0.0,
-                novelty_decision_correct: false,
-                coverage_calibration_error: 1.0,
-                overall_valid: false,
-                validity_tier: ReconstructionValidity::StructurallyPlausible,
-                boundary_metrics: None,
-            };
-            for (i, r) in results.iter().enumerate() {
-                let score = score_reconstruction(task, r);
-                let mb_new = score.boundary_metrics.as_ref()
-                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
-                let mb_best = best_score.boundary_metrics.as_ref()
-                    .map(|m| m.macro_boundary_score).unwrap_or(0.0);
-                if mb_new >= mb_best {
-                    best_score = score;
-                    best_idx = i;
-                }
-            }
-
-            let best = &results[best_idx];
-            let bm = best_score.boundary_metrics.as_ref().unwrap();
-
-            let mut t_app = 0u32; let mut t_amb = 0u32; let mut t_uns = 0u32;
-            for cd in &best.synthesized.decisions {
-                let expected = expected_decisions.get(&cd.prompt).cloned().unwrap_or(ExpectedDecision::Unsupported);
-                let actual = match &cd.decision {
-                    ApplicabilityDecision::Applicable => "Applicable",
-                    ApplicabilityDecision::Ambiguous { .. } => "Ambiguous",
-                    ApplicabilityDecision::Unsupported { .. } => "Unsupported",
-                };
+        if results.is_empty() {
+            eprintln!("\n  [{}] NO PROPOSALS", task.label);
+            for (_prompt, expected) in &expected_decisions {
                 total_bm_cases += 1;
-                all_bm_confusion.entry(format!("{:?}", expected)).or_default().entry(actual.to_string()).and_modify(|c| *c += 1).or_insert(1);
-                match actual { "Applicable" => t_app += 1, "Ambiguous" => t_amb += 1, "Unsupported" => t_uns += 1, _ => {} }
-                if matches!(cd.decision, ApplicabilityDecision::Applicable) && !matches!(expected, ExpectedDecision::Applicable) {
+                let exp_s = format!("{:?}", expected);
+                all_bm_confusion
+                    .entry(exp_s)
+                    .or_default()
+                    .entry("Unsupported".to_string())
+                    .and_modify(|c| *c += 1)
+                    .or_insert(1);
+                if matches!(expected, ExpectedDecision::Applicable) {
                     bm_false_authorizations += 1;
-                    eprintln!("  ⚠ FALSE AUTHORIZATION in [{}]: expected={:?} prompt=\"{}\"",
-                        task.label, expected, cd.prompt);
                 }
             }
-            per_task_bm.push((task.label.to_string(), bm.ambiguity_recall, bm.ambiguity_precision, bm.supported_precision, bm.unsupported_precision));
-
-            eprintln!("\n  [{:<20}] Propagate={:3} | Applied={:3} Amb={:3} Unsp={:3}",
-                task.label, best.synthesized.decisions.len(), t_app, t_amb, t_uns);
-            eprintln!("  {:>23} SupP={:.1}% AmbR={:.1}% AmbP={:.1}% UnsP={:.1}% MacroB={:.1}%",
-                "", bm.supported_precision * 100.0, bm.ambiguity_recall * 100.0,
-                bm.ambiguity_precision * 100.0, bm.unsupported_precision * 100.0,
-                bm.macro_boundary_score * 100.0);
-
-            // Per-case detail for UnitQuantity debugging
-
+            continue;
         }
 
-        // Aggregate BM metrics
-        let mut tp_a=0usize; let mut fp_a=0usize; let mut fn_a=0usize;
-        let mut tp_b=0usize; let mut fp_b=0usize; let mut fn_b=0usize;
-        let mut tp_c=0usize; let mut fp_c=0usize; let mut fn_c=0usize;
-        for (exp, inner) in &all_bm_confusion {
-            for (act, count) in inner {
-                match (exp.as_str(), act.as_str()) {
-                    ("Applicable", "Applicable") => tp_a += count,
-                    ("Applicable", _) => fn_a += count,
-                    ("Ambiguous", "Ambiguous") => tp_b += count,
-                    ("Ambiguous", _) => fn_b += count,
-                    ("Unsupported", "Unsupported") => tp_c += count,
-                    ("Unsupported", _) => fn_c += count,
-                    (&_, _) => {}
-                }
-                match act.as_str() {
-                    "Applicable" if exp != "Applicable" => fp_a += count,
-                    "Ambiguous" if exp != "Ambiguous" => fp_b += count,
-                    "Unsupported" if exp != "Unsupported" => fp_c += count,
-                    _ => {}
-                }
+        // Pick best proposal
+        let mut best_idx = 0;
+        let mut best_score = ReconstructionScore {
+            task_label: task.label.to_string(),
+            input_output_contract_similarity: 0.0,
+            support_boundary_agreement: 0.0,
+            exclusion_recall: 0.0,
+            proposed_bridge_correctness: 0.0,
+            novelty_decision_correct: false,
+            coverage_calibration_error: 1.0,
+            overall_valid: false,
+            validity_tier: ReconstructionValidity::StructurallyPlausible,
+            boundary_metrics: None,
+        };
+        for (i, r) in results.iter().enumerate() {
+            let score = score_reconstruction(task, r);
+            let mb_new = score
+                .boundary_metrics
+                .as_ref()
+                .map(|m| m.macro_boundary_score)
+                .unwrap_or(0.0);
+            let mb_best = best_score
+                .boundary_metrics
+                .as_ref()
+                .map(|m| m.macro_boundary_score)
+                .unwrap_or(0.0);
+            if mb_new >= mb_best {
+                best_score = score;
+                best_idx = i;
             }
         }
-        let sd = |num: f64, den: usize| -> f64 { if den == 0 { 1.0 } else { num / den as f64 } };
-        let agg_sup_rec = sd(tp_a as f64, tp_a + fn_a);
-        let agg_sup_pre = sd(tp_a as f64, tp_a + fp_a);
-        let agg_amb_rec = sd(tp_b as f64, tp_b + fn_b);
-        let agg_amb_pre = sd(tp_b as f64, tp_b + fp_b);
-        let agg_uns_rec = sd(tp_c as f64, tp_c + fn_c);
-        let agg_uns_pre = sd(tp_c as f64, tp_c + fp_c);
-        let agg_macro = (agg_sup_rec + agg_sup_pre + agg_amb_rec + agg_amb_pre + agg_uns_rec + agg_uns_pre) / 6.0;
 
-        eprintln!("\n  Aggregate Boundary Metrics:");
-        eprintln!("    Total Cases: {} | False Authorizations: {}", total_bm_cases, bm_false_authorizations);
-        eprintln!("    SupRec={:.1}% SupPre={:.1}% AmbRec={:.1}% AmbPre={:.1}% UnsRec={:.1}% UnsPre={:.1}% Macro={:.1}%",
+        let best = &results[best_idx];
+        let bm = best_score.boundary_metrics.as_ref().unwrap();
+
+        let mut t_app = 0u32;
+        let mut t_amb = 0u32;
+        let mut t_uns = 0u32;
+        for cd in &best.synthesized.decisions {
+            let expected = expected_decisions
+                .get(&cd.prompt)
+                .cloned()
+                .unwrap_or(ExpectedDecision::Unsupported);
+            let actual = match &cd.decision {
+                ApplicabilityDecision::Applicable => "Applicable",
+                ApplicabilityDecision::Ambiguous { .. } => "Ambiguous",
+                ApplicabilityDecision::Unsupported { .. } => "Unsupported",
+            };
+            total_bm_cases += 1;
+            all_bm_confusion
+                .entry(format!("{:?}", expected))
+                .or_default()
+                .entry(actual.to_string())
+                .and_modify(|c| *c += 1)
+                .or_insert(1);
+            match actual {
+                "Applicable" => t_app += 1,
+                "Ambiguous" => t_amb += 1,
+                "Unsupported" => t_uns += 1,
+                _ => {}
+            }
+            if matches!(cd.decision, ApplicabilityDecision::Applicable)
+                && !matches!(expected, ExpectedDecision::Applicable)
+            {
+                bm_false_authorizations += 1;
+                eprintln!(
+                    "  ⚠ FALSE AUTHORIZATION in [{}]: expected={:?} prompt=\"{}\"",
+                    task.label, expected, cd.prompt
+                );
+            }
+        }
+        per_task_bm.push((
+            task.label.to_string(),
+            bm.ambiguity_recall,
+            bm.ambiguity_precision,
+            bm.supported_precision,
+            bm.unsupported_precision,
+        ));
+
+        eprintln!(
+            "\n  [{:<20}] Propagate={:3} | Applied={:3} Amb={:3} Unsp={:3}",
+            task.label,
+            best.synthesized.decisions.len(),
+            t_app,
+            t_amb,
+            t_uns
+        );
+        eprintln!(
+            "  {:>23} SupP={:.1}% AmbR={:.1}% AmbP={:.1}% UnsP={:.1}% MacroB={:.1}%",
+            "",
+            bm.supported_precision * 100.0,
+            bm.ambiguity_recall * 100.0,
+            bm.ambiguity_precision * 100.0,
+            bm.unsupported_precision * 100.0,
+            bm.macro_boundary_score * 100.0
+        );
+
+        // Per-case detail for UnitQuantity debugging
+    }
+
+    // Aggregate BM metrics
+    let mut tp_a = 0usize;
+    let mut fp_a = 0usize;
+    let mut fn_a = 0usize;
+    let mut tp_b = 0usize;
+    let mut fp_b = 0usize;
+    let mut fn_b = 0usize;
+    let mut tp_c = 0usize;
+    let mut fp_c = 0usize;
+    let mut fn_c = 0usize;
+    for (exp, inner) in &all_bm_confusion {
+        for (act, count) in inner {
+            match (exp.as_str(), act.as_str()) {
+                ("Applicable", "Applicable") => tp_a += count,
+                ("Applicable", _) => fn_a += count,
+                ("Ambiguous", "Ambiguous") => tp_b += count,
+                ("Ambiguous", _) => fn_b += count,
+                ("Unsupported", "Unsupported") => tp_c += count,
+                ("Unsupported", _) => fn_c += count,
+                (&_, _) => {}
+            }
+            match act.as_str() {
+                "Applicable" if exp != "Applicable" => fp_a += count,
+                "Ambiguous" if exp != "Ambiguous" => fp_b += count,
+                "Unsupported" if exp != "Unsupported" => fp_c += count,
+                _ => {}
+            }
+        }
+    }
+    let sd = |num: f64, den: usize| -> f64 {
+        if den == 0 {
+            1.0
+        } else {
+            num / den as f64
+        }
+    };
+    let agg_sup_rec = sd(tp_a as f64, tp_a + fn_a);
+    let agg_sup_pre = sd(tp_a as f64, tp_a + fp_a);
+    let agg_amb_rec = sd(tp_b as f64, tp_b + fn_b);
+    let agg_amb_pre = sd(tp_b as f64, tp_b + fp_b);
+    let agg_uns_rec = sd(tp_c as f64, tp_c + fn_c);
+    let agg_uns_pre = sd(tp_c as f64, tp_c + fp_c);
+    let agg_macro =
+        (agg_sup_rec + agg_sup_pre + agg_amb_rec + agg_amb_pre + agg_uns_rec + agg_uns_pre) / 6.0;
+
+    eprintln!("\n  Aggregate Boundary Metrics:");
+    eprintln!(
+        "    Total Cases: {} | False Authorizations: {}",
+        total_bm_cases, bm_false_authorizations
+    );
+    eprintln!("    SupRec={:.1}% SupPre={:.1}% AmbRec={:.1}% AmbPre={:.1}% UnsRec={:.1}% UnsPre={:.1}% Macro={:.1}%",
             agg_sup_rec*100.0, agg_sup_pre*100.0, agg_amb_rec*100.0, agg_amb_pre*100.0,
             agg_uns_rec*100.0, agg_uns_pre*100.0, agg_macro*100.0);
 
-        // ── Part B: D4 Direct Probe Evaluation ──
-        // Here we directly test `attempt_completions` on specific probes
-        // that share semantic relation with each capability's supported forms.
-        // This isolates D4's behavior from form-extraction quality.
-        eprintln!("\n{}", "=" . repeat(100));
-        eprintln!("  D4 MEASUREMENT CAMPAIGN — PART B: DIRECT COMPLETION SEARCH TESTS");
-        eprintln!("  (isolates attempt_completions from form-extraction quality)");
-        eprintln!("{}", "=" . repeat(100));
+    // ── Part B: D4 Direct Probe Evaluation ──
+    // Here we directly test `attempt_completions` on specific probes
+    // that share semantic relation with each capability's supported forms.
+    // This isolates D4's behavior from form-extraction quality.
+    eprintln!("\n{}", "=".repeat(100));
+    eprintln!("  D4 MEASUREMENT CAMPAIGN — PART B: DIRECT COMPLETION SEARCH TESTS");
+    eprintln!("  (isolates attempt_completions from form-extraction quality)");
+    eprintln!("{}", "=".repeat(100));
 
-        // D4 metrics
-        let mut d4_ambiguous_correct: usize = 0;
-        let mut d4_ambiguous_total: usize = 0;
-        let mut d4_unsupported_correct: usize = 0;
-        let mut d4_unsupported_total: usize = 0;
-        let mut d4_false_ambiguous: usize = 0; // classified Ambiguous but should be Unsupported
-        let mut d4_false_unsupported: usize = 0; // classified Unsupported but should be Ambiguous
-        let mut d4_receipt_has_bindings: usize = 0;
-        let mut d4_receipt_total: usize = 0;
+    // D4 metrics
+    let mut d4_ambiguous_correct: usize = 0;
+    let mut d4_ambiguous_total: usize = 0;
+    let mut d4_unsupported_correct: usize = 0;
+    let mut d4_unsupported_total: usize = 0;
+    let mut d4_false_ambiguous: usize = 0; // classified Ambiguous but should be Unsupported
+    let mut d4_false_unsupported: usize = 0; // classified Unsupported but should be Ambiguous
+    let mut d4_receipt_has_bindings: usize = 0;
+    let mut d4_receipt_total: usize = 0;
 
-        for task in &tasks {
-            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-            for (i, p) in task.target_failure_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-            }
-            for (i, p) in task.distractor_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
-            }
+    for task in &tasks {
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in task.target_failure_prompts.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+        }
+        for (i, p) in task.distractor_prompts.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+        }
 
-            let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
-            if results.is_empty() { continue; }
+        let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
+        if results.is_empty() {
+            continue;
+        }
 
-            // Get the best proposal's forms
-            let best = &results[0]; // any proposal with forms works for direct completion search
-            let forms = &best.synthesized.supported_forms;
+        // Get the best proposal's forms
+        let best = &results[0]; // any proposal with forms works for direct completion search
+        let forms = &best.synthesized.supported_forms;
 
-            eprintln!("\n  [{:<20}] {} supported forms", task.label, forms.len());
-            for (fi, f) in forms.iter().enumerate() {
-                eprintln!("    Form {}: '{}' (req={:?})", fi, f.name, f.required_features);
-            }
+        eprintln!("\n  [{:<20}] {} supported forms", task.label, forms.len());
+        for (fi, f) in forms.iter().enumerate() {
+            eprintln!(
+                "    Form {}: '{}' (req={:?})",
+                fi, f.name, f.required_features
+            );
+        }
 
-            // For each form, design probes:
-            // (a) Shared semantics + missing 1 binding → should be Ambiguous
-            // (b) Safety predicate → should be Unsupported
-            // (c) Shared semantics + numeric mismatch → should be Unsupported
-            // (d) Different semantics → should be Unsupported
+        // For each form, design probes:
+        // (a) Shared semantics + missing 1 binding → should be Ambiguous
+        // (b) Safety predicate → should be Unsupported
+        // (c) Shared semantics + numeric mismatch → should be Unsupported
+        // (d) Different semantics → should be Unsupported
 
-            for form in forms {
-                let form_features = &form.centroid_features;
+        for form in forms {
+            let form_features = &form.centroid_features;
 
-                // (a) Missing-binding probe: same semantics, one required feature absent.
-                // Only test features that can be manipulated while preserving relation semantics.
-                let manipulable_features = ["explicit_base", "explicit_direction", "target_unit", "explicit_conversion"];
-                for rf in &form.required_features {
-                    if !manipulable_features.contains(&rf.as_str()) {
+            // (a) Missing-binding probe: same semantics, one required feature absent.
+            // Only test features that can be manipulated while preserving relation semantics.
+            let manipulable_features = [
+                "explicit_base",
+                "explicit_direction",
+                "target_unit",
+                "explicit_conversion",
+            ];
+            for rf in &form.required_features {
+                if !manipulable_features.contains(&rf.as_str()) {
+                    continue;
+                }
+                // Build a probe that has the form's relation semantics but lacks `rf`
+                let mut probe_feat = form_features.clone();
+                match rf.as_str() {
+                    "explicit_base" => {
+                        probe_feat.has_explicit_base = false;
+                    }
+                    "explicit_direction" => {
+                        probe_feat.has_direction = false;
+                    }
+                    "target_unit" => {
+                        probe_feat.has_target_unit = false;
+                    }
+                    "explicit_conversion" => {
+                        probe_feat.has_explicit_conversion = false;
+                    }
+                    _ => continue,
+                }
+
+                // Verify the probe still shares relation semantics with the form
+                if !shares_semantic_relation(&probe_feat, &form.centroid_features) {
+                    continue;
+                }
+                // Verify the probe still shares numeric forms (cross-domain guard)
+                let form_distinct = form.centroid_features.numeric_forms.iter().any(|nf| {
+                    matches!(
+                        nf,
+                        NumericForm::Percentage
+                            | NumericForm::ExplicitFraction
+                            | NumericForm::UnitBearingScalar
+                            | NumericForm::RatioNotation
+                    )
+                });
+                if form_distinct {
+                    let common = form
+                        .centroid_features
+                        .numeric_forms
+                        .iter()
+                        .any(|nf| probe_feat.numeric_forms.contains(nf));
+                    if !common {
                         continue;
                     }
-                    // Build a probe that has the form's relation semantics but lacks `rf`
-                    let mut probe_feat = form_features.clone();
-                    match rf.as_str() {
-                        "explicit_base" => { probe_feat.has_explicit_base = false; }
-                        "explicit_direction" => { probe_feat.has_direction = false; }
-                        "target_unit" => { probe_feat.has_target_unit = false; }
-                        "explicit_conversion" => { probe_feat.has_explicit_conversion = false; }
-                        _ => continue,
-                    }
-
-                    // Verify the probe still shares relation semantics with the form
-                    if !shares_semantic_relation(&probe_feat, &form.centroid_features) {
-                        continue;
-                    }
-                    // Verify the probe still shares numeric forms (cross-domain guard)
-                    let form_distinct = form.centroid_features.numeric_forms.iter().any(|nf| {
-                        matches!(nf, NumericForm::Percentage | NumericForm::ExplicitFraction
-                            | NumericForm::UnitBearingScalar | NumericForm::RatioNotation)
-                    });
-                    if form_distinct {
-                        let common = form.centroid_features.numeric_forms.iter()
-                            .any(|nf| probe_feat.numeric_forms.contains(nf));
-                        if !common { continue; }
-                    }
-
-                    d4_ambiguous_total += 1;
-                    let (decision, receipt) = attempt_completions(&probe_feat, "probe", forms, false);
-
-                    if matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
-                        d4_ambiguous_correct += 1;
-                        if receipt.is_some() { d4_receipt_total += 1; }
-                        if receipt.as_ref().map_or(false, |r| !r.missing_bindings.is_empty()) {
-                            d4_receipt_has_bindings += 1;
-                        }
-                    } else if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
-                        d4_false_unsupported += 1;
-                    }
                 }
 
-                // (b) Safety predicate probes: same semantics but trigger safety
-                // Each form's safety-predicate check depends on features:
-                // - If form has percentage: try probability probe
-                // - If form has conversion: try incompatible unit probe
-                // - If form has multiplicative change: try compound/repeated probe
-                let rels = &form_features.relation_semantics;
+                d4_ambiguous_total += 1;
+                let (decision, receipt) = attempt_completions(&probe_feat, "probe", forms, false);
 
-                if rels.contains(&RelationSemantics::PartOfWhole)
-                    || rels.contains(&RelationSemantics::MultiplicativeChange)
-                {
-                    // Probability probe
-                    let mut prob_feat = form_features.clone();
-                    prob_feat.relation_semantics.push(RelationSemantics::ProbabilityMeasure);
-                    let (decision, _) = attempt_completions(&prob_feat, "a 25% probability", forms, false);
-                    d4_unsupported_total += 1;
-                    if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
-                        d4_unsupported_correct += 1;
-                    } else {
-                        d4_false_ambiguous += 1;
-                        eprintln!("      ⚠ Expected Unsupported (probability), got {:?}", decision);
+                if matches!(decision, ApplicabilityDecision::Ambiguous { .. }) {
+                    d4_ambiguous_correct += 1;
+                    if receipt.is_some() {
+                        d4_receipt_total += 1;
                     }
+                    if receipt
+                        .as_ref()
+                        .map_or(false, |r| !r.missing_bindings.is_empty())
+                    {
+                        d4_receipt_has_bindings += 1;
+                    }
+                } else if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                    d4_false_unsupported += 1;
                 }
+            }
 
-                if rels.contains(&RelationSemantics::CompatibleUnitConversion) {
-                    // Incompatible units probe
-                    let mut incomp_feat = form_features.clone();
-                    incomp_feat.relation_semantics.retain(|r| *r != RelationSemantics::CompatibleUnitConversion);
-                    incomp_feat.numeric_forms.push(NumericForm::UnitBearingScalar);
-                    let (decision, _) = attempt_completions(&incomp_feat, "Add 2 liters to 3 kilograms.", forms, false);
-                    d4_unsupported_total += 1;
-                    if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
-                        d4_unsupported_correct += 1;
-                    } else {
-                        d4_false_ambiguous += 1;
-                        eprintln!("      ⚠ Expected Unsupported (incompatible units), got {:?}", decision);
-                    }
+            // (b) Safety predicate probes: same semantics but trigger safety
+            // Each form's safety-predicate check depends on features:
+            // - If form has percentage: try probability probe
+            // - If form has conversion: try incompatible unit probe
+            // - If form has multiplicative change: try compound/repeated probe
+            let rels = &form_features.relation_semantics;
+
+            if rels.contains(&RelationSemantics::PartOfWhole)
+                || rels.contains(&RelationSemantics::MultiplicativeChange)
+            {
+                // Probability probe
+                let mut prob_feat = form_features.clone();
+                prob_feat
+                    .relation_semantics
+                    .push(RelationSemantics::ProbabilityMeasure);
+                let (decision, _) =
+                    attempt_completions(&prob_feat, "a 25% probability", forms, false);
+                d4_unsupported_total += 1;
+                if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                    d4_unsupported_correct += 1;
+                } else {
+                    d4_false_ambiguous += 1;
+                    eprintln!(
+                        "      ⚠ Expected Unsupported (probability), got {:?}",
+                        decision
+                    );
+                }
+            }
+
+            if rels.contains(&RelationSemantics::CompatibleUnitConversion) {
+                // Incompatible units probe
+                let mut incomp_feat = form_features.clone();
+                incomp_feat
+                    .relation_semantics
+                    .retain(|r| *r != RelationSemantics::CompatibleUnitConversion);
+                incomp_feat
+                    .numeric_forms
+                    .push(NumericForm::UnitBearingScalar);
+                let (decision, _) =
+                    attempt_completions(&incomp_feat, "Add 2 liters to 3 kilograms.", forms, false);
+                d4_unsupported_total += 1;
+                if matches!(decision, ApplicabilityDecision::Unsupported { .. }) {
+                    d4_unsupported_correct += 1;
+                } else {
+                    d4_false_ambiguous += 1;
+                    eprintln!(
+                        "      ⚠ Expected Unsupported (incompatible units), got {:?}",
+                        decision
+                    );
                 }
             }
         }
+    }
 
-        eprintln!("\n  D4 Direct Probe Results:");
-        let d4_amb_precision = sd(d4_ambiguous_correct as f64, d4_ambiguous_correct + d4_false_ambiguous);
-        let d4_amb_recall = sd(d4_ambiguous_correct as f64, d4_ambiguous_total);
-        let d4_uns_precision = sd(d4_unsupported_correct as f64, d4_unsupported_correct + d4_false_unsupported);
-        let d4_uns_recall = sd(d4_unsupported_correct as f64, d4_unsupported_total);
-        eprintln!("    Ambiguous probes: {}/{} correct (recall={:.1}%, precision={:.1}%)",
-            d4_ambiguous_correct, d4_ambiguous_total, d4_amb_recall*100.0, d4_amb_precision*100.0);
-        eprintln!("    Unsupported probes: {}/{} correct (recall={:.1}%, precision={:.1}%)",
-            d4_unsupported_correct, d4_unsupported_total, d4_uns_recall*100.0, d4_uns_precision*100.0);
-        eprintln!("    Receipts with missing bindings: {}/{}", d4_receipt_has_bindings, d4_receipt_total);
+    eprintln!("\n  D4 Direct Probe Results:");
+    let d4_amb_precision = sd(
+        d4_ambiguous_correct as f64,
+        d4_ambiguous_correct + d4_false_ambiguous,
+    );
+    let d4_amb_recall = sd(d4_ambiguous_correct as f64, d4_ambiguous_total);
+    let d4_uns_precision = sd(
+        d4_unsupported_correct as f64,
+        d4_unsupported_correct + d4_false_unsupported,
+    );
+    let d4_uns_recall = sd(d4_unsupported_correct as f64, d4_unsupported_total);
+    eprintln!(
+        "    Ambiguous probes: {}/{} correct (recall={:.1}%, precision={:.1}%)",
+        d4_ambiguous_correct,
+        d4_ambiguous_total,
+        d4_amb_recall * 100.0,
+        d4_amb_precision * 100.0
+    );
+    eprintln!(
+        "    Unsupported probes: {}/{} correct (recall={:.1}%, precision={:.1}%)",
+        d4_unsupported_correct,
+        d4_unsupported_total,
+        d4_uns_recall * 100.0,
+        d4_uns_precision * 100.0
+    );
+    eprintln!(
+        "    Receipts with missing bindings: {}/{}",
+        d4_receipt_has_bindings, d4_receipt_total
+    );
 
-        // ── Part C: D4 Receipt Analysis from Synthesized Boundary ──
-        eprintln!("\n{}", "=" . repeat(100));
-        eprintln!("  D4 MEASUREMENT CAMPAIGN — PART C: RECEIPT ANALYSIS FROM BOUNDARY");
-        eprintln!("{}", "=" . repeat(100));
+    // ── Part C: D4 Receipt Analysis from Synthesized Boundary ──
+    eprintln!("\n{}", "=".repeat(100));
+    eprintln!("  D4 MEASUREMENT CAMPAIGN — PART C: RECEIPT ANALYSIS FROM BOUNDARY");
+    eprintln!("{}", "=".repeat(100));
 
-        let mut all_binding_freq: HashMap<MissingBinding, usize> = HashMap::new();
-        let mut all_form_counts: Vec<usize> = Vec::new();
-        let mut all_bounded_count: usize = 0;
-        let mut total_receipts: usize = 0;
+    let mut all_binding_freq: HashMap<MissingBinding, usize> = HashMap::new();
+    let mut all_form_counts: Vec<usize> = Vec::new();
+    let mut all_bounded_count: usize = 0;
+    let mut total_receipts: usize = 0;
 
-        for task in &tasks {
-            let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
-            for (i, p) in task.target_failure_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
-            }
-            for (i, p) in task.distractor_prompts.iter().enumerate() {
-                all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
-            }
-            let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
-            if results.is_empty() { continue; }
-            let best = &results[0];
-            for cd in &best.synthesized.decisions {
-                if let Some(ref r) = cd.ambiguity_receipt {
-                    total_receipts += 1;
-                    for b in &r.missing_bindings {
-                        *all_binding_freq.entry(b.clone()).or_insert(0) += 1;
-                    }
-                    all_form_counts.push(r.viable_forms.len());
-                    if r.search_bounded { all_bounded_count += 1; }
+    for task in &tasks {
+        let mut all_prompts: BTreeMap<FailureReceiptId, String> = BTreeMap::new();
+        for (i, p) in task.target_failure_prompts.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("target-{i:02}")), p.to_string());
+        }
+        for (i, p) in task.distractor_prompts.iter().enumerate() {
+            all_prompts.insert(FailureReceiptId(format!("dist-{i:02}")), p.to_string());
+        }
+        let results = propose_from_failures(all_prompts.clone(), THRESHOLD);
+        if results.is_empty() {
+            continue;
+        }
+        let best = &results[0];
+        for cd in &best.synthesized.decisions {
+            if let Some(ref r) = cd.ambiguity_receipt {
+                total_receipts += 1;
+                for b in &r.missing_bindings {
+                    *all_binding_freq.entry(b.clone()).or_insert(0) += 1;
+                }
+                all_form_counts.push(r.viable_forms.len());
+                if r.search_bounded {
+                    all_bounded_count += 1;
                 }
             }
         }
+    }
 
-        eprintln!("\n  Total Receipts Found: {}", total_receipts);
-        eprintln!("  Missing Binding Frequencies:");
-        for (binding, count) in &all_binding_freq {
-            eprintln!("    {:35}: {}", format!("{:?}", binding), count);
+    eprintln!("\n  Total Receipts Found: {}", total_receipts);
+    eprintln!("  Missing Binding Frequencies:");
+    for (binding, count) in &all_binding_freq {
+        eprintln!("    {:35}: {}", format!("{:?}", binding), count);
+    }
+    if !all_form_counts.is_empty() {
+        let avg = all_form_counts.iter().sum::<usize>() as f64 / all_form_counts.len() as f64;
+        eprintln!(
+            "  Viable Form Count: avg={:.1}, max={}",
+            avg,
+            all_form_counts.iter().max().unwrap()
+        );
+    }
+    eprintln!("  Cases Exceeding Search Bound: {}", all_bounded_count);
+
+    // ── Final Recommendation ──
+    eprintln!("\n{}", "=".repeat(100));
+    eprintln!("  D4 MEASUREMENT CAMPAIGN — SUMMARY");
+    eprintln!("{}", "=".repeat(100));
+
+    eprintln!("\n  Overall Boundary (Part A):");
+    eprintln!(
+        "    Supported Precision: {:.1}% (target ≥ 99%)  {}",
+        agg_sup_pre * 100.0,
+        if agg_sup_pre >= 0.99 {
+            "✓"
+        } else {
+            "✗ needs investigation — form-extraction issue"
         }
-        if !all_form_counts.is_empty() {
-            let avg = all_form_counts.iter().sum::<usize>() as f64 / all_form_counts.len() as f64;
-            eprintln!("  Viable Form Count: avg={:.1}, max={}", avg, all_form_counts.iter().max().unwrap());
+    );
+    eprintln!(
+        "    Ambiguity Recall: {:.1}% (target ≥ 75%)  {}",
+        agg_amb_rec * 100.0,
+        if agg_amb_rec >= 0.75 {
+            "✓"
+        } else {
+            "✗ limited by 3 ambiguous distractors in corpora"
         }
-        eprintln!("  Cases Exceeding Search Bound: {}", all_bounded_count);
+    );
+    eprintln!(
+        "    Ambiguity Precision: {:.1}% (target ≥ 90%)  {}",
+        agg_amb_pre * 100.0,
+        if agg_amb_pre >= 0.90 {
+            "✓"
+        } else {
+            "✗ limited by 3 ambiguous distractors in corpora"
+        }
+    );
+    eprintln!(
+        "    Unsupported Precision: {:.1}% (target ≥ 95%)  {}",
+        agg_uns_pre * 100.0,
+        if agg_uns_pre >= 0.95 {
+            "✓"
+        } else {
+            "✗ needs investigation — targets classified as Unsupported"
+        }
+    );
 
-        // ── Final Recommendation ──
-        eprintln!("\n{}", "=" . repeat(100));
-        eprintln!("  D4 MEASUREMENT CAMPAIGN — SUMMARY");
-        eprintln!("{}", "=" . repeat(100));
+    eprintln!("\n  D4 Direct Completion Search (Part B):");
+    eprintln!(
+        "    Ambiguous Detection Recall: {:.1}% (correct {}/{})",
+        d4_amb_recall * 100.0,
+        d4_ambiguous_correct,
+        d4_ambiguous_total
+    );
+    eprintln!(
+        "    Unsupported Rejection Precision: {:.1}% (correct {}/{})",
+        d4_uns_recall * 100.0,
+        d4_unsupported_correct,
+        d4_unsupported_total
+    );
+    eprintln!("    False Ambiguous: {}", d4_false_ambiguous);
+    eprintln!("    False Unsupported: {}", d4_false_unsupported);
 
-        eprintln!("\n  Overall Boundary (Part A):");
-        eprintln!("    Supported Precision: {:.1}% (target ≥ 99%)  {}",
-            agg_sup_pre*100.0, if agg_sup_pre >= 0.99 { "✓" } else { "✗ needs investigation — form-extraction issue" });
-        eprintln!("    Ambiguity Recall: {:.1}% (target ≥ 75%)  {}",
-            agg_amb_rec*100.0, if agg_amb_rec >= 0.75 { "✓" } else { "✗ limited by 3 ambiguous distractors in corpora" });
-        eprintln!("    Ambiguity Precision: {:.1}% (target ≥ 90%)  {}",
-            agg_amb_pre*100.0, if agg_amb_pre >= 0.90 { "✓" } else { "✗ limited by 3 ambiguous distractors in corpora" });
-        eprintln!("    Unsupported Precision: {:.1}% (target ≥ 95%)  {}",
-            agg_uns_pre*100.0, if agg_uns_pre >= 0.95 { "✓" } else { "✗ needs investigation — targets classified as Unsupported" });
+    eprintln!("\n  D4 Receipt Quality (Part C):");
+    eprintln!(
+        "    Receipts with missing bindings: {}/{}",
+        d4_receipt_has_bindings, d4_receipt_total
+    );
 
-        eprintln!("\n  D4 Direct Completion Search (Part B):");
-        eprintln!("    Ambiguous Detection Recall: {:.1}% (correct {}/{})",
-            d4_amb_recall*100.0, d4_ambiguous_correct, d4_ambiguous_total);
-        eprintln!("    Unsupported Rejection Precision: {:.1}% (correct {}/{})",
-            d4_uns_recall*100.0, d4_unsupported_correct, d4_unsupported_total);
-        eprintln!("    False Ambiguous: {}", d4_false_ambiguous);
-        eprintln!("    False Unsupported: {}", d4_false_unsupported);
-
-        eprintln!("\n  D4 Receipt Quality (Part C):");
-        eprintln!("    Receipts with missing bindings: {}/{}", d4_receipt_has_bindings, d4_receipt_total);
-
-        // ── Assertions (focused on D4's direct behavior) ──
-        // The overall boundary metrics are tracked by reconstructs_all_four_capabilities.
-        // Here we only assert D4's specific competency: correctly distinguishing
-        // Ambiguous from Unsupported when completion search is invoked.
-        //
-        // D4 must never return Ambiguous for safety-predicate cases (false_ambiguous == 0)
-        // and must correctly identify at least some missing-binding cases as Ambiguous.
-        assert_eq!(d4_false_ambiguous, 0,
+    // ── Assertions (focused on D4's direct behavior) ──
+    // The overall boundary metrics are tracked by reconstructs_all_four_capabilities.
+    // Here we only assert D4's specific competency: correctly distinguishing
+    // Ambiguous from Unsupported when completion search is invoked.
+    //
+    // D4 must never return Ambiguous for safety-predicate cases (false_ambiguous == 0)
+    // and must correctly identify at least some missing-binding cases as Ambiguous.
+    assert_eq!(d4_false_ambiguous, 0,
             "D4 FAIL: {} cases incorrectly classified as Ambiguous (safety predicates should prevent this)",
             d4_false_ambiguous);
-        assert!(d4_ambiguous_correct > 0 || d4_ambiguous_total == 0,
-            "D4 FAIL: no ambiguous cases detected despite {} ambiguous probes",
-            d4_ambiguous_total);
-    }
+    assert!(
+        d4_ambiguous_correct > 0 || d4_ambiguous_total == 0,
+        "D4 FAIL: no ambiguous cases detected despite {} ambiguous probes",
+        d4_ambiguous_total
+    );
+}

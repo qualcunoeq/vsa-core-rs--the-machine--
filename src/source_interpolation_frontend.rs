@@ -103,9 +103,16 @@ pub fn formalize_interpolation_text(text: &str, case_id: &str) -> InterpolationF
             provenance,
         );
     }
-    if ["quadratic", "spline", "polynomial", "unknown point", "approx", "extrapolat"]
-        .iter()
-        .any(|term| lower.contains(term))
+    if [
+        "quadratic",
+        "spline",
+        "polynomial",
+        "unknown point",
+        "approx",
+        "extrapolat",
+    ]
+    .iter()
+    .any(|term| lower.contains(term))
     {
         return result(
             InterpolationFrontendStatus::Unsupported,
@@ -157,8 +164,16 @@ pub fn formalize_interpolation_text(text: &str, case_id: &str) -> InterpolationF
             provenance,
         );
     }
-    let low = if compare(&x1, &x2) == Ordering::Less { x1.clone() } else { x2.clone() };
-    let high = if compare(&x1, &x2) == Ordering::Less { x2.clone() } else { x1.clone() };
+    let low = if compare(&x1, &x2) == Ordering::Less {
+        x1.clone()
+    } else {
+        x2.clone()
+    };
+    let high = if compare(&x1, &x2) == Ordering::Less {
+        x2.clone()
+    } else {
+        x1.clone()
+    };
     if compare(&x, &low) == Ordering::Less || compare(&x, &high) == Ordering::Greater {
         return result(
             InterpolationFrontendStatus::Unsupported,
@@ -197,7 +212,10 @@ mod tests {
             "test",
         );
         assert_eq!(result.status, InterpolationFrontendStatus::Complete);
-        assert_eq!(result.request.as_ref().unwrap().formula, "linear_interpolation");
+        assert_eq!(
+            result.request.as_ref().unwrap().formula,
+            "linear_interpolation"
+        );
         assert!(replay_verified(&result));
     }
 
@@ -207,7 +225,10 @@ mod tests {
             "Linearly interpolate at x=15 between x1=0,y1=10 and x2=10,y2=30.",
             "outside",
         );
-        assert_eq!(extrapolation.status, InterpolationFrontendStatus::Unsupported);
+        assert_eq!(
+            extrapolation.status,
+            InterpolationFrontendStatus::Unsupported
+        );
         let ambiguous = formalize_interpolation_text(
             "Interpolate or extrapolate at x=5 between x1=0,y1=10 and x2=10,y2=30.",
             "ambiguous",

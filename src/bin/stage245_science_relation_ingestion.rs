@@ -7,12 +7,8 @@
 
 use serde::Serialize;
 use sha2::{Digest, Sha256};
-use the_machine::source_formula_pack::biology_pack::{
-    biology_frontend, evaluate_biology,
-};
-use the_machine::source_formula_pack::chemistry_pack::{
-    chemistry_frontend, evaluate_chemistry,
-};
+use the_machine::source_formula_pack::biology_pack::{biology_frontend, evaluate_biology};
+use the_machine::source_formula_pack::chemistry_pack::{chemistry_frontend, evaluate_chemistry};
 use the_machine::source_formula_pack::source_relation_pack::{
     evaluate_relation, extract_relation_records, RelationRequest, RelationStatus,
 };

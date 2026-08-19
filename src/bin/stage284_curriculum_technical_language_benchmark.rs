@@ -11,7 +11,7 @@ use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
 use std::fs;
 
-use the_machine::technical_language_router::{route, replay_verified, RouteStatus};
+use the_machine::technical_language_router::{replay_verified, route, RouteStatus};
 
 const REPORT_JSON: &str = "docs/stage284_curriculum_technical_language_benchmark.json";
 const REPORT_MD: &str = "docs/stage284_curriculum_technical_language_benchmark.md";
@@ -161,11 +161,26 @@ fn ambiguous_case(index: usize, partition: Partition) -> Case {
 
 fn unsupported_case(index: usize, partition: Partition) -> Case {
     let (family, text) = match index % 5 {
-        0 => ("infinite_spectral", "Use spectral mixing and an asymptotic limit on an infinite graph."),
-        1 => ("unsupported_complex", "Convert (3-4i) to polar form and approximate the argument numerically."),
-        2 => ("specialist_operator", "Apply a contour integral to an unbounded operator without domain assumptions."),
-        3 => ("malformed_constraints", "Solve a coupled stochastic system with a missing transition convention."),
-        _ => ("unrelated_prose", "Explain the historical context of this theorem without a typed mathematical target."),
+        0 => (
+            "infinite_spectral",
+            "Use spectral mixing and an asymptotic limit on an infinite graph.",
+        ),
+        1 => (
+            "unsupported_complex",
+            "Convert (3-4i) to polar form and approximate the argument numerically.",
+        ),
+        2 => (
+            "specialist_operator",
+            "Apply a contour integral to an unbounded operator without domain assumptions.",
+        ),
+        3 => (
+            "malformed_constraints",
+            "Solve a coupled stochastic system with a missing transition convention.",
+        ),
+        _ => (
+            "unrelated_prose",
+            "Explain the historical context of this theorem without a typed mathematical target.",
+        ),
     };
     Case {
         id: format!("stage284-{partition:?}-unsupported-{index:03}"),
@@ -176,7 +191,12 @@ fn unsupported_case(index: usize, partition: Partition) -> Case {
     }
 }
 
-fn build_partition(partition: Partition, supported: usize, ambiguous: usize, unsupported: usize) -> Vec<Case> {
+fn build_partition(
+    partition: Partition,
+    supported: usize,
+    ambiguous: usize,
+    unsupported: usize,
+) -> Vec<Case> {
     let mut cases = Vec::with_capacity(supported + ambiguous + unsupported);
     for index in 0..supported {
         cases.push(supported_case(index % 6, index / 6, partition));
@@ -215,16 +235,26 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let expected = expected_status(case.expected);
         exact_decisions += usize::from(actual == expected);
         authorized += usize::from(actual == RouteStatus::Authorized);
-        ambiguity_preserved += usize::from(case.expected == Expected::Ambiguous && actual == RouteStatus::Ambiguous);
-        unsupported_refusals += usize::from(case.expected == Expected::Unsupported && actual == RouteStatus::Unsupported);
+        ambiguity_preserved +=
+            usize::from(case.expected == Expected::Ambiguous && actual == RouteStatus::Ambiguous);
+        unsupported_refusals += usize::from(
+            case.expected == Expected::Unsupported && actual == RouteStatus::Unsupported,
+        );
         replay_verified_count += usize::from(replay_verified(&decision));
         let mut altered = decision.clone();
         altered.replay_hash.push('x');
         tamper_rejected += usize::from(!replay_verified(&altered));
-        false_authorizations += usize::from(case.expected != Expected::Authorized && actual == RouteStatus::Authorized);
-        false_denials += usize::from(case.expected == Expected::Authorized && actual != RouteStatus::Authorized);
+        false_authorizations +=
+            usize::from(case.expected != Expected::Authorized && actual == RouteStatus::Authorized);
+        false_denials +=
+            usize::from(case.expected == Expected::Authorized && actual != RouteStatus::Authorized);
     }
-    for partition in [Partition::Development, Partition::Validation, Partition::Sealed, Partition::Boundary] {
+    for partition in [
+        Partition::Development,
+        Partition::Validation,
+        Partition::Sealed,
+        Partition::Boundary,
+    ] {
         let subset = cases.iter().filter(|case| case.partition == partition);
         let mut metrics = PartitionMetrics {
             cases: 0,
@@ -240,7 +270,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         for case in subset {
             let decision = route(&case.text, &case.id);
             metrics.cases += 1;
-            metrics.exact_decisions += usize::from(decision.status == expected_status(case.expected));
+            metrics.exact_decisions +=
+                usize::from(decision.status == expected_status(case.expected));
             metrics.authorized += usize::from(decision.status == RouteStatus::Authorized);
             metrics.ambiguous += usize::from(decision.status == RouteStatus::Ambiguous);
             metrics.unsupported += usize::from(decision.status == RouteStatus::Unsupported);
@@ -248,8 +279,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let mut altered = decision.clone();
             altered.replay_hash.push('x');
             metrics.tamper_rejected += usize::from(!replay_verified(&altered));
-            metrics.false_authorizations += usize::from(case.expected != Expected::Authorized && decision.status == RouteStatus::Authorized);
-            metrics.false_denials += usize::from(case.expected == Expected::Authorized && decision.status != RouteStatus::Authorized);
+            metrics.false_authorizations += usize::from(
+                case.expected != Expected::Authorized && decision.status == RouteStatus::Authorized,
+            );
+            metrics.false_denials += usize::from(
+                case.expected == Expected::Authorized && decision.status != RouteStatus::Authorized,
+            );
         }
         partitions.insert(format!("{partition:?}"), metrics);
     }
@@ -289,6 +324,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.production_mutations, 0);
     fs::write(REPORT_JSON, serde_json::to_vec_pretty(&report)?)?;
     fs::write(REPORT_MD, format!("# Stage 284 — curriculum technical-language benchmark\n\nAn independently varied 2,000-case technical-language corpus was routed through all bounded frontends. Prompts include naturalized definitions, notation, competing domains, missing conventions, unsupported operators, and prose distractors.\n\n* exact decisions: {}/{}\n* authorized: {}\n* ambiguity preserved: {}\n* unsupported refusals: {}\n* replay / tamper: {} / {}\n* false authorizations / denials: 0 / 0\n* route leakage: 0\n* HLE questions read / production mutations: 0 / 0\n\nPermanent split: development 600, validation 400, sealed 400, boundary 600.\n\nReproduce with `cargo run --quiet --bin stage284_curriculum_technical_language_benchmark`.\n", report.exact_decisions, report.cases, report.authorized, report.ambiguity_preserved, report.unsupported_refusals, report.replay_verified, report.tamper_rejected))?;
-    println!("stage284 cases=2000 exact={} authorized={} ambiguous={} unsupported={} false_auth=0", report.exact_decisions, report.authorized, report.ambiguity_preserved, report.unsupported_refusals);
+    println!(
+        "stage284 cases=2000 exact={} authorized={} ambiguous={} unsupported={} false_auth=0",
+        report.exact_decisions,
+        report.authorized,
+        report.ambiguity_preserved,
+        report.unsupported_refusals
+    );
     Ok(())
 }

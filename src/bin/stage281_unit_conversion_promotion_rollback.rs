@@ -97,7 +97,10 @@ fn candidate(scenario: Scenario) -> CurriculumPack {
         } else {
             vec!["bounded_calculus".into()]
         },
-        reusable_artifacts: vec!["typed_unit_conversion".into(), "exact_conversion_result".into()],
+        reusable_artifacts: vec![
+            "typed_unit_conversion".into(),
+            "exact_conversion_result".into(),
+        ],
         source_requirements: vec![VALIDATION.into()],
         validation_gates: ValidationGates {
             authoritative_sources: gates_ok,
@@ -120,8 +123,18 @@ fn candidate(scenario: Scenario) -> CurriculumPack {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let validation_bytes = fs::read(VALIDATION)?;
     let validation: serde_json::Value = serde_json::from_slice(&validation_bytes)?;
-    assert_eq!(validation.get("exact_decisions").and_then(serde_json::Value::as_u64), Some(600));
-    assert_eq!(validation.get("false_authorizations").and_then(serde_json::Value::as_u64), Some(0));
+    assert_eq!(
+        validation
+            .get("exact_decisions")
+            .and_then(serde_json::Value::as_u64),
+        Some(600)
+    );
+    assert_eq!(
+        validation
+            .get("false_authorizations")
+            .and_then(serde_json::Value::as_u64),
+        Some(0)
+    );
     let mut receipts = Vec::new();
     for index in 0..240usize {
         let scenario = scenario(index);
@@ -163,7 +176,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         promotions: receipts.iter().filter(|r| r.actual == "promoted").count(),
         blocked_or_denied: receipts.iter().filter(|r| r.actual == "blocked").count(),
         promotion_replays: receipts.iter().filter(|r| r.promotion_replay).count(),
-        promotion_tamper_rejections: receipts.iter().filter(|r| r.promotion_tamper_rejected).count(),
+        promotion_tamper_rejections: receipts
+            .iter()
+            .filter(|r| r.promotion_tamper_rejected)
+            .count(),
         regressions_detected: receipts.iter().filter(|r| r.regression_detected).count(),
         rollbacks_applied: receipts.iter().filter(|r| r.rollback_applied).count(),
         historical_replays: receipts.iter().filter(|r| r.historical_replay).count(),
@@ -192,6 +208,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.live_registry_mutations, 0);
     fs::write(REPORT_JSON, serde_json::to_vec_pretty(&report)?)?;
     fs::write(REPORT_MD, format!("# Stage 281 — unit-conversion promotion and rollback\n\nClone-only lifecycle gate for the source-derived bounded unit-conversion candidate.\n\n* decisions: {}/{} exact\n* promotions / blocked: {} / {}\n* regressions / rollbacks: {} / {}\n* replay / tamper: {} / {}\n* historical replay / parent preserved: {} / {}\n* false authorizations / denials: 0 / 0\n* live manifest / registry mutations: 0 / 0\n\nProduction routing remains unchanged.\n\nReproduce with `cargo run --quiet --bin stage281_unit_conversion_promotion_rollback`.\n", report.exact_promotion_decisions, report.cases, report.promotions, report.blocked_or_denied, report.regressions_detected, report.rollbacks_applied, report.promotion_replays, report.promotion_tamper_rejections, report.historical_replays, report.parent_preserved))?;
-    println!("stage281 cases=240 promotions={} blocked={} rollbacks={} false_auth=0 live_mutations=0", report.promotions, report.blocked_or_denied, report.rollbacks_applied);
+    println!(
+        "stage281 cases=240 promotions={} blocked={} rollbacks={} false_auth=0 live_mutations=0",
+        report.promotions, report.blocked_or_denied, report.rollbacks_applied
+    );
     Ok(())
 }

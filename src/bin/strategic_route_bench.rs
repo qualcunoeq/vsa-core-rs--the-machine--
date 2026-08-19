@@ -3,9 +3,7 @@
 use std::fs::{create_dir_all, OpenOptions};
 use std::io::Write;
 use std::path::Path;
-use the_machine::strategic_route_benchmark::{
-    evaluate, experiment_results, task_count_for_scale,
-};
+use the_machine::strategic_route_benchmark::{evaluate, experiment_results, task_count_for_scale};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = std::env::args().skip(1).collect::<Vec<_>>();
@@ -22,10 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             "--seed" => {
                 i += 1;
-                seed = args
-                    .get(i)
-                    .ok_or("--seed needs a value")?
-                    .parse::<u64>()?;
+                seed = args.get(i).ok_or("--seed needs a value")?.parse::<u64>()?;
             }
             "--out" => {
                 i += 1;
@@ -58,7 +53,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for mode in report.modes.values() {
         eprintln!(
             "{}: accuracy={:.3} abstentions={} mean_steps={:.2}",
-            mode.mode.label(), mode.accuracy, mode.abstentions, mode.mean_route_steps
+            mode.mode.label(),
+            mode.accuracy,
+            mode.abstentions,
+            mode.mean_route_steps
         );
     }
     eprintln!(

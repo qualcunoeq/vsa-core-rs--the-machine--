@@ -77,7 +77,8 @@ impl PercentageQuantityArtifact {
             && !self.target.is_empty()
             && !self.expression.is_empty()
             && !self.constraints.is_empty()
-            && self.constraints
+            && self
+                .constraints
                 .iter()
                 .all(|c| !c.lhs.is_empty() && !c.rhs.is_empty())
     }
@@ -245,10 +246,7 @@ pub fn formalize(prompt: &str) -> PercentageQuantityDecision {
     }
 
     // 3a. PercentageOf: "What is {rate}% of {whole}?"
-    let pct_of_what = Regex::new(
-        r"^what is (\d+)% of (\d+)\??\.?$",
-    )
-    .unwrap();
+    let pct_of_what = Regex::new(r"^what is (\d+)% of (\d+)\??\.?$").unwrap();
     if let Some(caps) = pct_of_what.captures(text) {
         let rate: u64 = caps[1].parse().unwrap();
         let whole: u64 = caps[2].parse().unwrap();
@@ -266,10 +264,7 @@ pub fn formalize(prompt: &str) -> PercentageQuantityDecision {
     }
 
     // 3b. PercentageOf: "Calculate {rate} percent of the whole quantity {whole}."
-    let pct_calc = Regex::new(
-        r"^calculate (\d+) percent of the whole quantity (\d+)\.?$",
-    )
-    .unwrap();
+    let pct_calc = Regex::new(r"^calculate (\d+) percent of the whole quantity (\d+)\.?$").unwrap();
     if let Some(caps) = pct_calc.captures(text) {
         let rate: u64 = caps[1].parse().unwrap();
         let whole: u64 = caps[2].parse().unwrap();
@@ -287,10 +282,7 @@ pub fn formalize(prompt: &str) -> PercentageQuantityDecision {
     }
 
     // 3c. PercentageOf: "Find {rate}% of {whole}."
-    let pct_find = Regex::new(
-        r"^find (\d+)% of (\d+)\.?$",
-    )
-    .unwrap();
+    let pct_find = Regex::new(r"^find (\d+)% of (\d+)\.?$").unwrap();
     if let Some(caps) = pct_find.captures(text) {
         let rate: u64 = caps[1].parse().unwrap();
         let whole: u64 = caps[2].parse().unwrap();
@@ -482,13 +474,20 @@ mod tests {
     fn assert_accepted(prompt: &str, expected_kind: &str) -> PercentageQuantityArtifact {
         let decision = formalize(prompt);
         let PercentageQuantityDecision::Accepted(artifact) = decision else {
-            panic!("expected Accepted({expected_kind}), got {:?} for: {prompt}", decision.kind());
+            panic!(
+                "expected Accepted({expected_kind}), got {:?} for: {prompt}",
+                decision.kind()
+            );
         };
-        assert_eq!(artifact.operation_kind, expected_kind,
+        assert_eq!(
+            artifact.operation_kind, expected_kind,
             "expected operation_kind {expected_kind}, got {} for: {prompt}",
-            artifact.operation_kind);
-        assert!(artifact.replay_verified(),
-            "replay_verified() failed for: {prompt}");
+            artifact.operation_kind
+        );
+        assert!(
+            artifact.replay_verified(),
+            "replay_verified() failed for: {prompt}"
+        );
         artifact
     }
 
@@ -640,8 +639,11 @@ mod tests {
 
     fn assert_ambiguous(prompt: &str) {
         let decision = formalize(prompt);
-        assert!(matches!(decision, PercentageQuantityDecision::Ambiguous),
-            "expected Ambiguous, got {:?} for: {prompt}", decision.kind());
+        assert!(
+            matches!(decision, PercentageQuantityDecision::Ambiguous),
+            "expected Ambiguous, got {:?} for: {prompt}",
+            decision.kind()
+        );
     }
 
     #[test]
@@ -675,23 +677,32 @@ mod tests {
 
     fn assert_unsupported(prompt: &str) {
         let decision = formalize(prompt);
-        assert!(matches!(decision, PercentageQuantityDecision::Unsupported),
-            "expected Unsupported, got {:?} for: {prompt}", decision.kind());
+        assert!(
+            matches!(decision, PercentageQuantityDecision::Unsupported),
+            "expected Unsupported, got {:?} for: {prompt}",
+            decision.kind()
+        );
     }
 
     #[test]
     fn refuses_compound_growth() {
-        assert_unsupported("A balance grows by 5% each year for 5 years. What is the final balance?");
+        assert_unsupported(
+            "A balance grows by 5% each year for 5 years. What is the final balance?",
+        );
     }
 
     #[test]
     fn refuses_compound_growth_variant() {
-        assert_unsupported("A balance grows by 5% each year for 3 years. What is the final balance?");
+        assert_unsupported(
+            "A balance grows by 5% each year for 3 years. What is the final balance?",
+        );
     }
 
     #[test]
     fn refuses_finance_interest() {
-        assert_unsupported("A loan charges 3% simple interest over time; calculate the finance cost.");
+        assert_unsupported(
+            "A loan charges 3% simple interest over time; calculate the finance cost.",
+        );
     }
 
     #[test]
@@ -701,16 +712,12 @@ mod tests {
 
     #[test]
     fn refuses_overlapping_adjustments() {
-        assert_unsupported(
-            "Apply a 20% discount followed by 10% tax; determine the final price.",
-        );
+        assert_unsupported("Apply a 20% discount followed by 10% tax; determine the final price.");
     }
 
     #[test]
     fn refuses_probability() {
-        assert_unsupported(
-            "There is a 25% probability that an unknown variable succeeds.",
-        );
+        assert_unsupported("There is a 25% probability that an unknown variable succeeds.");
     }
 
     // ── Contract corpus ablation test ─────────────────────────────────
@@ -726,24 +733,33 @@ mod tests {
             let expected_kind = case.family.as_deref().unwrap_or("percentage");
             match &decision {
                 PercentageQuantityDecision::Accepted(artifact) => {
-                    assert!(artifact.replay_verified(),
-                        "replay_verified failed for supported: {}", case.id);
+                    assert!(
+                        artifact.replay_verified(),
+                        "replay_verified failed for supported: {}",
+                        case.id
+                    );
                     // Verify the operation kind matches the family
                     let family_ok = match expected_kind {
                         "percentage_of" => artifact.operation_kind == "percentage_of",
-                        "single_step_change" =>
+                        "single_step_change" => {
                             artifact.operation_kind == "increase_by_percentage"
-                            || artifact.operation_kind == "decrease_by_percentage",
+                                || artifact.operation_kind == "decrease_by_percentage"
+                        }
                         _ => true,
                     };
-                    assert!(family_ok,
+                    assert!(
+                        family_ok,
                         "case {} (family={}) got operation_kind={}",
-                        case.id, expected_kind, artifact.operation_kind);
+                        case.id, expected_kind, artifact.operation_kind
+                    );
                 }
                 other => {
                     panic!(
                         "supported case {} ({:?}) got {:?}: {}",
-                        case.id, case.scope, other.kind(), case.prompt
+                        case.id,
+                        case.scope,
+                        other.kind(),
+                        case.prompt
                     );
                 }
             }
@@ -758,9 +774,13 @@ mod tests {
                 continue;
             }
             let decision = formalize(&case.prompt);
-            assert!(matches!(decision, PercentageQuantityDecision::Ambiguous),
+            assert!(
+                matches!(decision, PercentageQuantityDecision::Ambiguous),
                 "ambiguous case {} expected Ambiguous, got {:?}: {}",
-                case.id, decision.kind(), case.prompt);
+                case.id,
+                decision.kind(),
+                case.prompt
+            );
         }
     }
 
@@ -772,9 +792,13 @@ mod tests {
                 continue;
             }
             let decision = formalize(&case.prompt);
-            assert!(matches!(decision, PercentageQuantityDecision::Unsupported),
+            assert!(
+                matches!(decision, PercentageQuantityDecision::Unsupported),
                 "unsupported case {} expected Unsupported, got {:?}: {}",
-                case.id, decision.kind(), case.prompt);
+                case.id,
+                decision.kind(),
+                case.prompt
+            );
         }
     }
 
@@ -785,12 +809,21 @@ mod tests {
             std::collections::BTreeMap::new();
         for case in &c.cases {
             if let Some(pair_id) = &case.pair_id {
-                pairs.entry(pair_id.clone()).or_default().push(case.prompt.clone());
+                pairs
+                    .entry(pair_id.clone())
+                    .or_default()
+                    .push(case.prompt.clone());
             }
         }
         for (pair_id, prompts) in &pairs {
-            assert_eq!(prompts.len(), 2, "rewrite pair {pair_id} has {} prompts", prompts.len());
-            let kinds: Vec<_> = prompts.iter()
+            assert_eq!(
+                prompts.len(),
+                2,
+                "rewrite pair {pair_id} has {} prompts",
+                prompts.len()
+            );
+            let kinds: Vec<_> = prompts
+                .iter()
                 .map(|p| {
                     let d = formalize(p);
                     match &d {
@@ -799,9 +832,11 @@ mod tests {
                     }
                 })
                 .collect();
-            assert_eq!(kinds[0], kinds[1],
+            assert_eq!(
+                kinds[0], kinds[1],
                 "rewrite pair {pair_id} has inconsistent operation kinds: {:?} vs {:?}",
-                kinds[0], kinds[1]);
+                kinds[0], kinds[1]
+            );
         }
     }
 

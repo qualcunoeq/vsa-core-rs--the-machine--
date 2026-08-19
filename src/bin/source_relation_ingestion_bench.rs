@@ -132,7 +132,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     for index in 0..40 {
         let input = if index % 2 == 0 { "U" } else { "X" };
-        let result = evaluate_relation(&relation_request("dna_complementary_base", input), &records);
+        let result =
+            evaluate_relation(&relation_request("dna_complementary_base", input), &records);
         let mut tampered = result.clone();
         tampered.replay_hash.push('x');
         receipts.push(Receipt {
@@ -183,10 +184,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     assert_eq!(receipts.len(), 240);
     let exact_decisions = receipts.iter().filter(|receipt| receipt.exact).count();
-    let replay_verified = receipts.iter().filter(|receipt| receipt.replay_verified).count();
-    let tamper_rejected = receipts.iter().filter(|receipt| receipt.tamper_rejected).count();
-    let source_preserved = receipts.iter().filter(|receipt| receipt.source_preserved).count();
-    let false_authorizations = receipts.iter().filter(|receipt| receipt.false_authorization).count();
+    let replay_verified = receipts
+        .iter()
+        .filter(|receipt| receipt.replay_verified)
+        .count();
+    let tamper_rejected = receipts
+        .iter()
+        .filter(|receipt| receipt.tamper_rejected)
+        .count();
+    let source_preserved = receipts
+        .iter()
+        .filter(|receipt| receipt.source_preserved)
+        .count();
+    let false_authorizations = receipts
+        .iter()
+        .filter(|receipt| receipt.false_authorization)
+        .count();
     assert_eq!(exact_decisions, 240);
     assert_eq!(replay_verified, 240);
     assert_eq!(tamper_rejected, 240);
@@ -202,7 +215,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "EVIDENCE: ",
         ),
         document.replace("END RELATION", "BEGIN RELATION"),
-        document.replace("ALIASES: DNA complementary base pairing|complementary DNA base", "ALIASES: duplicate|duplicate"),
+        document.replace(
+            "ALIASES: DNA complementary base pairing|complementary DNA base",
+            "ALIASES: duplicate|duplicate",
+        ),
     ];
     let mutated_catalogs_rejected = mutations
         .iter()

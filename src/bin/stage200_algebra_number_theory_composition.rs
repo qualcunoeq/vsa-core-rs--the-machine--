@@ -152,7 +152,9 @@ fn number_request(operation: NumberTheoryOperation) -> NumberTheoryRequest {
 fn actual(status_a: AbstractAlgebraStatus, status_n: NumberTheoryStatus) -> Expected {
     if status_a == AbstractAlgebraStatus::Ambiguous || status_n == NumberTheoryStatus::Ambiguous {
         Expected::Ambiguous
-    } else if status_a == AbstractAlgebraStatus::Complete && status_n == NumberTheoryStatus::Complete {
+    } else if status_a == AbstractAlgebraStatus::Complete
+        && status_n == NumberTheoryStatus::Complete
+    {
         Expected::Supported
     } else {
         Expected::Unsupported
@@ -167,35 +169,87 @@ fn evaluate(case: &Case) -> (Expected, bool, bool, bool, String) {
         Route::BezoutInverse => {}
         Route::CongruenceUnit => {
             algebra.operation = AbstractAlgebraOperation::CheckUnit;
-            algebra.modulus = Some(if case.expected == Expected::Unsupported { 12 } else { 13 });
-            algebra.element = Some(if case.expected == Expected::Unsupported { 6 } else { 5 });
+            algebra.modulus = Some(if case.expected == Expected::Unsupported {
+                12
+            } else {
+                13
+            });
+            algebra.element = Some(if case.expected == Expected::Unsupported {
+                6
+            } else {
+                5
+            });
             number.operation = NumberTheoryOperation::LinearCongruence;
-            number.a = Some(if case.expected == Expected::Unsupported { 6 } else { 5 });
-            number.b = Some(if case.expected == Expected::Unsupported { 1 } else { (case.index % 13) as i64 });
-            number.modulus = Some(if case.expected == Expected::Unsupported { 12 } else { 13 });
+            number.a = Some(if case.expected == Expected::Unsupported {
+                6
+            } else {
+                5
+            });
+            number.b = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                (case.index % 13) as i64
+            });
+            number.modulus = Some(if case.expected == Expected::Unsupported {
+                12
+            } else {
+                13
+            });
         }
         Route::ChineseRemainderRing => {
             algebra.operation = AbstractAlgebraOperation::ConstructModularRing;
-            algebra.modulus = Some(if case.expected == Expected::Unsupported { 1 } else { 3 });
+            algebra.modulus = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                3
+            });
             number.operation = NumberTheoryOperation::ChineseRemainder;
-            number.a = Some(if case.expected == Expected::Unsupported { 0 } else { (case.index % 3) as i64 });
-            number.b = Some(if case.expected == Expected::Unsupported { 1 } else { (case.index * 2 + 1) as i64 });
-            number.modulus = Some(if case.expected == Expected::Unsupported { 4 } else { 3 });
-            number.second_modulus = Some(if case.expected == Expected::Unsupported { 6 } else { 5 });
+            number.a = Some(if case.expected == Expected::Unsupported {
+                0
+            } else {
+                (case.index % 3) as i64
+            });
+            number.b = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                (case.index * 2 + 1) as i64
+            });
+            number.modulus = Some(if case.expected == Expected::Unsupported {
+                4
+            } else {
+                3
+            });
+            number.second_modulus = Some(if case.expected == Expected::Unsupported {
+                6
+            } else {
+                5
+            });
         }
         Route::HomomorphismKernel => {
             algebra.operation = AbstractAlgebraOperation::KernelImage;
             algebra.source_modulus = Some(4);
             algebra.target_modulus = Some(6);
-            algebra.multiplier = Some(if case.expected == Expected::Unsupported { 1 } else { 3 });
+            algebra.multiplier = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                3
+            });
             number.operation = NumberTheoryOperation::LinearCongruence;
-            number.a = Some(if case.expected == Expected::Unsupported { 1 } else { 3 });
+            number.a = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                3
+            });
             number.b = Some(0);
             number.modulus = Some(6);
         }
         Route::AdditiveOrderGcd => {
             algebra.operation = AbstractAlgebraOperation::AdditiveOrder;
-            algebra.modulus = Some(if case.expected == Expected::Unsupported { 0 } else { 12 });
+            algebra.modulus = Some(if case.expected == Expected::Unsupported {
+                0
+            } else {
+                12
+            });
             algebra.element = Some((case.index % 11 + 1) as u32);
             number.operation = NumberTheoryOperation::GcdBezout;
             number.a = Some(12);
@@ -203,28 +257,79 @@ fn evaluate(case: &Case) -> (Expected, bool, bool, bool, String) {
         }
         Route::TotientUnitCount => {
             algebra.operation = AbstractAlgebraOperation::ConstructModularRing;
-            algebra.modulus = Some(if case.expected == Expected::Unsupported { 1 } else { (2 + case.index % 20) as u32 });
+            algebra.modulus = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                (2 + case.index % 20) as u32
+            });
             number.operation = NumberTheoryOperation::EulerTotient;
-            number.modulus = Some(if case.expected == Expected::Unsupported { 1 } else { (2 + case.index % 20) as u64 });
+            number.modulus = Some(if case.expected == Expected::Unsupported {
+                1
+            } else {
+                (2 + case.index % 20) as u64
+            });
         }
     }
     // The first route is spelled out after the shared initialization to keep
     // the request fields visible in the receipt-level audit.
     if case.route == Route::BezoutInverse {
-        let pairs = [(3, 10), (5, 12), (7, 15), (5, 14), (9, 16), (11, 18), (7, 20), (13, 22), (5, 18), (17, 24)];
+        let pairs = [
+            (3, 10),
+            (5, 12),
+            (7, 15),
+            (5, 14),
+            (9, 16),
+            (11, 18),
+            (7, 20),
+            (13, 22),
+            (5, 18),
+            (17, 24),
+        ];
         let (a, m) = pairs[case.index % pairs.len()];
         algebra.operation = AbstractAlgebraOperation::CheckUnit;
-        algebra.modulus = Some(if case.expected == Expected::Unsupported { 12 } else { m as u32 });
-        algebra.element = Some(if case.expected == Expected::Unsupported { 6 } else { a as u32 });
-        number.operation = if case.expected == Expected::Unsupported { NumberTheoryOperation::ModularInverse } else { NumberTheoryOperation::GcdBezout };
-        number.a = Some(if case.expected == Expected::Unsupported { 6 } else { a });
+        algebra.modulus = Some(if case.expected == Expected::Unsupported {
+            12
+        } else {
+            m as u32
+        });
+        algebra.element = Some(if case.expected == Expected::Unsupported {
+            6
+        } else {
+            a as u32
+        });
+        number.operation = if case.expected == Expected::Unsupported {
+            NumberTheoryOperation::ModularInverse
+        } else {
+            NumberTheoryOperation::GcdBezout
+        };
+        number.a = Some(if case.expected == Expected::Unsupported {
+            6
+        } else {
+            a
+        });
         number.b = Some(m);
         number.modulus = Some(m as u64);
         if case.expected == Expected::Supported {
             let gcd = evaluate_number_theory(&number);
-            let inverse = evaluate_number_theory(&NumberTheoryRequest { operation: NumberTheoryOperation::ModularInverse, a: Some(a), b: None, c: None, modulus: Some(m as u64), second_modulus: None, domain: number.domain.clone(), ambiguity: None, provenance: number.provenance.clone() });
-            invariant = matches!(gcd.artifact, Some(NumberTheoryArtifact::GcdBezout { gcd: 1, .. })) && inverse.status == NumberTheoryStatus::Complete;
-            let (a_result, n_result) = (evaluate_abstract_algebra(&algebra), evaluate_number_theory(&number));
+            let inverse = evaluate_number_theory(&NumberTheoryRequest {
+                operation: NumberTheoryOperation::ModularInverse,
+                a: Some(a),
+                b: None,
+                c: None,
+                modulus: Some(m as u64),
+                second_modulus: None,
+                domain: number.domain.clone(),
+                ambiguity: None,
+                provenance: number.provenance.clone(),
+            });
+            invariant = matches!(
+                gcd.artifact,
+                Some(NumberTheoryArtifact::GcdBezout { gcd: 1, .. })
+            ) && inverse.status == NumberTheoryStatus::Complete;
+            let (a_result, n_result) = (
+                evaluate_abstract_algebra(&algebra),
+                evaluate_number_theory(&number),
+            );
             let actual = actual(a_result.status, n_result.status);
             let mut algebra_tampered = a_result.clone();
             algebra_tampered.replay_hash.push('x');
@@ -232,9 +337,19 @@ fn evaluate(case: &Case) -> (Expected, bool, bool, bool, String) {
             number_tampered.replay_hash.push('x');
             let mut inverse_tampered = inverse.clone();
             inverse_tampered.replay_hash.push('x');
-            let replay = a_result.replay_verified() && n_result.replay_verified() && inverse.replay_verified();
-            let tamper = !algebra_tampered.replay_verified() && !number_tampered.replay_verified() && !inverse_tampered.replay_verified();
-            return (actual, replay, tamper, invariant, "bezout_to_inverse".into());
+            let replay = a_result.replay_verified()
+                && n_result.replay_verified()
+                && inverse.replay_verified();
+            let tamper = !algebra_tampered.replay_verified()
+                && !number_tampered.replay_verified()
+                && !inverse_tampered.replay_verified();
+            return (
+                actual,
+                replay,
+                tamper,
+                invariant,
+                "bezout_to_inverse".into(),
+            );
         }
     }
     if case.expected == Expected::Ambiguous {
@@ -252,16 +367,40 @@ fn evaluate(case: &Case) -> (Expected, bool, bool, bool, String) {
     let tamper = !algebra_tampered.replay_verified() && !number_tampered.replay_verified();
     match case.route {
         Route::CongruenceUnit => {
-            invariant = matches!(a_result.artifact, Some(AbstractAlgebraArtifact::Boolean(true)))
-                && matches!(n_result.artifact, Some(NumberTheoryArtifact::CongruenceClass { solution_count: 1, .. }));
+            invariant = matches!(
+                a_result.artifact,
+                Some(AbstractAlgebraArtifact::Boolean(true))
+            ) && matches!(
+                n_result.artifact,
+                Some(NumberTheoryArtifact::CongruenceClass {
+                    solution_count: 1,
+                    ..
+                })
+            );
         }
         Route::ChineseRemainderRing => {
-            invariant = matches!(a_result.artifact, Some(AbstractAlgebraArtifact::ModularRing { .. }))
-                && matches!(n_result.artifact, Some(NumberTheoryArtifact::CrtClass { .. }));
+            invariant = matches!(
+                a_result.artifact,
+                Some(AbstractAlgebraArtifact::ModularRing { .. })
+            ) && matches!(
+                n_result.artifact,
+                Some(NumberTheoryArtifact::CrtClass { .. })
+            );
         }
         Route::HomomorphismKernel => {
-            invariant = matches!(a_result.artifact, Some(AbstractAlgebraArtifact::KernelImage { kernel_size: 2, image_size: 2 }))
-                && matches!(n_result.artifact, Some(NumberTheoryArtifact::CongruenceClass { solution_count: 3, .. }));
+            invariant = matches!(
+                a_result.artifact,
+                Some(AbstractAlgebraArtifact::KernelImage {
+                    kernel_size: 2,
+                    image_size: 2
+                })
+            ) && matches!(
+                n_result.artifact,
+                Some(NumberTheoryArtifact::CongruenceClass {
+                    solution_count: 3,
+                    ..
+                })
+            );
         }
         Route::AdditiveOrderGcd => {
             let m = 12u64;
@@ -271,14 +410,26 @@ fn evaluate(case: &Case) -> (Expected, bool, bool, bool, String) {
                 && matches!(n_result.artifact, Some(NumberTheoryArtifact::GcdBezout { gcd, .. }) if gcd.unsigned_abs() as u64 == gcd_u64(m, e));
         }
         Route::TotientUnitCount => {
-            if let (Some(AbstractAlgebraArtifact::ModularRing { modulus }), Some(NumberTheoryArtifact::Scalar(phi))) = (a_result.artifact.as_ref(), n_result.artifact.as_ref()) {
-                let unit_count = (0..*modulus).filter(|element| gcd_u64(*modulus as u64, *element as u64) == 1).count() as u64;
+            if let (
+                Some(AbstractAlgebraArtifact::ModularRing { modulus }),
+                Some(NumberTheoryArtifact::Scalar(phi)),
+            ) = (a_result.artifact.as_ref(), n_result.artifact.as_ref())
+            {
+                let unit_count = (0..*modulus)
+                    .filter(|element| gcd_u64(*modulus as u64, *element as u64) == 1)
+                    .count() as u64;
                 invariant = unit_count == *phi;
             }
         }
         Route::BezoutInverse => {}
     }
-    (actual, replay, tamper, invariant, format!("{}", route_name(case.route)))
+    (
+        actual,
+        replay,
+        tamper,
+        invariant,
+        format!("{}", route_name(case.route)),
+    )
 }
 
 fn gcd_u64(mut a: u64, mut b: u64) -> u64 {
@@ -317,7 +468,8 @@ fn main() {
         let (actual, replay, tamper, invariant, gate) = evaluate(case);
         let exact = actual == case.expected;
         let authorized = actual == Expected::Supported && invariant;
-        let false_authorization = case.expected != Expected::Supported && actual == Expected::Supported;
+        let false_authorization =
+            case.expected != Expected::Supported && actual == Expected::Supported;
         let false_denial = case.expected == Expected::Supported && !authorized;
         let tamper_rejected = tamper;
         receipts.push(Receipt {
@@ -335,29 +487,60 @@ fn main() {
             first_failure_gate: if exact { "none".into() } else { gate },
         });
     }
-    let supported_cases = corpus.iter().filter(|c| c.expected == Expected::Supported).count();
-    let ambiguous_cases = corpus.iter().filter(|c| c.expected == Expected::Ambiguous).count();
-    let unsupported_cases = corpus.iter().filter(|c| c.expected == Expected::Unsupported).count();
+    let supported_cases = corpus
+        .iter()
+        .filter(|c| c.expected == Expected::Supported)
+        .count();
+    let ambiguous_cases = corpus
+        .iter()
+        .filter(|c| c.expected == Expected::Ambiguous)
+        .count();
+    let unsupported_cases = corpus
+        .iter()
+        .filter(|c| c.expected == Expected::Unsupported)
+        .count();
     let report = Report {
         schema: "stage200-algebra-number-theory-composition-v1",
-        parent_report_sha256: digest(&fs::read("docs/stage199_current_integrated_checkpoint.json").expect("parent checkpoint")),
+        parent_report_sha256: digest(
+            &fs::read("docs/stage199_current_integrated_checkpoint.json")
+                .expect("parent checkpoint"),
+        ),
         corpus_sha256: digest(&corpus),
         cases: corpus.len(),
         supported_cases,
         ambiguous_cases,
         unsupported_cases,
         exact_decisions: receipts.iter().filter(|r| r.exact).count(),
-        authorized_compositions: receipts.iter().filter(|r| r.expected == Expected::Supported && r.actual == Expected::Supported && r.invariants_preserved).count(),
-        ambiguous_preserved: receipts.iter().filter(|r| r.expected == Expected::Ambiguous && r.actual == Expected::Ambiguous).count(),
-        unsupported_refused: receipts.iter().filter(|r| r.expected == Expected::Unsupported && r.actual == Expected::Unsupported).count(),
+        authorized_compositions: receipts
+            .iter()
+            .filter(|r| {
+                r.expected == Expected::Supported
+                    && r.actual == Expected::Supported
+                    && r.invariants_preserved
+            })
+            .count(),
+        ambiguous_preserved: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Ambiguous && r.actual == Expected::Ambiguous)
+            .count(),
+        unsupported_refused: receipts
+            .iter()
+            .filter(|r| r.expected == Expected::Unsupported && r.actual == Expected::Unsupported)
+            .count(),
         replay_verified: receipts.iter().filter(|r| r.replay_verified).count(),
         tamper_rejected: receipts.iter().filter(|r| r.tamper_rejected).count(),
         route_disagreements: receipts.iter().filter(|r| !r.route_agreed).count(),
-        invariant_failures: receipts.iter().filter(|r| !r.invariants_preserved && r.expected == Expected::Supported).count(),
+        invariant_failures: receipts
+            .iter()
+            .filter(|r| !r.invariants_preserved && r.expected == Expected::Supported)
+            .count(),
         false_authorizations: receipts.iter().filter(|r| r.false_authorization).count(),
         false_denials: receipts.iter().filter(|r| r.false_denial).count(),
         production_registry_mutations: 0,
-        route_counts: corpus.iter().fold(BTreeMap::new(), |mut map, case| { *map.entry(route_name(case.route)).or_insert(0) += 1; map }),
+        route_counts: corpus.iter().fold(BTreeMap::new(), |mut map, case| {
+            *map.entry(route_name(case.route)).or_insert(0) += 1;
+            map
+        }),
         receipts,
         corpus,
     };

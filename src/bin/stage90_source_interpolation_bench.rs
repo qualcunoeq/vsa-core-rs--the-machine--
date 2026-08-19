@@ -135,19 +135,25 @@ fn evaluate_case(
         .as_ref()
         .and_then(|result| result.value.as_ref())
         .map(rational_string);
-    let expected_value = (expected == Expected::Supported).then(|| rational_string(&expected_value(index)));
+    let expected_value =
+        (expected == Expected::Supported).then(|| rational_string(&expected_value(index)));
     let authorized = expected == Expected::Supported
         && frontend.status == InterpolationFrontendStatus::Complete
         && downstream.as_ref().is_some_and(|result| {
             result.status == FormulaStatus::Complete
                 && result.value.is_some()
-                && result.provenance.iter().any(|p| p.contains("source-interpolation"))
+                && result
+                    .provenance
+                    .iter()
+                    .any(|p| p.contains("source-interpolation"))
                 && result.replay_verified()
         })
         && actual_value == expected_value;
     let mut frontend_copy = frontend.clone();
     frontend_copy.replay_hash.push('x');
-    let downstream_replay = downstream.as_ref().is_none_or(|result| result.replay_verified());
+    let downstream_replay = downstream
+        .as_ref()
+        .is_none_or(|result| result.replay_verified());
     let downstream_tamper = downstream.as_ref().is_none_or(|result| {
         let mut copy = result.clone();
         copy.replay_hash.push('x');
@@ -157,8 +163,12 @@ fn evaluate_case(
     let tamper = !replay_verified(&frontend_copy) && downstream_tamper;
     let exact = match expected {
         Expected::Supported => authorized,
-        Expected::Ambiguous => frontend.status == InterpolationFrontendStatus::Ambiguous && !authorized,
-        Expected::Unsupported => frontend.status == InterpolationFrontendStatus::Unsupported && !authorized,
+        Expected::Ambiguous => {
+            frontend.status == InterpolationFrontendStatus::Ambiguous && !authorized
+        }
+        Expected::Unsupported => {
+            frontend.status == InterpolationFrontendStatus::Unsupported && !authorized
+        }
     };
     Receipt {
         id: format!("interpolation_{index:03}"),
@@ -170,7 +180,9 @@ fn evaluate_case(
         exact,
         replay_verified: replay,
         tamper_rejected: tamper,
-        source_provenance: downstream.as_ref().is_none_or(|result| !result.provenance.is_empty()),
+        source_provenance: downstream
+            .as_ref()
+            .is_none_or(|result| !result.provenance.is_empty()),
         false_authorization: expected != Expected::Supported && authorized,
         false_denial: expected == Expected::Supported && !authorized,
     }
@@ -204,17 +216,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .filter(|mutation| digest(mutation) != digest(SOURCE))
     .count();
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Supported).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let unsupported = receipts.iter().filter(|r| r.expected == Expected::Unsupported).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Supported)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let unsupported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Unsupported)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
-    let supported_values = receipts.iter().filter(|r| r.expected == Expected::Supported && r.actual_value == r.expected_value).count();
+    let supported_values = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Supported && r.actual_value == r.expected_value)
+        .count();
     let replay_verified_count = receipts.iter().filter(|r| r.replay_verified).count();
     let tamper_rejections = receipts.iter().filter(|r| r.tamper_rejected).count();
     let source_provenance = receipts.iter().filter(|r| r.source_provenance).count();
     let false_authorizations = receipts.iter().filter(|r| r.false_authorization).count();
     let false_denials = receipts.iter().filter(|r| r.false_denial).count();
-    assert_eq!((cases, supported, ambiguous, unsupported), (300, 180, 60, 60));
+    assert_eq!(
+        (cases, supported, ambiguous, unsupported),
+        (300, 180, 60, 60)
+    );
     assert_eq!(exact_decisions, cases);
     assert_eq!(supported_values, supported);
     assert_eq!(replay_verified_count, cases);
@@ -225,7 +252,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(false_denials, 0);
     let mut status_counts = BTreeMap::new();
     for receipt in &receipts {
-        *status_counts.entry(format!("{:?}", receipt.frontend_status)).or_insert(0) += 1;
+        *status_counts
+            .entry(format!("{:?}", receipt.frontend_status))
+            .or_insert(0) += 1;
     }
     let report = Report {
         schema: "stage90-source-linear-interpolation-v1",
@@ -248,7 +277,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage90_source_linear_interpolation.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage90_source_linear_interpolation.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

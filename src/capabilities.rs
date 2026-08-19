@@ -251,8 +251,14 @@ impl CapabilitySpec {
             version: 1,
             kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
-            consumes: vec![CapabilityIoType::NormalizedEquation, CapabilityIoType::TargetVariable],
-            produces: vec![CapabilityIoType::SolutionSet, CapabilityIoType::CandidateSolutionSet],
+            consumes: vec![
+                CapabilityIoType::NormalizedEquation,
+                CapabilityIoType::TargetVariable,
+            ],
+            produces: vec![
+                CapabilityIoType::SolutionSet,
+                CapabilityIoType::CandidateSolutionSet,
+            ],
             supported_object_types: vec![SubjectObjectType::Equation],
             supported_operations: vec![OperationKind::Solve],
             supported_answer_forms: vec![
@@ -291,8 +297,14 @@ impl CapabilitySpec {
             version: 1,
             kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
-            consumes: vec![CapabilityIoType::NormalizedEquation, CapabilityIoType::TargetVariable],
-            produces: vec![CapabilityIoType::SolutionSet, CapabilityIoType::CandidateSolutionSet],
+            consumes: vec![
+                CapabilityIoType::NormalizedEquation,
+                CapabilityIoType::TargetVariable,
+            ],
+            produces: vec![
+                CapabilityIoType::SolutionSet,
+                CapabilityIoType::CandidateSolutionSet,
+            ],
             supported_object_types: vec![SubjectObjectType::Equation],
             supported_operations: vec![OperationKind::Solve],
             supported_answer_forms: vec![AnswerForm::SolutionSet, AnswerForm::ExactValue],
@@ -362,7 +374,10 @@ impl CapabilitySpec {
             version: 1,
             kind: CapabilityKind::Transformation,
             dependencies: Vec::new(),
-            consumes: vec![CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+            consumes: vec![
+                CapabilityIoType::EquationSystem,
+                CapabilityIoType::VariableSet,
+            ],
             produces: vec![CapabilityIoType::SystemSolution],
             supported_object_types: vec![SubjectObjectType::EquationSystem],
             supported_operations: vec![OperationKind::Solve],
@@ -587,7 +602,14 @@ impl CapabilityRegistry {
         let mut order = Vec::new();
         let mut errors = Vec::new();
         for id in self.capabilities.keys() {
-            visit(id, self, &mut visiting, &mut visited, &mut order, &mut errors);
+            visit(
+                id,
+                self,
+                &mut visiting,
+                &mut visited,
+                &mut order,
+                &mut errors,
+            );
         }
         if errors.is_empty() {
             Ok(order)
@@ -690,8 +712,7 @@ impl CapabilityRegistry {
                             true
                         } else {
                             target.arguments.iter().all(|binding| {
-                                binding.status
-                                    == crate::formalization::TargetFieldStatus::Complete
+                                binding.status == crate::formalization::TargetFieldStatus::Complete
                             }) || !subject.object.chars().any(|c| c.is_ascii_alphabetic())
                         }
                     }
@@ -767,8 +788,7 @@ impl CapabilityRegistry {
                         target.operation == OperationKind::Substitute
                             && !target.arguments.is_empty()
                             && target.arguments.iter().all(|binding| {
-                                binding.status
-                                    == crate::formalization::TargetFieldStatus::Complete
+                                binding.status == crate::formalization::TargetFieldStatus::Complete
                             })
                     }
                     InputRequirement::NoFreeVariables | InputRequirement::ReplayVerifier => true,
@@ -906,7 +926,9 @@ mod tests {
             false,
         );
         assert_eq!(
-            registry.discover(&quadratic.target_completion.target).selection,
+            registry
+                .discover(&quadratic.target_completion.target)
+                .selection,
             CapabilitySelection::Unique("quadratic_equation_solve".into())
         );
     }
@@ -921,14 +943,18 @@ mod tests {
         cyclic.register(first);
         cyclic.register(second);
         let errors = cyclic.dependency_order().unwrap_err();
-        assert!(errors.iter().any(|error| error.contains("dependency_cycle")));
+        assert!(errors
+            .iter()
+            .any(|error| error.contains("dependency_cycle")));
 
         let mut missing = CapabilityRegistry::default();
         let mut function = CapabilitySpec::function_application_v1();
         function.dependencies = vec!["missing".into()];
         missing.register(function);
         let errors = missing.dependency_order().unwrap_err();
-        assert!(errors.iter().any(|error| error == "missing_capability:missing"));
+        assert!(errors
+            .iter()
+            .any(|error| error == "missing_capability:missing"));
     }
 
     #[test]

@@ -67,7 +67,6 @@ impl serde::Serialize for Variable {
 
 impl<'de> serde::Deserialize<'de> for Variable {
     fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
-        
         #[derive(serde::Deserialize)]
         struct VariableData {
             id: VarId,

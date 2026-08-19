@@ -108,10 +108,14 @@ fn existing_text(index: usize) -> String {
 fn unit_text(index: usize, partition: Partition) -> String {
     let amount = index % 19 + 1;
     match (partition, index % 4) {
-        (Partition::Sealed, 0) => format!("Determine the meters to centimeters conversion; given amount={amount}."),
+        (Partition::Sealed, 0) => {
+            format!("Determine the meters to centimeters conversion; given amount={amount}.")
+        }
         (Partition::Sealed, 1) => format!("Evaluate hours to minutes using amount={amount}."),
         (Partition::Validation, 0) => format!("Compute hours to minutes from amount={amount}."),
-        (Partition::Validation, 1) => format!("Determine the pounds to ounces result; given amount={amount}."),
+        (Partition::Validation, 1) => {
+            format!("Determine the pounds to ounces result; given amount={amount}.")
+        }
         (_, 0) => format!("Compute meters to centimeters from amount={amount}."),
         (_, 1) => format!("Evaluate liters to milliliters using amount={amount}."),
         (_, 2) => format!("Determine the hours to minutes; given amount={amount}."),
@@ -137,13 +141,28 @@ fn build() -> Vec<Case> {
         (Partition::Boundary, 0, 0, 200),
     ] {
         for index in 0..existing {
-            cases.push(Case { id: format!("stage286-{partition:?}-existing-{index:03}"), partition, kind: Kind::Existing, text: existing_text(index + existing) });
+            cases.push(Case {
+                id: format!("stage286-{partition:?}-existing-{index:03}"),
+                partition,
+                kind: Kind::Existing,
+                text: existing_text(index + existing),
+            });
         }
         for index in 0..unit {
-            cases.push(Case { id: format!("stage286-{partition:?}-unit-{index:03}"), partition, kind: Kind::Unit, text: unit_text(index + existing, partition) });
+            cases.push(Case {
+                id: format!("stage286-{partition:?}-unit-{index:03}"),
+                partition,
+                kind: Kind::Unit,
+                text: unit_text(index + existing, partition),
+            });
         }
         for index in 0..boundary {
-            cases.push(Case { id: format!("stage286-{partition:?}-boundary-{index:03}"), partition, kind: Kind::Boundary, text: boundary_text(index) });
+            cases.push(Case {
+                id: format!("stage286-{partition:?}-boundary-{index:03}"),
+                partition,
+                kind: Kind::Boundary,
+                text: boundary_text(index),
+            });
         }
     }
     cases
@@ -151,10 +170,16 @@ fn build() -> Vec<Case> {
 
 fn baseline(case: &Case) -> (bool, bool) {
     let decision = route(&case.text, &case.id);
-    (decision.status == RouteStatus::Authorized, replay_verified(&decision))
+    (
+        decision.status == RouteStatus::Authorized,
+        replay_verified(&decision),
+    )
 }
 
-fn promoted(case: &Case, records: &[the_machine::source_formula_pack::FormulaRecord]) -> (bool, bool, bool) {
+fn promoted(
+    case: &Case,
+    records: &[the_machine::source_formula_pack::FormulaRecord],
+) -> (bool, bool, bool) {
     if case.kind != Kind::Unit {
         let (authorized, replay) = baseline(case);
         return (authorized, replay, replay);
@@ -167,15 +192,35 @@ fn promoted(case: &Case, records: &[the_machine::source_formula_pack::FormulaRec
         });
     let mut tampered = frontend.clone();
     tampered.replay_hash.push('x');
-    (authorized, report_replay_verified(&frontend), !report_replay_verified(&tampered))
+    (
+        authorized,
+        report_replay_verified(&frontend),
+        !report_replay_verified(&tampered),
+    )
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let validation_bytes = fs::read(VALIDATION)?;
     let validation: serde_json::Value = serde_json::from_slice(&validation_bytes)?;
-    assert_eq!(validation.get("exact_decisions").and_then(serde_json::Value::as_u64), Some(600));
-    assert_eq!(validation.get("false_authorizations").and_then(serde_json::Value::as_u64), Some(0));
-    let module = discover_formula_module(SourceDocument { domain: UNIT_DOMAIN, version: "openstax-2026", source_hint: "unit-conversion", document: UNIT_SOURCE }).map_err(|e| e.join("; "))?;
+    assert_eq!(
+        validation
+            .get("exact_decisions")
+            .and_then(serde_json::Value::as_u64),
+        Some(600)
+    );
+    assert_eq!(
+        validation
+            .get("false_authorizations")
+            .and_then(serde_json::Value::as_u64),
+        Some(0)
+    );
+    let module = discover_formula_module(SourceDocument {
+        domain: UNIT_DOMAIN,
+        version: "openstax-2026",
+        source_hint: "unit-conversion",
+        document: UNIT_SOURCE,
+    })
+    .map_err(|e| e.join("; "))?;
     let cases = build();
     assert_eq!(cases.len(), 1000);
     let mut baseline_authorized = 0;
@@ -203,8 +248,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         false_authorizations += usize::from((case.kind == Kind::Boundary) && after);
         false_denials += usize::from(expected_after && !after);
     }
-    for partition in [Partition::Development, Partition::Validation, Partition::Sealed, Partition::Boundary] {
-        let mut metrics = PartitionMetrics { cases: 0, baseline_exact: 0, promoted_exact: 0, baseline_authorized: 0, promoted_authorized: 0, baseline_replay: 0, promoted_replay: 0, promoted_tamper_rejected: 0 };
+    for partition in [
+        Partition::Development,
+        Partition::Validation,
+        Partition::Sealed,
+        Partition::Boundary,
+    ] {
+        let mut metrics = PartitionMetrics {
+            cases: 0,
+            baseline_exact: 0,
+            promoted_exact: 0,
+            baseline_authorized: 0,
+            promoted_authorized: 0,
+            baseline_replay: 0,
+            promoted_replay: 0,
+            promoted_tamper_rejected: 0,
+        };
         for case in cases.iter().filter(|case| case.partition == partition) {
             let (base, base_replay) = baseline(case);
             let (after, after_replay, after_tamper) = promoted(case, &module.records);
@@ -263,6 +322,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.production_mutations, 0);
     fs::write(REPORT_JSON, serde_json::to_vec_pretty(&report)?)?;
     fs::write(REPORT_MD, format!("# Stage 286 — self-directed unit learning curve\n\nA fresh 1,000-case technical corpus was evaluated before and after the source-derived unit-conversion candidate was offered in shadow routing. The sealed partition remains isolated from selection.\n\n* baseline authorized: {}\n* promoted authorized: {}\n* baseline / promoted exact: {} / {}\n* sealed baseline / promoted: {} / {}\n* sealed learning delta: {}\n* baseline / promoted replay: {} / {}\n* promoted tamper rejection: {}\n* false authorizations / denials: 0 / 0\n* HLE questions read / production mutations: 0 / 0\n\nPermanent split: development 300, validation 200, sealed 300, boundary 200.\n\nReproduce with `cargo run --quiet --bin stage286_self_directed_unit_learning_curve`.\n", report.baseline_authorized, report.promoted_authorized, report.baseline_exact, report.promoted_exact, report.sealed_baseline_authorized, report.sealed_promoted_authorized, report.sealed_learning_delta, report.baseline_replay, report.promoted_replay, report.promoted_tamper_rejected))?;
-    println!("stage286 cases=1000 baseline_auth={} promoted_auth={} sealed_delta={} false_auth=0", report.baseline_authorized, report.promoted_authorized, report.sealed_learning_delta);
+    println!(
+        "stage286 cases=1000 baseline_auth={} promoted_auth={} sealed_delta={} false_auth=0",
+        report.baseline_authorized, report.promoted_authorized, report.sealed_learning_delta
+    );
     Ok(())
 }

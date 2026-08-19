@@ -49,8 +49,9 @@ impl DerivedProofKind {
     pub fn compose(self, other: Self) -> Self {
         match (self, other) {
             (Self::Measurement, _) | (_, Self::Measurement) => Self::Measurement,
-            (Self::ApproximateTransformation, _)
-            | (_, Self::ApproximateTransformation) => Self::ApproximateTransformation,
+            (Self::ApproximateTransformation, _) | (_, Self::ApproximateTransformation) => {
+                Self::ApproximateTransformation
+            }
             (Self::ExactTransformation, Self::ExactTransformation) => Self::ExactTransformation,
         }
     }
@@ -188,7 +189,11 @@ impl FactSelectionPolicy {
                 DerivedProofKind::ApproximateTransformation,
                 DerivedProofKind::Measurement,
             ],
-            allowed_precision: vec![FactPrecision::Exact, FactPrecision::Approximate, FactPrecision::Measured],
+            allowed_precision: vec![
+                FactPrecision::Exact,
+                FactPrecision::Approximate,
+                FactPrecision::Measured,
+            ],
             allowed_domains: Vec::new(),
             require_lineage: true,
             allow_assumptions: true,
@@ -372,14 +377,12 @@ impl DerivedFactIndex {
         key: &str,
         policy: &FactSelectionPolicy,
     ) -> Result<Vec<&DerivedFact>, FactSelectionFailure> {
-        let candidates = self
-            .usable(key)
-            .map_err(|failure| match failure {
-                FactIndexQueryFailure::Conflict(conflict) => FactSelectionFailure::Conflict(conflict),
-                FactIndexQueryFailure::Unavailable { key, facts } => {
-                    FactSelectionFailure::Unavailable { key, facts }
-                }
-            })?;
+        let candidates = self.usable(key).map_err(|failure| match failure {
+            FactIndexQueryFailure::Conflict(conflict) => FactSelectionFailure::Conflict(conflict),
+            FactIndexQueryFailure::Unavailable { key, facts } => {
+                FactSelectionFailure::Unavailable { key, facts }
+            }
+        })?;
         let mut accepted = Vec::new();
         let mut rejected = Vec::new();
         for fact in candidates {
@@ -595,7 +598,11 @@ impl FactPolicy {
 
     pub fn exact_transformation() -> Self {
         Self {
-            allowed_statuses: vec![EvidenceStatus::Explicit, EvidenceStatus::Confirmed, EvidenceStatus::Inferred],
+            allowed_statuses: vec![
+                EvidenceStatus::Explicit,
+                EvidenceStatus::Confirmed,
+                EvidenceStatus::Inferred,
+            ],
             require_lineage: true,
             allowed_proof_kinds: vec![DerivedProofKind::ExactTransformation],
             allowed_precision: vec![FactPrecision::Exact],
@@ -797,14 +804,7 @@ mod tests {
     #[test]
     fn fact_composition_rejects_parentless_conclusions() {
         assert_eq!(
-            DerivedFact::derive_from(
-                "guess",
-                "x = 42",
-                &[],
-                "unverified",
-                &[],
-                None,
-            ),
+            DerivedFact::derive_from("guess", "x = 42", &[], "unverified", &[], None,),
             Err(FactDerivationRejection::NoParents)
         );
     }
@@ -820,8 +820,16 @@ mod tests {
         index.insert("x", exact, &broad).unwrap();
         index.insert("x-approx", approximate, &broad).unwrap();
 
-        let selected = index.select("x", &FactSelectionPolicy::exact_algebra()).unwrap();
-        assert_eq!(selected.iter().map(|fact| fact.id.as_str()).collect::<Vec<_>>(), vec!["exact"]);
+        let selected = index
+            .select("x", &FactSelectionPolicy::exact_algebra())
+            .unwrap();
+        assert_eq!(
+            selected
+                .iter()
+                .map(|fact| fact.id.as_str())
+                .collect::<Vec<_>>(),
+            vec!["exact"]
+        );
         assert!(matches!(
             index.select("x-approx", &FactSelectionPolicy::exact_algebra()),
             Err(FactSelectionFailure::NoAcceptableFacts { key, .. }) if key == "x-approx"
@@ -876,7 +884,10 @@ mod tests {
             vec!["base", "distance", "prompt-time"]
         );
         assert_eq!(index.dependents_of("base"), vec!["arrival", "distance"]);
-        assert_eq!(index.invalidation_closure("base"), vec!["arrival", "distance"]);
+        assert_eq!(
+            index.invalidation_closure("base"),
+            vec!["arrival", "distance"]
+        );
         assert!(index.fact("missing").is_none());
     }
 
@@ -920,22 +931,23 @@ mod tests {
     fn superseding_a_fact_preserves_history_and_invalidates_dependents() {
         let policy = FactPolicy::verified_transformation();
         let base = derived_fact("base", "x = 5", "prompt-x");
-        let derived = DerivedFact::derive_from(
-            "double",
-            "2x = 10",
-            &[&base],
-            "doubling",
-            &[],
-            None,
-        )
-        .unwrap();
+        let derived =
+            DerivedFact::derive_from("double", "2x = 10", &[&base], "doubling", &[], None).unwrap();
         let mut index = DerivedFactIndex::default();
         index.insert("x", base, &policy).unwrap();
         index.insert("double", derived, &policy).unwrap();
-        let affected = index.supersede("base", "base-new", "clarification").unwrap();
+        let affected = index
+            .supersede("base", "base-new", "clarification")
+            .unwrap();
         assert_eq!(affected, vec!["double"]);
-        assert_eq!(index.lifecycle("base").unwrap().status, FactStatus::Superseded);
-        assert_eq!(index.lifecycle("double").unwrap().status, FactStatus::Invalidated);
+        assert_eq!(
+            index.lifecycle("base").unwrap().status,
+            FactStatus::Superseded
+        );
+        assert_eq!(
+            index.lifecycle("double").unwrap().status,
+            FactStatus::Invalidated
+        );
         assert_eq!(index.fact("base").unwrap().content, "x = 5");
     }
 
@@ -957,7 +969,11 @@ mod tests {
         let mut index = DerivedFactIndex::default();
         let policy = FactPolicy::verified_transformation();
         assert_eq!(
-            index.insert("distance", derived_fact("d1", "distance = 50m", "rate-time"), &policy),
+            index.insert(
+                "distance",
+                derived_fact("d1", "distance = 50m", "rate-time"),
+                &policy
+            ),
             Ok(FactIndexInsert::Added)
         );
         assert_eq!(index.candidates("mass"), &[]);
@@ -982,7 +998,9 @@ mod tests {
         };
         assert_eq!(
             index.insert("answer", fact, &policy),
-            Err(FactIndexRejection::Policy(FactPolicyRejection::LineageMissing))
+            Err(FactIndexRejection::Policy(
+                FactPolicyRejection::LineageMissing
+            ))
         );
     }
 
@@ -991,7 +1009,11 @@ mod tests {
         let mut index = DerivedFactIndex::default();
         let policy = FactPolicy::verified_transformation();
         assert_eq!(
-            index.insert("distance", derived_fact("d1", "distance = 50m", "proof-a"), &policy),
+            index.insert(
+                "distance",
+                derived_fact("d1", "distance = 50m", "proof-a"),
+                &policy
+            ),
             Ok(FactIndexInsert::Added)
         );
         let result = index.insert(

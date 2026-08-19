@@ -1358,9 +1358,11 @@ pub fn canonical_formalization_signature(trace: &FormalizationTrace) -> String {
         .map(|fact| fact.source_fragment.to_ascii_lowercase())
         .collect::<Vec<_>>()
         .join(" ");
-    let real_domain = trace.constraints.iter().any(|constraint| {
-        constraint.statement.to_ascii_lowercase().contains("real")
-    }) || source_text.contains("real")
+    let real_domain = trace
+        .constraints
+        .iter()
+        .any(|constraint| constraint.statement.to_ascii_lowercase().contains("real"))
+        || source_text.contains("real")
         || source_text.contains("over the reals");
     let mut equation_variables = BTreeSet::new();
     for fact in &facts {
@@ -1444,9 +1446,7 @@ fn classify_task(question: &str) -> TaskShape {
 }
 
 fn classify_supplied_object(question: &str, trace: &FormalizationTrace) -> SuppliedObjectKind {
-    let text = question
-        .to_ascii_lowercase()
-        .replace(" equals ", " = ");
+    let text = question.to_ascii_lowercase().replace(" equals ", " = ");
     if has_any(
         &text,
         &["pseudocode", "algorithm", "procedure", "step 1", "step 2"],
@@ -1759,8 +1759,7 @@ pub fn assess_direct_instantiation(trace: &FormalizationTrace) -> DirectInstanti
             && trace.obligations.iter().all(|obligation| {
                 matches!(
                     obligation,
-                    ModelingObligation::DefineObject
-                        | ModelingObligation::DetermineTargetSemantics
+                    ModelingObligation::DefineObject | ModelingObligation::DetermineTargetSemantics
                 )
             }));
     // A one-variable equation solver must not silently accept a relation that
@@ -2129,7 +2128,9 @@ fn extract_explicit_relation(question: &str) -> Option<(String, String, String)>
     // In an evaluation request, `at x = value` is an argument binding rather
     // than the relation being evaluated.  Let expression extraction preserve
     // the expression subject and let target construction parse the binding.
-    if Regex::new(r"(?i)\b(?:evaluate|compute|calculate)\b.*\b(?:at|when)\s+[A-Za-z_][A-Za-z0-9_]*\s*=")
+    if Regex::new(
+        r"(?i)\b(?:evaluate|compute|calculate)\b.*\b(?:at|when)\s+[A-Za-z_][A-Za-z0-9_]*\s*=",
+    )
     .expect("static evaluation-binding regex")
     .is_match(question)
     {
@@ -2285,7 +2286,11 @@ fn relation_variables(relation: &str) -> BTreeSet<String> {
     Regex::new(r"(?i)\b([a-z])\b")
         .expect("static relation-variable regex")
         .captures_iter(relation)
-        .filter_map(|capture| capture.get(1).map(|value| value.as_str().to_ascii_lowercase()))
+        .filter_map(|capture| {
+            capture
+                .get(1)
+                .map(|value| value.as_str().to_ascii_lowercase())
+        })
         .collect()
 }
 
@@ -2302,8 +2307,8 @@ fn requested_variables(source: &str, target_variable: Option<&str>) -> BTreeSet<
         .and_then(|capture| capture.get(1))
         .map(|value| relation_variables(value.as_str()))
         .unwrap_or_default();
-    let value_of = Regex::new(r"(?i)\bwhat\s+value\s+of\s+([a-z])\b")
-        .expect("static value-of-variable regex");
+    let value_of =
+        Regex::new(r"(?i)\bwhat\s+value\s+of\s+([a-z])\b").expect("static value-of-variable regex");
     if variables.is_empty() {
         if let Some(capture) = value_of.captures(source) {
             if let Some(value) = capture.get(1) {
@@ -2312,14 +2317,11 @@ fn requested_variables(source: &str, target_variable: Option<&str>) -> BTreeSet<
         }
     }
     if variables.is_empty() {
-        variables = target_variable
-            .map(relation_variables)
-            .unwrap_or_default();
+        variables = target_variable.map(relation_variables).unwrap_or_default();
     }
-    let pair = Regex::new(
-        r"(?i)\b(?:for|find|determine|solve)\s+(?:for\s+)?([a-z])\s*,\s*([a-z])\b",
-    )
-        .expect("static variable-pair regex");
+    let pair =
+        Regex::new(r"(?i)\b(?:for|find|determine|solve)\s+(?:for\s+)?([a-z])\s*,\s*([a-z])\b")
+            .expect("static variable-pair regex");
     if variables.is_empty() {
         if let Some(capture) = pair.captures(source) {
             for index in 1..=2 {
@@ -2482,20 +2484,18 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
         push(&mut facts, "n+0=n".into(), "n+0=n");
     } else if lower.contains("there exists an integer n") && lower.contains("n^2=4") {
         push(&mut facts, "n^2=4".into(), "n^2=4");
-    } else if let Some(capture) = Regex::new(
-        r"(?i)there exists an integer\s+[A-Za-z_][A-Za-z0-9_]*\s+with\s+([^.?]+)",
-    )
-    .expect("static existential-relation regex")
-    .captures(question)
+    } else if let Some(capture) =
+        Regex::new(r"(?i)there exists an integer\s+[A-Za-z_][A-Za-z0-9_]*\s+with\s+([^.?]+)")
+            .expect("static existential-relation regex")
+            .captures(question)
     {
         let statement = capture.get(1).unwrap().as_str().trim();
         push(&mut facts, statement.into(), statement);
     }
-    if let Some(capture) = Regex::new(
-        r"(?i)positive solution of\s+([A-Za-z0-9_^+*/.-]+\s*=\s*[0-9]+)",
-    )
-    .expect("static positive-solution fact regex")
-    .captures(question)
+    if let Some(capture) =
+        Regex::new(r"(?i)positive solution of\s+([A-Za-z0-9_^+*/.-]+\s*=\s*[0-9]+)")
+            .expect("static positive-solution fact regex")
+            .captures(question)
     {
         let statement = capture.get(1).unwrap().as_str().replace(' ', "");
         push(&mut facts, statement, capture.get(1).unwrap().as_str());
@@ -2600,11 +2600,10 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
     }
     if lower.contains("average-speed equation") {
         push(&mut facts, "v = d/t".into(), "average-speed equation");
-        if let Some(capture) = Regex::new(
-            r"(?i)travels\s+([0-9]+)\s+kilometers\s+in\s+([0-9]+)\s+hours",
-        )
-        .expect("static distance-time fact regex")
-        .captures(question)
+        if let Some(capture) =
+            Regex::new(r"(?i)travels\s+([0-9]+)\s+kilometers\s+in\s+([0-9]+)\s+hours")
+                .expect("static distance-time fact regex")
+                .captures(question)
         {
             push(
                 &mut facts,
@@ -2748,11 +2747,9 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
             capture.get(0).unwrap().as_str(),
         );
     }
-    if let Some(capture) = Regex::new(
-        r"(?i)operation\s+([^.;?]+?)\s+is\s+defined\s+as\s+([^.;?]+)",
-    )
-    .expect("static operation-fact regex")
-    .captures(question)
+    if let Some(capture) = Regex::new(r"(?i)operation\s+([^.;?]+?)\s+is\s+defined\s+as\s+([^.;?]+)")
+        .expect("static operation-fact regex")
+        .captures(question)
     {
         push(
             &mut facts,
@@ -2760,11 +2757,9 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
             capture.get(0).unwrap().as_str(),
         );
     }
-    if let Some(capture) = Regex::new(
-        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*:\s*([^.;?]+)",
-    )
-    .expect("static predicate-colon fact regex")
-    .captures(question)
+    if let Some(capture) = Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*)\s*\([^)]*\)\s*:\s*([^.;?]+)")
+        .expect("static predicate-colon fact regex")
+        .captures(question)
     {
         push(
             &mut facts,
@@ -2780,13 +2775,18 @@ fn extract_prose_fact_annotations(question: &str) -> Vec<FactAnnotation> {
 /// visibly introduced by the prompt and does not infer a missing model.
 fn extract_definition_fact_annotations(question: &str) -> Vec<FactAnnotation> {
     let mut facts = Vec::new();
-    let function_definition = Regex::new(
-        r"(?i)\b([A-Za-z_][A-Za-z0-9_]*\s*\([^()]*\)\s*=\s*[^.;?]+)",
-    )
-    .expect("static definition-fact function regex");
+    let function_definition =
+        Regex::new(r"(?i)\b([A-Za-z_][A-Za-z0-9_]*\s*\([^()]*\)\s*=\s*[^.;?]+)")
+            .expect("static definition-fact function regex");
     for capture in function_definition.captures_iter(question) {
         let mut statement = capture.get(1).unwrap().as_str().trim().to_string();
-        for marker in [", compute ", ", evaluate ", ", calculate ", ", find ", ", with "] {
+        for marker in [
+            ", compute ",
+            ", evaluate ",
+            ", calculate ",
+            ", find ",
+            ", with ",
+        ] {
             if let Some(index) = statement.to_ascii_lowercase().find(marker) {
                 statement.truncate(index);
             }
@@ -2927,9 +2927,7 @@ fn operation_from_text(text: &str) -> OperationKind {
             OperationKind::Evaluate
         }
     } else if (lower.contains(" is ")
-        && (lower.contains(" true")
-            || lower.contains(" in ")
-            || lower.contains(" divisible ")))
+        && (lower.contains(" true") || lower.contains(" in ") || lower.contains(" divisible ")))
         || lower.trim_start().starts_with("is ")
     {
         OperationKind::Verify
@@ -3044,7 +3042,10 @@ fn resolve_subject(
         let equations = {
             let annotated = extract_system_equation_annotations(question)
                 .into_iter()
-                .filter_map(|fact| extract_explicit_relation(&fact.statement).map(|(lhs, op, rhs)| format!("{lhs}{op}{rhs}")))
+                .filter_map(|fact| {
+                    extract_explicit_relation(&fact.statement)
+                        .map(|(lhs, op, rhs)| format!("{lhs}{op}{rhs}"))
+                })
                 .collect::<Vec<_>>();
             if annotated.len() >= 2 {
                 annotated
@@ -3230,13 +3231,10 @@ fn resolve_subject(
         // but do not turn the same source span into a competing raw object.
         if candidates.iter().any(|candidate| {
             candidate.object_type == SubjectObjectType::Definition
-                && candidate
-                    .source_spans
-                    .iter()
-                    .any(|span| {
-                        span.source_fragment.contains(fact_source)
-                            || fact_source.contains(&span.source_fragment)
-                    })
+                && candidate.source_spans.iter().any(|span| {
+                    span.source_fragment.contains(fact_source)
+                        || fact_source.contains(&span.source_fragment)
+                })
         }) {
             continue;
         }
@@ -3502,12 +3500,18 @@ fn build_target_completion(
     }
     if operation == OperationKind::Evaluate
         && question_has_multiple_equations(question)
-        && has_any(&question.to_ascii_lowercase(), &["find", "determine", "solve"])
+        && has_any(
+            &question.to_ascii_lowercase(),
+            &["find", "determine", "solve"],
+        )
     {
         operation = OperationKind::Solve;
     }
     if operation == OperationKind::Evaluate
-        && subject.as_deref().map(|value| value.contains('=')).unwrap_or(false)
+        && subject
+            .as_deref()
+            .map(|value| value.contains('='))
+            .unwrap_or(false)
         && has_any(
             &question.to_ascii_lowercase(),
             &[
@@ -3808,63 +3812,75 @@ fn build_target_completion(
         }),
         OperationKind::Verify | OperationKind::Unknown => None,
     };
-    let provenance = target.map(|value| TargetProvenance {
-        operation_span: Some(TextSpan {
-            source_fragment: value.statement.clone(),
-        }),
-        subject_span: subject.as_ref().map(|subject| TextSpan {
-            source_fragment: subject.clone(),
-        }),
-        variable_spans: target_variable
-            .as_ref()
-            .map(|variable| {
-                vec![TextSpan {
-                    source_fragment: variable.clone(),
-                }]
-            })
-            .unwrap_or_default(),
-        argument_spans: arguments
-            .iter()
-            .map(|argument| TextSpan {
-                source_fragment: argument.provenance.clone(),
-            })
-            .collect(),
-        domain_span: domain.as_ref().map(|value| TextSpan {
-            source_fragment: value.clone(),
-        }),
-        answer_form_span: requested_form.as_ref().map(|value| TextSpan {
-            source_fragment: value.clone(),
-        }),
-    }).or_else(|| {
-        if operation == OperationKind::Solve
-            && subject_resolution
-                .selected
+    let provenance = target
+        .map(|value| TargetProvenance {
+            operation_span: Some(TextSpan {
+                source_fragment: value.statement.clone(),
+            }),
+            subject_span: subject.as_ref().map(|subject| TextSpan {
+                source_fragment: subject.clone(),
+            }),
+            variable_spans: target_variable
                 .as_ref()
-                .map(|candidate| candidate.object_type == SubjectObjectType::Equation)
-                .unwrap_or(false)
-        {
-            Some(TargetProvenance {
-                operation_span: Some(TextSpan {
-                    source_fragment: question.to_string(),
-                }),
-                subject_span: subject.as_ref().map(|value| TextSpan {
-                    source_fragment: value.clone(),
-                }),
-                variable_spans: target_variable
+                .map(|variable| {
+                    vec![TextSpan {
+                        source_fragment: variable.clone(),
+                    }]
+                })
+                .unwrap_or_default(),
+            argument_spans: arguments
+                .iter()
+                .map(|argument| TextSpan {
+                    source_fragment: argument.provenance.clone(),
+                })
+                .collect(),
+            domain_span: domain.as_ref().map(|value| TextSpan {
+                source_fragment: value.clone(),
+            }),
+            answer_form_span: requested_form.as_ref().map(|value| TextSpan {
+                source_fragment: value.clone(),
+            }),
+        })
+        .or_else(|| {
+            if operation == OperationKind::Solve
+                && subject_resolution
+                    .selected
                     .as_ref()
-                    .map(|variable| vec![TextSpan { source_fragment: variable.clone() }])
-                    .unwrap_or_default(),
-                argument_spans: arguments
-                    .iter()
-                    .map(|argument| TextSpan { source_fragment: argument.provenance.clone() })
-                    .collect(),
-                domain_span: domain.as_ref().map(|value| TextSpan { source_fragment: value.clone() }),
-                answer_form_span: requested_form.as_ref().map(|value| TextSpan { source_fragment: value.clone() }),
-            })
-        } else {
-            None
-        }
-    });
+                    .map(|candidate| candidate.object_type == SubjectObjectType::Equation)
+                    .unwrap_or(false)
+            {
+                Some(TargetProvenance {
+                    operation_span: Some(TextSpan {
+                        source_fragment: question.to_string(),
+                    }),
+                    subject_span: subject.as_ref().map(|value| TextSpan {
+                        source_fragment: value.clone(),
+                    }),
+                    variable_spans: target_variable
+                        .as_ref()
+                        .map(|variable| {
+                            vec![TextSpan {
+                                source_fragment: variable.clone(),
+                            }]
+                        })
+                        .unwrap_or_default(),
+                    argument_spans: arguments
+                        .iter()
+                        .map(|argument| TextSpan {
+                            source_fragment: argument.provenance.clone(),
+                        })
+                        .collect(),
+                    domain_span: domain.as_ref().map(|value| TextSpan {
+                        source_fragment: value.clone(),
+                    }),
+                    answer_form_span: requested_form.as_ref().map(|value| TextSpan {
+                        source_fragment: value.clone(),
+                    }),
+                })
+            } else {
+                None
+            }
+        });
     let capability = operation_capability(operation);
     let mut reasons = Vec::new();
     for (name, status) in [
@@ -3980,8 +3996,8 @@ fn extract_entity_annotations(question: &str) -> Vec<EntityAnnotation> {
     ] {
         add_phrase(label, phrase);
     }
-    let proper_name = Regex::new(r"(?i)\b(john|mia|alice|bob)\b")
-        .expect("static supported-proper-name regex");
+    let proper_name =
+        Regex::new(r"(?i)\b(john|mia|alice|bob)\b").expect("static supported-proper-name regex");
     for capture in proper_name.captures_iter(question) {
         let value = capture.get(1).unwrap();
         entities.push(EntityAnnotation {
@@ -4091,11 +4107,9 @@ pub fn assess_prompt(
     let lower = question.to_ascii_lowercase();
     let domain = classify_domain(question, category);
     let task_shape = classify_task(question);
-    let function_definition_surface = Regex::new(
-        r"(?i)\b[a-z_][a-z0-9_]*\s*\([^()]*\)\s*=",
-    )
-    .expect("static function-definition surface regex")
-    .is_match(question);
+    let function_definition_surface = Regex::new(r"(?i)\b[a-z_][a-z0-9_]*\s*\([^()]*\)\s*=")
+        .expect("static function-definition surface regex")
+        .is_match(question);
     let set_definition_surface = Regex::new(r"(?i)\b[A-Z]\s*=\s*\{")
         .expect("static set-definition surface regex")
         .is_match(question);
@@ -4105,11 +4119,9 @@ pub fn assess_prompt(
         || Regex::new(r"(?i)\bF\s*=\s*ma\b")
             .expect("static physical-law surface regex")
             .is_match(question);
-    let binary_definition_surface = Regex::new(
-        r"(?i)\b[a-z_][a-z0-9_]*\s*\([^,()]+,[^()]+\)\s*=",
-    )
-    .expect("static binary-definition surface regex")
-    .is_match(question);
+    let binary_definition_surface = Regex::new(r"(?i)\b[a-z_][a-z0-9_]*\s*\([^,()]+,[^()]+\)\s*=")
+        .expect("static binary-definition surface regex")
+        .is_match(question);
     let mut obligations = Vec::new();
     let mut definitions = Vec::new();
     let mut entities = Vec::new();
@@ -4168,9 +4180,7 @@ pub fn assess_prompt(
         || physical_model_surface
     {
         definitions.push(
-            if set_definition_surface
-                || has_any(&lower, &["set of", "subset", "elements"])
-            {
+            if set_definition_surface || has_any(&lower, &["set of", "subset", "elements"]) {
                 DefinitionKind::Set
             } else if has_any(&lower, &["sequence", "recursive", "recurrence", "a_n"]) {
                 DefinitionKind::Sequence
@@ -4250,10 +4260,7 @@ pub fn assess_prompt(
         ) {
             obligations.push(ModelingObligation::IdentifyStateVariables);
         }
-        if lower.contains("recurrence")
-            || lower.contains("a_0=")
-            || lower.contains("a_{n+1}")
-        {
+        if lower.contains("recurrence") || lower.contains("a_0=") || lower.contains("a_{n+1}") {
             obligations.push(ModelingObligation::EstablishInitialConditions);
         }
         if lower.contains("determine the width") {
@@ -4295,9 +4302,7 @@ pub fn assess_prompt(
         obligations.push(ModelingObligation::ConstructEquation);
     }
     let verification_request = (lower.contains(" is ")
-        && (lower.contains(" true")
-            || lower.contains(" in ")
-            || lower.contains(" divisible ")))
+        && (lower.contains(" true") || lower.contains(" in ") || lower.contains(" divisible ")))
         || lower.trim_start().starts_with("is ");
     let target = if has_any(
         &lower,
@@ -4328,7 +4333,8 @@ pub fn assess_prompt(
             "formalize",
             "express",
         ],
-    ) || verification_request {
+    ) || verification_request
+    {
         let request_clause = question
             .split(['?', '\n'])
             .rev()
@@ -4406,9 +4412,9 @@ pub fn assess_prompt(
     ) {
         if definitions.is_empty()
             && matches!(
-            domain,
-            MathDomain::Algebra | MathDomain::NumberTheory | MathDomain::Calculus
-        )
+                domain,
+                MathDomain::Algebra | MathDomain::NumberTheory | MathDomain::Calculus
+            )
         {
             obligations.push(ModelingObligation::IdentifyDomain);
         }
@@ -4648,13 +4654,12 @@ mod tests {
                 trace.target_completion.build_trace.final_status,
                 TargetStatus::Complete
             ));
-            assert!(!assess_direct_instantiation(&trace).authorization_safe(), "{id}");
+            assert!(
+                !assess_direct_instantiation(&trace).authorization_safe(),
+                "{id}"
+            );
         }
     }
-
-
-
-
 
     #[test]
     fn explicit_numeric_expression_requests_are_auditable() {
@@ -4764,7 +4769,12 @@ mod tests {
             Some("a_0=2; a_{n+1}=a_n+3")
         );
         assert_eq!(
-            trace.formalized_target.subject_resolution.selected.as_ref().map(|c| c.object_type),
+            trace
+                .formalized_target
+                .subject_resolution
+                .selected
+                .as_ref()
+                .map(|c| c.object_type),
             Some(SubjectObjectType::Sequence)
         );
         assert!(trace.target_completion.complete);

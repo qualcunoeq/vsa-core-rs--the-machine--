@@ -236,7 +236,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .count(),
         metric_replay_verified: receipts.iter().filter(|r| r.metric_replay).count(),
         bridge_replay_verified: receipts.iter().filter(|r| r.bridge_replay).count(),
-        topology_receipts: receipts.iter().filter(|r| r.topology_status.is_some()).count(),
+        topology_receipts: receipts
+            .iter()
+            .filter(|r| r.topology_status.is_some())
+            .count(),
         topology_replay_verified: receipts
             .iter()
             .filter(|r| r.topology_status.is_some() && r.topology_replay)

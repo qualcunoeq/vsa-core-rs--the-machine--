@@ -258,7 +258,10 @@ fn main() {
             "bounded_exact_elementary_number_theory",
         ));
         let valid = number.status == NumberTheoryStatus::Complete
-            && matches!(number.artifact, Some(NumberTheoryArtifact::CongruenceClass { .. }));
+            && matches!(
+                number.artifact,
+                Some(NumberTheoryArtifact::CongruenceClass { .. })
+            );
         receipts.push(complete(
             format!("count_congruence_{index:03}"),
             "count_to_linear_congruence",
@@ -337,11 +340,8 @@ fn main() {
 
     // Refusals: arithmetic conditions or pack boundaries must remain visible.
     for index in 0..20 {
-        let count = evaluate_combinatorics(&count_request(
-            CombinatoricsOperation::Permutations,
-            4,
-            2,
-        ));
+        let count =
+            evaluate_combinatorics(&count_request(CombinatoricsOperation::Permutations, 4, 2));
         let number = evaluate_number_theory(&number_request(
             NumberTheoryOperation::ModularInverse,
             Some(12),
@@ -360,11 +360,8 @@ fn main() {
         ));
     }
     for index in 0..20 {
-        let count = evaluate_combinatorics(&count_request(
-            CombinatoricsOperation::Combinations,
-            5,
-            2,
-        ));
+        let count =
+            evaluate_combinatorics(&count_request(CombinatoricsOperation::Combinations, 5, 2));
         let number = evaluate_number_theory(&number_request(
             NumberTheoryOperation::ChineseRemainder,
             Some(1),
@@ -383,11 +380,8 @@ fn main() {
         ));
     }
     for index in 0..20 {
-        let count = evaluate_combinatorics(&count_request(
-            CombinatoricsOperation::Combinations,
-            31,
-            2,
-        ));
+        let count =
+            evaluate_combinatorics(&count_request(CombinatoricsOperation::Combinations, 31, 2));
         let number = evaluate_number_theory(&number_request(
             NumberTheoryOperation::ModularInverse,
             scalar(&count),
@@ -409,11 +403,8 @@ fn main() {
         receipts.push(receipt);
     }
     for index in 0..20 {
-        let count = evaluate_combinatorics(&count_request(
-            CombinatoricsOperation::Combinations,
-            5,
-            2,
-        ));
+        let count =
+            evaluate_combinatorics(&count_request(CombinatoricsOperation::Combinations, 5, 2));
         let number = evaluate_number_theory(&number_request(
             NumberTheoryOperation::ModularInverse,
             Some(3),
@@ -448,13 +439,22 @@ fn main() {
         .count();
     let exact_decisions = receipts.iter().filter(|receipt| receipt.exact).count();
     let supported_routes = supported;
-    let replay_verified = receipts.iter().filter(|receipt| receipt.replay_verified).count();
-    let tamper_rejections = receipts.iter().filter(|receipt| receipt.tamper_rejected).count();
+    let replay_verified = receipts
+        .iter()
+        .filter(|receipt| receipt.replay_verified)
+        .count();
+    let tamper_rejections = receipts
+        .iter()
+        .filter(|receipt| receipt.tamper_rejected)
+        .count();
     let false_authorizations = receipts
         .iter()
         .filter(|receipt| receipt.false_authorization)
         .count();
-    let false_denials = receipts.iter().filter(|receipt| receipt.false_denial).count();
+    let false_denials = receipts
+        .iter()
+        .filter(|receipt| receipt.false_denial)
+        .count();
     assert_eq!((supported, ambiguous, refused), (120, 40, 80));
     assert_eq!(exact_decisions, cases);
     assert_eq!(replay_verified, cases);

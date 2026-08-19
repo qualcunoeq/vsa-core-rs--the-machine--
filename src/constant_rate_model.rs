@@ -4,11 +4,11 @@
 //! consumes text evidence and constructs a formal relation.  It is not wired
 //! into production target routing until a broader modeling contract exists.
 
-use serde::Serialize;
 use crate::capabilities::CapabilityIoType;
 pub use crate::evidence::{
     EvidenceItem, EvidenceOrigin, EvidencePolicy, EvidencePolicyRejection, EvidenceStatus,
 };
+use serde::Serialize;
 use std::collections::BTreeSet;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -301,14 +301,23 @@ impl std::fmt::Debug for ModelConstructorRegistry {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter
             .debug_struct("ModelConstructorRegistry")
-            .field("entries", &self.entries.iter().map(|entry| &entry.spec).collect::<Vec<_>>())
+            .field(
+                "entries",
+                &self
+                    .entries
+                    .iter()
+                    .map(|entry| &entry.spec)
+                    .collect::<Vec<_>>(),
+            )
             .finish()
     }
 }
 
 impl ModelConstructorRegistry {
     pub fn new() -> Self {
-        Self { entries: Vec::new() }
+        Self {
+            entries: Vec::new(),
+        }
     }
 
     /// Constructors enabled for the production model registry.  Additional
@@ -336,10 +345,7 @@ impl ModelConstructorRegistry {
         registry
     }
 
-    pub fn register(
-        &mut self,
-        entry: ModelConstructorEntry,
-    ) -> Result<(), ModelRegistryError> {
+    pub fn register(&mut self, entry: ModelConstructorEntry) -> Result<(), ModelRegistryError> {
         let spec = &entry.spec;
         if spec.id.trim().is_empty() {
             return Err(ModelRegistryError::EmptyId);
@@ -479,12 +485,7 @@ impl ModelConstructorRegistry {
                 )
             })
             .collect::<Vec<_>>();
-        ranked.sort_by(|left, right| {
-            right
-                .1
-                .cmp(&left.1)
-                .then(left.0.cmp(&right.0))
-        });
+        ranked.sort_by(|left, right| right.1.cmp(&left.1).then(left.0.cmp(&right.0)));
         let selection = match eligible_ids.len() {
             0 => ModelSelection::None,
             1 => {
@@ -516,7 +517,8 @@ impl ModelConstructorRegistry {
                         ids.join(", ")
                     ),
                     required_information: vec![
-                        "an explicit fact that distinguishes one eligible model interpretation".into(),
+                        "an explicit fact that distinguishes one eligible model interpretation"
+                            .into(),
                     ],
                     resolves_candidates: ids.clone(),
                 },
@@ -737,7 +739,10 @@ pub fn execute_constant_rate_chain(
         return Err(ConstantRateModelFailure::PatternNotMatched);
     }
     let model_receipt = execute_constant_rate_model(text)?;
-    let expression_source = format!("{}*{}", model_receipt.model.rate, model_receipt.model.duration);
+    let expression_source = format!(
+        "{}*{}",
+        model_receipt.model.rate, model_receipt.model.duration
+    );
     let expression = crate::algebra::parse(&expression_source)
         .map_err(|_| ConstantRateModelFailure::VerificationFailed)?;
     let numeric_result = expression
@@ -924,7 +929,14 @@ mod tests {
                 version: 1,
             }
         );
-        assert_eq!(trace.candidates.iter().filter(|candidate| candidate.eligible).count(), 1);
+        assert_eq!(
+            trace
+                .candidates
+                .iter()
+                .filter(|candidate| candidate.eligible)
+                .count(),
+            1
+        );
     }
 
     #[test]
@@ -940,7 +952,14 @@ mod tests {
                 version: 1,
             }
         );
-        assert_eq!(trace.candidates.iter().filter(|candidate| candidate.eligible).count(), 1);
+        assert_eq!(
+            trace
+                .candidates
+                .iter()
+                .filter(|candidate| candidate.eligible)
+                .count(),
+            1
+        );
     }
 
     #[test]
@@ -1025,9 +1044,8 @@ mod tests {
 
     #[test]
     fn registry_trace_exposes_evidence_and_missing_requirements() {
-        let trace = ModelConstructorRegistry::production().discover(
-            "y is proportional to x. Find y when x is 4.",
-        );
+        let trace = ModelConstructorRegistry::production()
+            .discover("y is proportional to x. Find y when x is 4.");
         let candidate = trace
             .candidates
             .iter()
@@ -1058,7 +1076,10 @@ mod tests {
         let context = state.context();
         assert_eq!(context.evidence_items[0].origin, EvidenceOrigin::Prompt);
         assert_eq!(context.evidence_items[0].status, EvidenceStatus::Explicit);
-        assert_eq!(context.evidence_items[1].origin, EvidenceOrigin::Clarification);
+        assert_eq!(
+            context.evidence_items[1].origin,
+            EvidenceOrigin::Clarification
+        );
         assert_eq!(context.evidence_items[1].status, EvidenceStatus::Confirmed);
         assert_eq!(context.evidence_items[2].origin, EvidenceOrigin::Derived);
         assert_eq!(context.evidence_items[2].status, EvidenceStatus::Inferred);

@@ -4,9 +4,7 @@
 //! repeated runs can be compared and the next engineering investment is
 //! explicit. Detailed denial receipts remain available alongside this summary.
 
-use crate::formalization::{
-    AuthorizationDenialTrace, FormalizationTrace, OperationStatus,
-};
+use crate::formalization::{AuthorizationDenialTrace, FormalizationTrace, OperationStatus};
 use serde::Serialize;
 use std::collections::BTreeMap;
 
@@ -110,7 +108,10 @@ impl FailureTaxonomyReport {
             return None;
         };
         self.failed_cases += 1;
-        *self.counts.entry(record.class.label().to_string()).or_default() += 1;
+        *self
+            .counts
+            .entry(record.class.label().to_string())
+            .or_default() += 1;
         self.classified_failures += 1;
         self.classification_coverage = self.classified_failures as f64 / self.failed_cases as f64;
         self.records.push(record.clone());
@@ -139,7 +140,10 @@ pub fn classify_formalization_failure(
         return None;
     }
     let (class, blocker) = if actual_authorized && !denial.gold_should_authorize {
-        (FailureClass::SafetyRejection, "false_authorization".to_string())
+        (
+            FailureClass::SafetyRejection,
+            "false_authorization".to_string(),
+        )
     } else {
         classify_denial(trace, denial)
     };
@@ -162,9 +166,7 @@ fn classify_denial(
         }
         OperationStatus::Unsupported(_) => FailureClass::MethodNotFound,
         OperationStatus::Recognized(_) => match blocker.as_str() {
-            "bindings_incomplete" | "constraints_incomplete" => {
-                FailureClass::MissingAssumptions
-            }
+            "bindings_incomplete" | "constraints_incomplete" => FailureClass::MissingAssumptions,
             "operation_unsupported" => FailureClass::MethodNotFound,
             "verification_unavailable" => FailureClass::VerificationFailure,
             "target_incomplete"
@@ -176,9 +178,7 @@ fn classify_denial(
                 // path declined because a multi-step method is required.
                 FailureClass::PlanningFailure
             }
-            "representation_incomplete" | "target_incomplete" => {
-                FailureClass::FormalizationFailure
-            }
+            "representation_incomplete" | "target_incomplete" => FailureClass::FormalizationFailure,
             "authorization_contract_or_lower_bound" => FailureClass::SafetyRejection,
             _ if denial
                 .all_blockers
@@ -200,7 +200,12 @@ mod tests {
 
     #[test]
     fn correct_abstention_is_not_reported_as_failure() {
-        let trace = assess_prompt("unsupported", "Prove a theorem about topology", "Math", false);
+        let trace = assess_prompt(
+            "unsupported",
+            "Prove a theorem about topology",
+            "Math",
+            false,
+        );
         let assessment = crate::formalization::assess_direct_instantiation(&trace);
         let receipt = assessment.denial_trace(false);
         assert!(classify_formalization_failure(&trace, &receipt, false).is_none());
@@ -208,7 +213,12 @@ mod tests {
 
     #[test]
     fn false_denial_gets_one_stable_dominant_bucket() {
-        let trace = assess_prompt("missing-target", "Evaluate x when x equals 5", "Math", false);
+        let trace = assess_prompt(
+            "missing-target",
+            "Evaluate x when x equals 5",
+            "Math",
+            false,
+        );
         let assessment = crate::formalization::assess_direct_instantiation(&trace);
         let receipt = assessment.denial_trace(true);
         let record = classify_formalization_failure(&trace, &receipt, false).unwrap();
@@ -218,7 +228,12 @@ mod tests {
 
     #[test]
     fn complete_typed_target_is_planning_failure_when_direct_audit_abstains() {
-        let trace = assess_prompt("complete-target", "Given x + 4 = 9, solve for x.", "Math", false);
+        let trace = assess_prompt(
+            "complete-target",
+            "Given x + 4 = 9, solve for x.",
+            "Math",
+            false,
+        );
         assert!(trace.target_completion.complete);
         let assessment = crate::formalization::assess_direct_instantiation(&trace);
         let receipt = assessment.denial_trace(true);
@@ -239,7 +254,12 @@ mod tests {
     #[test]
     fn report_keeps_all_buckets_and_tracks_coverage() {
         let mut report = FailureTaxonomyReport::default();
-        let trace = assess_prompt("missing-target", "Evaluate x when x equals 5", "Math", false);
+        let trace = assess_prompt(
+            "missing-target",
+            "Evaluate x when x equals 5",
+            "Math",
+            false,
+        );
         let assessment = crate::formalization::assess_direct_instantiation(&trace);
         report.observe(&trace, &assessment.denial_trace(true), false);
         report.finalize();

@@ -111,9 +111,7 @@ pub fn bridge_base_composition(
             vec!["only uniform position sampling is validated".into()],
         );
     }
-    let Some(BiologyArtifact::BaseComposition {
-        length, counts, ..
-    }) = biology.artifact.as_ref()
+    let Some(BiologyArtifact::BaseComposition { length, counts, .. }) = biology.artifact.as_ref()
     else {
         return output(
             BiologyProbabilityBridgeStatus::Unsupported,
@@ -136,7 +134,9 @@ pub fn bridge_base_composition(
         .collect::<Vec<_>>();
     let probabilities = outcomes
         .iter()
-        .map(|base| Rational::new(i128::from(counts[base]), i128::from(*length)).expect("length nonzero"))
+        .map(|base| {
+            Rational::new(i128::from(counts[base]), i128::from(*length)).expect("length nonzero")
+        })
         .collect::<Vec<_>>();
     let request = ProbabilityRequest {
         operation: crate::probability_pack::ProbabilityOperation::DistributionConstruction,
@@ -170,8 +170,7 @@ impl BiologyProbabilityBridgeResult {
     pub fn replay_verified(&self) -> bool {
         self.replay_hash == digest(&payload(self))
             && !self.provenance.is_empty()
-            && (self.status != BiologyProbabilityBridgeStatus::Complete
-                || self.handoff.is_some())
+            && (self.status != BiologyProbabilityBridgeStatus::Complete || self.handoff.is_some())
     }
 
     pub fn authorized(&self) -> bool {
@@ -201,7 +200,10 @@ mod tests {
     fn uniform_position_is_the_only_authorized_policy() {
         let bridge = bridge_base_composition(&composition(), Some("uniform_position"));
         assert!(bridge.authorized());
-        assert_eq!(bridge.handoff.as_ref().unwrap().request.probabilities.len(), 4);
+        assert_eq!(
+            bridge.handoff.as_ref().unwrap().request.probabilities.len(),
+            4
+        );
         let ambiguous = bridge_base_composition(&composition(), None);
         assert_eq!(ambiguous.status, BiologyProbabilityBridgeStatus::Ambiguous);
         let refused = bridge_base_composition(&composition(), Some("independent_bases"));

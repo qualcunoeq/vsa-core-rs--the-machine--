@@ -65,7 +65,10 @@ pub struct MarkovResult {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("markov serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("markov serializes"))
+    )
 }
 
 fn payload(result: &MarkovResult) -> impl Serialize + '_ {
@@ -117,7 +120,9 @@ fn validate_transition(request: &MarkovRequest) -> Result<usize, MarkovStatus> {
         return Err(MarkovStatus::Ambiguous);
     }
     let states = request.transition.len();
-    if states == 0 || states > MAX_STATES || request.transition.iter().any(|row| row.len() != states)
+    if states == 0
+        || states > MAX_STATES
+        || request.transition.iter().any(|row| row.len() != states)
     {
         return Err(MarkovStatus::DimensionMismatch);
     }
@@ -208,41 +213,108 @@ pub fn evaluate_markov(request: &MarkovRequest) -> MarkovResult {
     match request.operation {
         MarkovOperation::OneStep => {
             let Some(next) = step(&request.initial, &request.transition) else {
-                return result(request, MarkovStatus::InvalidTransition, None, Vec::new(), assumptions, vec!["exact transition failed".into()]);
+                return result(
+                    request,
+                    MarkovStatus::InvalidTransition,
+                    None,
+                    Vec::new(),
+                    assumptions,
+                    vec!["exact transition failed".into()],
+                );
             };
-            result(request, MarkovStatus::Complete, Some(MarkovArtifact::Distribution(next)), Vec::new(), assumptions, Vec::new())
+            result(
+                request,
+                MarkovStatus::Complete,
+                Some(MarkovArtifact::Distribution(next)),
+                Vec::new(),
+                assumptions,
+                Vec::new(),
+            )
         }
         MarkovOperation::FiniteHorizon => {
             let mut current = request.initial.clone();
             let mut trace = Vec::with_capacity(request.steps);
             for _ in 0..request.steps {
                 let Some(next) = step(&current, &request.transition) else {
-                    return result(request, MarkovStatus::InvalidTransition, None, trace, assumptions, vec!["exact transition failed".into()]);
+                    return result(
+                        request,
+                        MarkovStatus::InvalidTransition,
+                        None,
+                        trace,
+                        assumptions,
+                        vec!["exact transition failed".into()],
+                    );
                 };
                 if !valid_distribution(&next, states) {
-                    return result(request, MarkovStatus::InvalidTransition, None, trace, assumptions, vec!["normalization was not preserved".into()]);
+                    return result(
+                        request,
+                        MarkovStatus::InvalidTransition,
+                        None,
+                        trace,
+                        assumptions,
+                        vec!["normalization was not preserved".into()],
+                    );
                 }
                 current = next.clone();
                 trace.push(next);
             }
-            result(request, MarkovStatus::Complete, Some(MarkovArtifact::Trace(trace.clone())), trace, assumptions, Vec::new())
+            result(
+                request,
+                MarkovStatus::Complete,
+                Some(MarkovArtifact::Trace(trace.clone())),
+                trace,
+                assumptions,
+                Vec::new(),
+            )
         }
         MarkovOperation::StationaryDistribution => {
             if states != 2 {
-                return result(request, MarkovStatus::Unsupported, None, Vec::new(), assumptions, vec!["stationary solver is bounded to two-state chains".into()]);
+                return result(
+                    request,
+                    MarkovStatus::Unsupported,
+                    None,
+                    Vec::new(),
+                    assumptions,
+                    vec!["stationary solver is bounded to two-state chains".into()],
+                );
             }
             let a = &request.transition[0][0];
             let b = &request.transition[1][0];
             let denominator = match b.add(&Rational::one().sub(a).unwrap()) {
                 Some(value) => value,
-                None => return result(request, MarkovStatus::NonUniqueStationary, None, Vec::new(), assumptions, vec!["stationary denominator is undefined".into()]),
+                None => {
+                    return result(
+                        request,
+                        MarkovStatus::NonUniqueStationary,
+                        None,
+                        Vec::new(),
+                        assumptions,
+                        vec!["stationary denominator is undefined".into()],
+                    )
+                }
             };
             if !denominator.positive() {
-                return result(request, MarkovStatus::NonUniqueStationary, None, Vec::new(), assumptions, vec!["chain does not have a unique stationary distribution".into()]);
+                return result(
+                    request,
+                    MarkovStatus::NonUniqueStationary,
+                    None,
+                    Vec::new(),
+                    assumptions,
+                    vec!["chain does not have a unique stationary distribution".into()],
+                );
             }
-            let first = b.div(&denominator).expect("positive stationary denominator");
+            let first = b
+                .div(&denominator)
+                .expect("positive stationary denominator");
             let second = Rational::one().sub(&first).expect("stationary complement");
-            result(request, MarkovStatus::Complete, Some(MarkovArtifact::Distribution(vec![first, second])), Vec::new(), assumptions, Vec::new())
+            result(
+                request,
+                MarkovStatus::Complete,
+                Some(MarkovArtifact::Distribution(vec![first, second])),
+                Vec::new(),
+                assumptions,
+                Vec::new(),
+            )
         }
     }
 }

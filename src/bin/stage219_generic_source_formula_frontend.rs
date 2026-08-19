@@ -12,8 +12,7 @@ use the_machine::source_formula_frontend::{
     formalize_source_formula_text, replay_verified, FrontendStatus,
 };
 use the_machine::source_formula_pack::{
-    evaluate_formula_records, source_formula_records, FormulaRecord, FormulaStatus,
-    InputConstraint,
+    evaluate_formula_records, source_formula_records, FormulaRecord, FormulaStatus, InputConstraint,
 };
 use the_machine::source_statistics_pack;
 
@@ -78,7 +77,11 @@ fn input_value(record: &FormulaRecord, name: &str) -> Rational {
 
 fn generated_text(record: &FormulaRecord, kind: Expected, index: usize) -> String {
     let alias = if index % 3 == 0 {
-        record.aliases.first().map(String::as_str).unwrap_or(&record.formula_id)
+        record
+            .aliases
+            .first()
+            .map(String::as_str)
+            .unwrap_or(&record.formula_id)
     } else {
         &record.formula_id
     };
@@ -186,7 +189,10 @@ fn main() {
         }
         if case.expected == Expected::Complete && frontend.status == FrontendStatus::Complete {
             complete_frontends += 1;
-            let request = frontend.request.as_ref().expect("complete frontend request");
+            let request = frontend
+                .request
+                .as_ref()
+                .expect("complete frontend request");
             let execution = evaluate_formula_records(request, &case.domain, &case.records);
             if execution.status == FormulaStatus::Complete && execution.value.is_some() {
                 downstream_complete += 1;

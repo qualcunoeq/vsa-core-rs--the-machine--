@@ -97,9 +97,7 @@ pub fn bridge_chemistry_to_linear(chemistry: &ChemistryResult) -> ChemistryLinea
     }
 
     let (atoms, semantic_kind) = match chemistry.artifact.as_ref() {
-        Some(ChemistryArtifact::MolecularFormula { atoms }) => {
-            (atoms, "molecular_atom_counts")
-        }
+        Some(ChemistryArtifact::MolecularFormula { atoms }) => (atoms, "molecular_atom_counts"),
         Some(ChemistryArtifact::BalancedReaction { atom_totals, .. }) => {
             (atom_totals, "conserved_reaction_atom_totals")
         }
@@ -132,7 +130,10 @@ pub fn bridge_chemistry_to_linear(chemistry: &ChemistryResult) -> ChemistryLinea
         );
     }
     let basis = atoms.keys().cloned().collect::<Vec<_>>();
-    let values = atoms.values().map(|value| i64::from(*value)).collect::<Vec<_>>();
+    let values = atoms
+        .values()
+        .map(|value| i64::from(*value))
+        .collect::<Vec<_>>();
     output(
         ChemistryLinearBridgeStatus::Complete,
         Some(ElementCountVector {

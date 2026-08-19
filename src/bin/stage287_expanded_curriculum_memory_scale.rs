@@ -75,7 +75,14 @@ fn memory_hash(memory: &CurriculumMemory) -> String {
     digest(&memory.all_records().cloned().collect::<Vec<_>>())
 }
 
-fn make_record(index: usize, domain: &str, artifact: &str, version: &str, manifest_hash: &str, source_hash: &str) -> MemoryRecord {
+fn make_record(
+    index: usize,
+    domain: &str,
+    artifact: &str,
+    version: &str,
+    manifest_hash: &str,
+    source_hash: &str,
+) -> MemoryRecord {
     MemoryRecord {
         record_id: format!("stage287-{index:06}"),
         domain: domain.into(),
@@ -108,7 +115,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .packs
         .iter()
         .filter(|pack| pack.status == CurriculumStatus::ShadowValidated)
-        .flat_map(|pack| pack.reusable_artifacts.iter().map(|artifact| (pack.id.clone(), artifact.clone())))
+        .flat_map(|pack| {
+            pack.reusable_artifacts
+                .iter()
+                .map(|artifact| (pack.id.clone(), artifact.clone()))
+        })
         .collect();
     assert!(descriptors.len() > 80);
     let mut memory = parent_memory.clone();
@@ -116,9 +127,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for index in 0..RECORDS {
         let (domain, artifact) = &descriptors[index % descriptors.len()];
         let version = format!("v{}", index % 4 + 1);
-        let record = make_record(index, domain, artifact, &version, &manifest_hash, &source_hash);
+        let record = make_record(
+            index,
+            domain,
+            artifact,
+            &version,
+            &manifest_hash,
+            &source_hash,
+        );
         assert_eq!(memory.append(record.clone()), AppendStatus::Appended);
-        records.push(memory.get(&record.record_id).expect("appended record").clone());
+        records.push(
+            memory
+                .get(&record.record_id)
+                .expect("appended record")
+                .clone(),
+        );
     }
     assert_eq!(memory.len(), RECORDS);
     assert_eq!(memory.segment_count(), RECORDS.div_ceil(256));
@@ -127,7 +150,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let stale_queries = 200;
     let unknown_queries = 200;
     let provenance_queries = 100;
-    let query_count = exact_queries + ambiguous_queries + stale_queries + unknown_queries + provenance_queries;
+    let query_count =
+        exact_queries + ambiguous_queries + stale_queries + unknown_queries + provenance_queries;
     assert_eq!(query_count, 2_000);
     let mut exact_complete = 0;
     let mut ambiguous_detected = 0;
@@ -140,33 +164,81 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for query_id in 0..query_count {
         let record = &records[(query_id * 37) % records.len()];
         if query_id < exact_queries {
-            let selected = memory.retrieve_exact_version(&record.domain, &record.artifact_type, &record.version);
-            if !selected.is_empty() && selected.iter().all(|item| item.version == record.version) { exact_complete += 1; } else { retrieval_contamination += 1; }
-            let result = discover(&shadow.manifest, std::slice::from_ref(&record.artifact_type));
+            let selected = memory.retrieve_exact_version(
+                &record.domain,
+                &record.artifact_type,
+                &record.version,
+            );
+            if !selected.is_empty() && selected.iter().all(|item| item.version == record.version) {
+                exact_complete += 1;
+            } else {
+                retrieval_contamination += 1;
+            }
+            let result = discover(
+                &shadow.manifest,
+                std::slice::from_ref(&record.artifact_type),
+            );
             prerequisite_queries += 1;
-            if result.status == DiscoveryStatus::Complete { prerequisite_complete += 1; } else { retrieval_contamination += 1; }
+            if result.status == DiscoveryStatus::Complete {
+                prerequisite_complete += 1;
+            } else {
+                retrieval_contamination += 1;
+            }
         } else if query_id < exact_queries + ambiguous_queries {
             let selected = memory.retrieve_exact(&record.domain, &record.artifact_type);
             let versions: BTreeSet<_> = selected.iter().map(|item| item.version.clone()).collect();
-            if versions.len() > 1 { ambiguous_detected += 1; } else { retrieval_contamination += 1; }
+            if versions.len() > 1 {
+                ambiguous_detected += 1;
+            } else {
+                retrieval_contamination += 1;
+            }
         } else if query_id < exact_queries + ambiguous_queries + stale_queries {
-            if memory.retrieve_exact_version(&record.domain, &record.artifact_type, "v99").is_empty() { stale_refused += 1; } else { retrieval_contamination += 1; }
+            if memory
+                .retrieve_exact_version(&record.domain, &record.artifact_type, "v99")
+                .is_empty()
+            {
+                stale_refused += 1;
+            } else {
+                retrieval_contamination += 1;
+            }
         } else if query_id < exact_queries + ambiguous_queries + stale_queries + unknown_queries {
-            if memory.retrieve_exact_version("unknown_domain", "unknown_artifact", "v1").is_empty() { unknown_refused += 1; } else { retrieval_contamination += 1; }
+            if memory
+                .retrieve_exact_version("unknown_domain", "unknown_artifact", "v1")
+                .is_empty()
+            {
+                unknown_refused += 1;
+            } else {
+                retrieval_contamination += 1;
+            }
         } else {
-            let selected = memory.retrieve_exact_version(&record.domain, &record.artifact_type, &record.version).into_iter().filter(|item| item.provenance.iter().any(|entry| entry == "wrong-source")).collect::<Vec<_>>();
-            if selected.is_empty() { provenance_refused += 1; } else { retrieval_contamination += 1; }
+            let selected = memory
+                .retrieve_exact_version(&record.domain, &record.artifact_type, &record.version)
+                .into_iter()
+                .filter(|item| item.provenance.iter().any(|entry| entry == "wrong-source"))
+                .collect::<Vec<_>>();
+            if selected.is_empty() {
+                provenance_refused += 1;
+            } else {
+                retrieval_contamination += 1;
+            }
         }
     }
-    let replay_verified = records.iter().filter(|record| memory.replay_verified(record)).count();
-    let tamper_rejected = (0..TAMPER_SAMPLE).filter(|sample| {
-        let index = sample * (records.len() / TAMPER_SAMPLE);
-        let mut tampered = records[index].clone();
-        tampered.payload.push('x');
-        !memory.replay_verified(&tampered)
-    }).count();
+    let replay_verified = records
+        .iter()
+        .filter(|record| memory.replay_verified(record))
+        .count();
+    let tamper_rejected = (0..TAMPER_SAMPLE)
+        .filter(|sample| {
+            let index = sample * (records.len() / TAMPER_SAMPLE);
+            let mut tampered = records[index].clone();
+            tampered.payload.push('x');
+            !memory.replay_verified(&tampered)
+        })
+        .count();
     let mut reconstructed = CurriculumMemory::new();
-    for record in &records { assert_eq!(reconstructed.append(record.clone()), AppendStatus::Appended); }
+    for record in &records {
+        assert_eq!(reconstructed.append(record.clone()), AppendStatus::Appended);
+    }
     let reconstruction_hash_equal = memory_hash(&memory) == memory_hash(&reconstructed);
     assert_eq!(exact_complete, exact_queries);
     assert_eq!(ambiguous_detected, ambiguous_queries);

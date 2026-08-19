@@ -32,14 +32,8 @@ pub enum MobiusStatus {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum MobiusArtifact {
-    InvertedSequence {
-        values: Vec<i128>,
-        index_origin: u8,
-    },
-    ConvolutionSequence {
-        values: Vec<i128>,
-        index_origin: u8,
-    },
+    InvertedSequence { values: Vec<i128>, index_origin: u8 },
+    ConvolutionSequence { values: Vec<i128>, index_origin: u8 },
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -80,7 +74,10 @@ fn source() -> SourceCitation {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("mobius serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("mobius serializes"))
+    )
 }
 
 fn payload(result: &MobiusResult) -> impl Serialize + '_ {
@@ -152,11 +149,17 @@ fn mobius(n: usize) -> i8 {
     if value > 1 {
         distinct += 1;
     }
-    if distinct % 2 == 0 { 1 } else { -1 }
+    if distinct % 2 == 0 {
+        1
+    } else {
+        -1
+    }
 }
 
 fn checked_sum(mut terms: impl Iterator<Item = Option<i128>>) -> Option<i128> {
-    terms.try_fold(0i128, |sum, term| term.and_then(|value| sum.checked_add(value)))
+    terms.try_fold(0i128, |sum, term| {
+        term.and_then(|value| sum.checked_add(value))
+    })
 }
 
 /// Evaluate a finite exact source-derived number-theory request.
@@ -212,7 +215,9 @@ pub fn evaluate(request: &MobiusRequest) -> MobiusResult {
             MobiusStatus::Unsupported,
             None,
             Vec::new(),
-            vec![format!("finite sequence length exceeds the bound {MAX_LENGTH}")],
+            vec![format!(
+                "finite sequence length exceeds the bound {MAX_LENGTH}"
+            )],
         );
     }
     let assumptions = vec![
@@ -233,7 +238,10 @@ pub fn evaluate(request: &MobiusRequest) -> MobiusResult {
                     }))
                 })
                 .collect::<Option<Vec<_>>>();
-            values.map(|values| MobiusArtifact::InvertedSequence { values, index_origin: 1 })
+            values.map(|values| MobiusArtifact::InvertedSequence {
+                values,
+                index_origin: 1,
+            })
         }
         MobiusOperation::DivisorConvolution => {
             let Some(second) = request.second_values.as_ref() else {
@@ -257,17 +265,28 @@ pub fn evaluate(request: &MobiusRequest) -> MobiusResult {
             let values = (1..=values.len())
                 .map(|n| {
                     checked_sum(divisors(n).into_iter().map(|divisor| {
-                        values
-                            .get(divisor - 1)
-                            .and_then(|left| second.get(n / divisor - 1).and_then(|right| left.checked_mul(*right)))
+                        values.get(divisor - 1).and_then(|left| {
+                            second
+                                .get(n / divisor - 1)
+                                .and_then(|right| left.checked_mul(*right))
+                        })
                     }))
                 })
                 .collect::<Option<Vec<_>>>();
-            values.map(|values| MobiusArtifact::ConvolutionSequence { values, index_origin: 1 })
+            values.map(|values| MobiusArtifact::ConvolutionSequence {
+                values,
+                index_origin: 1,
+            })
         }
     };
     match values_result {
-        Some(artifact) => output(request, MobiusStatus::Complete, Some(artifact), assumptions, Vec::new()),
+        Some(artifact) => output(
+            request,
+            MobiusStatus::Complete,
+            Some(artifact),
+            assumptions,
+            Vec::new(),
+        ),
         None => output(
             request,
             MobiusStatus::Inconsistent,

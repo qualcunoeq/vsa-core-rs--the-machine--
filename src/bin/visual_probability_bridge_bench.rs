@@ -126,10 +126,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ));
     }
     for index in 0..40 {
-        let text = table_text(
-            &["value", "weight"],
-            &[vec!["a", "1/2"], vec!["b", "1/2"]],
-        );
+        let text = table_text(&["value", "weight"], &[vec!["a", "1/2"], vec!["b", "1/2"]]);
         receipts.push(run(
             format!("ambiguous_{index:03}"),
             text,

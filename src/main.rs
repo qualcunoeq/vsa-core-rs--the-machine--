@@ -2322,11 +2322,10 @@ async fn run_agent(
                                 // actuator calls. The decision journal remains
                                 // the budget record; ToolEvent is the central
                                 // execution/reliability receipt.
-                                let tool_request =
-                                    the_machine::actuator::ActionRequest::new(
-                                        the_machine::actuator::ActionType::ExecuteCommand,
-                                        &step.parameter,
-                                    );
+                                let tool_request = the_machine::actuator::ActionRequest::new(
+                                    the_machine::actuator::ActionType::ExecuteCommand,
+                                    &step.parameter,
+                                );
                                 let tool_event = the_machine::actuator::record_tool_event(
                                     &mut brain_write,
                                     &format!("main loop: {} {}", step.action, step.parameter),

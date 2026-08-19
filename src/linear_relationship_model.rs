@@ -7,8 +7,8 @@
 
 use crate::capabilities::CapabilityIoType;
 use crate::constant_rate_model::{
-    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec, ModelEvidenceContext,
-    ModelMatcherResult, EvidencePolicy,
+    EvidencePolicy, ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
+    ModelEvidenceContext, ModelMatcherResult,
 };
 use serde::Serialize;
 
@@ -167,9 +167,7 @@ pub fn execute_linear_relationship_chain(
     let model_receipt = execute_linear_relationship_model(text)?;
     let expression_source = format!(
         "{}*{}+{}",
-        model_receipt.model.slope,
-        model_receipt.model.input,
-        model_receipt.model.intercept
+        model_receipt.model.slope, model_receipt.model.input, model_receipt.model.intercept
     );
     let expression = crate::algebra::parse(&expression_source)
         .map_err(|_| LinearRelationshipFailure::VerificationFailed)?;
@@ -225,8 +223,7 @@ mod tests {
 
     #[test]
     fn missing_target_is_rejected() {
-        let text =
-            "y increases by 3 for every unit increase in x, and y equals 2 when x is 0.";
+        let text = "y increases by 3 for every unit increase in x, and y equals 2 when x is 0.";
         assert_eq!(
             construct_linear_relationship_model(text),
             Err(LinearRelationshipFailure::PatternNotMatched)

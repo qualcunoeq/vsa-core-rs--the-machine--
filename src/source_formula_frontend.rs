@@ -13,7 +13,12 @@ use std::collections::BTreeMap;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-pub enum FrontendStatus { Complete, Ambiguous, Missing, Unsupported }
+pub enum FrontendStatus {
+    Complete,
+    Ambiguous,
+    Missing,
+    Unsupported,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SourceFormulaFrontendResult {
@@ -52,16 +57,50 @@ pub struct SourceFormulaReportResult {
     pub replay_hash: String,
 }
 
-fn digest<T: Serialize>(value: &T) -> String { format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap())) }
-
-fn payload(result: &SourceFormulaFrontendResult) -> impl Serialize + '_ {
-    (&result.status, &result.formula_id, &result.formula, &result.request, &result.provenance_spans, &result.alternatives, &result.reasons)
+fn digest<T: Serialize>(value: &T) -> String {
+    format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap()))
 }
 
-fn output(status: FrontendStatus, formula_id: Option<String>, request: Option<FormulaRequest>, spans: Vec<String>, alternatives: Vec<String>, reasons: Vec<String>) -> SourceFormulaFrontendResult {
+fn payload(result: &SourceFormulaFrontendResult) -> impl Serialize + '_ {
+    (
+        &result.status,
+        &result.formula_id,
+        &result.formula,
+        &result.request,
+        &result.provenance_spans,
+        &result.alternatives,
+        &result.reasons,
+    )
+}
+
+fn output(
+    status: FrontendStatus,
+    formula_id: Option<String>,
+    request: Option<FormulaRequest>,
+    spans: Vec<String>,
+    alternatives: Vec<String>,
+    reasons: Vec<String>,
+) -> SourceFormulaFrontendResult {
     let formula = formula_id.clone();
-    let replay_hash = digest(&(&status, &formula_id, &formula, &request, &spans, &alternatives, &reasons));
-    SourceFormulaFrontendResult { status, formula_id, formula, request, provenance_spans: spans, alternatives, reasons, replay_hash }
+    let replay_hash = digest(&(
+        &status,
+        &formula_id,
+        &formula,
+        &request,
+        &spans,
+        &alternatives,
+        &reasons,
+    ));
+    SourceFormulaFrontendResult {
+        status,
+        formula_id,
+        formula,
+        request,
+        provenance_spans: spans,
+        alternatives,
+        reasons,
+        replay_hash,
+    }
 }
 
 fn report_digest(result: &SourceFormulaReportResult) -> String {
@@ -114,16 +153,46 @@ fn labeled_values(text: &str, label: &str) -> Vec<(String, Rational)> {
         let after_ok = end == lower.len() || !lower.as_bytes()[end].is_ascii_alphanumeric();
         if before_ok && after_ok {
             let mut cursor = end;
-            while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) { cursor += 1; }
-            if lower.as_bytes().get(cursor).is_some_and(|byte| *byte == b'=' || *byte == b':') {
+            while lower
+                .as_bytes()
+                .get(cursor)
+                .is_some_and(|byte| byte.is_ascii_whitespace())
+            {
                 cursor += 1;
-                while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_whitespace()) { cursor += 1; }
+            }
+            if lower
+                .as_bytes()
+                .get(cursor)
+                .is_some_and(|byte| *byte == b'=' || *byte == b':')
+            {
+                cursor += 1;
+                while lower
+                    .as_bytes()
+                    .get(cursor)
+                    .is_some_and(|byte| byte.is_ascii_whitespace())
+                {
+                    cursor += 1;
+                }
                 let value_start = cursor;
-                if lower.as_bytes().get(cursor) == Some(&b'-') { cursor += 1; }
-                while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_digit()) { cursor += 1; }
+                if lower.as_bytes().get(cursor) == Some(&b'-') {
+                    cursor += 1;
+                }
+                while lower
+                    .as_bytes()
+                    .get(cursor)
+                    .is_some_and(|byte| byte.is_ascii_digit())
+                {
+                    cursor += 1;
+                }
                 if lower.as_bytes().get(cursor) == Some(&b'/') {
                     cursor += 1;
-                    while lower.as_bytes().get(cursor).is_some_and(|byte| byte.is_ascii_digit()) { cursor += 1; }
+                    while lower
+                        .as_bytes()
+                        .get(cursor)
+                        .is_some_and(|byte| byte.is_ascii_digit())
+                    {
+                        cursor += 1;
+                    }
                 }
                 if cursor > value_start {
                     if let Some(value) = parse_rational(&lower[value_start..cursor]) {
@@ -141,9 +210,16 @@ fn matching_records<'a>(text: &str, records: &'a [FormulaRecord]) -> Vec<&'a For
     let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
     let mut matches = Vec::new();
     for record in records {
-        let candidates = std::iter::once(record.formula_id.as_str()).chain(record.aliases.iter().map(String::as_str));
-        if candidates.into_iter().any(|candidate| lower.contains(&normalize_phrase(candidate))) {
-            if !matches.iter().any(|existing: &&FormulaRecord| existing.formula_id == record.formula_id) {
+        let candidates = std::iter::once(record.formula_id.as_str())
+            .chain(record.aliases.iter().map(String::as_str));
+        if candidates
+            .into_iter()
+            .any(|candidate| lower.contains(&normalize_phrase(candidate)))
+        {
+            if !matches
+                .iter()
+                .any(|existing: &&FormulaRecord| existing.formula_id == record.formula_id)
+            {
                 matches.push(record);
             }
         }
@@ -152,18 +228,49 @@ fn matching_records<'a>(text: &str, records: &'a [FormulaRecord]) -> Vec<&'a For
 }
 
 /// Lower a technical report into a source-derived formula request.
-pub fn formalize_source_formula_text(text: &str, domain: &str, records: &[FormulaRecord]) -> SourceFormulaFrontendResult {
+pub fn formalize_source_formula_text(
+    text: &str,
+    domain: &str,
+    records: &[FormulaRecord],
+) -> SourceFormulaFrontendResult {
     let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
     let base_spans = vec![format!("source-formula-text:0..{}", text.len())];
-    if ["asymptotic", "infinite", "approximate", "continuous"].iter().any(|marker| lower.contains(marker)) {
-        return output(FrontendStatus::Unsupported, None, None, base_spans, Vec::new(), vec!["request is outside the finite source-formula boundary".into()]);
+    if ["asymptotic", "infinite", "approximate", "continuous"]
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
+        return output(
+            FrontendStatus::Unsupported,
+            None,
+            None,
+            base_spans,
+            Vec::new(),
+            vec!["request is outside the finite source-formula boundary".into()],
+        );
     }
     let matches = matching_records(text, records);
     if matches.is_empty() {
-        return output(FrontendStatus::Missing, None, None, base_spans, Vec::new(), vec!["no unique source formula alias was stated".into()]);
+        return output(
+            FrontendStatus::Missing,
+            None,
+            None,
+            base_spans,
+            Vec::new(),
+            vec!["no unique source formula alias was stated".into()],
+        );
     }
     if matches.len() > 1 || (matches.len() == 1 && lower.contains(" or ")) {
-        return output(FrontendStatus::Ambiguous, None, None, base_spans, matches.iter().map(|record| record.formula_id.clone()).collect(), vec!["multiple formula interpretations remain".into()]);
+        return output(
+            FrontendStatus::Ambiguous,
+            None,
+            None,
+            base_spans,
+            matches
+                .iter()
+                .map(|record| record.formula_id.clone())
+                .collect(),
+            vec!["multiple formula interpretations remain".into()],
+        );
     }
     let record = matches[0];
     let mut inputs = BTreeMap::new();
@@ -171,14 +278,38 @@ pub fn formalize_source_formula_text(text: &str, domain: &str, records: &[Formul
     for input in &record.required_inputs {
         let values = labeled_values(text, input);
         if values.len() != 1 {
-            return output(FrontendStatus::Missing, Some(record.formula_id.clone()), None, spans, Vec::new(), vec![format!("required input {input} is missing or duplicated")]);
+            return output(
+                FrontendStatus::Missing,
+                Some(record.formula_id.clone()),
+                None,
+                spans,
+                Vec::new(),
+                vec![format!("required input {input} is missing or duplicated")],
+            );
         }
         let (span, value) = values.into_iter().next().unwrap();
         spans.push(span);
         inputs.insert(input.clone(), value);
     }
-    let request = FormulaRequest { formula: record.formula_id.clone(), inputs, domain: domain.into(), ambiguity: None, provenance: vec![format!("formula-id:{}", record.formula_id), format!("source:{}", record.source.source_id), format!("source-span:{}", record.source.evidence_span)] };
-    output(FrontendStatus::Complete, Some(record.formula_id.clone()), Some(request), spans, Vec::new(), Vec::new())
+    let request = FormulaRequest {
+        formula: record.formula_id.clone(),
+        inputs,
+        domain: domain.into(),
+        ambiguity: None,
+        provenance: vec![
+            format!("formula-id:{}", record.formula_id),
+            format!("source:{}", record.source.source_id),
+            format!("source-span:{}", record.source.evidence_span),
+        ],
+    };
+    output(
+        FrontendStatus::Complete,
+        Some(record.formula_id.clone()),
+        Some(request),
+        spans,
+        Vec::new(),
+        Vec::new(),
+    )
 }
 
 /// Ground a multi-region technical report before formula lowering.
@@ -194,8 +325,23 @@ pub fn formalize_source_formula_report(
 ) -> SourceFormulaReportResult {
     let mut regions = Vec::new();
     let mut target_ids = BTreeMap::new();
-    let target_markers = ["calculate", "compute", "evaluate", "find", "determine", "apply", "use"];
-    let context_markers = ["define", "given", "where", "assume", "reference", "according"];
+    let target_markers = [
+        "calculate",
+        "compute",
+        "evaluate",
+        "find",
+        "determine",
+        "apply",
+        "use",
+    ];
+    let context_markers = [
+        "define",
+        "given",
+        "where",
+        "assume",
+        "reference",
+        "according",
+    ];
     for (start, end, clause) in region_slices(text) {
         let lower = clause.to_ascii_lowercase().replace(['_', '-'], " ");
         let candidates = matching_records(clause, records)
@@ -282,12 +428,18 @@ pub type FormulaFrontendStatus = FrontendStatus;
 pub type FormulaFrontendResult = SourceFormulaFrontendResult;
 
 /// Preserve the established API while routing through the stricter frontend.
-pub fn formalize_formula_text(text: &str, domain: &str, records: &[FormulaRecord]) -> FormulaFrontendResult {
+pub fn formalize_formula_text(
+    text: &str,
+    domain: &str,
+    records: &[FormulaRecord],
+) -> FormulaFrontendResult {
     formalize_source_formula_text(text, domain, records)
 }
 
 impl SourceFormulaFrontendResult {
-    pub fn replay_verified(&self) -> bool { replay_verified(self) }
+    pub fn replay_verified(&self) -> bool {
+        replay_verified(self)
+    }
 }
 
 #[cfg(test)]
@@ -299,7 +451,11 @@ mod tests {
 
     #[test]
     fn generic_frontend_binds_source_record_without_domain_branch() {
-        let result = formalize_source_formula_text("Use the sample mean: sum=30 and count=5.", DOMAIN, &records());
+        let result = formalize_source_formula_text(
+            "Use the sample mean: sum=30 and count=5.",
+            DOMAIN,
+            &records(),
+        );
         assert_eq!(result.status, FrontendStatus::Complete);
         assert_eq!(result.formula_id.as_deref(), Some("arithmetic_mean"));
         assert!(replay_verified(&result));
@@ -308,9 +464,14 @@ mod tests {
     #[test]
     fn generic_frontend_refuses_ambiguity_and_missing_inputs() {
         let records = records();
-        let ambiguous = formalize_source_formula_text("Use the mean or weighted average: sum=30 count=5.", DOMAIN, &records);
+        let ambiguous = formalize_source_formula_text(
+            "Use the mean or weighted average: sum=30 count=5.",
+            DOMAIN,
+            &records,
+        );
         assert_eq!(ambiguous.status, FrontendStatus::Ambiguous);
-        let missing = formalize_source_formula_text("Use the sample mean: sum=30.", DOMAIN, &records);
+        let missing =
+            formalize_source_formula_text("Use the sample mean: sum=30.", DOMAIN, &records);
         assert_eq!(missing.status, FrontendStatus::Missing);
     }
 
@@ -318,7 +479,8 @@ mod tests {
     fn compatibility_api_preserves_replayable_result_shape() {
         let source = "BEGIN FORMULA ratio\nALIASES: quotient\nEXPRESSION: a / b\nINPUTS: a, b\nASSUMPTIONS: b positive\nCONSTRAINTS: positive:a; positive:b\nSOURCE_ID: test\nTITLE: Test\nSECTION: Test\nURL: https://example.invalid/test\nLICENSE: test\nRETRIEVED: 2026-08-16\nEVIDENCE: ratio definition\nEND FORMULA";
         let records = extract_formula_records(source).unwrap();
-        let result = formalize_formula_text("Compute the quotient with a=6 and b=2.", "test", &records);
+        let result =
+            formalize_formula_text("Compute the quotient with a=6 and b=2.", "test", &records);
         assert_eq!(result.status, FormulaFrontendStatus::Complete);
         assert_eq!(result.formula.as_deref(), Some("ratio"));
         assert!(result.replay_verified());
@@ -342,8 +504,14 @@ mod tests {
         let result = formalize_source_formula_report(text, DOMAIN, &records);
         assert_eq!(result.frontend.status, FrontendStatus::Complete);
         assert_eq!(result.frontend.formula_id.as_deref(), Some("weighted_mean"));
-        assert!(result.regions.iter().any(|region| region.role == FormulaRegionRole::Definition));
-        assert!(result.regions.iter().any(|region| region.role == FormulaRegionRole::Target));
+        assert!(result
+            .regions
+            .iter()
+            .any(|region| region.role == FormulaRegionRole::Definition));
+        assert!(result
+            .regions
+            .iter()
+            .any(|region| region.role == FormulaRegionRole::Target));
         assert!(report_replay_verified(&result));
     }
 

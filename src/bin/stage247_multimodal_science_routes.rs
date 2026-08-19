@@ -6,10 +6,10 @@
 
 use serde::Serialize;
 use sha2::{Digest, Sha256};
+use the_machine::vision::visual_table::formalize_table_tsv;
 use the_machine::vision::visual_table::visual_biology_bridge::table_to_biology_probability;
 use the_machine::vision::visual_table::visual_chemistry_bridge::table_to_chemistry_linear;
 use the_machine::vision::visual_table::visual_probability_bridge::table_to_probability;
-use the_machine::vision::visual_table::formalize_table_tsv;
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]

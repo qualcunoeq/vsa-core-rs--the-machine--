@@ -68,7 +68,10 @@ pub struct LearningPlan {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("campaign serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("campaign serializes"))
+    )
 }
 
 fn observation_hash(observation: &GapObservation) -> String {
@@ -129,10 +132,16 @@ pub fn cluster_gaps(observations: &[GapObservation]) -> Vec<GapCluster> {
         .collect()
 }
 
-fn prerequisite_closure(manifest: &CurriculumManifest, artifacts: &[String]) -> Result<Vec<String>, String> {
+fn prerequisite_closure(
+    manifest: &CurriculumManifest,
+    artifacts: &[String],
+) -> Result<Vec<String>, String> {
     let result = discover(manifest, artifacts);
     if result.status != DiscoveryStatus::Complete {
-        return Err(format!("prerequisite discovery failed: {:?}", result.status));
+        return Err(format!(
+            "prerequisite discovery failed: {:?}",
+            result.status
+        ));
     }
     Ok(result.packs)
 }
@@ -181,20 +190,26 @@ pub fn propose_learning_plans(
             .map(|artifact| counts[artifact.as_str()])
             .sum();
         let mut reasons = Vec::new();
-        let (mut status, prerequisite_packs) = match prerequisite_closure(manifest, &candidate.prerequisite_artifacts) {
-            Ok(packs) => {
-                reasons.push("all declared prerequisites are present in the immutable manifest".into());
-                (PlanStatus::Proposed, packs)
-            }
-            Err(reason) => (PlanStatus::Blocked, vec![reason]),
-        };
+        let (mut status, prerequisite_packs) =
+            match prerequisite_closure(manifest, &candidate.prerequisite_artifacts) {
+                Ok(packs) => {
+                    reasons.push(
+                        "all declared prerequisites are present in the immutable manifest".into(),
+                    );
+                    (PlanStatus::Proposed, packs)
+                }
+                Err(reason) => (PlanStatus::Blocked, vec![reason]),
+            };
         if covered_case_count == 0 {
             reasons.push("candidate has no exact artifact overlap with observed gaps".into());
         } else {
-            reasons.push(format!("exactly covers {covered_case_count} observed cases"));
+            reasons.push(format!(
+                "exactly covers {covered_case_count} observed cases"
+            ));
         }
         if candidate.source_ids.is_empty() || candidate.independent_exercise_count == 0 {
-            reasons.push("source provenance and independent exercise evidence are incomplete".into());
+            reasons
+                .push("source provenance and independent exercise evidence are incomplete".into());
             status = PlanStatus::Blocked;
         }
         let mut plan = LearningPlan {
@@ -215,7 +230,11 @@ pub fn propose_learning_plans(
         right
             .covered_case_count
             .cmp(&left.covered_case_count)
-            .then_with(|| right.independent_exercise_count.cmp(&left.independent_exercise_count))
+            .then_with(|| {
+                right
+                    .independent_exercise_count
+                    .cmp(&left.independent_exercise_count)
+            })
             .then_with(|| left.module_id.cmp(&right.module_id))
     });
     plans

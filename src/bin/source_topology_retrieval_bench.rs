@@ -3,8 +3,12 @@
 
 use serde::Serialize;
 use sha2::{Digest, Sha256};
-use the_machine::source_retrieval::{retrieve_claim, ClaimQuery, ClaimSource, RetrievalStatus, SourceClaim};
-use the_machine::source_topology_pack::{evaluate_topology, extract_topology_definitions, TopologyOperation, TopologyRequest};
+use the_machine::source_retrieval::{
+    retrieve_claim, ClaimQuery, ClaimSource, RetrievalStatus, SourceClaim,
+};
+use the_machine::source_topology_pack::{
+    evaluate_topology, extract_topology_definitions, TopologyOperation, TopologyRequest,
+};
 
 #[derive(Serialize)]
 struct Report {
@@ -66,7 +70,11 @@ fn topology_request() -> TopologyRequest {
         operation: TopologyOperation::ValidateTopology,
         topology: "finite_topology_axioms".into(),
         points: vec!["a".into(), "b".into(), "c".into()],
-        open_sets: vec![Vec::new(), vec!["a".into()], vec!["a".into(), "b".into(), "c".into()]],
+        open_sets: vec![
+            Vec::new(),
+            vec!["a".into()],
+            vec!["a".into(), "b".into(), "c".into()],
+        ],
         target_set: None,
         domain: "source_derived_finite_topology".into(),
         ambiguity: None,
@@ -90,11 +98,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut receipts = Vec::new();
     for index in 0..120 {
         let corpus = vec![
-            claim("primary", object, "topology-without-tears", "definition-1.3.1"),
-            claim("corroborating", object, "topology-course-notes", "finite-topology-definition"),
+            claim(
+                "primary",
+                object,
+                "topology-without-tears",
+                "definition-1.3.1",
+            ),
+            claim(
+                "corroborating",
+                object,
+                "topology-course-notes",
+                "finite-topology-definition",
+            ),
         ];
         let retrieval = retrieve_claim(&query(), &corpus);
-        let eligible = retrieval.status == RetrievalStatus::Supported && retrieval.eligible_for_shadow_use();
+        let eligible =
+            retrieval.status == RetrievalStatus::Supported && retrieval.eligible_for_shadow_use();
         let topology = evaluate_topology(&topology_request(), &records);
         let ok = eligible && topology.authorized();
         exact += usize::from(ok);
@@ -102,38 +121,76 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         topology_auth += usize::from(topology.authorized());
         retrieval_replay += usize::from(retrieval.replay_verified());
         topology_replay += usize::from(topology.replay_verified());
-        let mut altered = retrieval.clone(); altered.replay_hash.push('x');
-        let mut altered_topology = topology.clone(); altered_topology.replay_hash.push('x');
+        let mut altered = retrieval.clone();
+        altered.replay_hash.push('x');
+        let mut altered_topology = topology.clone();
+        altered_topology.replay_hash.push('x');
         tamper += usize::from(!altered.replay_verified() && !altered_topology.replay_verified());
         false_auth += usize::from(!ok);
         receipts.push((index, "supported", ok));
     }
     for index in 0..40 {
-        let corpus = vec![claim("a", object, "topology-a", "lineage-a"), claim("b", "empty;whole;unions", "topology-b", "lineage-b")];
+        let corpus = vec![
+            claim("a", object, "topology-a", "lineage-a"),
+            claim("b", "empty;whole;unions", "topology-b", "lineage-b"),
+        ];
         let retrieval = retrieve_claim(&query(), &corpus);
-        let ok = retrieval.status == RetrievalStatus::Conflicting && !retrieval.eligible_for_shadow_use();
-        exact += usize::from(ok); conflicting += usize::from(ok); retrieval_replay += usize::from(retrieval.replay_verified());
-        let mut altered = retrieval.clone(); altered.replay_hash.push('x'); tamper += usize::from(!altered.replay_verified());
-        false_auth += usize::from(!ok); receipts.push((index, "conflicting", ok));
+        let ok = retrieval.status == RetrievalStatus::Conflicting
+            && !retrieval.eligible_for_shadow_use();
+        exact += usize::from(ok);
+        conflicting += usize::from(ok);
+        retrieval_replay += usize::from(retrieval.replay_verified());
+        let mut altered = retrieval.clone();
+        altered.replay_hash.push('x');
+        tamper += usize::from(!altered.replay_verified());
+        false_auth += usize::from(!ok);
+        receipts.push((index, "conflicting", ok));
     }
     for index in 0..80 {
-        let mut q = query(); q.subject = format!("unknown_{index}");
-        let retrieval = retrieve_claim(&q, &[claim("unmatched", object, "topology-a", "lineage-a")]);
-        let ok = retrieval.status == RetrievalStatus::Missing && !retrieval.eligible_for_shadow_use();
-        exact += usize::from(ok); missing += usize::from(ok); retrieval_replay += usize::from(retrieval.replay_verified());
-        let mut altered = retrieval.clone(); altered.replay_hash.push('x'); tamper += usize::from(!altered.replay_verified());
-        false_auth += usize::from(!ok); receipts.push((index, "missing", ok));
+        let mut q = query();
+        q.subject = format!("unknown_{index}");
+        let retrieval =
+            retrieve_claim(&q, &[claim("unmatched", object, "topology-a", "lineage-a")]);
+        let ok =
+            retrieval.status == RetrievalStatus::Missing && !retrieval.eligible_for_shadow_use();
+        exact += usize::from(ok);
+        missing += usize::from(ok);
+        retrieval_replay += usize::from(retrieval.replay_verified());
+        let mut altered = retrieval.clone();
+        altered.replay_hash.push('x');
+        tamper += usize::from(!altered.replay_verified());
+        false_auth += usize::from(!ok);
+        receipts.push((index, "missing", ok));
     }
-    assert_eq!(exact, 240); assert_eq!(supported, 120); assert_eq!(conflicting, 40); assert_eq!(missing, 80);
-    assert_eq!(topology_auth, 120); assert_eq!(retrieval_replay, 240); assert_eq!(topology_replay, 120); assert_eq!(tamper, 240); assert_eq!(false_auth, 0);
+    assert_eq!(exact, 240);
+    assert_eq!(supported, 120);
+    assert_eq!(conflicting, 40);
+    assert_eq!(missing, 80);
+    assert_eq!(topology_auth, 120);
+    assert_eq!(retrieval_replay, 240);
+    assert_eq!(topology_replay, 120);
+    assert_eq!(tamper, 240);
+    assert_eq!(false_auth, 0);
     let report = Report {
-        schema: "stage-i-source-topology-retrieval-v1", cases: 240, supported, conflicting, missing,
-        exact_decisions: exact, topology_authorizations: topology_auth, retrieval_replay,
-        topology_replay, tamper_rejected: tamper, false_authorizations: false_auth,
-        registry_mutated: false, receipt_hash: hash(&receipts),
+        schema: "stage-i-source-topology-retrieval-v1",
+        cases: 240,
+        supported,
+        conflicting,
+        missing,
+        exact_decisions: exact,
+        topology_authorizations: topology_auth,
+        retrieval_replay,
+        topology_replay,
+        tamper_rejected: tamper,
+        false_authorizations: false_auth,
+        registry_mutated: false,
+        receipt_hash: hash(&receipts),
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage-i-source-topology-retrieval.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage-i-source-topology-retrieval.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

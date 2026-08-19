@@ -27,7 +27,9 @@ pub struct ExpressionSimplificationReceipt {
     pub replay_verified: bool,
 }
 
-fn grounded_expression(target: &FormalizedTarget) -> Result<String, ExpressionSimplificationFailure> {
+fn grounded_expression(
+    target: &FormalizedTarget,
+) -> Result<String, ExpressionSimplificationFailure> {
     if target.operation != OperationKind::Simplify {
         return Err(ExpressionSimplificationFailure::OperationNotSimplify);
     }
@@ -82,10 +84,9 @@ pub fn execute_expression_simplification(
 }
 
 pub fn replay_expression_simplification(receipt: &ExpressionSimplificationReceipt) -> bool {
-    let Some(answer) = algebra_island::try_answer(&format!(
-        "Simplify {}",
-        receipt.expression_source
-    )) else {
+    let Some(answer) =
+        algebra_island::try_answer(&format!("Simplify {}", receipt.expression_source))
+    else {
         return false;
     };
     answer.answer == receipt.simplified_expression

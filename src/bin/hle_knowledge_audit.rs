@@ -66,31 +66,159 @@ fn classify(row: &TraceRow) -> (KnowledgeGap, &'static str) {
     let text = row.question.to_ascii_lowercase();
     let category = row.category.to_ascii_lowercase();
 
-    if has_any(&text, &["notation", "convention", "standard notation", "syntax", "protocol", "uci", "fen", "format", "abbreviation"]) {
+    if has_any(
+        &text,
+        &[
+            "notation",
+            "convention",
+            "standard notation",
+            "syntax",
+            "protocol",
+            "uci",
+            "fen",
+            "format",
+            "abbreviation",
+        ],
+    ) {
         return (KnowledgeGap::MissingSpecialistConvention, "high");
     }
-    if has_any(&text, &["theorem", "lemma", "corollary", "axiom", "conjecture", "principle of"]) {
+    if has_any(
+        &text,
+        &[
+            "theorem",
+            "lemma",
+            "corollary",
+            "axiom",
+            "conjecture",
+            "principle of",
+        ],
+    ) {
         return (KnowledgeGap::MissingNamedTheorem, "high");
     }
-    if has_any(&text, &["equation", "formula", "scientific law", "law of", "derive", "differential", "integral", "calculate", "compute", "what is the value"]) && has_any(&text, &["=", "formula", "equation", "derive", "calculate", "compute", "value"]) {
+    if has_any(
+        &text,
+        &[
+            "equation",
+            "formula",
+            "scientific law",
+            "law of",
+            "derive",
+            "differential",
+            "integral",
+            "calculate",
+            "compute",
+            "what is the value",
+        ],
+    ) && has_any(
+        &text,
+        &[
+            "=",
+            "formula",
+            "equation",
+            "derive",
+            "calculate",
+            "compute",
+            "value",
+        ],
+    ) {
         return (KnowledgeGap::DerivationAfterFactualRetrieval, "medium");
     }
-    if has_any(&text, &["law", "equation", "formula", "reaction", "mechanism", "model", "constant", "rate of"]) {
+    if has_any(
+        &text,
+        &[
+            "law",
+            "equation",
+            "formula",
+            "reaction",
+            "mechanism",
+            "model",
+            "constant",
+            "rate of",
+        ],
+    ) {
         return (KnowledgeGap::MissingEquationOrScientificLaw, "medium");
     }
-    if has_any(&text, &["species", "genus", "family", "order", "phylum", "taxonomy", "classification", "subclass", "diagnosis", "syndrome", "organism"]) || has_any(&category, &["biology", "medicine", "chemistry"]) && has_any(&text, &["which", "what type", "class", "kind", "called"]) {
+    if has_any(
+        &text,
+        &[
+            "species",
+            "genus",
+            "family",
+            "order",
+            "phylum",
+            "taxonomy",
+            "classification",
+            "subclass",
+            "diagnosis",
+            "syndrome",
+            "organism",
+        ],
+    ) || has_any(&category, &["biology", "medicine", "chemistry"])
+        && has_any(&text, &["which", "what type", "class", "kind", "called"])
+    {
         return (KnowledgeGap::MissingTaxonomicFact, "medium");
     }
-    if has_any(&text, &["author", "book", "novel", "poem", "play", "album", "song", "historical", "war", "century", "president", "wrote", "published", "episode", "film", "movie"]) || has_any(&category, &["humanities", "social science"]) {
+    if has_any(
+        &text,
+        &[
+            "author",
+            "book",
+            "novel",
+            "poem",
+            "play",
+            "album",
+            "song",
+            "historical",
+            "war",
+            "century",
+            "president",
+            "wrote",
+            "published",
+            "episode",
+            "film",
+            "movie",
+        ],
+    ) || has_any(&category, &["humanities", "social science"])
+    {
         return (KnowledgeGap::MissingHistoricalOrTextualKnowledge, "medium");
     }
-    if has_any(&text, &["definition", "defined as", "meaning of", "refers to", "what does", "what is meant by", "term "]) {
+    if has_any(
+        &text,
+        &[
+            "definition",
+            "defined as",
+            "meaning of",
+            "refers to",
+            "what does",
+            "what is meant by",
+            "term ",
+        ],
+    ) {
         return (KnowledgeGap::MissingDefinitionOrTerminology, "medium");
     }
-    if text.contains("$") || text.contains("\\(") || text.contains("\\[") || text.matches('{').count() != text.matches('}').count() || text.matches('(').count() != text.matches(')').count() {
+    if text.contains("$")
+        || text.contains("\\(")
+        || text.contains("\\[")
+        || text.matches('{').count() != text.matches('}').count()
+        || text.matches('(').count() != text.matches(')').count()
+    {
         return (KnowledgeGap::ApparentGapFromNormalization, "low");
     }
-    if has_any(&text, &["what is", "which", "who", "when", "where", "name", "identify", "how many", "how much", "what does"]) {
+    if has_any(
+        &text,
+        &[
+            "what is",
+            "which",
+            "who",
+            "when",
+            "where",
+            "name",
+            "identify",
+            "how many",
+            "how much",
+            "what does",
+        ],
+    ) {
         return (KnowledgeGap::MissingEmpiricalFact, "low");
     }
     (KnowledgeGap::NeedsManualReview, "low")
@@ -122,7 +250,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         *classifications.entry(gap).or_insert(0) += 1;
         let sample = samples.entry(gap).or_default();
         if sample.len() < 5 {
-            sample.push(format!("{} [{}] {}", row.id.as_deref().unwrap_or("no-id"), confidence, row.question.replace('\n', " ")));
+            sample.push(format!(
+                "{} [{}] {}",
+                row.id.as_deref().unwrap_or("no-id"),
+                confidence,
+                row.question.replace('\n', " ")
+            ));
         }
         records.push(AuditRecord {
             id: row.id.clone(),
@@ -139,7 +272,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         classifications,
         samples,
         records,
-        method: "deterministic lexical shadow taxonomy; manual review required before acquisition".into(),
+        method: "deterministic lexical shadow taxonomy; manual review required before acquisition"
+            .into(),
     };
     fs::write(&output, serde_json::to_vec_pretty(&report)?)?;
     println!("{}", serde_json::to_string_pretty(&report)?);
@@ -161,8 +295,25 @@ mod tests {
 
     #[test]
     fn taxonomy_is_deterministic_and_keeps_normalization_separate() {
-        assert_eq!(classify(&row("Which theorem applies?", "Math")).0, KnowledgeGap::MissingNamedTheorem);
-        assert_eq!(classify(&row("Malformed expression with an unmatched brace {", "Math")).0, KnowledgeGap::ApparentGapFromNormalization);
-        assert_eq!(classify(&row("Which species belongs to this genus?", "Biology/Medicine")).0, KnowledgeGap::MissingTaxonomicFact);
+        assert_eq!(
+            classify(&row("Which theorem applies?", "Math")).0,
+            KnowledgeGap::MissingNamedTheorem
+        );
+        assert_eq!(
+            classify(&row(
+                "Malformed expression with an unmatched brace {",
+                "Math"
+            ))
+            .0,
+            KnowledgeGap::ApparentGapFromNormalization
+        );
+        assert_eq!(
+            classify(&row(
+                "Which species belongs to this genus?",
+                "Biology/Medicine"
+            ))
+            .0,
+            KnowledgeGap::MissingTaxonomicFact
+        );
     }
 }

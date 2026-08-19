@@ -23,12 +23,37 @@ struct Corpus {
     cases: Vec<Case>,
 }
 
-fn supported(id: String, prompt: String, family: &str, signature: &str, target: &str, pair_id: Option<String>) -> Case {
-    Case { id, prompt, outcome: "supported".into(), family: family.into(), signature: Some(signature.into()), target: Some(target.into()), reason: None, pair_id }
+fn supported(
+    id: String,
+    prompt: String,
+    family: &str,
+    signature: &str,
+    target: &str,
+    pair_id: Option<String>,
+) -> Case {
+    Case {
+        id,
+        prompt,
+        outcome: "supported".into(),
+        family: family.into(),
+        signature: Some(signature.into()),
+        target: Some(target.into()),
+        reason: None,
+        pair_id,
+    }
 }
 
 fn negative(id: String, prompt: String, outcome: &str, family: &str, reason: &str) -> Case {
-    Case { id, prompt, outcome: outcome.into(), family: family.into(), signature: None, target: None, reason: Some(reason.into()), pair_id: None }
+    Case {
+        id,
+        prompt,
+        outcome: outcome.into(),
+        family: family.into(),
+        signature: None,
+        target: None,
+        reason: Some(reason.into()),
+        pair_id: None,
+    }
 }
 
 fn positive_cases() -> Vec<Case> {
@@ -43,10 +68,24 @@ fn positive_cases() -> Vec<Case> {
         } else {
             format!("A total of {total} dollars buys {count} notebooks; find dollars per notebook.")
         };
-        cases.push(supported(format!("qr.exp.pos.{:03}", i + 1), prompt, "unit_rate", "[count:count,cost:currency]>currency/count>unit_rate", "unit_rate", pair.clone()));
+        cases.push(supported(
+            format!("qr.exp.pos.{:03}", i + 1),
+            prompt,
+            "unit_rate",
+            "[count:count,cost:currency]>currency/count>unit_rate",
+            "unit_rate",
+            pair.clone(),
+        ));
         if i < 10 {
             let rewrite = format!("The total price is {total} dollars for {count} notebooks. Determine the dollars per notebook.");
-            cases.push(supported(format!("qr.exp.pos.{:03}", i + 201), rewrite, "unit_rate", "[count:count,cost:currency]>currency/count>unit_rate", "unit_rate", pair));
+            cases.push(supported(
+                format!("qr.exp.pos.{:03}", i + 201),
+                rewrite,
+                "unit_rate",
+                "[count:count,cost:currency]>currency/count>unit_rate",
+                "unit_rate",
+                pair,
+            ));
         }
     }
     for i in 0..30 {
@@ -61,10 +100,24 @@ fn positive_cases() -> Vec<Case> {
         } else {
             format!("For every {left} red beads there are {right} blue beads; the collection has {left_count} red beads. Find the blue count.")
         };
-        cases.push(supported(format!("qr.exp.pos.{:03}", i + 41), prompt, "ratio", "[left:count,right:count,ratio]>count>ratio_target", "ratio_target", pair.clone()));
+        cases.push(supported(
+            format!("qr.exp.pos.{:03}", i + 41),
+            prompt,
+            "ratio",
+            "[left:count,right:count,ratio]>count>ratio_target",
+            "ratio_target",
+            pair.clone(),
+        ));
         if i < 10 {
             let rewrite = format!("There are {right_count} blue beads for {left_count} red beads under a {left}:{right} ratio. Find blue beads.");
-            cases.push(supported(format!("qr.exp.pos.{:03}", i + 211), rewrite, "ratio", "[left:count,right:count,ratio]>count>ratio_target", "ratio_target", pair));
+            cases.push(supported(
+                format!("qr.exp.pos.{:03}", i + 211),
+                rewrite,
+                "ratio",
+                "[left:count,right:count,ratio]>count>ratio_target",
+                "ratio_target",
+                pair,
+            ));
         }
     }
     for i in 0..30 {
@@ -77,13 +130,36 @@ fn positive_cases() -> Vec<Case> {
         } else {
             format!("At a constant proportion, {source_units} liters serve {source_items} batches. Determine liters for {target_items} batches.")
         };
-        cases.push(supported(format!("qr.exp.pos.{:03}", i + 81), prompt, "proportion", "[source:quantity,source_count,target_count]>quantity>scaled_quantity", "scaled_quantity", pair.clone()));
+        cases.push(supported(
+            format!("qr.exp.pos.{:03}", i + 81),
+            prompt,
+            "proportion",
+            "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+            "scaled_quantity",
+            pair.clone(),
+        ));
         if i < 10 {
             let rewrite = format!("Scale {source_units} liters for {source_items} batches to {target_items} batches at the same rate.");
-            cases.push(supported(format!("qr.exp.pos.{:03}", i + 221), rewrite, "proportion", "[source:quantity,source_count,target_count]>quantity>scaled_quantity", "scaled_quantity", pair));
+            cases.push(supported(
+                format!("qr.exp.pos.{:03}", i + 221),
+                rewrite,
+                "proportion",
+                "[source:quantity,source_count,target_count]>quantity>scaled_quantity",
+                "scaled_quantity",
+                pair,
+            ));
         }
     }
-    let conversions = [(100, "centimeters", "meters", "length"), (1000, "meters", "kilometers", "length"), (60, "minutes", "hours", "time"), (12, "inches", "feet", "length"), (16, "ounces", "pounds", "mass"), (1000, "milliliters", "liters", "volume"), (24, "hours", "days", "time"), (7, "days", "weeks", "time")];
+    let conversions = [
+        (100, "centimeters", "meters", "length"),
+        (1000, "meters", "kilometers", "length"),
+        (60, "minutes", "hours", "time"),
+        (12, "inches", "feet", "length"),
+        (16, "ounces", "pounds", "mass"),
+        (1000, "milliliters", "liters", "volume"),
+        (24, "hours", "days", "time"),
+        (7, "days", "weeks", "time"),
+    ];
     for i in 0..20 {
         let (factor, small, large, kind) = conversions[i % conversions.len()];
         let amount = 2 + i % 9;
@@ -93,11 +169,27 @@ fn positive_cases() -> Vec<Case> {
         } else {
             format!("One {large} contains {factor} {small}. Express {amount} {large} in {small}.")
         };
-        let signature = format!("[{kind}:{large},factor:{factor}{small}/{large}]>{small}>{kind}_converted");
-        cases.push(supported(format!("qr.exp.pos.{:03}", i + 121), prompt, "unit_conversion", &signature, "converted_quantity", pair.clone()));
+        let signature =
+            format!("[{kind}:{large},factor:{factor}{small}/{large}]>{small}>{kind}_converted");
+        cases.push(supported(
+            format!("qr.exp.pos.{:03}", i + 121),
+            prompt,
+            "unit_conversion",
+            &signature,
+            "converted_quantity",
+            pair.clone(),
+        ));
         if i < 10 {
-            let rewrite = format!("Express {amount} {large} as {small}, given {factor} {small} per {large}.");
-            cases.push(supported(format!("qr.exp.pos.{:03}", i + 231), rewrite, "unit_conversion", &signature, "converted_quantity", pair));
+            let rewrite =
+                format!("Express {amount} {large} as {small}, given {factor} {small} per {large}.");
+            cases.push(supported(
+                format!("qr.exp.pos.{:03}", i + 231),
+                rewrite,
+                "unit_conversion",
+                &signature,
+                "converted_quantity",
+                pair,
+            ));
         }
     }
     for i in 0..20 {
@@ -110,15 +202,33 @@ fn positive_cases() -> Vec<Case> {
         } else {
             format!("A container has {first} liters and {second} liters are removed. How many liters remain?")
         };
-        let target = if verb == "altogether" { "total" } else { "remaining" };
-        cases.push(supported(format!("qr.exp.pos.{:03}", i + 151), prompt, "sum_difference", "[first:quantity,second:quantity]>quantity>target", target, pair.clone()));
+        let target = if verb == "altogether" {
+            "total"
+        } else {
+            "remaining"
+        };
+        cases.push(supported(
+            format!("qr.exp.pos.{:03}", i + 151),
+            prompt,
+            "sum_difference",
+            "[first:quantity,second:quantity]>quantity>target",
+            target,
+            pair.clone(),
+        ));
         if i < 10 {
             let rewrite = if verb == "altogether" {
                 format!("There are {first} red counters plus {second} blue counters in the box. Find the total count.")
             } else {
                 format!("After taking {second} liters from a container holding {first} liters, state the remaining volume.")
             };
-            cases.push(supported(format!("qr.exp.pos.{:03}", i + 241), rewrite, "sum_difference", "[first:quantity,second:quantity]>quantity>target", target, pair));
+            cases.push(supported(
+                format!("qr.exp.pos.{:03}", i + 241),
+                rewrite,
+                "sum_difference",
+                "[first:quantity,second:quantity]>quantity>target",
+                target,
+                pair,
+            ));
         }
     }
     for i in 0..20 {
@@ -130,7 +240,14 @@ fn positive_cases() -> Vec<Case> {
         } else {
             format!("The final amount is {total} units after adding {increment} units. What was the starting amount?")
         };
-        cases.push(supported(format!("qr.exp.pos.{:03}", i + 181), prompt, "linear_quantity", "[base:quantity,change:quantity]>quantity>linear_target", "linear_target", None));
+        cases.push(supported(
+            format!("qr.exp.pos.{:03}", i + 181),
+            prompt,
+            "linear_quantity",
+            "[base:quantity,change:quantity]>quantity>linear_target",
+            "linear_target",
+            None,
+        ));
     }
     cases
 }
@@ -153,9 +270,24 @@ fn negative_cases() -> Vec<Case> {
         let (family, reason, template) = templates[i % templates.len()];
         let n = 2 + i % 19;
         let m = 3 + i % 13;
-        let prompt = template.replace("{n}", &n.to_string()).replace("{m}", &m.to_string());
-        let outcome = if matches!(family, "missing_anchor" | "incompatible_units" | "missing_interval") { "ambiguous" } else { "unsupported" };
-        cases.push(negative(format!("qr.exp.neg.{:03}", i + 1), prompt, outcome, family, reason));
+        let prompt = template
+            .replace("{n}", &n.to_string())
+            .replace("{m}", &m.to_string());
+        let outcome = if matches!(
+            family,
+            "missing_anchor" | "incompatible_units" | "missing_interval"
+        ) {
+            "ambiguous"
+        } else {
+            "unsupported"
+        };
+        cases.push(negative(
+            format!("qr.exp.neg.{:03}", i + 1),
+            prompt,
+            outcome,
+            family,
+            reason,
+        ));
     }
     cases
 }
@@ -185,8 +317,21 @@ fn main() {
         fs::write(path, &bytes).expect("write corpus release");
     }
     let hash = Sha256::digest(&bytes);
-    let supported = corpus.cases.iter().filter(|case| case.outcome == "supported").count();
-    let negative = corpus.cases.iter().filter(|case| case.outcome != "supported").count();
-    let pairs = corpus.cases.iter().filter_map(|case| case.pair_id.as_ref()).collect::<std::collections::BTreeSet<_>>().len();
+    let supported = corpus
+        .cases
+        .iter()
+        .filter(|case| case.outcome == "supported")
+        .count();
+    let negative = corpus
+        .cases
+        .iter()
+        .filter(|case| case.outcome != "supported")
+        .count();
+    let pairs = corpus
+        .cases
+        .iter()
+        .filter_map(|case| case.pair_id.as_ref())
+        .collect::<std::collections::BTreeSet<_>>()
+        .len();
     println!("quantity-relation-expanded: cases={} supported={} negative_or_ambiguous={} rewrite_families={} sha256={:x}", corpus.cases.len(), supported, negative, pairs, hash);
 }

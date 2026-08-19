@@ -77,8 +77,15 @@ fn collect_variables(expr: &SymExpr, out: &mut BTreeSet<String>) {
 
 fn grounded_input(
     target: &FormalizedTarget,
-) -> Result<(String, SymExpr, HashMap<String, SymExpr>, Vec<(String, String)>), SubstitutionFailure>
-{
+) -> Result<
+    (
+        String,
+        SymExpr,
+        HashMap<String, SymExpr>,
+        Vec<(String, String)>,
+    ),
+    SubstitutionFailure,
+> {
     let subject = target
         .subject_resolution
         .selected
@@ -88,8 +95,7 @@ fn grounded_input(
         return Err(SubstitutionFailure::SubjectNotExpression);
     }
     let source = subject.object.trim().to_string();
-    let expression = algebra::parse(&source)
-        .map_err(SubstitutionFailure::ExpressionParseFailed)?;
+    let expression = algebra::parse(&source).map_err(SubstitutionFailure::ExpressionParseFailed)?;
     let mut variables = BTreeSet::new();
     collect_variables(&expression, &mut variables);
     let mut bindings = HashMap::new();
@@ -101,11 +107,12 @@ fn grounded_input(
         if binding.status != TargetFieldStatus::Complete {
             continue;
         }
-        let value = algebra::parse(binding.value.trim()).map_err(|error| {
-            SubstitutionFailure::UnsupportedBinding(error.to_string())
-        })?;
+        let value = algebra::parse(binding.value.trim())
+            .map_err(|error| SubstitutionFailure::UnsupportedBinding(error.to_string()))?;
         if value.evaluate(&[]).is_none() || !variables.contains(&binding.parameter) {
-            return Err(SubstitutionFailure::UnsupportedBinding(binding.parameter.clone()));
+            return Err(SubstitutionFailure::UnsupportedBinding(
+                binding.parameter.clone(),
+            ));
         }
         bindings.insert(binding.parameter.clone(), value);
         receipt_bindings.push((binding.parameter.clone(), binding.value.clone()));
@@ -123,8 +130,15 @@ fn grounded_input(
 
 pub fn authorize_substitution(
     target: &FormalizedTarget,
-) -> Result<(String, SymExpr, HashMap<String, SymExpr>, Vec<(String, String)>), SubstitutionFailure>
-{
+) -> Result<
+    (
+        String,
+        SymExpr,
+        HashMap<String, SymExpr>,
+        Vec<(String, String)>,
+    ),
+    SubstitutionFailure,
+> {
     if target.operation != crate::formalization::OperationKind::Substitute {
         return Err(SubstitutionFailure::OperationNotSubstitute);
     }
@@ -155,8 +169,8 @@ pub fn execute_substitution(
     let instantiated_expression = substitute_vars(&expression, &bindings);
     let numeric_result = instantiated_expression.evaluate(&[]);
 
-    let replay_expression = algebra::parse(&source)
-        .map_err(SubstitutionFailure::ExpressionParseFailed)?;
+    let replay_expression =
+        algebra::parse(&source).map_err(SubstitutionFailure::ExpressionParseFailed)?;
     let replay_bindings = receipt_bindings
         .iter()
         .map(|(name, value)| {

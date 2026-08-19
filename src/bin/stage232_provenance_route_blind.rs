@@ -11,9 +11,7 @@ use the_machine::probability_pack::Rational;
 use the_machine::source_formula_frontend::{
     formalize_source_formula_report, report_replay_verified, FrontendStatus,
 };
-use the_machine::source_formula_pack::{
-    evaluate_formula_records, FormulaRecord, InputConstraint,
-};
+use the_machine::source_formula_pack::{evaluate_formula_records, FormulaRecord, InputConstraint};
 use the_machine::source_module_discovery::discover_formula_corpus;
 
 const ECONOMICS: &str = include_str!("../../docs/sources/openstax_bounded_economics_source.txt");

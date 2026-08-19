@@ -61,7 +61,10 @@ fn digest<T: Serialize>(value: &T) -> String {
     format!("{:x}", Sha256::digest(serde_json::to_vec(value).unwrap()))
 }
 
-fn supported_text(record: &the_machine::source_formula_pack::FormulaRecord, index: usize) -> String {
+fn supported_text(
+    record: &the_machine::source_formula_pack::FormulaRecord,
+    index: usize,
+) -> String {
     let alias = record
         .aliases
         .get(index % record.aliases.len().max(1))
@@ -116,7 +119,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for index in 0..600usize {
         let expected = expected(index);
         let text = match expected {
-            Expected::Supported => supported_text(&module.records[index % module.records.len()], index),
+            Expected::Supported => {
+                supported_text(&module.records[index % module.records.len()], index)
+            }
             Expected::Ambiguous => ambiguous_text().into(),
             Expected::Unsupported => unsupported_text().into(),
         };

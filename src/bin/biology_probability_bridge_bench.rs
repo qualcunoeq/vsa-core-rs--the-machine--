@@ -3,9 +3,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
-use the_machine::probability_pack::{
-    evaluate_probability, ProbabilityArtifact, ProbabilityStatus,
-};
+use the_machine::probability_pack::{evaluate_probability, ProbabilityArtifact, ProbabilityStatus};
 use the_machine::source_formula_pack::biology_pack::biology_probability_bridge::{
     bridge_base_composition, BiologyProbabilityBridgeStatus,
 };
@@ -79,34 +77,44 @@ fn biology_request(operation: BiologyOperation, sequence: &str) -> BiologyReques
     }
 }
 
-fn run(id: String, biology_request: BiologyRequest, policy: Option<&str>, expected: Expected) -> Receipt {
+fn run(
+    id: String,
+    biology_request: BiologyRequest,
+    policy: Option<&str>,
+    expected: Expected,
+) -> Receipt {
     let biology = evaluate_biology(&biology_request);
     let bridge = bridge_base_composition(&biology, policy);
-    let (probability_status, handoff_valid, policy_preserved, semantic_preserved, probability_replay) =
-        if let Some(handoff) = bridge.handoff.as_ref() {
-            let probability = evaluate_probability(&handoff.request);
-            let artifact_valid = matches!(
-                probability.artifact.as_ref(),
-                Some(ProbabilityArtifact::Distribution(distribution))
-                    if distribution.outcomes == vec!["A", "C", "G", "T"]
-                        && distribution.probabilities.len() == 4
-            );
-            let valid = bridge.authorized()
-                && handoff.sampling_policy == "uniform_position"
-                && handoff.source_biology_replay_hash == biology.replay_hash
-                && probability.status == ProbabilityStatus::Complete
-                && probability.replay_verified()
-                && artifact_valid;
-            (
-                Some(probability.status),
-                valid,
-                handoff.sampling_policy == "uniform_position",
-                artifact_valid,
-                probability.replay_verified(),
-            )
-        } else {
-            (None, false, false, false, true)
-        };
+    let (
+        probability_status,
+        handoff_valid,
+        policy_preserved,
+        semantic_preserved,
+        probability_replay,
+    ) = if let Some(handoff) = bridge.handoff.as_ref() {
+        let probability = evaluate_probability(&handoff.request);
+        let artifact_valid = matches!(
+            probability.artifact.as_ref(),
+            Some(ProbabilityArtifact::Distribution(distribution))
+                if distribution.outcomes == vec!["A", "C", "G", "T"]
+                    && distribution.probabilities.len() == 4
+        );
+        let valid = bridge.authorized()
+            && handoff.sampling_policy == "uniform_position"
+            && handoff.source_biology_replay_hash == biology.replay_hash
+            && probability.status == ProbabilityStatus::Complete
+            && probability.replay_verified()
+            && artifact_valid;
+        (
+            Some(probability.status),
+            valid,
+            handoff.sampling_policy == "uniform_position",
+            artifact_valid,
+            probability.replay_verified(),
+        )
+    } else {
+        (None, false, false, false, true)
+    };
     let biology_replay = biology.replay_verified();
     let bridge_replay = bridge.replay_verified();
     let replay_verified = biology_replay && bridge_replay && probability_replay;
@@ -189,7 +197,10 @@ fn main() {
     for index in 0..20 {
         receipts.push(run(
             format!("refused_sequence_{index:03}"),
-            biology_request(BiologyOperation::ValidateDna, sequences[index % sequences.len()]),
+            biology_request(
+                BiologyOperation::ValidateDna,
+                sequences[index % sequences.len()],
+            ),
             Some("uniform_position"),
             Expected::Refused,
         ));
@@ -210,14 +221,26 @@ fn main() {
 
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Supported).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let refused = receipts.iter().filter(|r| r.expected == Expected::Refused).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Supported)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let refused = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Refused)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let supported_handoffs = receipts.iter().filter(|r| r.handoff_valid).count();
     let biology_replays = receipts.iter().filter(|r| r.replay_verified).count();
     let bridge_replays = receipts.iter().filter(|r| r.replay_verified).count();
-    let probability_replays = receipts.iter().filter(|r| r.probability_status.is_none() || r.replay_verified).count();
+    let probability_replays = receipts
+        .iter()
+        .filter(|r| r.probability_status.is_none() || r.replay_verified)
+        .count();
     let tamper_rejections = receipts.iter().filter(|r| r.tamper_rejected).count();
     let policy_preserved = receipts.iter().filter(|r| r.policy_preserved).count();
     let semantic_distributions_preserved = receipts
@@ -268,7 +291,10 @@ fn main() {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report).expect("biology probability serializes");
-    std::fs::write("docs/stage_h_biology_probability_bridge.json", format!("{serialized}\n"))
-        .expect("biology probability report writes");
+    std::fs::write(
+        "docs/stage_h_biology_probability_bridge.json",
+        format!("{serialized}\n"),
+    )
+    .expect("biology probability report writes");
     println!("{serialized}");
 }

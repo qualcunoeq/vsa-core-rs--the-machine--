@@ -2,7 +2,7 @@
 
 use serde::Serialize;
 use sha2::{Digest, Sha256};
-use the_machine::source_formula_pack::{FormulaStatus, FormulaResult};
+use the_machine::source_formula_pack::{FormulaResult, FormulaStatus};
 use the_machine::source_statistics_frontend::{
     formalize_statistics_text, FrontendStatus, StatisticsFrontendResult,
 };
@@ -156,19 +156,52 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Complete).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let refused = receipts.iter().filter(|r| r.expected == Expected::Refused).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Complete)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let refused = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Refused)
+        .count();
     let exact_frontend_decisions = receipts.iter().filter(|r| r.exact_frontend).count();
     let authorized_answers = receipts.iter().filter(|r| r.authorized).count();
-    let supported_values_replayed = receipts.iter().filter(|r| r.expected == Expected::Complete && r.value_replay).count();
+    let supported_values_replayed = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Complete && r.value_replay)
+        .count();
     let frontend_replay_verified = receipts.iter().filter(|r| r.frontend_replay).count();
-    let frontend_tamper_rejections = receipts.iter().filter(|r| r.frontend_tamper_rejected).count();
-    let downstream_tamper_rejections = receipts.iter().filter(|r| r.downstream_tamper_rejected).count();
+    let frontend_tamper_rejections = receipts
+        .iter()
+        .filter(|r| r.frontend_tamper_rejected)
+        .count();
+    let downstream_tamper_rejections = receipts
+        .iter()
+        .filter(|r| r.downstream_tamper_rejected)
+        .count();
     let false_authorizations = receipts.iter().filter(|r| r.false_authorization).count();
-    let false_denials = receipts.iter().filter(|r| r.expected == Expected::Complete && !r.authorized).count();
+    let false_denials = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Complete && !r.authorized)
+        .count();
     assert_eq!((supported, ambiguous, refused), (120, 40, 80));
-    assert_eq!((exact_frontend_decisions, authorized_answers, supported_values_replayed, frontend_replay_verified, frontend_tamper_rejections, downstream_tamper_rejections, false_authorizations, false_denials), (240, 120, 120, 240, 240, 240, 0, 0));
+    assert_eq!(
+        (
+            exact_frontend_decisions,
+            authorized_answers,
+            supported_values_replayed,
+            frontend_replay_verified,
+            frontend_tamper_rejections,
+            downstream_tamper_rejections,
+            false_authorizations,
+            false_denials
+        ),
+        (240, 120, 120, 240, 240, 240, 0, 0)
+    );
     let report = Report {
         schema: "stage-c-d-source-statistics-language-frontend-v1",
         corpus_sha256: digest(&receipts),
@@ -187,7 +220,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage_c_d_source_statistics_frontend.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage_c_d_source_statistics_frontend.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

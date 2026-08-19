@@ -282,15 +282,32 @@ fn strategy_index(
     strategy.strategy_id = STRATEGY_ID.into();
     strategy.supporting_instances = 500;
     let validation = strategy.validate(1, 8, 0, 0);
-    assert!(validation.passed, "benchmark strategy fixture must validate");
+    assert!(
+        validation.passed,
+        "benchmark strategy fixture must validate"
+    );
     let mut index = CapabilityChainProofConceptStrategyIndex::default();
     index
         .insert(strategy, &validation)
         .expect("benchmark strategy fixture must insert");
 
     let evidence = [
-        ("algebra", "expression->exact_value", "strict-replay", 100, 5, 0),
-        ("calculus", "expression->exact_value", "strict-replay", 100, 1, 0),
+        (
+            "algebra",
+            "expression->exact_value",
+            "strict-replay",
+            100,
+            5,
+            0,
+        ),
+        (
+            "calculus",
+            "expression->exact_value",
+            "strict-replay",
+            100,
+            1,
+            0,
+        ),
         (
             "number_theory",
             "expression->exact_value",
@@ -299,7 +316,14 @@ fn strategy_index(
             100,
             0,
         ),
-        ("geometry", "expression->exact_value", "strict-replay", 100, 10, 1),
+        (
+            "geometry",
+            "expression->exact_value",
+            "strict-replay",
+            100,
+            10,
+            1,
+        ),
     ];
     for (domain, signature, policy, epoch, successes, safety_failures) in evidence {
         index
@@ -393,7 +417,9 @@ pub fn task_count_for_scale(scale: &str) -> Result<usize, String> {
         "small" => Ok(32),
         "medium" => Ok(256),
         "large" => Ok(500),
-        other => Err(format!("unknown scale '{other}', expected small|medium|large")),
+        other => Err(format!(
+            "unknown scale '{other}', expected small|medium|large"
+        )),
     }
 }
 
@@ -422,14 +448,34 @@ fn make_mode_metrics(
         mode,
         tasks: total,
         correct,
-        accuracy: if total == 0 { 1.0 } else { correct as f64 / total as f64 },
+        accuracy: if total == 0 {
+            1.0
+        } else {
+            correct as f64 / total as f64
+        },
         abstentions,
         unnecessary_abstentions,
         false_authorizations: 0,
-        mean_route_steps: if total == 0 { 0.0 } else { route_steps as f64 / total as f64 },
-        concept_retrieval_precision: if total == 0 { 1.0 } else { concept_hits as f64 / total as f64 },
-        stored_strategy_usefulness: if total == 0 { 0.0 } else { stored_useful as f64 / total as f64 },
-        stale_or_irrelevant_strategy_retrieval_rate: if total == 0 { 0.0 } else { stale_or_irrelevant as f64 / total as f64 },
+        mean_route_steps: if total == 0 {
+            0.0
+        } else {
+            route_steps as f64 / total as f64
+        },
+        concept_retrieval_precision: if total == 0 {
+            1.0
+        } else {
+            concept_hits as f64 / total as f64
+        },
+        stored_strategy_usefulness: if total == 0 {
+            0.0
+        } else {
+            stored_useful as f64 / total as f64
+        },
+        stale_or_irrelevant_strategy_retrieval_rate: if total == 0 {
+            0.0
+        } else {
+            stale_or_irrelevant as f64 / total as f64
+        },
     }
 }
 
@@ -590,7 +636,10 @@ fn evaluate_receipt_shadows() -> StrategicReceiptShadowMetrics {
     run_receipt_shadow_case(
         &registry,
         "receipt-controls-system",
-        vec![CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+        vec![
+            CapabilityIoType::EquationSystem,
+            CapabilityIoType::VariableSet,
+        ],
         CapabilityIoType::SystemSolution,
         "linear_system_solve",
         context("controls", "system->system_solution"),
@@ -629,7 +678,9 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
     }
     for task in &task_list {
         if let Some(failure) = task.dominant_failure {
-            *failure_taxonomy.entry(failure.label().to_string()).or_default() += 1;
+            *failure_taxonomy
+                .entry(failure.label().to_string())
+                .or_default() += 1;
         }
     }
 
@@ -710,8 +761,14 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
             ExpectedDecision::Ambiguous
         };
         stored_correct += usize::from(stored_kind == expected_stored);
-        stored_abstentions += usize::from(matches!(stored_kind, ExpectedDecision::NoCandidates | ExpectedDecision::Ambiguous));
-        stored_unnecessary += usize::from(stored_kind == ExpectedDecision::Ambiguous && expected_stored != ExpectedDecision::Ambiguous);
+        stored_abstentions += usize::from(matches!(
+            stored_kind,
+            ExpectedDecision::NoCandidates | ExpectedDecision::Ambiguous
+        ));
+        stored_unnecessary += usize::from(
+            stored_kind == ExpectedDecision::Ambiguous
+                && expected_stored != ExpectedDecision::Ambiguous,
+        );
         stored_steps += stored_comparison
             .candidates
             .iter()
@@ -752,8 +809,14 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
             );
         }
         full_correct += usize::from(full_kind == task.expected_full_decision);
-        full_abstentions += usize::from(matches!(full_kind, ExpectedDecision::NoCandidates | ExpectedDecision::Ambiguous));
-        full_unnecessary += usize::from(full_kind == ExpectedDecision::Ambiguous && task.expected_full_decision != ExpectedDecision::Ambiguous);
+        full_abstentions += usize::from(matches!(
+            full_kind,
+            ExpectedDecision::NoCandidates | ExpectedDecision::Ambiguous
+        ));
+        full_unnecessary += usize::from(
+            full_kind == ExpectedDecision::Ambiguous
+                && task.expected_full_decision != ExpectedDecision::Ambiguous,
+        );
         full_steps += full_comparison
             .candidates
             .iter()
@@ -765,10 +828,50 @@ pub fn evaluate(seed: u64, count: usize) -> StrategicRouteBenchmarkReport {
     }
 
     for metrics in [
-        make_mode_metrics(StrategicRouteBenchmarkMode::DirectCapability, &task_list, direct_correct, direct_abstentions, direct_unnecessary, direct_steps, 0, 0, 0),
-        make_mode_metrics(StrategicRouteBenchmarkMode::ConceptGuided, &task_list, concept_correct, concept_abstentions, concept_unnecessary, concept_steps, concept_hits, 0, 0),
-        make_mode_metrics(StrategicRouteBenchmarkMode::StoredStrategy, &task_list, stored_correct, stored_abstentions, stored_unnecessary, stored_steps, 0, stored_useful, failure_taxonomy["retrieval_failure"]),
-        make_mode_metrics(StrategicRouteBenchmarkMode::Full, &task_list, full_correct, full_abstentions, full_unnecessary, full_steps, concept_hits, stored_useful, failure_taxonomy["retrieval_failure"]),
+        make_mode_metrics(
+            StrategicRouteBenchmarkMode::DirectCapability,
+            &task_list,
+            direct_correct,
+            direct_abstentions,
+            direct_unnecessary,
+            direct_steps,
+            0,
+            0,
+            0,
+        ),
+        make_mode_metrics(
+            StrategicRouteBenchmarkMode::ConceptGuided,
+            &task_list,
+            concept_correct,
+            concept_abstentions,
+            concept_unnecessary,
+            concept_steps,
+            concept_hits,
+            0,
+            0,
+        ),
+        make_mode_metrics(
+            StrategicRouteBenchmarkMode::StoredStrategy,
+            &task_list,
+            stored_correct,
+            stored_abstentions,
+            stored_unnecessary,
+            stored_steps,
+            0,
+            stored_useful,
+            failure_taxonomy["retrieval_failure"],
+        ),
+        make_mode_metrics(
+            StrategicRouteBenchmarkMode::Full,
+            &task_list,
+            full_correct,
+            full_abstentions,
+            full_unnecessary,
+            full_steps,
+            concept_hits,
+            stored_useful,
+            failure_taxonomy["retrieval_failure"],
+        ),
     ] {
         mode_rows.insert(metrics.mode.label().to_string(), metrics);
     }
@@ -876,7 +979,8 @@ pub fn experiment_results(
     );
     results.push(ExperimentResult {
         experiment: "strategic_receipt_shadow".into(),
-        claim: "stored strategy guidance cannot bypass receipt execution and replay authority".into(),
+        claim: "stored strategy guidance cannot bypass receipt execution and replay authority"
+            .into(),
         commit,
         seed: report.seed,
         dataset: Some("fixed:expression-substitution-controls-receipts".into()),
@@ -1110,7 +1214,10 @@ mod tests {
                 goal: CapabilityIoType::SystemSolution,
                 steps: vec!["linear_system_solve".into()],
             },
-            input_artifacts: vec![CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+            input_artifacts: vec![
+                CapabilityIoType::EquationSystem,
+                CapabilityIoType::VariableSet,
+            ],
             output_artifacts: vec![CapabilityIoType::SystemSolution],
             supporting_instances: 6,
             diagnostic_only: true,
@@ -1140,7 +1247,10 @@ mod tests {
             recent_window: 2,
         };
         let comparison = index.compare_with_fresh_plan_in_context(
-            &[CapabilityIoType::EquationSystem, CapabilityIoType::VariableSet],
+            &[
+                CapabilityIoType::EquationSystem,
+                CapabilityIoType::VariableSet,
+            ],
             CapabilityIoType::SystemSolution,
             None,
             &context,
@@ -1160,8 +1270,7 @@ mod tests {
         assert_eq!(stored.plan.steps, vec!["linear_system_solve"]);
         assert!(registry.get(&stored.plan.steps[0]).is_some());
 
-        let receipt = execute_linear_system("Solve system: 2*x+1*y=5; 1*x+1*y=3 for x,y")
-            .unwrap();
+        let receipt = execute_linear_system("Solve system: 2*x+1*y=5; 1*x+1*y=3 for x,y").unwrap();
         assert!(receipt.replay_verified);
         assert!(replay_linear_system(&receipt));
     }

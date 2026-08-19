@@ -68,7 +68,11 @@ fn fragment_for(report: &RawReport, context: &IngestContext) -> Option<RawReport
     let clock = report.text.split_whitespace().find_map(|token| {
         let candidate = token.trim_matches(|ch: char| !ch.is_ascii_digit() && ch != ':');
         let (hour, minute) = candidate.split_once(':')?;
-        if hour.len() <= 2 && minute.len() == 2 && hour.chars().all(|ch| ch.is_ascii_digit()) && minute.chars().all(|ch| ch.is_ascii_digit()) {
+        if hour.len() <= 2
+            && minute.len() == 2
+            && hour.chars().all(|ch| ch.is_ascii_digit())
+            && minute.chars().all(|ch| ch.is_ascii_digit())
+        {
             Some(format!("{}:{}", hour, minute))
         } else {
             None
@@ -87,29 +91,109 @@ fn has_any(text: &str, markers: &[&str]) -> bool {
     markers.iter().any(|marker| lower.contains(marker))
 }
 
-pub fn classify_report(report: &RawReport, context: &IngestContext) -> (ShiftedClassification, Vec<String>) {
+pub fn classify_report(
+    report: &RawReport,
+    context: &IngestContext,
+) -> (ShiftedClassification, Vec<String>) {
     let lower = report.text.to_ascii_lowercase();
     let parsed = parse_report(report, context);
     let fragment = fragment_for(report, context);
-    if report.text.contains('"') || has_any(&lower, &[" may ", " might ", " perhaps ", " reportedly ", " according to ", "they ", " he ", " she ", " said ", " claims "]) {
-        return (ShiftedClassification::Ambiguous, vec!["source, pronoun, or hedge attribution".into()]);
+    if report.text.contains('"')
+        || has_any(
+            &lower,
+            &[
+                " may ",
+                " might ",
+                " perhaps ",
+                " reportedly ",
+                " according to ",
+                "they ",
+                " he ",
+                " she ",
+                " said ",
+                " claims ",
+            ],
+        )
+    {
+        return (
+            ShiftedClassification::Ambiguous,
+            vec!["source, pronoun, or hedge attribution".into()],
+        );
     }
-    if has_any(&lower, &["both active and idle", "but not", "however,", "contradict", "on the other hand", "the first", "the second"]) {
-        return (ShiftedClassification::Ambiguous, vec!["contradictory clauses".into()]);
+    if has_any(
+        &lower,
+        &[
+            "both active and idle",
+            "but not",
+            "however,",
+            "contradict",
+            "on the other hand",
+            "the first",
+            "the second",
+        ],
+    ) {
+        return (
+            ShiftedClassification::Ambiguous,
+            vec!["contradictory clauses".into()],
+        );
     }
-    let ontology = ["temperature", "location", "ownership", "arrived", "departed", "priority", "mood", "battery"];
-    let temporal = ["before noon", "after midnight", "earlier that day", "later that evening", "the next day", "yesterday"];
-    let residual = ontology.iter().chain(temporal.iter()).filter(|marker| lower.contains(**marker)).map(|marker| (*marker).into()).collect::<Vec<_>>();
+    let ontology = [
+        "temperature",
+        "location",
+        "ownership",
+        "arrived",
+        "departed",
+        "priority",
+        "mood",
+        "battery",
+    ];
+    let temporal = [
+        "before noon",
+        "after midnight",
+        "earlier that day",
+        "later that evening",
+        "the next day",
+        "yesterday",
+    ];
+    let residual = ontology
+        .iter()
+        .chain(temporal.iter())
+        .filter(|marker| lower.contains(**marker))
+        .map(|marker| (*marker).into())
+        .collect::<Vec<_>>();
     if !residual.is_empty() && fragment.is_some() {
         return (ShiftedClassification::PartiallyIngestible, residual);
     }
-    if has_any(&lower, &["temperature", "location", "ownership", "arrived", "departed", "priority", "mood", "battery", "before noon", "after midnight", "earlier that day", "later that evening", "the next day", "yesterday"]) {
+    if has_any(
+        &lower,
+        &[
+            "temperature",
+            "location",
+            "ownership",
+            "arrived",
+            "departed",
+            "priority",
+            "mood",
+            "battery",
+            "before noon",
+            "after midnight",
+            "earlier that day",
+            "later that evening",
+            "the next day",
+            "yesterday",
+        ],
+    ) {
         return (ShiftedClassification::OntologyExtensionRequired, residual);
     }
     match parsed {
-        ParseOutcome::Accepted(candidate) if candidate.safe_to_ingest => (ShiftedClassification::SafelyIngestible, Vec::new()),
+        ParseOutcome::Accepted(candidate) if candidate.safe_to_ingest => {
+            (ShiftedClassification::SafelyIngestible, Vec::new())
+        }
         ParseOutcome::Ambiguous { reason, .. } => (ShiftedClassification::Ambiguous, vec![reason]),
-        _ => (ShiftedClassification::Unsupported, vec!["no supported semantic form".into()]),
+        _ => (
+            ShiftedClassification::Unsupported,
+            vec!["no supported semantic form".into()],
+        ),
     }
 }
 
@@ -118,7 +202,10 @@ pub fn ingest_shifted(report: &RawReport, context: &IngestContext) -> ShiftedRec
     let mut observation = None;
     let mut replay_verified = false;
     let mut alternatives = Vec::new();
-    let insertable = matches!(classification, ShiftedClassification::SafelyIngestible | ShiftedClassification::PartiallyIngestible);
+    let insertable = matches!(
+        classification,
+        ShiftedClassification::SafelyIngestible | ShiftedClassification::PartiallyIngestible
+    );
     if insertable {
         if let Some(fragment) = fragment_for(report, context) {
             let receipt = ingest_report(&fragment, context);
@@ -129,48 +216,209 @@ pub fn ingest_shifted(report: &RawReport, context: &IngestContext) -> ShiftedRec
         alternatives.push("retain report without fact insertion".into());
     }
     let inserted_fact = observation.is_some();
-    ShiftedReceipt { report_id: report.id.clone(), classification, observation, unsupported_residual: residual, alternatives, replay_verified, inserted_fact }
+    ShiftedReceipt {
+        report_id: report.id.clone(),
+        classification,
+        observation,
+        unsupported_residual: residual,
+        alternatives,
+        replay_verified,
+        inserted_fact,
+    }
 }
 
 fn context(alias: &str, entity: &str) -> IngestContext {
     let mut aliases = BTreeMap::new();
-    aliases.insert(alias.to_ascii_lowercase(), vec![crate::world_model::EntityId(entity.into())]);
-    IngestContext { entities: [crate::world_model::EntityId(entity.into())].into_iter().collect(), aliases }
+    aliases.insert(
+        alias.to_ascii_lowercase(),
+        vec![crate::world_model::EntityId(entity.into())],
+    );
+    IngestContext {
+        entities: [crate::world_model::EntityId(entity.into())]
+            .into_iter()
+            .collect(),
+        aliases,
+    }
 }
 
-fn case(id: String, text: String, alias: &str, entity: &str, expected: ShiftedClassification, expected_insertion: bool) -> ShiftedCase {
-    ShiftedCase { id: id.clone(), report: RawReport { id, text, source: "shifted-source".into(), received_at: 720 }, context: context(alias, entity), expected, expected_insertion }
+fn case(
+    id: String,
+    text: String,
+    alias: &str,
+    entity: &str,
+    expected: ShiftedClassification,
+    expected_insertion: bool,
+) -> ShiftedCase {
+    ShiftedCase {
+        id: id.clone(),
+        report: RawReport {
+            id,
+            text,
+            source: "shifted-source".into(),
+            received_at: 720,
+        },
+        context: context(alias, entity),
+        expected,
+        expected_insertion,
+    }
 }
 
 /// Build a distribution-shift corpus from templates independent of Phase 11.
 pub fn shifted_corpus() -> Vec<ShiftedCase> {
     let mut cases = Vec::with_capacity(320);
-    for i in 0..50 { cases.push(case(format!("shift-direct-{i:03}"), format!("By 09:{:02}, Agent-{i} was active.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::SafelyIngestible, true)); }
-    for i in 0..40 { cases.push(case(format!("shift-quote-{i:03}"), format!("The log says, \"Agent-{i} is active at 10:{:02}.\"", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::Ambiguous, false)); }
-    for i in 0..40 { cases.push(case(format!("shift-temporal-{i:03}"), format!("Agent-{i} was active at 10:{:02}, earlier that day than the temperature reading.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::PartiallyIngestible, true)); }
-    for i in 0..40 { cases.push(case(format!("shift-pronoun-{i:03}"), format!("Agent-{i} was active at 10:{:02}. They were seen later that evening.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::Ambiguous, false)); }
-    for i in 0..30 { cases.push(case(format!("shift-alias-{i:03}"), format!("The newly introduced alias Unit-{i} reports Agent-{i} is idle at 11:{:02}.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::SafelyIngestible, true)); }
-    for i in 0..30 { cases.push(case(format!("shift-conflict-{i:03}"), format!("Agent-{i} is active at 12:{:02}, but not active according to the same report.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::Ambiguous, false)); }
-    for i in 0..25 { cases.push(case(format!("shift-ellipsis-{i:03}"), format!("At 13:{:02}, the first was active; the second, too.", i % 60), "first", &format!("Agent-{i}"), ShiftedClassification::Ambiguous, false)); }
-    for i in 0..25 { cases.push(case(format!("shift-irrelevant-{i:03}"), format!("Rain, traffic, and a long narrative preceded the report: Agent-{i} is blocked at 14:{:02}.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::SafelyIngestible, true)); }
-    for i in 0..20 { cases.push(case(format!("shift-ontology-{i:03}"), format!("Agent-{i} changed location after 15:{:02} and reported a new battery level.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::OntologyExtensionRequired, false)); }
-    for i in 0..20 { cases.push(case(format!("shift-unknown-{i:03}"), format!("Something about Agent-{i} happened in an unfamiliar semantic domain {}.", i), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::Unsupported, false)); }
+    for i in 0..50 {
+        cases.push(case(
+            format!("shift-direct-{i:03}"),
+            format!("By 09:{:02}, Agent-{i} was active.", i % 60),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::SafelyIngestible,
+            true,
+        ));
+    }
+    for i in 0..40 {
+        cases.push(case(
+            format!("shift-quote-{i:03}"),
+            format!("The log says, \"Agent-{i} is active at 10:{:02}.\"", i % 60),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::Ambiguous,
+            false,
+        ));
+    }
+    for i in 0..40 {
+        cases.push(case(
+            format!("shift-temporal-{i:03}"),
+            format!(
+                "Agent-{i} was active at 10:{:02}, earlier that day than the temperature reading.",
+                i % 60
+            ),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::PartiallyIngestible,
+            true,
+        ));
+    }
+    for i in 0..40 {
+        cases.push(case(
+            format!("shift-pronoun-{i:03}"),
+            format!(
+                "Agent-{i} was active at 10:{:02}. They were seen later that evening.",
+                i % 60
+            ),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::Ambiguous,
+            false,
+        ));
+    }
+    for i in 0..30 {
+        cases.push(case(
+            format!("shift-alias-{i:03}"),
+            format!(
+                "The newly introduced alias Unit-{i} reports Agent-{i} is idle at 11:{:02}.",
+                i % 60
+            ),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::SafelyIngestible,
+            true,
+        ));
+    }
+    for i in 0..30 {
+        cases.push(case(
+            format!("shift-conflict-{i:03}"),
+            format!(
+                "Agent-{i} is active at 12:{:02}, but not active according to the same report.",
+                i % 60
+            ),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::Ambiguous,
+            false,
+        ));
+    }
+    for i in 0..25 {
+        cases.push(case(
+            format!("shift-ellipsis-{i:03}"),
+            format!(
+                "At 13:{:02}, the first was active; the second, too.",
+                i % 60
+            ),
+            "first",
+            &format!("Agent-{i}"),
+            ShiftedClassification::Ambiguous,
+            false,
+        ));
+    }
+    for i in 0..25 {
+        cases.push(case(format!("shift-irrelevant-{i:03}"), format!("Rain, traffic, and a long narrative preceded the report: Agent-{i} is blocked at 14:{:02}.", i % 60), &format!("agent-{i}"), &format!("Agent-{i}"), ShiftedClassification::SafelyIngestible, true));
+    }
+    for i in 0..20 {
+        cases.push(case(
+            format!("shift-ontology-{i:03}"),
+            format!(
+                "Agent-{i} changed location after 15:{:02} and reported a new battery level.",
+                i % 60
+            ),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::OntologyExtensionRequired,
+            false,
+        ));
+    }
+    for i in 0..20 {
+        cases.push(case(
+            format!("shift-unknown-{i:03}"),
+            format!(
+                "Something about Agent-{i} happened in an unfamiliar semantic domain {}.",
+                i
+            ),
+            &format!("agent-{i}"),
+            &format!("Agent-{i}"),
+            ShiftedClassification::Unsupported,
+            false,
+        ));
+    }
     cases
 }
 
-pub fn shifted_corpus_hash() -> String { let mut hasher = Sha256::new(); hasher.update(serde_json::to_vec(&shifted_corpus()).expect("shifted corpus serializes")); format!("{:x}", hasher.finalize()) }
+pub fn shifted_corpus_hash() -> String {
+    let mut hasher = Sha256::new();
+    hasher.update(serde_json::to_vec(&shifted_corpus()).expect("shifted corpus serializes"));
+    format!("{:x}", hasher.finalize())
+}
 
 pub fn evaluate_shifted(cases: &[ShiftedCase]) -> ShiftedBenchmarkReport {
-    let mut report = ShiftedBenchmarkReport { cases: cases.len(), ..Default::default() };
+    let mut report = ShiftedBenchmarkReport {
+        cases: cases.len(),
+        ..Default::default()
+    };
     for case in cases {
         let receipt = ingest_shifted(&case.report, &case.context);
         report.classification_correct += usize::from(receipt.classification == case.expected);
-        report.safe_partial_extraction += usize::from(case.expected_insertion == receipt.inserted_fact);
-        report.false_fact_insertions += usize::from(receipt.inserted_fact && !case.expected_insertion);
-        report.ambiguity_preserved += usize::from(matches!(case.expected, ShiftedClassification::Ambiguous) == matches!(receipt.classification, ShiftedClassification::Ambiguous));
-        report.ontology_gaps += usize::from(matches!(case.expected, ShiftedClassification::OntologyExtensionRequired) == matches!(receipt.classification, ShiftedClassification::OntologyExtensionRequired));
+        report.safe_partial_extraction +=
+            usize::from(case.expected_insertion == receipt.inserted_fact);
+        report.false_fact_insertions +=
+            usize::from(receipt.inserted_fact && !case.expected_insertion);
+        report.ambiguity_preserved += usize::from(
+            matches!(case.expected, ShiftedClassification::Ambiguous)
+                == matches!(receipt.classification, ShiftedClassification::Ambiguous),
+        );
+        report.ontology_gaps += usize::from(
+            matches!(
+                case.expected,
+                ShiftedClassification::OntologyExtensionRequired
+            ) == matches!(
+                receipt.classification,
+                ShiftedClassification::OntologyExtensionRequired
+            ),
+        );
         report.replay_verified += usize::from(receipt.replay_verified || !receipt.inserted_fact);
-        *report.by_class.entry(format!("{:?}", receipt.classification)).or_default() += 1;
+        *report
+            .by_class
+            .entry(format!("{:?}", receipt.classification))
+            .or_default() += 1;
     }
     report
 }

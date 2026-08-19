@@ -7,17 +7,17 @@
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::{collections::BTreeMap, env, fs};
+use the_machine::capabilities::{CapabilityRegistry, CapabilitySelection};
+use the_machine::expression_evaluation::execute_expression_evaluation;
+use the_machine::failure_taxonomy::FailureTaxonomyReport;
 use the_machine::formalization::{
     assess_direct_instantiation, assess_prompt, infer_answer_form, score_formalization,
     AuthorizationDenialTrace, FieldScore, FormalizationCorpus, FormalizationGoldCase,
     FormalizationScore, OperationKind, OperationStatus, TargetCompletion, TargetFieldStatus,
     TargetStatus,
 };
-use the_machine::failure_taxonomy::FailureTaxonomyReport;
 use the_machine::function_application::execute_function_application;
-use the_machine::expression_evaluation::execute_expression_evaluation;
 use the_machine::linear_equation::execute_linear_equation;
-use the_machine::capabilities::{CapabilityRegistry, CapabilitySelection};
 
 #[derive(Debug, Serialize)]
 struct Aggregate {
@@ -256,7 +256,10 @@ impl Aggregate {
                 metrics.eligible += 1;
             }
             for rejection in &candidate.rejections {
-                *metrics.rejections.entry(format!("{rejection:?}")).or_default() += 1;
+                *metrics
+                    .rejections
+                    .entry(format!("{rejection:?}"))
+                    .or_default() += 1;
             }
         }
         match &discovery.selection {
@@ -358,8 +361,7 @@ impl Aggregate {
                 .selected
                 .as_ref()
                 .map(|subject| {
-                    subject.object_type
-                        == the_machine::formalization::SubjectObjectType::Expression
+                    subject.object_type == the_machine::formalization::SubjectObjectType::Expression
                 })
                 .unwrap_or(false);
         if expression_candidate {
@@ -368,8 +370,7 @@ impl Aggregate {
                 Ok(receipt) => {
                     self.expression_shadow.authorized += 1;
                     self.expression_shadow.executed += 1;
-                    self.expression_shadow.replay_verified +=
-                        usize::from(receipt.replay_verified);
+                    self.expression_shadow.replay_verified += usize::from(receipt.replay_verified);
                 }
                 Err(error) => {
                     *self
@@ -387,8 +388,7 @@ impl Aggregate {
                 .selected
                 .as_ref()
                 .map(|subject| {
-                    subject.object_type
-                        == the_machine::formalization::SubjectObjectType::Equation
+                    subject.object_type == the_machine::formalization::SubjectObjectType::Equation
                 })
                 .unwrap_or(false);
         if linear_candidate {
@@ -695,13 +695,7 @@ fn evaluate_case(
     let score = score_formalization(case, &trace, authorized);
     let denial = assessment.denial_trace(case.authorization_expected);
     let target_completion = trace.target_completion.clone();
-    (
-        trace,
-        score,
-        authorized,
-        denial,
-        target_completion,
-    )
+    (trace, score, authorized, denial, target_completion)
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

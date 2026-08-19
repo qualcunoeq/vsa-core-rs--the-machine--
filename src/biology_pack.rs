@@ -27,7 +27,8 @@ fn source() -> SourceCitation {
         url: "https://openstax.org/books/biology-2e/pages/14-2-dna-structure-and-sequencing".into(),
         license: "CC BY 4.0; OpenStax attribution required".into(),
         retrieved_utc: "2026-08-16".into(),
-        evidence_span: "DNA uses the bases A, T, C, and G; A pairs with T and G pairs with C".into(),
+        evidence_span: "DNA uses the bases A, T, C, and G; A pairs with T and G pairs with C"
+            .into(),
     }
 }
 
@@ -150,7 +151,10 @@ fn normalize_sequence(sequence: &str) -> Result<String, String> {
     if normalized.len() > MAX_SEQUENCE {
         return Err("DNA sequence exceeds the bounded length".into());
     }
-    if normalized.chars().any(|base| !matches!(base, 'A' | 'T' | 'C' | 'G')) {
+    if normalized
+        .chars()
+        .any(|base| !matches!(base, 'A' | 'T' | 'C' | 'G'))
+    {
         return Err("sequence contains a non-DNA base or RNA symbol".into());
     }
     Ok(normalized)
@@ -177,7 +181,10 @@ fn reverse_complement(sequence: &str) -> String {
 fn composition(sequence: &str) -> BiologyArtifact {
     let mut counts = BTreeMap::new();
     for base in ['A', 'C', 'G', 'T'] {
-        counts.insert(base.to_string(), sequence.chars().filter(|value| *value == base).count() as u32);
+        counts.insert(
+            base.to_string(),
+            sequence.chars().filter(|value| *value == base).count() as u32,
+        );
     }
     BiologyArtifact::BaseComposition {
         length: sequence.len() as u32,
@@ -264,7 +271,9 @@ pub fn evaluate_biology(request: &BiologyRequest) -> BiologyResult {
                     BiologyStatus::Ambiguous,
                     None,
                     Some(cited),
-                    vec!["aligned complement requires an explicit 5_to_3 source orientation".into()],
+                    vec![
+                        "aligned complement requires an explicit 5_to_3 source orientation".into(),
+                    ],
                 );
             }
             result(
@@ -287,7 +296,9 @@ pub fn evaluate_biology(request: &BiologyRequest) -> BiologyResult {
                     BiologyStatus::Ambiguous,
                     None,
                     Some(cited),
-                    vec!["reverse complement requires an explicit 5_to_3 source orientation".into()],
+                    vec![
+                        "reverse complement requires an explicit 5_to_3 source orientation".into(),
+                    ],
                 );
             }
             let complement = reverse_complement(&sequence);
@@ -354,6 +365,9 @@ mod tests {
         assert_eq!(evaluate_biology(&rna).status, BiologyStatus::Unsupported);
         let mut ambiguous = request(BiologyOperation::ReverseComplement);
         ambiguous.orientation = None;
-        assert_eq!(evaluate_biology(&ambiguous).status, BiologyStatus::Ambiguous);
+        assert_eq!(
+            evaluate_biology(&ambiguous).status,
+            BiologyStatus::Ambiguous
+        );
     }
 }

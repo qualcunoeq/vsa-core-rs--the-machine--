@@ -109,17 +109,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let stage301: serde_json::Value = serde_json::from_slice(&stage301_bytes)?;
     let stage_o: serde_json::Value = serde_json::from_slice(&stage_o_bytes)?;
     assert_eq!(stage301["parent_memory_records"].as_u64(), Some(120_000));
-    assert_eq!(stage301["source_validation_status"].as_str(), Some("validated"));
+    assert_eq!(
+        stage301["source_validation_status"].as_str(),
+        Some("validated")
+    );
     assert_eq!(stage301["source_exercises_replayed"].as_u64(), Some(120));
     assert_eq!(stage301["false_authorizations"].as_u64(), Some(0));
-    assert_eq!(stage_o["admitted_modules"].as_array().map(Vec::len), Some(5));
-    assert_eq!(stage_o["source_gate_false_authorizations"].as_u64(), Some(0));
+    assert_eq!(
+        stage_o["admitted_modules"].as_array().map(Vec::len),
+        Some(5)
+    );
+    assert_eq!(
+        stage_o["source_gate_false_authorizations"].as_u64(),
+        Some(0)
+    );
     assert_eq!(stage_o["production_registry_mutations"].as_u64(), Some(0));
     let sealed_stage = stage_o["stages"]
         .as_array()
-        .and_then(|stages| stages.iter().find(|stage| {
-            stage["stage"].as_str() == Some("sealed_holdout_after_frozen_admission")
-        }))
+        .and_then(|stages| {
+            stages.iter().find(|stage| {
+                stage["stage"].as_str() == Some("sealed_holdout_after_frozen_admission")
+            })
+        })
         .expect("sealed breadth stage");
     assert_eq!(sealed_stage["exact_decisions"].as_u64(), Some(300));
     assert_eq!(sealed_stage["correct_authorizations"].as_u64(), Some(200));
@@ -142,7 +153,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut total_tamper = 0;
 
     let rounds = [
-        (1usize, vec!["source_derived_finite_regression".to_string()], 1usize, 120usize),
+        (
+            1usize,
+            vec!["source_derived_finite_regression".to_string()],
+            1usize,
+            120usize,
+        ),
         (
             2,
             vec![
@@ -172,7 +188,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 format!("stage302-round-{round}-source-{module}"),
                 module,
                 "validated_source_receipt",
-                format!("source-report-stage301:{}:stage-o:{}", digest_bytes(&stage301_bytes), digest_bytes(&stage_o_bytes)),
+                format!(
+                    "source-report-stage301:{}:stage-o:{}",
+                    digest_bytes(&stage301_bytes),
+                    digest_bytes(&stage_o_bytes)
+                ),
                 vec![
                     "stage301-current-memory-education".into(),
                     "stage-o-autonomous-breadth-campaign".into(),
@@ -257,9 +277,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         clone_memory_records: clone.len(),
         parent_memory_unchanged: parent_unchanged,
         manifest_unchanged: manifest.replay_hash() == manifest_hash,
-        stage301_sealed_learning_delta: stage301["sealed_learning_delta"].as_u64().unwrap() as usize,
+        stage301_sealed_learning_delta: stage301["sealed_learning_delta"].as_u64().unwrap()
+            as usize,
         stage_o_sealed_exact: sealed_stage["exact_decisions"].as_u64().unwrap() as usize,
-        stage_o_sealed_correct_authorizations: sealed_stage["correct_authorizations"].as_u64().unwrap() as usize,
+        stage_o_sealed_correct_authorizations: sealed_stage["correct_authorizations"]
+            .as_u64()
+            .unwrap() as usize,
         false_authorizations: 0,
         false_denials: 0,
         production_mutations: 0,
@@ -300,6 +323,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report.production_mutations,
         ),
     )?;
-    println!("stage302 cycles={} parent={} clone={} replay={} tamper={} false_auth=0", report.cycles, report.parent_memory_records, report.clone_memory_records, report.replay_verified, report.tamper_rejected);
+    println!(
+        "stage302 cycles={} parent={} clone={} replay={} tamper={} false_auth=0",
+        report.cycles,
+        report.parent_memory_records,
+        report.clone_memory_records,
+        report.replay_verified,
+        report.tamper_rejected
+    );
     Ok(())
 }

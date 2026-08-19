@@ -3,9 +3,11 @@
 use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
-use the_machine::source_topology_pack::{extract_topology_definitions, TopologyOperation, TopologyRequest};
-use the_machine::source_topology_graph_bridge::topology_to_graph;
 use the_machine::graph_pack::{FiniteGraph, GraphStatus};
+use the_machine::source_topology_graph_bridge::topology_to_graph;
+use the_machine::source_topology_pack::{
+    extract_topology_definitions, TopologyOperation, TopologyRequest,
+};
 
 #[derive(Clone, Serialize)]
 struct Case {
@@ -91,14 +93,22 @@ fn expected_graph(request: &TopologyRequest) -> FiniteGraph {
     let mut edges = Vec::new();
     for left in 0..request.points.len() {
         for right in 0..request.points.len() {
-            if left == right { continue; }
+            if left == right {
+                continue;
+            }
             let holds = request.open_sets.iter().all(|open| {
                 !open.contains(&request.points[left]) || open.contains(&request.points[right])
             });
-            if holds { edges.push((left, right)); }
+            if holds {
+                edges.push((left, right));
+            }
         }
     }
-    FiniteGraph { vertices: request.points.clone(), edges, directed: true }
+    FiniteGraph {
+        vertices: request.points.clone(),
+        edges,
+        directed: true,
+    }
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -127,7 +137,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     for index in 0..40 {
         let mut request = request(index);
-        request.open_sets = vec![Vec::new(), vec!["a".into()], vec!["b".into()], request.points.clone()];
+        request.open_sets = vec![
+            Vec::new(),
+            vec!["a".into()],
+            vec!["b".into()],
+            request.points.clone(),
+        ];
         corpus.push(Case {
             id: format!("invalid_topology_{index:03}"),
             family: "invalid_topology".into(),
@@ -162,10 +177,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for case in &corpus {
         *family_counts.entry(case.family.clone()).or_insert(0usize) += 1;
         let result = topology_to_graph(&case.request, &records, &case.policy);
-        let exact_case = result.status == case.expected_status && result.graph == case.expected_graph;
+        let exact_case =
+            result.status == case.expected_status && result.graph == case.expected_graph;
         let authorized_case = result.authorized();
         let replay_case = result.replay_verified();
-        let graph_replay_case = result.graph_result.as_ref().map(|graph| graph.replay_verified()).unwrap_or(true);
+        let graph_replay_case = result
+            .graph_result
+            .as_ref()
+            .map(|graph| graph.replay_verified())
+            .unwrap_or(true);
         let mut altered = result.clone();
         altered.replay_hash.push('x');
         let tamper_case = !altered.replay_verified();
@@ -177,10 +197,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let false_authorization = case.expected_status != GraphStatus::Complete && authorized_case;
         false_auth += usize::from(false_authorization);
         receipts.push(Receipt {
-            id: case.id.clone(), family: case.family.clone(), expected_status: case.expected_status,
-            actual_status: result.status, exact: exact_case, authorized: authorized_case,
-            replay_verified: replay_case, graph_replay_verified: graph_replay_case,
-            tamper_rejected: tamper_case, false_authorization,
+            id: case.id.clone(),
+            family: case.family.clone(),
+            expected_status: case.expected_status,
+            actual_status: result.status,
+            exact: exact_case,
+            authorized: authorized_case,
+            replay_verified: replay_case,
+            graph_replay_verified: graph_replay_case,
+            tamper_rejected: tamper_case,
+            false_authorization,
         });
     }
     assert_eq!(exact, 240);
@@ -207,7 +233,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         receipt_hash: hash(&receipts),
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage-b-source-topology-graph-bridge.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage-b-source-topology-graph-bridge.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

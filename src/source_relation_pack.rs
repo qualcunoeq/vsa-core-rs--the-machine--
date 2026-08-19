@@ -108,7 +108,11 @@ fn list(value: &str, separator: char) -> Vec<String> {
 
 fn parse_pairs(value: &str) -> Result<BTreeMap<String, String>, String> {
     let mut pairs = BTreeMap::new();
-    for item in value.split('|').map(str::trim).filter(|item| !item.is_empty()) {
+    for item in value
+        .split('|')
+        .map(str::trim)
+        .filter(|item| !item.is_empty())
+    {
         let (left, right) = item
             .split_once('=')
             .ok_or_else(|| format!("pair lacks '=': {item}"))?;
@@ -152,7 +156,9 @@ pub fn extract_relation_records(document: &str) -> Result<Vec<RelationRecord>, V
             continue;
         }
         let Some((_, fields)) = current.as_mut() else {
-            errors.push(format!("field outside relation block at line {line_number}"));
+            errors.push(format!(
+                "field outside relation block at line {line_number}"
+            ));
             continue;
         };
         let Some((key, value)) = line.split_once(':') else {
@@ -162,11 +168,15 @@ pub fn extract_relation_records(document: &str) -> Result<Vec<RelationRecord>, V
         let key = key.trim().to_ascii_uppercase();
         let value = value.trim().to_string();
         if key.is_empty() || value.is_empty() || fields.insert(key.clone(), value).is_some() {
-            errors.push(format!("invalid or duplicate field {key} at line {line_number}"));
+            errors.push(format!(
+                "invalid or duplicate field {key} at line {line_number}"
+            ));
         }
     }
     if let Some((line, _)) = current {
-        errors.push(format!("relation block beginning at line {line} is unterminated"));
+        errors.push(format!(
+            "relation block beginning at line {line} is unterminated"
+        ));
     }
     let mut records = Vec::new();
     for (line, fields) in blocks {
@@ -217,14 +227,23 @@ pub fn validate_relation_records(records: &[RelationRecord]) -> Result<(), Vec<S
     let mut aliases = BTreeSet::new();
     for record in records {
         if record.relation_id.trim().is_empty() || !ids.insert(record.relation_id.clone()) {
-            errors.push(format!("duplicate or empty relation identifier: {}", record.relation_id));
+            errors.push(format!(
+                "duplicate or empty relation identifier: {}",
+                record.relation_id
+            ));
         }
         if record.domain.trim().is_empty() || record.pairs.is_empty() {
-            errors.push(format!("relation {} lacks domain or pairs", record.relation_id));
+            errors.push(format!(
+                "relation {} lacks domain or pairs",
+                record.relation_id
+            ));
         }
         for alias in &record.aliases {
             if alias.trim().is_empty() || !aliases.insert(alias.clone()) {
-                errors.push(format!("duplicate or empty relation alias in {}", record.relation_id));
+                errors.push(format!(
+                    "duplicate or empty relation alias in {}",
+                    record.relation_id
+                ));
             }
         }
         if let Err(citation_errors) = validate_source_citation(&record.source) {
@@ -233,27 +252,54 @@ pub fn validate_relation_records(records: &[RelationRecord]) -> Result<(), Vec<S
             }
         }
     }
-    if errors.is_empty() { Ok(()) } else { Err(errors) }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
 }
 
 /// Execute a relation record selected by ID or unique alias.
 pub fn evaluate_relation(request: &RelationRequest, records: &[RelationRecord]) -> RelationResult {
     if request.domain.trim().is_empty() {
-        return output(request, RelationStatus::InvalidDomain, None, Vec::new(), None, vec!["relation domain is empty".into()]);
+        return output(
+            request,
+            RelationStatus::InvalidDomain,
+            None,
+            Vec::new(),
+            None,
+            vec!["relation domain is empty".into()],
+        );
     }
     if let Some(ambiguity) = &request.ambiguity {
-        return output(request, RelationStatus::Ambiguous, None, Vec::new(), None, vec![ambiguity.clone()]);
+        return output(
+            request,
+            RelationStatus::Ambiguous,
+            None,
+            Vec::new(),
+            None,
+            vec![ambiguity.clone()],
+        );
     }
     let candidates = records
         .iter()
-        .filter(|record| record.domain == request.domain
-            && (record.relation_id == request.relation
-                || record.aliases.iter().any(|alias| alias == &request.relation)))
+        .filter(|record| {
+            record.domain == request.domain
+                && (record.relation_id == request.relation
+                    || record
+                        .aliases
+                        .iter()
+                        .any(|alias| alias == &request.relation))
+        })
         .collect::<Vec<_>>();
     if candidates.len() != 1 {
         return output(
             request,
-            if candidates.is_empty() { RelationStatus::Missing } else { RelationStatus::Ambiguous },
+            if candidates.is_empty() {
+                RelationStatus::Missing
+            } else {
+                RelationStatus::Ambiguous
+            },
             None,
             Vec::new(),
             None,
@@ -262,7 +308,14 @@ pub fn evaluate_relation(request: &RelationRequest, records: &[RelationRecord]) 
     }
     let record = candidates[0];
     let Some(output_value) = record.pairs.get(&request.input) else {
-        return output(request, RelationStatus::Unsupported, None, record.assumptions.clone(), Some(record.source.clone()), vec!["input is outside the declared relation alphabet".into()]);
+        return output(
+            request,
+            RelationStatus::Unsupported,
+            None,
+            record.assumptions.clone(),
+            Some(record.source.clone()),
+            vec!["input is outside the declared relation alphabet".into()],
+        );
     };
     output(
         request,

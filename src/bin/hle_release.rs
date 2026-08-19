@@ -96,7 +96,10 @@ fn classify(
         };
     }
 
-    let has_image = entry.get("has_image").and_then(Value::as_bool).unwrap_or(false);
+    let has_image = entry
+        .get("has_image")
+        .and_then(Value::as_bool)
+        .unwrap_or(false);
     let lower_question = entry
         .get("question")
         .and_then(Value::as_str)
@@ -152,7 +155,10 @@ fn classify(
             TerminalClassification::AmbiguousOrDefectiveQuestion
         }
         Some(AbstentionReason::InsufficientEvidence)
-            if matches!(orchestration.plan.domain, Tool::FactualQA | Tool::LifeScience) =>
+            if matches!(
+                orchestration.plan.domain,
+                Tool::FactualQA | Tool::LifeScience
+            ) =>
         {
             TerminalClassification::MissingFactualKnowledge
         }
@@ -160,8 +166,9 @@ fn classify(
             TerminalClassification::AmbiguousOrDefectiveQuestion
         }
         Some(AbstentionReason::UnsupportedDomain) => TerminalClassification::MissingOntology,
-        Some(AbstentionReason::NoApplicableMethod)
-        | Some(AbstentionReason::VerificationFailed) => TerminalClassification::MissingReasoningMethod,
+        Some(AbstentionReason::NoApplicableMethod) | Some(AbstentionReason::VerificationFailed) => {
+            TerminalClassification::MissingReasoningMethod
+        }
         Some(AbstentionReason::SolverUnsupportedOperation) => {
             TerminalClassification::SafelyFormalizedButUnsupported
         }
@@ -177,7 +184,7 @@ fn classify(
 }
 
 fn replay_result(orchestration: &OrchestratedAnswer) -> String {
-        if orchestration.answer.is_none() {
+    if orchestration.answer.is_none() {
         return "not_applicable".to_string();
     }
     if let Some(receipt) = &orchestration.plan_execution_receipt {
@@ -293,9 +300,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let started = Instant::now();
         let orchestration = QuestionRouter::orchestrate(question);
         let elapsed_ms = started.elapsed().as_secs_f64() * 1_000.0;
-        let correct = orchestration.answer.as_deref().is_some_and(|answer| {
-            QuestionRouter::exact_answers_match(answer, expected)
-        });
+        let correct = orchestration
+            .answer
+            .as_deref()
+            .is_some_and(|answer| QuestionRouter::exact_answers_match(answer, expected));
         let class = classify(&entry, &orchestration, correct);
         let replay = replay_result(&orchestration);
         let capabilities: Vec<String> = orchestration
@@ -310,7 +318,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         usage.insert("givens".into(), orchestration.plan.problem.givens.len());
         usage.insert("methods".into(), orchestration.plan.methods.len());
         usage.insert("required_capabilities".into(), capabilities.len());
-        usage.insert("rejected_candidates".into(), orchestration.rejected_candidates.len());
+        usage.insert(
+            "rejected_candidates".into(),
+            orchestration.rejected_candidates.len(),
+        );
         let record = QuestionRecord {
             id: entry.get("id").and_then(Value::as_str).map(str::to_string),
             category: entry
@@ -342,8 +353,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         writeln!(traces)?;
         *classifications.entry(class).or_insert(0) += 1;
         cases += 1;
-        correct_authorized_answers += usize::from(class == TerminalClassification::CorrectAuthorizedAnswer);
-        incorrect_authorized_answers += usize::from(class == TerminalClassification::IncorrectAuthorizedAnswer);
+        correct_authorized_answers +=
+            usize::from(class == TerminalClassification::CorrectAuthorizedAnswer);
+        incorrect_authorized_answers +=
+            usize::from(class == TerminalClassification::IncorrectAuthorizedAnswer);
         match replay.as_str() {
             "verified" => replay_verified += 1,
             "not_applicable" => replay_not_applicable += 1,

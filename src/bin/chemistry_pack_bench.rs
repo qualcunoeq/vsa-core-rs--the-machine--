@@ -53,7 +53,10 @@ struct Report {
 const DOMAIN: &str = "source_derived_bounded_chemistry";
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("chemistry serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("chemistry serializes"))
+    )
 }
 
 fn request(operation: ChemistryOperation) -> ChemistryRequest {
@@ -72,9 +75,30 @@ fn request(operation: ChemistryOperation) -> ChemistryRequest {
 fn run(id: String, request: ChemistryRequest, expected: Expected) -> Receipt {
     let result = evaluate_chemistry(&request);
     let artifact_shape_valid = match (&result.status, &result.artifact, request.operation) {
-        (ChemistryStatus::Complete, Some(ChemistryArtifact::MolecularFormula { atoms }), ChemistryOperation::ParseFormula) => !atoms.is_empty(),
-        (ChemistryStatus::Complete, Some(ChemistryArtifact::BalancedReaction { reactants, products, atom_totals }), ChemistryOperation::ValidateReaction) => !reactants.is_empty() && !products.is_empty() && !atom_totals.is_empty(),
-        (ChemistryStatus::Complete, Some(ChemistryArtifact::StoichiometricRatio { from, to, from_coefficient, to_coefficient }), ChemistryOperation::StoichiometricRatio) => !from.is_empty() && !to.is_empty() && *from_coefficient > 0 && *to_coefficient > 0,
+        (
+            ChemistryStatus::Complete,
+            Some(ChemistryArtifact::MolecularFormula { atoms }),
+            ChemistryOperation::ParseFormula,
+        ) => !atoms.is_empty(),
+        (
+            ChemistryStatus::Complete,
+            Some(ChemistryArtifact::BalancedReaction {
+                reactants,
+                products,
+                atom_totals,
+            }),
+            ChemistryOperation::ValidateReaction,
+        ) => !reactants.is_empty() && !products.is_empty() && !atom_totals.is_empty(),
+        (
+            ChemistryStatus::Complete,
+            Some(ChemistryArtifact::StoichiometricRatio {
+                from,
+                to,
+                from_coefficient,
+                to_coefficient,
+            }),
+            ChemistryOperation::StoichiometricRatio,
+        ) => !from.is_empty() && !to.is_empty() && *from_coefficient > 0 && *to_coefficient > 0,
         (ChemistryStatus::Complete, _, _) => false,
         (_, None, _) => true,
         (_, Some(_), _) => false,
@@ -137,37 +161,66 @@ fn main() {
         let mut req = request(ChemistryOperation::ParseFormula);
         req.formula = Some("X".into());
         req.ambiguity = Some("symbol or notation family is unresolved".into());
-        receipts.push(run(format!("ambiguous_{index:03}"), req, Expected::Ambiguous));
+        receipts.push(run(
+            format!("ambiguous_{index:03}"),
+            req,
+            Expected::Ambiguous,
+        ));
     }
 
     for index in 0..20 {
         let mut req = request(ChemistryOperation::ParseFormula);
         req.formula = Some("H2O)".into());
-        receipts.push(run(format!("malformed_formula_{index:03}"), req, Expected::Refused));
+        receipts.push(run(
+            format!("malformed_formula_{index:03}"),
+            req,
+            Expected::Refused,
+        ));
     }
     for index in 0..20 {
         let mut req = request(ChemistryOperation::ParseFormula);
         req.formula = Some("Na+".into());
-        receipts.push(run(format!("unsupported_charge_{index:03}"), req, Expected::Refused));
+        receipts.push(run(
+            format!("unsupported_charge_{index:03}"),
+            req,
+            Expected::Refused,
+        ));
     }
     for index in 0..20 {
         let mut req = request(ChemistryOperation::ValidateReaction);
         req.reaction = Some("H2 + O2 -> H2O".into());
-        receipts.push(run(format!("unbalanced_{index:03}"), req, Expected::Refused));
+        receipts.push(run(
+            format!("unbalanced_{index:03}"),
+            req,
+            Expected::Refused,
+        ));
     }
     for index in 0..20 {
         let mut req = request(ChemistryOperation::StoichiometricRatio);
         req.reaction = Some("N2 + 3H2 -> 2NH3".into());
         req.from_species = Some("H2".into());
         req.to_species = None;
-        receipts.push(run(format!("missing_ratio_target_{index:03}"), req, Expected::Refused));
+        receipts.push(run(
+            format!("missing_ratio_target_{index:03}"),
+            req,
+            Expected::Refused,
+        ));
     }
 
     assert_eq!(receipts.len(), 240);
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|r| r.expected == Expected::Complete).count();
-    let ambiguous = receipts.iter().filter(|r| r.expected == Expected::Ambiguous).count();
-    let refused = receipts.iter().filter(|r| r.expected == Expected::Refused).count();
+    let supported = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Complete)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Ambiguous)
+        .count();
+    let refused = receipts
+        .iter()
+        .filter(|r| r.expected == Expected::Refused)
+        .count();
     let exact_decisions = receipts.iter().filter(|r| r.exact).count();
     let supported_artifacts = receipts
         .iter()
@@ -190,7 +243,9 @@ fn main() {
     assert_eq!(false_denials, 0);
     let mut status_counts = BTreeMap::new();
     for receipt in &receipts {
-        *status_counts.entry(format!("{:?}", receipt.actual)).or_insert(0usize) += 1;
+        *status_counts
+            .entry(format!("{:?}", receipt.actual))
+            .or_insert(0usize) += 1;
     }
     let report = Report {
         schema: "stage-h-source-chemistry-pack-v1",
@@ -212,7 +267,10 @@ fn main() {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report).expect("chemistry report serializes");
-    std::fs::write("docs/stage_h_source_chemistry_pack.json", format!("{serialized}\n"))
-        .expect("chemistry report writes");
+    std::fs::write(
+        "docs/stage_h_source_chemistry_pack.json",
+        format!("{serialized}\n"),
+    )
+    .expect("chemistry report writes");
     println!("{serialized}");
 }

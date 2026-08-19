@@ -31,8 +31,8 @@
 
 use std::time::Instant;
 use the_machine::diagnostic::{
-    absorb_diagnosis, classify_structural, query_diagnostic_category,
-    seed_diagnostic_knowledge, seed_error_classifier,
+    absorb_diagnosis, classify_structural, query_diagnostic_category, seed_diagnostic_knowledge,
+    seed_error_classifier,
 };
 use the_machine::qa::QaEngine;
 use the_machine::VSABrain;

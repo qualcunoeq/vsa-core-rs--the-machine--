@@ -156,7 +156,9 @@ pub fn extract_topology_definitions(
             continue;
         }
         let Some((_, fields)) = current.as_mut() else {
-            errors.push(format!("field outside topology block at line {line_number}"));
+            errors.push(format!(
+                "field outside topology block at line {line_number}"
+            ));
             continue;
         };
         let Some((key, value)) = line.split_once(':') else {
@@ -166,11 +168,15 @@ pub fn extract_topology_definitions(
         let key = key.trim().to_ascii_uppercase();
         let value = value.trim().to_string();
         if key.is_empty() || value.is_empty() || fields.insert(key.clone(), value).is_some() {
-            errors.push(format!("invalid or duplicate field {key} at line {line_number}"));
+            errors.push(format!(
+                "invalid or duplicate field {key} at line {line_number}"
+            ));
         }
     }
     if let Some((line, _)) = current {
-        errors.push(format!("topology block beginning at line {line} is unterminated"));
+        errors.push(format!(
+            "topology block beginning at line {line} is unterminated"
+        ));
     }
 
     let mut records = Vec::new();
@@ -227,19 +233,34 @@ pub fn validate_topology_definitions(
     let mut aliases = BTreeSet::new();
     for record in records {
         if record.topology_id.trim().is_empty() || !ids.insert(record.topology_id.clone()) {
-            errors.push(format!("duplicate or empty topology identifier: {}", record.topology_id));
+            errors.push(format!(
+                "duplicate or empty topology identifier: {}",
+                record.topology_id
+            ));
         }
-        if record.domain.trim().is_empty() || record.max_points == 0 || record.max_points > MAX_POINTS {
-            errors.push(format!("topology {} has an invalid domain or point bound", record.topology_id));
+        if record.domain.trim().is_empty()
+            || record.max_points == 0
+            || record.max_points > MAX_POINTS
+        {
+            errors.push(format!(
+                "topology {} has an invalid domain or point bound",
+                record.topology_id
+            ));
         }
         for alias in &record.aliases {
             if alias.trim().is_empty() || !aliases.insert(alias.clone()) {
-                errors.push(format!("duplicate or empty topology alias in {}", record.topology_id));
+                errors.push(format!(
+                    "duplicate or empty topology alias in {}",
+                    record.topology_id
+                ));
             }
         }
         for required_axiom in ["empty", "whole", "unions", "finite_intersections"] {
             if !record.axioms.iter().any(|axiom| axiom == required_axiom) {
-                errors.push(format!("topology {} lacks {required_axiom} axiom", record.topology_id));
+                errors.push(format!(
+                    "topology {} lacks {required_axiom} axiom",
+                    record.topology_id
+                ));
             }
         }
         if let Err(citation_errors) = validate_source_citation(&record.source) {
@@ -248,7 +269,11 @@ pub fn validate_topology_definitions(
             }
         }
     }
-    if errors.is_empty() { Ok(()) } else { Err(errors) }
+    if errors.is_empty() {
+        Ok(())
+    } else {
+        Err(errors)
+    }
 }
 
 fn canonical_set(values: &[String]) -> Option<Vec<String>> {
@@ -294,86 +319,200 @@ fn canonical_open_sets(points: &[String], open_sets: &[Vec<String>]) -> Option<V
     Some(canonical)
 }
 
-fn validate_finite_topology(points: &[String], open_sets: &[Vec<String>]) -> Result<(Vec<String>, Vec<Vec<String>>), String> {
+fn validate_finite_topology(
+    points: &[String],
+    open_sets: &[Vec<String>],
+) -> Result<(Vec<String>, Vec<Vec<String>>), String> {
     let points = canonical_set(points).ok_or("carrier contains duplicate points")?;
     if points.is_empty() || points.len() > MAX_POINTS {
         return Err("carrier is empty or exceeds the finite bound".into());
     }
-    let open_sets = canonical_open_sets(&points, open_sets).ok_or("open set is malformed or outside carrier")?;
+    let open_sets = canonical_open_sets(&points, open_sets)
+        .ok_or("open set is malformed or outside carrier")?;
     let empty: Vec<String> = Vec::new();
     if !open_sets.contains(&empty) || !open_sets.contains(&points) {
         return Err("topology must contain the empty and whole sets".into());
     }
     for left in &open_sets {
         for right in &open_sets {
-            if !open_sets.contains(&union(left, right)) || !open_sets.contains(&intersection(left, right)) {
-                return Err("open sets are not closed under unions and finite intersections".into());
+            if !open_sets.contains(&union(left, right))
+                || !open_sets.contains(&intersection(left, right))
+            {
+                return Err(
+                    "open sets are not closed under unions and finite intersections".into(),
+                );
             }
         }
     }
     Ok((points, open_sets))
 }
 
-fn selected_record<'a>(request: &TopologyRequest, records: &'a [TopologyDefinitionRecord]) -> Result<&'a TopologyDefinitionRecord, TopologyResult> {
+fn selected_record<'a>(
+    request: &TopologyRequest,
+    records: &'a [TopologyDefinitionRecord],
+) -> Result<&'a TopologyDefinitionRecord, TopologyResult> {
     if request.domain.trim().is_empty() {
-        return Err(output(request, TopologyStatus::InvalidDomain, None, None, Vec::new(), vec!["topology domain is empty".into()]));
+        return Err(output(
+            request,
+            TopologyStatus::InvalidDomain,
+            None,
+            None,
+            Vec::new(),
+            vec!["topology domain is empty".into()],
+        ));
     }
     if let Some(ambiguity) = &request.ambiguity {
-        return Err(output(request, TopologyStatus::Ambiguous, None, None, Vec::new(), vec![ambiguity.clone()]));
+        return Err(output(
+            request,
+            TopologyStatus::Ambiguous,
+            None,
+            None,
+            Vec::new(),
+            vec![ambiguity.clone()],
+        ));
     }
     let candidates = records
         .iter()
-        .filter(|record| record.domain == request.domain && (record.topology_id == request.topology || record.aliases.iter().any(|alias| alias == &request.topology)))
+        .filter(|record| {
+            record.domain == request.domain
+                && (record.topology_id == request.topology
+                    || record
+                        .aliases
+                        .iter()
+                        .any(|alias| alias == &request.topology))
+        })
         .collect::<Vec<_>>();
     if candidates.len() != 1 {
-        return Err(output(request, if candidates.is_empty() { TopologyStatus::Missing } else { TopologyStatus::Ambiguous }, None, None, Vec::new(), vec!["topology identifier does not select exactly one scoped definition".into()]));
+        return Err(output(
+            request,
+            if candidates.is_empty() {
+                TopologyStatus::Missing
+            } else {
+                TopologyStatus::Ambiguous
+            },
+            None,
+            None,
+            Vec::new(),
+            vec!["topology identifier does not select exactly one scoped definition".into()],
+        ));
     }
     Ok(candidates[0])
 }
 
 /// Execute a bounded finite-topology request using an extracted definition.
-pub fn evaluate_topology(request: &TopologyRequest, records: &[TopologyDefinitionRecord]) -> TopologyResult {
+pub fn evaluate_topology(
+    request: &TopologyRequest,
+    records: &[TopologyDefinitionRecord],
+) -> TopologyResult {
     let record = match selected_record(request, records) {
         Ok(record) => record,
         Err(result) => return result,
     };
     if request.points.len() > record.max_points {
-        return output(request, TopologyStatus::Unsupported, None, Some(record.source.clone()), record.axioms.clone(), vec!["carrier exceeds source-declared finite bound".into()]);
+        return output(
+            request,
+            TopologyStatus::Unsupported,
+            None,
+            Some(record.source.clone()),
+            record.axioms.clone(),
+            vec!["carrier exceeds source-declared finite bound".into()],
+        );
     }
     let (points, open_sets) = match validate_finite_topology(&request.points, &request.open_sets) {
         Ok(value) => value,
-        Err(reason) => return output(request, TopologyStatus::Inconsistent, None, Some(record.source.clone()), record.axioms.clone(), vec![reason]),
+        Err(reason) => {
+            return output(
+                request,
+                TopologyStatus::Inconsistent,
+                None,
+                Some(record.source.clone()),
+                record.axioms.clone(),
+                vec![reason],
+            )
+        }
     };
     let target = match request.operation {
         TopologyOperation::ValidateTopology => None,
-        _ => match request.target_set.as_ref().and_then(|target| canonical_set(target)) {
+        _ => match request
+            .target_set
+            .as_ref()
+            .and_then(|target| canonical_set(target))
+        {
             Some(target) if subset(&target, &points) => Some(target),
-            Some(_) => return output(request, TopologyStatus::Inconsistent, None, Some(record.source.clone()), record.axioms.clone(), vec!["target set is outside carrier".into()]),
-            None => return output(request, TopologyStatus::Inconsistent, None, Some(record.source.clone()), record.axioms.clone(), vec!["target set is malformed".into()]),
-            },
-        };
+            Some(_) => {
+                return output(
+                    request,
+                    TopologyStatus::Inconsistent,
+                    None,
+                    Some(record.source.clone()),
+                    record.axioms.clone(),
+                    vec!["target set is outside carrier".into()],
+                )
+            }
+            None => {
+                return output(
+                    request,
+                    TopologyStatus::Inconsistent,
+                    None,
+                    Some(record.source.clone()),
+                    record.axioms.clone(),
+                    vec!["target set is malformed".into()],
+                )
+            }
+        },
+    };
     let artifact = match request.operation {
-        TopologyOperation::ValidateTopology => TopologyArtifact::ValidatedTopology { points, open_sets },
-        TopologyOperation::IsOpen => TopologyArtifact::Boolean(open_sets.contains(&target.expect("target checked"))),
+        TopologyOperation::ValidateTopology => {
+            TopologyArtifact::ValidatedTopology { points, open_sets }
+        }
+        TopologyOperation::IsOpen => {
+            TopologyArtifact::Boolean(open_sets.contains(&target.expect("target checked")))
+        }
         TopologyOperation::IsClosed => {
             let target = target.expect("target checked");
-            let complement = points.iter().filter(|point| !target.contains(point)).cloned().collect::<Vec<_>>();
+            let complement = points
+                .iter()
+                .filter(|point| !target.contains(point))
+                .cloned()
+                .collect::<Vec<_>>();
             TopologyArtifact::Boolean(open_sets.contains(&complement))
         }
         TopologyOperation::Interior => {
             let target = target.expect("target checked");
-            let interior = open_sets.iter().filter(|open| subset(open, &target)).fold(Vec::new(), |acc, open| union(&acc, open));
+            let interior = open_sets
+                .iter()
+                .filter(|open| subset(open, &target))
+                .fold(Vec::new(), |acc, open| union(&acc, open));
             TopologyArtifact::Set(interior)
         }
         TopologyOperation::Closure => {
             let target = target.expect("target checked");
             let closed_supersets = points.iter().cloned().collect::<Vec<_>>();
-            let closed_sets = open_sets.iter().map(|open| points.iter().filter(|point| !open.contains(point)).cloned().collect::<Vec<_>>()).collect::<Vec<_>>();
-            let closure = closed_sets.iter().filter(|closed| subset(&target, closed)).fold(closed_supersets, |acc, closed| intersection(&acc, closed));
+            let closed_sets = open_sets
+                .iter()
+                .map(|open| {
+                    points
+                        .iter()
+                        .filter(|point| !open.contains(point))
+                        .cloned()
+                        .collect::<Vec<_>>()
+                })
+                .collect::<Vec<_>>();
+            let closure = closed_sets
+                .iter()
+                .filter(|closed| subset(&target, closed))
+                .fold(closed_supersets, |acc, closed| intersection(&acc, closed));
             TopologyArtifact::Set(closure)
         }
     };
-    output(request, TopologyStatus::Complete, Some(artifact), Some(record.source.clone()), record.axioms.clone(), Vec::new())
+    output(
+        request,
+        TopologyStatus::Complete,
+        Some(artifact),
+        Some(record.source.clone()),
+        record.axioms.clone(),
+        Vec::new(),
+    )
 }
 
 impl TopologyResult {
@@ -399,9 +538,20 @@ mod tests {
             aliases: vec!["topology".into()],
             domain: "source_derived_finite_topology".into(),
             max_points: 8,
-            axioms: vec!["empty".into(), "whole".into(), "unions".into(), "finite_intersections".into()],
+            axioms: vec![
+                "empty".into(),
+                "whole".into(),
+                "unions".into(),
+                "finite_intersections".into(),
+            ],
             source: SourceCitation {
-                source_id: "test".into(), title: "test".into(), section: "1".into(), url: "https://example.test".into(), license: "test".into(), retrieved_utc: "2026-01-01".into(), evidence_span: "definition".into(),
+                source_id: "test".into(),
+                title: "test".into(),
+                section: "1".into(),
+                url: "https://example.test".into(),
+                license: "test".into(),
+                retrieved_utc: "2026-01-01".into(),
+                evidence_span: "definition".into(),
             },
         }
     }
@@ -420,11 +570,16 @@ mod tests {
         };
         let result = evaluate_topology(&request, &[record()]);
         assert!(result.authorized());
-        assert_eq!(result.artifact, Some(TopologyArtifact::Set(vec!["a".into(), "b".into()])));
+        assert_eq!(
+            result.artifact,
+            Some(TopologyArtifact::Set(vec!["a".into(), "b".into()]))
+        );
     }
 
     #[test]
     fn malformed_source_is_rejected() {
-        assert!(extract_topology_definitions("BEGIN TOPOLOGY\nTOPOLOGY_ID: x\nEND TOPOLOGY").is_err());
+        assert!(
+            extract_topology_definitions("BEGIN TOPOLOGY\nTOPOLOGY_ID: x\nEND TOPOLOGY").is_err()
+        );
     }
 }

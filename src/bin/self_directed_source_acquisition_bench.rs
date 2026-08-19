@@ -157,7 +157,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .as_ref()
             .and_then(|artifact| match biology_result.artifact.as_ref() {
                 Some(BiologyArtifact::PairedComplement { complement, .. })
-                    if complement == &artifact.output => Some(()),
+                    if complement == &artifact.output =>
+                {
+                    Some(())
+                }
                 _ => None,
             })
             .is_some();
@@ -177,7 +180,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "EVIDENCE: ",
         ),
         document.replace("END RELATION", "BEGIN RELATION"),
-        document.replace("ALIASES: DNA complementary base pairing|complementary DNA base", "ALIASES: duplicate|duplicate"),
+        document.replace(
+            "ALIASES: DNA complementary base pairing|complementary DNA base",
+            "ALIASES: duplicate|duplicate",
+        ),
     ];
     let source_mutations_rejected = mutations
         .iter()

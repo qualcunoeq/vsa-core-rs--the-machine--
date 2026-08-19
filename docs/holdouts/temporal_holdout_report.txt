@@ -1,0 +1,3 @@
+Temporal holdout executed 2026-08-18T13:01:27Z
+Proposals: 2
+Evidence hash: 0ed0b083aefdad60242878de18fafd83703df188db2201729e57dd1c0477a5ab

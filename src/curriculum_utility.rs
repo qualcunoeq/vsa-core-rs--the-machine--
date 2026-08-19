@@ -5,12 +5,12 @@
 //! exact artifact overlap, source authority, prerequisites, and replay remain
 //! hard gates.
 
-use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
 use crate::curriculum::CurriculumManifest;
 use crate::curriculum_campaign::{
     propose_learning_plans, GapObservation, PlanStatus, SourceModuleCandidate,
 };
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct UtilityCandidate {

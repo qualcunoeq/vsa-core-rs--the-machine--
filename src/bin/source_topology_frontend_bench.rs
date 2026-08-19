@@ -6,9 +6,7 @@ use std::collections::BTreeMap;
 use the_machine::source_topology_frontend::{
     formalize_topology_text, TopologyFrontendResult, TopologyFrontendStatus,
 };
-use the_machine::source_topology_pack::{
-    evaluate_topology, extract_topology_definitions,
-};
+use the_machine::source_topology_pack::{evaluate_topology, extract_topology_definitions};
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -65,7 +63,9 @@ fn source_records() -> Vec<the_machine::source_topology_pack::TopologyDefinition
 }
 
 fn downstream(frontend: &TopologyFrontendResult) -> (bool, bool, bool) {
-    let Some(request) = frontend.request.clone() else { return (false, false, false) };
+    let Some(request) = frontend.request.clone() else {
+        return (false, false, false);
+    };
     let result = evaluate_topology(&request, &source_records());
     let authorized = result.authorized();
     let replay = result.replay_verified();
@@ -76,15 +76,22 @@ fn downstream(frontend: &TopologyFrontendResult) -> (bool, bool, bool) {
 
 fn run(id: String, text: String, expected: Expected) -> Receipt {
     let frontend = formalize_topology_text(&text);
-    let (downstream_authorized, downstream_replay_verified, downstream_tamper_rejected) = downstream(&frontend);
+    let (downstream_authorized, downstream_replay_verified, downstream_tamper_rejected) =
+        downstream(&frontend);
     let frontend_replay_verified = frontend.replay_verified();
     let mut tampered = frontend.clone();
     tampered.replay_hash.push('x');
     let frontend_tamper_rejected = !tampered.replay_verified();
     let exact = match expected {
-        Expected::Complete => frontend.status == TopologyFrontendStatus::Complete && downstream_authorized,
-        Expected::Ambiguous => frontend.status == TopologyFrontendStatus::Ambiguous && !downstream_authorized,
-        Expected::Unsupported => frontend.status == TopologyFrontendStatus::Unsupported && !downstream_authorized,
+        Expected::Complete => {
+            frontend.status == TopologyFrontendStatus::Complete && downstream_authorized
+        }
+        Expected::Ambiguous => {
+            frontend.status == TopologyFrontendStatus::Ambiguous && !downstream_authorized
+        }
+        Expected::Unsupported => {
+            frontend.status == TopologyFrontendStatus::Unsupported && !downstream_authorized
+        }
     };
     Receipt {
         id,
@@ -139,21 +146,58 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "Validate topology; points: {a,b,c,d,e,f,g,h,i}; open sets: {}; open sets: {a,b,c,d,e,f,g,h,i}.",
     ];
     for index in 0..80 {
-        receipts.push(run(format!("unsupported_{index:03}"), unsupported[index % unsupported.len()].into(), Expected::Unsupported));
+        receipts.push(run(
+            format!("unsupported_{index:03}"),
+            unsupported[index % unsupported.len()].into(),
+            Expected::Unsupported,
+        ));
     }
     assert_eq!(receipts.len(), 240);
-    let supported = receipts.iter().filter(|receipt| receipt.expected == Expected::Complete).count();
-    let ambiguous = receipts.iter().filter(|receipt| receipt.expected == Expected::Ambiguous).count();
-    let unsupported_count = receipts.iter().filter(|receipt| receipt.expected == Expected::Unsupported).count();
+    let supported = receipts
+        .iter()
+        .filter(|receipt| receipt.expected == Expected::Complete)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|receipt| receipt.expected == Expected::Ambiguous)
+        .count();
+    let unsupported_count = receipts
+        .iter()
+        .filter(|receipt| receipt.expected == Expected::Unsupported)
+        .count();
     let exact_decisions = receipts.iter().filter(|receipt| receipt.exact).count();
-    let complete_frontends = receipts.iter().filter(|receipt| receipt.frontend_status == TopologyFrontendStatus::Complete).count();
-    let downstream_authorizations = receipts.iter().filter(|receipt| receipt.downstream_authorized).count();
-    let frontend_replay_verified = receipts.iter().filter(|receipt| receipt.frontend_replay_verified).count();
-    let downstream_replay_verified = receipts.iter().filter(|receipt| receipt.downstream_replay_verified).count();
-    let frontend_tamper_rejected = receipts.iter().filter(|receipt| receipt.frontend_tamper_rejected).count();
-    let downstream_tamper_rejected = receipts.iter().filter(|receipt| receipt.downstream_tamper_rejected).count();
-    let false_authorizations = receipts.iter().filter(|receipt| receipt.false_authorization).count();
-    let false_denials = receipts.iter().filter(|receipt| receipt.false_denial).count();
+    let complete_frontends = receipts
+        .iter()
+        .filter(|receipt| receipt.frontend_status == TopologyFrontendStatus::Complete)
+        .count();
+    let downstream_authorizations = receipts
+        .iter()
+        .filter(|receipt| receipt.downstream_authorized)
+        .count();
+    let frontend_replay_verified = receipts
+        .iter()
+        .filter(|receipt| receipt.frontend_replay_verified)
+        .count();
+    let downstream_replay_verified = receipts
+        .iter()
+        .filter(|receipt| receipt.downstream_replay_verified)
+        .count();
+    let frontend_tamper_rejected = receipts
+        .iter()
+        .filter(|receipt| receipt.frontend_tamper_rejected)
+        .count();
+    let downstream_tamper_rejected = receipts
+        .iter()
+        .filter(|receipt| receipt.downstream_tamper_rejected)
+        .count();
+    let false_authorizations = receipts
+        .iter()
+        .filter(|receipt| receipt.false_authorization)
+        .count();
+    let false_denials = receipts
+        .iter()
+        .filter(|receipt| receipt.false_denial)
+        .count();
     assert_eq!((supported, ambiguous, unsupported_count), (120, 40, 80));
     assert_eq!(exact_decisions, 240);
     assert_eq!(complete_frontends, 120);
@@ -166,7 +210,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(false_denials, 0);
     let mut status_counts = BTreeMap::new();
     for receipt in &receipts {
-        *status_counts.entry(format!("{:?}", receipt.frontend_status)).or_insert(0usize) += 1;
+        *status_counts
+            .entry(format!("{:?}", receipt.frontend_status))
+            .or_insert(0usize) += 1;
     }
     let report = Report {
         schema: "stage-c-source-derived-topology-frontend-v1",
@@ -189,7 +235,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         receipt_hash: hash(&receipts),
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage-c-source-derived-topology-frontend.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage-c-source-derived-topology-frontend.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

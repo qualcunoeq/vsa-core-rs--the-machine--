@@ -121,9 +121,8 @@ fn checked_bindings(
         if binding.status != TargetFieldStatus::Complete {
             continue;
         }
-        let value = algebra::parse(binding.value.trim()).map_err(|error| {
-            ExpressionEvaluationFailure::UnsupportedArgument(error.to_string())
-        })?;
+        let value = algebra::parse(binding.value.trim())
+            .map_err(|error| ExpressionEvaluationFailure::UnsupportedArgument(error.to_string()))?;
         if value.evaluate(&[]).is_none() {
             return Err(ExpressionEvaluationFailure::UnsupportedArgument(
                 binding.value.clone(),
@@ -147,8 +146,15 @@ fn checked_bindings(
 
 pub fn authorize_expression_evaluation(
     target: &FormalizedTarget,
-) -> Result<(String, SymExpr, HashMap<String, SymExpr>, Vec<(String, String)>), ExpressionEvaluationFailure>
-{
+) -> Result<
+    (
+        String,
+        SymExpr,
+        HashMap<String, SymExpr>,
+        Vec<(String, String)>,
+    ),
+    ExpressionEvaluationFailure,
+> {
     if target.operation != crate::formalization::OperationKind::Evaluate {
         return Err(ExpressionEvaluationFailure::OperationNotEvaluate);
     }
@@ -169,8 +175,8 @@ pub fn authorize_expression_evaluation(
     {
         return Err(ExpressionEvaluationFailure::CapabilityContractRejected);
     }
-    let expression = algebra::parse(&source)
-        .map_err(ExpressionEvaluationFailure::ExpressionParseFailed)?;
+    let expression =
+        algebra::parse(&source).map_err(ExpressionEvaluationFailure::ExpressionParseFailed)?;
     let mut variables = BTreeSet::new();
     collect_variables(&expression, &mut variables);
     let (bindings, receipt_bindings) = checked_bindings(target, &variables)?;
@@ -188,14 +194,16 @@ pub fn execute_expression_evaluation(
 
     // Replay from the original source and bindings instead of trusting the
     // cached AST or instantiated expression.
-    let replay_expression = algebra::parse(&source)
-        .map_err(ExpressionEvaluationFailure::ExpressionParseFailed)?;
+    let replay_expression =
+        algebra::parse(&source).map_err(ExpressionEvaluationFailure::ExpressionParseFailed)?;
     let replay_bindings = receipt_bindings
         .iter()
         .map(|(name, value)| {
             algebra::parse(value)
                 .map(|parsed| (name.clone(), parsed))
-                .map_err(|error| ExpressionEvaluationFailure::UnsupportedArgument(error.to_string()))
+                .map_err(|error| {
+                    ExpressionEvaluationFailure::UnsupportedArgument(error.to_string())
+                })
         })
         .collect::<Result<HashMap<_, _>, _>>()?;
     let replay_result = substitute_vars(&replay_expression, &replay_bindings)

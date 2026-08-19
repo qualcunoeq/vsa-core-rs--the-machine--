@@ -6,8 +6,8 @@
 
 use crate::capabilities::CapabilityIoType;
 use crate::constant_rate_model::{
-    ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec, ModelEvidenceContext,
-    ModelMatcherResult, EvidencePolicy,
+    EvidencePolicy, ModelArtifactType, ModelConstructionQualityGate, ModelConstructionSpec,
+    ModelEvidenceContext, ModelMatcherResult,
 };
 use serde::Serialize;
 
@@ -90,9 +90,7 @@ pub fn proportional_model_match(context: &ModelEvidenceContext) -> ModelMatcherR
     }
 }
 
-pub fn construct_proportional_model(
-    text: &str,
-) -> Result<ProportionalModel, ProportionalFailure> {
+pub fn construct_proportional_model(text: &str) -> Result<ProportionalModel, ProportionalFailure> {
     let regex = regex::Regex::new(
         r"(?i)^\s*y is proportional to x with proportionality constant\s*([-+]?[0-9]+(?:\.[0-9]+)?)\.\s*find y when x is\s*([-+]?[0-9]+(?:\.[0-9]+)?)\.?\s*$",
     )
@@ -128,9 +126,7 @@ pub fn construct_proportional_model(
     })
 }
 
-pub fn execute_proportional_model(
-    text: &str,
-) -> Result<ProportionalReceipt, ProportionalFailure> {
+pub fn execute_proportional_model(text: &str) -> Result<ProportionalReceipt, ProportionalFailure> {
     let model = construct_proportional_model(text)?;
     let derived_value = model.constant * model.input;
     if !derived_value.is_finite() {
@@ -175,7 +171,10 @@ pub fn execute_proportional_chain(
         transformation: "y = constant × x".into(),
         expression_source,
         numeric_result,
-        plan_steps: vec!["proportional_model_v1".into(), "expression_evaluation_v1".into()],
+        plan_steps: vec![
+            "proportional_model_v1".into(),
+            "expression_evaluation_v1".into(),
+        ],
         replay_verified: true,
     })
 }

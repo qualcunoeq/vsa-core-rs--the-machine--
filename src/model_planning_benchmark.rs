@@ -6,9 +6,7 @@
 //! capability verifiers.
 
 use crate::capabilities::{CapabilityIoType, CapabilityRegistry};
-use crate::capability_planner::{
-    plan_model_to_goal, ModelCapabilityPlan, ModelPlanningFailure,
-};
+use crate::capability_planner::{plan_model_to_goal, ModelCapabilityPlan, ModelPlanningFailure};
 use crate::constant_rate_model::ModelConstructorRegistry;
 #[cfg(test)]
 use crate::constant_rate_model::{
@@ -127,9 +125,16 @@ pub fn evaluate_cases(
             };
             let passed = matches!(
                 (&case.expected, &actual),
-                (ExpectedPlanningOutcome::PlanReady, ActualPlanningOutcome::PlanReady(_))
-                    | (ExpectedPlanningOutcome::NoEligibleModel, ActualPlanningOutcome::NoEligibleModel)
-                    | (ExpectedPlanningOutcome::AmbiguousModel, ActualPlanningOutcome::AmbiguousModel(_))
+                (
+                    ExpectedPlanningOutcome::PlanReady,
+                    ActualPlanningOutcome::PlanReady(_)
+                ) | (
+                    ExpectedPlanningOutcome::NoEligibleModel,
+                    ActualPlanningOutcome::NoEligibleModel
+                ) | (
+                    ExpectedPlanningOutcome::AmbiguousModel,
+                    ActualPlanningOutcome::AmbiguousModel(_)
+                )
             );
             ModelPlanningBenchmarkResult {
                 case_id: case.id,
@@ -164,22 +169,32 @@ mod tests {
     }
 
     fn continuous_match(context: &ModelEvidenceContext) -> ModelMatcherResult {
-        let base = context.original_text.contains("value increases by 5 each step");
+        let base = context
+            .original_text
+            .contains("value increases by 5 each step");
         let discrete = context.all_text().contains("discrete");
         if base && !discrete {
             ModelMatcherResult::eligible(vec!["value increases by 5 each step".into()])
         } else {
-            ModelMatcherResult::rejected("discrete interpretation selected", vec!["continuous interpretation".into()])
+            ModelMatcherResult::rejected(
+                "discrete interpretation selected",
+                vec!["continuous interpretation".into()],
+            )
         }
     }
 
     fn discrete_match(context: &ModelEvidenceContext) -> ModelMatcherResult {
-        let base = context.original_text.contains("value increases by 5 each step");
+        let base = context
+            .original_text
+            .contains("value increases by 5 each step");
         let continuous = context.all_text().contains("continuous");
         if base && !continuous {
             ModelMatcherResult::eligible(vec!["value increases by 5 each step".into()])
         } else {
-            ModelMatcherResult::rejected("continuous interpretation selected", vec!["discrete interpretation".into()])
+            ModelMatcherResult::rejected(
+                "continuous interpretation selected",
+                vec!["discrete interpretation".into()],
+            )
         }
     }
 
@@ -216,7 +231,10 @@ mod tests {
         match &ready.actual {
             ActualPlanningOutcome::PlanReady(plan) => {
                 assert_eq!(plan.model_step.model_id, "constant_rate_model");
-                assert_eq!(plan.capability_plan.selected_capability, "expression_evaluation");
+                assert_eq!(
+                    plan.capability_plan.selected_capability,
+                    "expression_evaluation"
+                );
             }
             other => panic!("unexpected positive outcome: {other:?}"),
         }
@@ -227,7 +245,10 @@ mod tests {
         match &linear.actual {
             ActualPlanningOutcome::PlanReady(plan) => {
                 assert_eq!(plan.model_step.model_id, "linear_relationship_model");
-                assert_eq!(plan.capability_plan.selected_capability, "expression_evaluation");
+                assert_eq!(
+                    plan.capability_plan.selected_capability,
+                    "expression_evaluation"
+                );
             }
             other => panic!("unexpected linear outcome: {other:?}"),
         }
@@ -238,7 +259,10 @@ mod tests {
         match &proportional.actual {
             ActualPlanningOutcome::PlanReady(plan) => {
                 assert_eq!(plan.model_step.model_id, "proportional_model");
-                assert_eq!(plan.capability_plan.selected_capability, "expression_evaluation");
+                assert_eq!(
+                    plan.capability_plan.selected_capability,
+                    "expression_evaluation"
+                );
             }
             other => panic!("unexpected proportional outcome: {other:?}"),
         }

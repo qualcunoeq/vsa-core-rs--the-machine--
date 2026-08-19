@@ -155,7 +155,10 @@ fn question(global: usize) -> Question {
     }
 }
 
-fn run(question: &Question, records: &[the_machine::source_formula_pack::FormulaRecord]) -> Receipt {
+fn run(
+    question: &Question,
+    records: &[the_machine::source_formula_pack::FormulaRecord],
+) -> Receipt {
     let frontend = formalize_interpolation_text(&question.text, &question.id);
     let downstream = frontend
         .request
@@ -175,10 +178,14 @@ fn run(question: &Question, records: &[the_machine::source_formula_pack::Formula
         "unparsed"
     };
     let authorized = actual_supported
-        && downstream.as_ref().is_some_and(|result| result.replay_verified());
+        && downstream
+            .as_ref()
+            .is_some_and(|result| result.replay_verified());
     let mut frontend_tampered = frontend.clone();
     frontend_tampered.replay_hash.push('x');
-    let downstream_replay = downstream.as_ref().is_none_or(|result| result.replay_verified());
+    let downstream_replay = downstream
+        .as_ref()
+        .is_none_or(|result| result.replay_verified());
     let downstream_tamper = downstream.as_ref().is_none_or(|result| {
         let mut copy = result.clone();
         copy.replay_hash.push('x');
@@ -195,7 +202,9 @@ fn run(question: &Question, records: &[the_machine::source_formula_pack::Formula
         replay_verified: replay,
         tamper_rejected: tamper,
         provenance_preserved: !frontend.provenance.is_empty()
-            && downstream.as_ref().is_none_or(|result| !result.provenance.is_empty()),
+            && downstream
+                .as_ref()
+                .is_none_or(|result| !result.provenance.is_empty()),
         false_authorization: question.hidden != Hidden::Supported && authorized,
         false_denial: question.hidden == Hidden::Supported && !authorized,
         text_sha256: digest(&question.text),
@@ -203,15 +212,36 @@ fn run(question: &Question, records: &[the_machine::source_formula_pack::Formula
 }
 
 fn partition_metrics(receipts: &[Receipt], partition: Partition) -> PartitionMetrics {
-    let rows: Vec<_> = receipts.iter().filter(|row| row.partition == partition).collect();
+    let rows: Vec<_> = receipts
+        .iter()
+        .filter(|row| row.partition == partition)
+        .collect();
     PartitionMetrics {
         cases: rows.len(),
-        supported: rows.iter().filter(|row| row.hidden == Hidden::Supported).count(),
-        ambiguous: rows.iter().filter(|row| row.hidden == Hidden::Ambiguous).count(),
-        unsupported: rows.iter().filter(|row| row.hidden == Hidden::Unsupported).count(),
-        supported_authorized: rows.iter().filter(|row| row.hidden == Hidden::Supported && row.authorized).count(),
-        ambiguities_preserved: rows.iter().filter(|row| row.hidden == Hidden::Ambiguous && row.actual_status == "ambiguous").count(),
-        unsupported_refused: rows.iter().filter(|row| row.hidden == Hidden::Unsupported && row.actual_status == "unsupported").count(),
+        supported: rows
+            .iter()
+            .filter(|row| row.hidden == Hidden::Supported)
+            .count(),
+        ambiguous: rows
+            .iter()
+            .filter(|row| row.hidden == Hidden::Ambiguous)
+            .count(),
+        unsupported: rows
+            .iter()
+            .filter(|row| row.hidden == Hidden::Unsupported)
+            .count(),
+        supported_authorized: rows
+            .iter()
+            .filter(|row| row.hidden == Hidden::Supported && row.authorized)
+            .count(),
+        ambiguities_preserved: rows
+            .iter()
+            .filter(|row| row.hidden == Hidden::Ambiguous && row.actual_status == "ambiguous")
+            .count(),
+        unsupported_refused: rows
+            .iter()
+            .filter(|row| row.hidden == Hidden::Unsupported && row.actual_status == "unsupported")
+            .count(),
         replay_verified: rows.iter().filter(|row| row.replay_verified).count(),
         tamper_rejections: rows.iter().filter(|row| row.tamper_rejected).count(),
         false_authorizations: rows.iter().filter(|row| row.false_authorization).count(),
@@ -229,18 +259,45 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     let manifest_mutated = breadth_first_manifest().replay_hash() != manifest_before;
     let cases = receipts.len();
-    let supported = receipts.iter().filter(|row| row.hidden == Hidden::Supported).count();
-    let ambiguous = receipts.iter().filter(|row| row.hidden == Hidden::Ambiguous).count();
-    let unsupported = receipts.iter().filter(|row| row.hidden == Hidden::Unsupported).count();
-    let supported_authorized = receipts.iter().filter(|row| row.hidden == Hidden::Supported && row.authorized).count();
-    let ambiguities_preserved = receipts.iter().filter(|row| row.hidden == Hidden::Ambiguous && row.actual_status == "ambiguous").count();
-    let unsupported_refused = receipts.iter().filter(|row| row.hidden == Hidden::Unsupported && row.actual_status == "unsupported").count();
+    let supported = receipts
+        .iter()
+        .filter(|row| row.hidden == Hidden::Supported)
+        .count();
+    let ambiguous = receipts
+        .iter()
+        .filter(|row| row.hidden == Hidden::Ambiguous)
+        .count();
+    let unsupported = receipts
+        .iter()
+        .filter(|row| row.hidden == Hidden::Unsupported)
+        .count();
+    let supported_authorized = receipts
+        .iter()
+        .filter(|row| row.hidden == Hidden::Supported && row.authorized)
+        .count();
+    let ambiguities_preserved = receipts
+        .iter()
+        .filter(|row| row.hidden == Hidden::Ambiguous && row.actual_status == "ambiguous")
+        .count();
+    let unsupported_refused = receipts
+        .iter()
+        .filter(|row| row.hidden == Hidden::Unsupported && row.actual_status == "unsupported")
+        .count();
     let replay_verified = receipts.iter().filter(|row| row.replay_verified).count();
     let tamper_rejections = receipts.iter().filter(|row| row.tamper_rejected).count();
-    let provenance_preserved = receipts.iter().filter(|row| row.provenance_preserved).count();
-    let false_authorizations = receipts.iter().filter(|row| row.false_authorization).count();
+    let provenance_preserved = receipts
+        .iter()
+        .filter(|row| row.provenance_preserved)
+        .count();
+    let false_authorizations = receipts
+        .iter()
+        .filter(|row| row.false_authorization)
+        .count();
     let false_denials = receipts.iter().filter(|row| row.false_denial).count();
-    assert_eq!((cases, supported, ambiguous, unsupported), (600, 360, 120, 120));
+    assert_eq!(
+        (cases, supported, ambiguous, unsupported),
+        (600, 360, 120, 120)
+    );
     assert_eq!(supported_authorized, supported);
     assert_eq!(ambiguities_preserved, ambiguous);
     assert_eq!(unsupported_refused, unsupported);
@@ -251,9 +308,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(false_denials, 0);
     assert!(!manifest_mutated);
     let mut partitions = BTreeMap::new();
-    partitions.insert("development".into(), partition_metrics(&receipts, Partition::Development));
-    partitions.insert("validation".into(), partition_metrics(&receipts, Partition::Validation));
-    partitions.insert("sealed".into(), partition_metrics(&receipts, Partition::Sealed));
+    partitions.insert(
+        "development".into(),
+        partition_metrics(&receipts, Partition::Development),
+    );
+    partitions.insert(
+        "validation".into(),
+        partition_metrics(&receipts, Partition::Validation),
+    );
+    partitions.insert(
+        "sealed".into(),
+        partition_metrics(&receipts, Partition::Sealed),
+    );
     let report = Report {
         schema: "stage92-interpolation-sealed-transfer-v1",
         source_id: "openstax-precalculus-2e:linear-functions",
@@ -261,7 +327,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         catalog_sha256: digest(&records),
         prior_checkpoint_sha256: digest(PRIOR_CHECKPOINT),
         question_corpus_sha256: digest(&questions),
-        sealed_question_sha256: digest(&questions.iter().filter(|question| question.partition == Partition::Sealed).collect::<Vec<_>>()),
+        sealed_question_sha256: digest(
+            &questions
+                .iter()
+                .filter(|question| question.partition == Partition::Sealed)
+                .collect::<Vec<_>>(),
+        ),
         cases,
         supported,
         ambiguous,
@@ -279,7 +350,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         receipts,
     };
     let serialized = serde_json::to_string_pretty(&report)?;
-    std::fs::write("docs/stage92_interpolation_sealed_transfer.json", format!("{serialized}\n"))?;
+    std::fs::write(
+        "docs/stage92_interpolation_sealed_transfer.json",
+        format!("{serialized}\n"),
+    )?;
     println!("{serialized}");
     Ok(())
 }

@@ -18,10 +18,19 @@ const MD: &str = "docs/stage208_mobius_frontend_shifted.md";
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-enum Expected { Complete, Ambiguous, Unsupported, Missing }
+enum Expected {
+    Complete,
+    Ambiguous,
+    Unsupported,
+    Missing,
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-struct Case { id: String, text: String, expected: Expected }
+struct Case {
+    id: String,
+    text: String,
+    expected: Expected,
+}
 
 #[derive(Debug, Serialize)]
 struct Receipt {
@@ -65,11 +74,20 @@ fn digest<T: Serialize + ?Sized>(value: &T) -> String {
 }
 
 fn values(seed: usize) -> Vec<i128> {
-    (1..=(3 + seed % 7)).map(|i| (i as i128) * ((seed % 5 + 1) as i128)).collect()
+    (1..=(3 + seed % 7))
+        .map(|i| (i as i128) * ((seed % 5 + 1) as i128))
+        .collect()
 }
 
 fn literal(values: &[i128]) -> String {
-    format!("[{}]", values.iter().map(ToString::to_string).collect::<Vec<_>>().join(", "))
+    format!(
+        "[{}]",
+        values
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(", ")
+    )
 }
 
 fn case(seed: usize) -> Case {
@@ -99,7 +117,11 @@ fn case(seed: usize) -> Case {
         Expected::Missing if seed % 2 == 0 => format!("Use the finite sequence {first}, indexed from 1."),
         Expected::Missing => "Apply Mobius inversion to an unspecified sequence indexed from 1.".into(),
     };
-    Case { id: format!("stage208-{seed:04}"), text, expected }
+    Case {
+        id: format!("stage208-{seed:04}"),
+        text,
+        expected,
+    }
 }
 
 fn actual(status: MobiusFrontendStatus) -> Expected {
@@ -112,31 +134,47 @@ fn actual(status: MobiusFrontendStatus) -> Expected {
 }
 
 fn oracle_inversion(values: &[i128]) -> Vec<i128> {
-    (1..=values.len()).map(|n| {
-        (1..=n).filter(|d| n % d == 0).map(|d| {
-            let mut x = d;
-            let mut prime = 2;
-            let mut distinct = 0;
-            while prime * prime <= x {
-                if x % prime == 0 {
-                    x /= prime;
-                    distinct += 1;
-                    if x % prime == 0 { return 0i128; }
-                    while x % prime == 0 { x /= prime; }
-                }
-                prime += 1;
-            }
-            if x > 1 { distinct += 1; }
-            let mu = if distinct % 2 == 0 { 1 } else { -1 };
-            mu * values[n / d - 1]
-        }).sum()
-    }).collect()
+    (1..=values.len())
+        .map(|n| {
+            (1..=n)
+                .filter(|d| n % d == 0)
+                .map(|d| {
+                    let mut x = d;
+                    let mut prime = 2;
+                    let mut distinct = 0;
+                    while prime * prime <= x {
+                        if x % prime == 0 {
+                            x /= prime;
+                            distinct += 1;
+                            if x % prime == 0 {
+                                return 0i128;
+                            }
+                            while x % prime == 0 {
+                                x /= prime;
+                            }
+                        }
+                        prime += 1;
+                    }
+                    if x > 1 {
+                        distinct += 1;
+                    }
+                    let mu = if distinct % 2 == 0 { 1 } else { -1 };
+                    mu * values[n / d - 1]
+                })
+                .sum()
+        })
+        .collect()
 }
 
 fn oracle_convolution(left: &[i128], right: &[i128]) -> Vec<i128> {
-    (1..=left.len()).map(|n| {
-        (1..=n).filter(|d| n % d == 0).map(|d| left[d - 1] * right[n / d - 1]).sum()
-    }).collect()
+    (1..=left.len())
+        .map(|n| {
+            (1..=n)
+                .filter(|d| n % d == 0)
+                .map(|d| left[d - 1] * right[n / d - 1])
+                .sum()
+        })
+        .collect()
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -158,33 +196,62 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 downstream_replayed = evaluated.replay_verified();
                 if request.operation == MobiusOperation::InvertFiniteSequence {
                     if let Some(values) = &request.values {
-                        artifact_correct = evaluated.artifact == Some(MobiusArtifact::InvertedSequence { values: oracle_inversion(values), index_origin: 1 });
+                        artifact_correct = evaluated.artifact
+                            == Some(MobiusArtifact::InvertedSequence {
+                                values: oracle_inversion(values),
+                                index_origin: 1,
+                            });
                     }
                 } else {
                     if let (Some(left), Some(right)) = (&request.values, &request.second_values) {
                         artifact_correct = matches!(evaluated.status, MobiusStatus::Complete)
-                            && evaluated.artifact == Some(MobiusArtifact::ConvolutionSequence {
-                                values: oracle_convolution(left, right), index_origin: 1,
-                            });
+                            && evaluated.artifact
+                                == Some(MobiusArtifact::ConvolutionSequence {
+                                    values: oracle_convolution(left, right),
+                                    index_origin: 1,
+                                });
                     }
                 }
             }
         }
-        let authorized = actual_status == Expected::Complete && replay_verified && downstream_replayed && artifact_correct;
+        let authorized = actual_status == Expected::Complete
+            && replay_verified
+            && downstream_replayed
+            && artifact_correct;
         receipts.push(Receipt {
-            id: item.id.clone(), expected: item.expected, actual: actual_status,
-            exact: item.expected == actual_status, replay_verified, tamper_rejected,
-            provenance_preserved, downstream_replayed, artifact_correct,
+            id: item.id.clone(),
+            expected: item.expected,
+            actual: actual_status,
+            exact: item.expected == actual_status,
+            replay_verified,
+            tamper_rejected,
+            provenance_preserved,
+            downstream_replayed,
+            artifact_correct,
             false_authorization: item.expected != Expected::Complete && authorized,
             false_denial: item.expected == Expected::Complete && !authorized,
         });
     }
     let report = Report {
-        schema: "stage208-mobius-frontend-shifted-v1", corpus_sha256: digest(&corpus), cases: CASES,
-        complete: corpus.iter().filter(|c| c.expected == Expected::Complete).count(),
-        ambiguous: corpus.iter().filter(|c| c.expected == Expected::Ambiguous).count(),
-        unsupported: corpus.iter().filter(|c| c.expected == Expected::Unsupported).count(),
-        missing: corpus.iter().filter(|c| c.expected == Expected::Missing).count(),
+        schema: "stage208-mobius-frontend-shifted-v1",
+        corpus_sha256: digest(&corpus),
+        cases: CASES,
+        complete: corpus
+            .iter()
+            .filter(|c| c.expected == Expected::Complete)
+            .count(),
+        ambiguous: corpus
+            .iter()
+            .filter(|c| c.expected == Expected::Ambiguous)
+            .count(),
+        unsupported: corpus
+            .iter()
+            .filter(|c| c.expected == Expected::Unsupported)
+            .count(),
+        missing: corpus
+            .iter()
+            .filter(|c| c.expected == Expected::Missing)
+            .count(),
         exact_decisions: receipts.iter().filter(|r| r.exact).count(),
         replay_verified: receipts.iter().filter(|r| r.replay_verified).count(),
         tamper_rejected: receipts.iter().filter(|r| r.tamper_rejected).count(),
@@ -193,12 +260,42 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         artifact_correct: receipts.iter().filter(|r| r.artifact_correct).count(),
         false_authorizations: receipts.iter().filter(|r| r.false_authorization).count(),
         false_denials: receipts.iter().filter(|r| r.false_denial).count(),
-        live_registry_mutations: 0, receipts, corpus,
+        live_registry_mutations: 0,
+        receipts,
+        corpus,
     };
-    assert_eq!((report.complete, report.ambiguous, report.unsupported, report.missing), (1200, 400, 300, 100));
-    assert_eq!((report.exact_decisions, report.replay_verified, report.tamper_rejected, report.provenance_preserved), (CASES, CASES, CASES, CASES));
-    assert_eq!((report.downstream_replayed, report.artifact_correct, report.false_authorizations, report.false_denials, report.live_registry_mutations), (1200, 1200, 0, 0, 0));
-    fs::write(JSON, format!("{}\n", serde_json::to_string_pretty(&report)?))?;
+    assert_eq!(
+        (
+            report.complete,
+            report.ambiguous,
+            report.unsupported,
+            report.missing
+        ),
+        (1200, 400, 300, 100)
+    );
+    assert_eq!(
+        (
+            report.exact_decisions,
+            report.replay_verified,
+            report.tamper_rejected,
+            report.provenance_preserved
+        ),
+        (CASES, CASES, CASES, CASES)
+    );
+    assert_eq!(
+        (
+            report.downstream_replayed,
+            report.artifact_correct,
+            report.false_authorizations,
+            report.false_denials,
+            report.live_registry_mutations
+        ),
+        (1200, 1200, 0, 0, 0)
+    );
+    fs::write(
+        JSON,
+        format!("{}\n", serde_json::to_string_pretty(&report)?),
+    )?;
     fs::write(MD, format!("# Stage 208 — shifted Möbius technical-language frontend\n\n- Cases: 2,000 (1,200 complete, 400 ambiguous, 300 unsupported, 100 missing)\n- Exact decisions: {}/{}\n- Frontend replay / tamper / provenance: {}/{}/{}\n- Downstream pack replay / artifacts: {}/{}\n- False authorizations / denials: 0 / 0\n- Live registry mutations: 0\n\nThe independently generated corpus tests reordered finite wording, explicit one-based indexing, divisor convolution, missing indexing, competing readings, asymptotic requests, oversized sequences, and missing operation or sequence evidence. Complete frontend requests alone may cross the immutable Möbius pack boundary.\n", report.exact_decisions, report.cases, report.replay_verified, report.tamper_rejected, report.provenance_preserved, report.downstream_replayed, report.artifact_correct))?;
     println!("stage208 exact={}/{} complete={} ambiguous={} unsupported={} missing={} downstream={} artifacts={} replay={} tamper={}", report.exact_decisions, report.cases, report.complete, report.ambiguous, report.unsupported, report.missing, report.downstream_replayed, report.artifact_correct, report.replay_verified, report.tamper_rejected);
     Ok(())

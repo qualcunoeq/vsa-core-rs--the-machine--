@@ -108,8 +108,8 @@ pub fn replay_solution_verification(receipt: &SolutionVerificationReceipt) -> bo
         return false;
     };
     variable == receipt.variable
-                && (value - receipt.value).abs() <= 1e-12
-                && (residual_ratio - 1.0).abs() <= 1e-9
+        && (value - receipt.value).abs() <= 1e-12
+        && (residual_ratio - 1.0).abs() <= 1e-9
         && receipt.verified_solution == format!("{} = {}", variable, value)
         && receipt.proof_trace.len() == 3
 }
@@ -140,10 +140,9 @@ pub fn execute_solution_set_verification(
     candidate_values.sort_by(f64::total_cmp);
     candidate_values.dedup_by(|a, b| (*a - *b).abs() <= 1e-12);
 
-    let answer = crate::algebra_island::try_answer(&format!(
-        "Solve for {target_variable}: {equation}"
-    ))
-    .ok_or(SolutionSetVerificationFailure::SolverDidNotProduceFiniteSet)?;
+    let answer =
+        crate::algebra_island::try_answer(&format!("Solve for {target_variable}: {equation}"))
+            .ok_or(SolutionSetVerificationFailure::SolverDidNotProduceFiniteSet)?;
     let expected = match answer.result {
         crate::algebra_island::AlgebraResult::FiniteSolutionSet(values) => values,
         _ => return Err(SolutionSetVerificationFailure::SolverDidNotProduceFiniteSet),
@@ -166,11 +165,17 @@ pub fn execute_solution_set_verification(
     {
         return Err(SolutionSetVerificationFailure::IncompleteSolutionSet);
     }
-    let verified_solution_set = expected_values.iter().map(|value| value.to_string()).collect();
+    let verified_solution_set = expected_values
+        .iter()
+        .map(|value| value.to_string())
+        .collect();
     let receipt = SolutionSetVerificationReceipt {
         equation: equation.trim().into(),
         target_variable: target_variable.trim().into(),
-        candidates: candidates.iter().map(|candidate| candidate.trim().into()).collect(),
+        candidates: candidates
+            .iter()
+            .map(|candidate| candidate.trim().into())
+            .collect(),
         verified_solution_set,
         proof_trace: vec![
             format!("candidate set: {{{}}}", candidates.join(", ")),
@@ -207,7 +212,10 @@ pub fn replay_solution_set_verification(receipt: &SolutionSetVerificationReceipt
         .collect::<Vec<_>>();
     expected.sort_by(f64::total_cmp);
     expected.dedup_by(|a, b| (*a - *b).abs() <= 1e-12);
-    let verified = expected.iter().map(|value| value.to_string()).collect::<Vec<_>>();
+    let verified = expected
+        .iter()
+        .map(|value| value.to_string())
+        .collect::<Vec<_>>();
     verified == receipt.verified_solution_set && receipt.proof_trace.len() == 3
 }
 
@@ -241,8 +249,7 @@ mod tests {
 
     #[test]
     fn verifies_complete_quadratic_solution_set() {
-        let receipt = execute_solution_set_verification("x^2 - 4 = 0", "x", &["-2", "2"])
-            .unwrap();
+        let receipt = execute_solution_set_verification("x^2 - 4 = 0", "x", &["-2", "2"]).unwrap();
         assert!(receipt.replay_verified);
         assert_eq!(receipt.verified_solution_set.len(), 2);
         assert_eq!(receipt.proof_trace.len(), 3);

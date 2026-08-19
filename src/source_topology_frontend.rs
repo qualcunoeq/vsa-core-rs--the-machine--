@@ -30,7 +30,10 @@ pub struct TopologyFrontendResult {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("topology frontend serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("topology frontend serializes"))
+    )
 }
 
 fn payload(result: &TopologyFrontendResult) -> impl Serialize + '_ {
@@ -58,7 +61,10 @@ fn output(
         candidate_spans: candidates,
         unresolved_alternatives: alternatives,
         reasons,
-        provenance: vec![format!("topology-frontend-text-sha256:{:x}", Sha256::digest(text.as_bytes()))],
+        provenance: vec![format!(
+            "topology-frontend-text-sha256:{:x}",
+            Sha256::digest(text.as_bytes())
+        )],
         replay_hash: String::new(),
     };
     let replay_hash = digest(&payload(&result));
@@ -69,7 +75,9 @@ fn output(
 fn braces_after<'a>(text: &'a str, marker: &str, stops: &[&str]) -> Vec<&'a str> {
     let lower = text.to_ascii_lowercase();
     let marker = marker.to_ascii_lowercase();
-    let Some(start) = lower.find(&marker) else { return Vec::new() };
+    let Some(start) = lower.find(&marker) else {
+        return Vec::new();
+    };
     let suffix = &text[start + marker.len()..];
     let suffix_end = stops
         .iter()
@@ -126,50 +134,132 @@ fn parse_operation(lower: &str) -> Option<TopologyOperation> {
 pub fn formalize_topology_text(text: &str) -> TopologyFrontendResult {
     let lower = text.to_ascii_lowercase();
     let unsupported_terms = [
-        "metric", "infinite", "homology", "hausdorff", "compact", "connected", "manifold",
+        "metric",
+        "infinite",
+        "homology",
+        "hausdorff",
+        "compact",
+        "connected",
+        "manifold",
     ];
     if unsupported_terms.iter().any(|term| lower.contains(term)) {
-        return output(TopologyFrontendStatus::Unsupported, None, Vec::new(), Vec::new(), vec!["requested topology semantics exceed the finite-set boundary".into()], text);
+        return output(
+            TopologyFrontendStatus::Unsupported,
+            None,
+            Vec::new(),
+            Vec::new(),
+            vec!["requested topology semantics exceed the finite-set boundary".into()],
+            text,
+        );
     }
     let point_candidates = braces_after(text, "points:", &["target:", "open sets:"]);
     if point_candidates.is_empty() {
-        return output(TopologyFrontendStatus::Missing, None, Vec::new(), Vec::new(), vec!["an explicit points: carrier is required".into()], text);
+        return output(
+            TopologyFrontendStatus::Missing,
+            None,
+            Vec::new(),
+            Vec::new(),
+            vec!["an explicit points: carrier is required".into()],
+            text,
+        );
     }
     if point_candidates.len() != 1 {
-        return output(TopologyFrontendStatus::Ambiguous, None, point_candidates.iter().map(|span| (*span).into()).collect(), Vec::new(), vec!["multiple carrier declarations require explicit target selection".into()], text);
+        return output(
+            TopologyFrontendStatus::Ambiguous,
+            None,
+            point_candidates.iter().map(|span| (*span).into()).collect(),
+            Vec::new(),
+            vec!["multiple carrier declarations require explicit target selection".into()],
+            text,
+        );
     }
     let Some(points) = parse_set(point_candidates[0]) else {
-        return output(TopologyFrontendStatus::Ambiguous, None, vec![point_candidates[0].into()], Vec::new(), vec!["carrier notation is empty or duplicated".into()], text);
+        return output(
+            TopologyFrontendStatus::Ambiguous,
+            None,
+            vec![point_candidates[0].into()],
+            Vec::new(),
+            vec!["carrier notation is empty or duplicated".into()],
+            text,
+        );
     };
     if points.len() > 8 {
-        return output(TopologyFrontendStatus::Unsupported, None, vec![point_candidates[0].into()], Vec::new(), vec!["carrier exceeds the finite source bound".into()], text);
+        return output(
+            TopologyFrontendStatus::Unsupported,
+            None,
+            vec![point_candidates[0].into()],
+            Vec::new(),
+            vec!["carrier exceeds the finite source bound".into()],
+            text,
+        );
     }
     let open_candidates = braces_after(text, "open sets:", &[]);
     if open_candidates.is_empty() {
-        return output(TopologyFrontendStatus::Missing, None, vec![point_candidates[0].into()], Vec::new(), vec!["an explicit open sets: declaration is required".into()], text);
+        return output(
+            TopologyFrontendStatus::Missing,
+            None,
+            vec![point_candidates[0].into()],
+            Vec::new(),
+            vec!["an explicit open sets: declaration is required".into()],
+            text,
+        );
     }
     let mut open_sets = Vec::new();
     for span in open_candidates {
         let Some(set) = parse_set(span) else {
-            if span.trim().is_empty() { open_sets.push(Vec::new()); continue; }
-            return output(TopologyFrontendStatus::Ambiguous, None, vec![span.into()], Vec::new(), vec!["an open-set declaration is malformed".into()], text);
+            if span.trim().is_empty() {
+                open_sets.push(Vec::new());
+                continue;
+            }
+            return output(
+                TopologyFrontendStatus::Ambiguous,
+                None,
+                vec![span.into()],
+                Vec::new(),
+                vec!["an open-set declaration is malformed".into()],
+                text,
+            );
         };
         open_sets.push(set);
     }
     let Some(operation) = parse_operation(&lower) else {
-        return output(TopologyFrontendStatus::Missing, None, vec![point_candidates[0].into()], Vec::new(), vec!["the requested finite-topology operation is not explicit".into()], text);
+        return output(
+            TopologyFrontendStatus::Missing,
+            None,
+            vec![point_candidates[0].into()],
+            Vec::new(),
+            vec!["the requested finite-topology operation is not explicit".into()],
+            text,
+        );
     };
     let target_candidates = braces_after(text, "target:", &["open sets:"]);
     let target = if matches!(operation, TopologyOperation::ValidateTopology) {
         None
     } else {
         if target_candidates.len() != 1 {
-            return output(TopologyFrontendStatus::Ambiguous, None, target_candidates.iter().map(|span| (*span).into()).collect(), Vec::new(), vec!["a unique target set is required for this operation".into()], text);
+            return output(
+                TopologyFrontendStatus::Ambiguous,
+                None,
+                target_candidates
+                    .iter()
+                    .map(|span| (*span).into())
+                    .collect(),
+                Vec::new(),
+                vec!["a unique target set is required for this operation".into()],
+                text,
+            );
         }
         parse_set(target_candidates[0])
     };
     if !matches!(operation, TopologyOperation::ValidateTopology) && target.is_none() {
-        return output(TopologyFrontendStatus::Ambiguous, None, Vec::new(), Vec::new(), vec!["target notation is empty or duplicated".into()], text);
+        return output(
+            TopologyFrontendStatus::Ambiguous,
+            None,
+            Vec::new(),
+            Vec::new(),
+            vec!["target notation is empty or duplicated".into()],
+            text,
+        );
     }
     let request = TopologyRequest {
         operation,
@@ -179,9 +269,19 @@ pub fn formalize_topology_text(text: &str) -> TopologyFrontendResult {
         target_set: target,
         domain: "source_derived_finite_topology".into(),
         ambiguity: None,
-        provenance: vec![format!("topology-frontend-text-sha256:{:x}", Sha256::digest(text.as_bytes()))],
+        provenance: vec![format!(
+            "topology-frontend-text-sha256:{:x}",
+            Sha256::digest(text.as_bytes())
+        )],
     };
-    output(TopologyFrontendStatus::Complete, Some(request), vec!["points".into(), "open sets".into()], Vec::new(), Vec::new(), text)
+    output(
+        TopologyFrontendStatus::Complete,
+        Some(request),
+        vec!["points".into(), "open sets".into()],
+        Vec::new(),
+        Vec::new(),
+        text,
+    )
 }
 
 impl TopologyFrontendResult {

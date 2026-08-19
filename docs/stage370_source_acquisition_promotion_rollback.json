@@ -1,0 +1,17 @@
+{
+  "schema": "stage370-source-acquisition-promotion-rollback-v1",
+  "source_preflight": true,
+  "source_report_sha256": "3cbc119e5759642c2fa35814313d2acd6e98cc23f8e5998a18f05a4156454efc",
+  "cases": 3,
+  "exact_lifecycle_decisions": 3,
+  "promotions": 2,
+  "blocked": 1,
+  "registry_replays": 3,
+  "tamper_rejections": 3,
+  "rollback_applied": 1,
+  "world_state_preserved": 1,
+  "historical_replays": 1,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "production_snapshot_unchanged": true
+}

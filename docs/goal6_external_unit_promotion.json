@@ -1,0 +1,22 @@
+{
+  "schema": "external-unit-promotion-v1",
+  "candidate_id": "external_unit_frontend_v1",
+  "frontend_source_document_sha256": "c361e5a583b78ec3847b9a5affe03f38b033d40abdd78febbff3aefbf700f605",
+  "frontend_exact_decisions": 120,
+  "frontend_supported_values": 80,
+  "frontend_replays": 120,
+  "frontend_tamper_rejections": 120,
+  "shadow_candidates": 1,
+  "shadow_correct": 1,
+  "shadow_incorrect_rejected": 0,
+  "shadow_replays": 1,
+  "shadow_false_authorizations": 0,
+  "staged_promotion": "Promoted",
+  "induced_regression_blocked": true,
+  "rollback_applied": true,
+  "historical_replay_verified": true,
+  "world_state_preserved": true,
+  "live_registry_mutations": 0,
+  "live_manifest_mutations": 0,
+  "report_sha256": "32a0e8e176b75d6835f585808cd52d151ef4155a0355e2be9cfe7ee3a8323aa8"
+}

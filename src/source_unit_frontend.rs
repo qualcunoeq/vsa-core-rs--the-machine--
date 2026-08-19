@@ -77,12 +77,41 @@ fn amount_and_units(text: &str) -> Option<(crate::probability_pack::Rational, St
     let source = tokens
         .get(source_index)?
         .trim_matches(|c: char| !c.is_ascii_alphabetic());
-    let target_marker = tokens
+    let explicit_target_marker = tokens
         .iter()
         .enumerate()
         .skip(source_index + 1)
-        .find(|(_, token)| **token == "to" || **token == "into" || **token == "as")
-        .map(|(index, _)| index)?;
+        .find(|(index, token)| {
+            if **token != "to" && **token != "into" && **token != "as" {
+                return false;
+            }
+            let Some(candidate) = tokens.get(index + 1) else {
+                return false;
+            };
+            !matches!(
+                *candidate,
+                "the" | "a" | "an" | "your" | "answer" | "nearest" | "decimal"
+            )
+        })
+        .map(|(index, _)| index);
+    let target_marker = explicit_target_marker.or_else(|| {
+        // A source may state an explicit conversion relation and then ask for
+        // the result "in" a named target unit.  This fallback is deliberately
+        // gated on conversion language; ordinary prose containing "in" must
+        // not become a unit request by accident.
+        let conversion_language = text.contains("convert")
+            || text.contains("conversion")
+            || text.contains("express")
+            || text.contains("write");
+        conversion_language.then(|| {
+            tokens
+                .iter()
+                .enumerate()
+                .skip(source_index + 1)
+                .find(|(_, token)| **token == "in")
+                .map(|(index, _)| index)
+        })?
+    })?;
     let target = tokens
         .get(target_marker + 1)?
         .trim_matches(|c: char| !c.is_ascii_alphabetic());
@@ -211,5 +240,24 @@ mod tests {
             result.request.unwrap().inputs["amount"],
             crate::probability_pack::Rational::new(7, 2).unwrap()
         );
+    }
+
+    #[test]
+    fn grounds_explicit_conversion_declaration_and_prose_target() {
+        let source = include_str!("../docs/sources/openstax_unit_conversion_goal6_catalog.txt");
+        let records = extract_formula_records(source).unwrap();
+        let result = formalize_unit_text(
+            "Express 60 inches in centimeters using the conversion 1 inch = 2.54 cm.",
+            "explicit-declaration",
+            &records,
+        );
+        assert_eq!(result.status, UnitFrontendStatus::Complete);
+        assert_eq!(result.source_unit.as_deref(), Some("inches"));
+        assert_eq!(result.target_unit.as_deref(), Some("centimeters"));
+        assert_eq!(
+            result.request.as_ref().unwrap().inputs["amount"],
+            crate::probability_pack::Rational::new(60, 1).unwrap()
+        );
+        assert!(replay_verified(&result));
     }
 }

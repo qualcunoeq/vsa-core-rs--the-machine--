@@ -138,13 +138,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|route| (route.route.as_str(), route.executable_cases))
         .collect::<std::collections::BTreeMap<_, _>>();
 
-    fn route_for_source(path: &str) -> Option<&'static str> {
+    fn route_for_source(
+        path: &str,
+        route_evidence: &std::collections::BTreeMap<&str, usize>,
+    ) -> Option<&'static str> {
         if path.contains("bounded_geometry") {
             Some("BoundedGeometry")
         } else if path.contains("finite_regression") {
             Some("FiniteRegression")
         } else if path.contains("finite_statistics") {
-            Some("FiniteStatistics")
+            // The finite-statistics source is consumed by both the broad
+            // catalog frontend and the narrower finite-list-mean route.  Use
+            // the route with actual complete residual evidence when the
+            // broad frontend has no complete case.  This is evidence-based
+            // source selection, not lexical routing.
+            if route_evidence.get("FiniteStatistics").copied().unwrap_or(0) > 0 {
+                Some("FiniteStatistics")
+            } else if route_evidence.get("FiniteListMean").copied().unwrap_or(0) > 0 {
+                Some("FiniteListMean")
+            } else {
+                Some("FiniteStatistics")
+            }
         } else {
             None
         }
@@ -154,12 +168,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .into_iter()
         .enumerate()
         .map(|(index, candidate)| {
-            let matching_route = route_for_source(&candidate.source_path);
+            let matching_route = route_for_source(&candidate.source_path, &route_evidence);
             let executable_cases = matching_route
                 .and_then(|route| route_evidence.get(route).copied())
                 .unwrap_or(0);
-            let semantic_gate = if executable_cases > 0 {
+            let semantic_gate = if executable_cases > 0 && candidate.provenance_fields_present {
                 "complete_route_evidence"
+            } else if executable_cases > 0 {
+                "complete_route_evidence_missing_provenance"
             } else if matching_route.is_some() {
                 "lexical_only_no_complete_route"
             } else {
@@ -172,6 +188,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ];
             if executable_cases == 0 {
                 blocking_reasons.push("no_complete_executable_residual_for_source_route");
+            }
+            if !candidate.provenance_fields_present {
+                blocking_reasons.push("source_provenance_fields_incomplete");
             }
             SourcePlanEntry {
                 source_path: candidate.source_path,
@@ -229,7 +248,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert!(report.manifest_unchanged);
     assert!(report.all_entries_blocked);
 
-    fs::write(PLAN_JSON, format!("{}\n", serde_json::to_string_pretty(&report)?))?;
+    fs::write(
+        PLAN_JSON,
+        format!("{}\n", serde_json::to_string_pretty(&report)?),
+    )?;
     let queue_lines = report
         .plan_entries
         .iter()
@@ -248,8 +270,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         PLAN_MD,
         format!(
             "# Goal 6 — governed external source plan\n\n\
-             This is an answer-key-blind review queue derived from the frozen\
-             portfolio gap report. Lexical overlap is triage evidence only; no\
+             This is an answer-key-blind review queue derived from the frozen \
+             portfolio gap report. Lexical overlap is triage evidence only; no \
              source was ingested, synthesized, promoted, or routed.\n\n\
              - Development questions read: {}\n\
              - Source documents considered: {}\n\

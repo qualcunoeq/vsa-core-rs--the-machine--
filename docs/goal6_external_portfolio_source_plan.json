@@ -9,7 +9,7 @@
   "source_documents_considered": 28,
   "triage_candidates_read": 12,
   "review_queue_size": 5,
-  "semantic_ready_entries": 0,
+  "semantic_ready_entries": 1,
   "plan_entries": [
     {
       "source_path": "docs/sources/openstax_finite_statistics_source.txt",
@@ -18,9 +18,9 @@
       "affected_residuals": 532,
       "overlap_terms": 1244,
       "lexical_score": 0.4161927065908331,
-      "matching_route": "FiniteStatistics",
-      "executable_cases": 0,
-      "semantic_gate": "lexical_only_no_complete_route",
+      "matching_route": "FiniteListMean",
+      "executable_cases": 6,
+      "semantic_gate": "complete_route_evidence",
       "queue_rank": 1,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -30,8 +30,7 @@
       "blocking_reasons": [
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
-        "source_scope_and_authority_require_review",
-        "no_complete_executable_residual_for_source_route"
+        "source_scope_and_authority_require_review"
       ]
     },
     {
@@ -87,9 +86,9 @@
       "affected_residuals": 289,
       "overlap_terms": 639,
       "lexical_score": 0.21378387420541983,
-      "matching_route": "FiniteStatistics",
-      "executable_cases": 0,
-      "semantic_gate": "lexical_only_no_complete_route",
+      "matching_route": "FiniteListMean",
+      "executable_cases": 6,
+      "semantic_gate": "complete_route_evidence_missing_provenance",
       "queue_rank": 4,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -100,7 +99,7 @@
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
         "source_scope_and_authority_require_review",
-        "no_complete_executable_residual_for_source_route"
+        "source_provenance_fields_incomplete"
       ]
     },
     {
@@ -134,5 +133,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "all_entries_blocked": true,
-  "report_sha256": "875d240955a8ebe0bd22781907ef0c616a599c98780af7db6c3f3c2fb7f79412"
+  "report_sha256": "192884992446074a100f3551ce80a5ac71dc2d57ee39e7ea59257f0c5f794371"
 }

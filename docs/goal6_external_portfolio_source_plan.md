@@ -1,11 +1,11 @@
 # Goal 6 — governed external source plan
 
-This is an answer-key-blind review queue derived from the frozenportfolio gap report. Lexical overlap is triage evidence only; nosource was ingested, synthesized, promoted, or routed.
+This is an answer-key-blind review queue derived from the frozen portfolio gap report. Lexical overlap is triage evidence only; no source was ingested, synthesized, promoted, or routed.
 
 - Development questions read: 3000
 - Source documents considered: 28
 - Triage candidates read / review queue: 12 / 5
-- Semantic-ready entries: 0
+- Semantic-ready entries: 1
 - Answer keys read: 0
 - Source ingestions / promotion proposals / production mutations: 0 / 0 / 0
 - Manifest unchanged: true

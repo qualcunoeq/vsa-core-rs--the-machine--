@@ -1,0 +1,73 @@
+{
+  "schema": "stage346-independent-externality-audit-v1",
+  "release_id": "external-math-exam-v1",
+  "manifest_sha256": "992faa1ec8f08542a86206394c95a7366771ee1beda52055ab230564fe642c78",
+  "questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "oracle_development_sha256": "5bc0e75c5af49d0500cf14437c566e1eed398dd9aeef32c91d05062b83b22ec0",
+  "oracle_sealed_sha256": "2c2712196b4d0bd63e0389ab23953ba69ff12cad85db2dfa3f19059747624fbf",
+  "questions": 4000,
+  "split_counts": {
+    "development": 3000,
+    "sealed": 1000
+  },
+  "source_ids": {
+    "hendrycks-math-original": 4000
+  },
+  "source_item_duplicate_groups": 0,
+  "split_exact_intersections": {
+    "development::sealed": 0
+  },
+  "duplicate_prompt_groups": 0,
+  "duplicate_prompt_records": 0,
+  "repeated_template_groups": 93,
+  "repeated_template_records": 269,
+  "answer_marker_records": [],
+  "repository_exact_overlap_records": [
+    "math-v1-development-0212",
+    "math-v1-development-0389",
+    "math-v1-development-0688",
+    "math-v1-development-1287",
+    "math-v1-development-1858",
+    "math-v1-sealed-0001"
+  ],
+  "repository_exact_overlap_matches": {
+    "math-v1-development-0212": [
+      "src/source_sequence_frontend.rs"
+    ],
+    "math-v1-development-0389": [
+      "src/source_sequence_frontend.rs"
+    ],
+    "math-v1-development-0688": [
+      "src/source_formula_frontend.rs"
+    ],
+    "math-v1-development-1287": [
+      "src/source_formula_frontend.rs",
+      "src/source_statistics_frontend.rs"
+    ],
+    "math-v1-development-1858": [
+      "src/source_formula_frontend.rs"
+    ],
+    "math-v1-sealed-0001": [
+      "src/source_formula_frontend.rs"
+    ]
+  },
+  "structural_checks": {
+    "manifest_schema": true,
+    "holdout_locked": true,
+    "original_wording_preserved": true,
+    "answers_absent_from_questions": true,
+    "sealed_policy_hash_only": true,
+    "expected_splits_only": true,
+    "manifest_file_hashes_match": true
+  },
+  "clean_checks": {
+    "cross_split_exact_overlap": true,
+    "duplicate_prompt_groups": true,
+    "answer_markers": true,
+    "repository_exact_overlap": false
+  },
+  "externality_verdict": "review_required",
+  "sealed_answers_parsed": false,
+  "implementation_mutations": 0,
+  "report_sha256": "fdeeb137049c8706df52862dfcb2fd6aaa0a56d20c59ad5a2c5b8bbcc0abd2b2"
+}

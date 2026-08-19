@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
+use std::env;
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader};
 use std::process::Command;
@@ -162,12 +163,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert!(report.manifest_unchanged);
     assert_eq!(report.answer_keys_read, 0);
     assert_eq!(report.false_authorizations, 0);
+    let report_json = env::var("EXTERNAL_MATH_GAP_JSON")
+        .unwrap_or_else(|_| "docs/goal5_external_math_gap_analysis.json".into());
+    let report_md = env::var("EXTERNAL_MATH_GAP_MD")
+        .unwrap_or_else(|_| "docs/goal5_external_math_gap_analysis.md".into());
     fs::write(
-        "docs/goal5_external_math_gap_analysis.json",
+        report_json,
         format!("{}\n", serde_json::to_string_pretty(&report)?),
     )?;
     fs::write(
-        "docs/goal5_external_math_gap_analysis.md",
+        report_md,
         format!(
             "# Goal 5 — answer-key-blind external gap analysis\n\n\
              - Questions read: {} (development {})\n- Answer keys read: {}\n\

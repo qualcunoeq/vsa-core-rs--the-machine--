@@ -1,0 +1,19 @@
+{
+  "schema": "stage317-finite-automata-independent-holdout-v1",
+  "source_report": "docs/stage314_finite_automata_source_pack.json",
+  "source_report_sha256": "bf86308e394d075c03400151199bb684046a9c2b3de6eb465b885337928d51a8",
+  "corpus_sha256": "943f6eec783be6cb9c2fbc1c5c0acbff3afd3628de11bb540f9b214608a2a1c1",
+  "cases": 100,
+  "supported": 60,
+  "ambiguous": 20,
+  "refused": 20,
+  "exact_decisions": 100,
+  "supported_artifacts": 60,
+  "replay_verified": 60,
+  "tamper_rejections": 60,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "development_generator_reused": false,
+  "live_registry_mutations": 0,
+  "hle_questions_read": 0
+}

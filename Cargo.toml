@@ -460,6 +460,10 @@ name = "stage316_finite_automata_promotion_rollback"
 path = "src/bin/stage316_finite_automata_promotion_rollback.rs"
 
 [[bin]]
+name = "stage317_finite_automata_independent_holdout"
+path = "src/bin/stage317_finite_automata_independent_holdout.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

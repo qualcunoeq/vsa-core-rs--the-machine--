@@ -1,0 +1,18 @@
+{
+  "schema": "stage374-self-directed-source-education-v1",
+  "acquisition_preflight": true,
+  "holdout_preflight": true,
+  "source_candidates": 2,
+  "source_validation_receipts": 2,
+  "source_validation_replays": 2,
+  "initial_gaps": 3,
+  "resolved_gaps": 2,
+  "remaining_gaps": 1,
+  "campaign_rounds": 3,
+  "selected_rounds": 2,
+  "campaign_replay_verified": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "85b6c600d3e9519848cc3aa7b506dfee85147cc861254f163578340cae96d34a"
+}

@@ -5,10 +5,10 @@
   "questions_read": 4000,
   "answer_hashes_read": 3000,
   "plaintext_answers_read": 0,
-  "candidate_cases": 1,
-  "correct_shadow_candidates": 1,
+  "candidate_cases": 2,
+  "correct_shadow_candidates": 2,
   "incorrect_shadow_candidates_rejected": 0,
-  "candidate_replays": 1,
+  "candidate_replays": 2,
   "production_authorizations": 0,
   "false_authorizations": 0,
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
@@ -16,11 +16,17 @@
   "manifest_unchanged": true,
   "candidates": [
     {
+      "id": "math-v1-development-1287",
+      "candidate_answer_sha256": "1da51b8d8ff98f6a48f80ae79fe3ca6c26e1abb7b7d125259255d6d2b875ea08",
+      "reference_match": true,
+      "replay_verified": true
+    },
+    {
       "id": "math-v1-development-1858",
       "candidate_answer_sha256": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db",
       "reference_match": true,
       "replay_verified": true
     }
   ],
-  "report_sha256": "117e803a1e615f2ef94a566f16fc1b7762bbe65889a05d401c8e76350863846b"
+  "report_sha256": "009a39caa5dec342267aeca1f2f0ff812a2e2b52adabdb927d5014c80b11ed6b"
 }

@@ -2,9 +2,9 @@
 
 - Development questions read: 4000
 - Answer hashes read / plaintext answers read: 3000 / 0
-- Shadow candidates: 1
-- Correct / rejected shadow candidates: 1 / 0
-- Candidate replay: 1 / 1
+- Shadow candidates: 2
+- Correct / rejected shadow candidates: 2 / 0
+- Candidate replay: 2 / 2
 - Production authorizations / false authorizations: 0 / 0
 - Manifest unchanged: true
 

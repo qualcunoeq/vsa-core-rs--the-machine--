@@ -120,6 +120,13 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
     }
     let candidates = if let (Some(start), Some(end)) = (lower.find('{'), lower.rfind('}')) {
         (end > start).then(|| &text[start..=end])
+    } else if let Some(start) = lower.find("scores are") {
+        let start = start + "scores are".len();
+        let end = text[start..]
+            .find(|character: char| matches!(character, '?' | '.' | ';'))
+            .map(|offset| start + offset)
+            .unwrap_or(text.len());
+        Some(&text[start..end])
     } else if let Some(start) = lower.find("mean of") {
         let start = start + "mean of".len();
         let end = text[start..]
@@ -129,13 +136,6 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
         Some(&text[start..end])
     } else if let Some(start) = lower.find("average of") {
         let start = start + "average of".len();
-        let end = text[start..]
-            .find(|character: char| matches!(character, '?' | '.' | ';'))
-            .map(|offset| start + offset)
-            .unwrap_or(text.len());
-        Some(&text[start..end])
-    } else if let Some(start) = lower.find("scores are") {
-        let start = start + "scores are".len();
         let end = text[start..]
             .find(|character: char| matches!(character, '?' | '.' | ';'))
             .map(|offset| start + offset)
@@ -443,6 +443,11 @@ mod tests {
         assert_eq!(request.inputs["sum"], Rational::new(455, 1).unwrap());
         assert_eq!(request.inputs["count"], Rational::new(5, 1).unwrap());
         assert!(complete.replay_verified());
+
+        let external_style = formalize_finite_list_mean_text(
+            "Jeff's five assignment scores are 89, 92, 88, 95 and 91. What is the arithmetic mean of these five scores?",
+        );
+        assert_eq!(external_style.status, FrontendStatus::Complete, "{external_style:?}");
 
         let range = formalize_finite_list_mean_text(
             "What is the arithmetic mean of the integers from -4 through 5?",

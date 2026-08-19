@@ -12,10 +12,19 @@
   "external_questions_read": 3000,
   "external_answer_keys_read": 0,
   "external_mean_signals": 63,
-  "external_complete_frontends": 1,
-  "external_executable_candidates": 1,
-  "external_candidate_replays": 1,
+  "external_complete_frontends": 2,
+  "external_executable_candidates": 2,
+  "external_candidate_replays": 2,
   "external_candidates": [
+    {
+      "id": "math-v1-development-1287",
+      "status": "shadow_candidate",
+      "candidate_value": {
+        "numerator": 91,
+        "denominator": 1
+      },
+      "replay_verified": true
+    },
     {
       "id": "math-v1-development-1858",
       "status": "shadow_candidate",
@@ -32,5 +41,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "corpus_sha256": "0fab27440fa54e5369c53ddc06bb3dcc51488a54b59406dfe4ef52d73004bfca",
-  "report_sha256": "324a0289218773a6f43cc9e4654644ab1ac23a4560c15396c9b2c71ac9cf1078"
+  "report_sha256": "6c16e17c593d30170734aebd159354637f42521110cb690b3027d1790eaa77d3"
 }

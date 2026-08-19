@@ -4,8 +4,8 @@
 - Independent exact / supported values: 120 / 80
 - Independent replay / tamper: 120 / 120
 - External development questions / mean signals: 3000 / 63
-- External complete frontends / executable candidates: 1 / 1
-- External candidate replays: 1
+- External complete frontends / executable candidates: 2 / 2
+- External candidate replays: 2
 - Answer keys read: 0
 - Production authorizations / false authorizations: 0 / 0
 - Manifest unchanged: true

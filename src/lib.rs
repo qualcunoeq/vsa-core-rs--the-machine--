@@ -184,6 +184,7 @@ pub mod source_counting_pack;
 pub mod source_formula_pack;
 pub mod source_formula_frontend;
 pub mod source_evidence_envelope;
+pub mod source_residual_clustering;
 pub mod source_module_discovery;
 pub mod source_multiformat_discovery;
 pub mod source_multiformat_memory;

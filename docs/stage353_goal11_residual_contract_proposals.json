@@ -1,0 +1,20 @@
+{
+  "schema": "stage353-goal11-residual-contract-proposals-v1",
+  "discovery_report_sha256": "d6f451eb4c1b92dabc951985846e68aeff7a8c72b8ee9fd6354f0cf80641f807",
+  "source_manifest_sha256": "43cb30f18ac7f1aad287abe60f36e4af254259385668e1065c2efefc21cc1db3",
+  "residual_envelopes": 7,
+  "residual_clusters": 0,
+  "shadow_proposals": 0,
+  "cluster_replays": 0,
+  "proposal_replays": 0,
+  "cluster_tamper_rejections": 0,
+  "proposal_tamper_rejections": 0,
+  "synthetic_clusters": 1,
+  "synthetic_proposals": 1,
+  "synthetic_negative_clusters": 0,
+  "false_authorizations": 0,
+  "live_mutations": 0,
+  "manifest_unchanged": true,
+  "proposal_statuses": [],
+  "report_sha256": "5d61e47270198778404e8148a366184dca2a74016bafd151e9b29618b2183017"
+}

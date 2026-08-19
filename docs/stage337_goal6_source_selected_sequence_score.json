@@ -1,0 +1,21 @@
+{
+  "schema": "stage337-goal6-source-selected-sequence-score-v1",
+  "partition": "sealed",
+  "questions_read": 1000,
+  "answer_hashes_read": 1000,
+  "plaintext_answers_read": 0,
+  "selected_source": "docs/sources/openstax_precalculus_sequences_source.txt",
+  "selected_source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
+  "candidate_count": 1,
+  "correct_candidates": 1,
+  "rejected_candidates": 0,
+  "candidate_replay": "1/1",
+  "no_executable_route": 999,
+  "false_authorizations": 0,
+  "production_authorizations": 0,
+  "plaintext_answer_access": false,
+  "manifest_unchanged": true,
+  "candidate_id": "math-v1-sealed-0001",
+  "candidate_answer_sha256": "b7c7470e59e2a2df1bfd0a4705488ee6fe0c5c125de15cccdfab0e00d6c03dc0",
+  "matched_representation": "fraction"
+}

@@ -10,7 +10,8 @@ use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::fs;
 use the_machine::continuous_education::{
-    run_campaign, validate_source_evidence, EducationCandidate, SourceValidationEvidence,
+    admit_validated_candidates, run_campaign, validate_source_evidence, EducationCandidate,
+    SourceValidationEvidence,
 };
 use the_machine::curriculum::breadth_first_manifest;
 use the_machine::curriculum_campaign::{observe_gap, GapKind, SourceModuleCandidate};
@@ -29,8 +30,10 @@ struct Report {
     acquisition_preflight: bool,
     holdout_preflight: bool,
     source_candidates: usize,
+    admitted_source_candidates: usize,
     source_validation_receipts: usize,
     source_validation_replays: usize,
+    rejected_source_candidates: usize,
     initial_gaps: usize,
     resolved_gaps: usize,
     remaining_gaps: usize,
@@ -76,6 +79,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap(),
     ];
     let mut candidates = Vec::new();
+    let mut receipts = Vec::new();
     let mut validation_replays = 0;
     for module in &modules {
         let source_module = module.candidate.clone();
@@ -104,8 +108,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let receipt = validate_source_evidence(&candidate, &evidence);
         assert!(receipt.eligible_for_shadow_use());
         validation_replays += usize::from(receipt.replay_verified());
+        receipts.push(receipt);
         candidates.push(candidate);
     }
+    let mut rejected_module = candidates[0].source_module.clone();
+    rejected_module.module_id.push_str("::rejected");
+    let rejected_candidate = EducationCandidate {
+        source_module: rejected_module.clone(),
+        acquisition_cost: 1,
+        authoritative_source_verified: false,
+        minimum_independent_exercises: 1,
+    };
+    let rejected_evidence = SourceValidationEvidence {
+        module_id: rejected_module.module_id,
+        source_document_hash: "tampered-source".into(),
+        source_ids: rejected_candidate.source_module.source_ids.clone(),
+        exercise_cases: 1,
+        supported_cases: 1,
+        replay_verified_cases: 1,
+        tamper_rejected_cases: 1,
+        provenance_preserved_cases: 1,
+        boundary_cases: 1,
+        boundary_refusals: 1,
+        false_authorizations: 0,
+    };
+    let rejected_receipt = validate_source_evidence(&rejected_candidate, &rejected_evidence);
+    assert!(!rejected_receipt.eligible_for_shadow_use());
+    validation_replays += usize::from(rejected_receipt.replay_verified());
+    receipts.push(rejected_receipt);
+    candidates.push(rejected_candidate);
+    let admitted = admit_validated_candidates(&candidates, &receipts);
+    assert_eq!(admitted.len(), 2);
     let observations = vec![
         observe_gap(
             "gap-probability",
@@ -127,7 +160,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ),
     ];
     let manifest = breadth_first_manifest();
-    let campaign = run_campaign(&manifest, &observations, &candidates, 4);
+    let campaign = run_campaign(&manifest, &observations, &admitted, 4);
     let selected_rounds = campaign
         .rounds
         .iter()
@@ -140,8 +173,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         acquisition_preflight,
         holdout_preflight,
         source_candidates: candidates.len(),
-        source_validation_receipts: candidates.len(),
+        admitted_source_candidates: admitted.len(),
+        source_validation_receipts: receipts.len(),
         source_validation_replays: validation_replays,
+        rejected_source_candidates: candidates.len() - admitted.len(),
         initial_gaps: campaign.initial_case_count,
         resolved_gaps: campaign.resolved_case_count,
         remaining_gaps: campaign.remaining_case_count,
@@ -155,9 +190,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     assert!(report.acquisition_preflight);
     assert!(report.holdout_preflight);
-    assert_eq!(report.source_candidates, 2);
-    assert_eq!(report.source_validation_receipts, 2);
-    assert_eq!(report.source_validation_replays, 2);
+    assert_eq!(report.source_candidates, 3);
+    assert_eq!(report.admitted_source_candidates, 2);
+    assert_eq!(report.source_validation_receipts, 3);
+    assert_eq!(report.source_validation_replays, 3);
+    assert_eq!(report.rejected_source_candidates, 1);
     assert_eq!(report.initial_gaps, 3);
     assert_eq!(report.resolved_gaps, 2);
     assert_eq!(report.remaining_gaps, 1);
@@ -173,10 +210,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     fs::write(
         MD,
         format!(
-            "# Stage 374 — self-directed source education\n\n- acquisition / holdout preflight: {} / {}\n- source candidates / validation receipts / replays: {} / {} / {}\n- initial / resolved / remaining gaps: {} / {} / {}\n- campaign rounds / selected rounds: {} / {}\n- campaign replay / manifest unchanged: {} / {}\n- false authorizations / live registry mutations: {} / {}\n- corpus SHA-256: `{}`\n\nThe planner receives exact typed residuals and two source-backed candidates whose independent holdout has passed. It selects both candidates by exact coverage, leaves the unavailable specialist gap unresolved, and keeps the curriculum manifest unchanged.\n\nReproduce with `cargo run --quiet --bin stage374_self_directed_source_education`.\nMachine-readable report: `{}`\n",
+            "# Stage 374 — self-directed source education\n\n- acquisition / holdout preflight: {} / {}\n- source candidates / admitted / rejected: {} / {} / {}\n- validation receipts / replays: {} / {}\n- initial / resolved / remaining gaps: {} / {} / {}\n- campaign rounds / selected rounds: {} / {}\n- campaign replay / manifest unchanged: {} / {}\n- false authorizations / live registry mutations: {} / {}\n- corpus SHA-256: `{}`\n\nThe planner receives exact typed residuals and admits only replay-valid source validation receipts. It selects the two admitted candidates by exact coverage, rejects one invalid candidate, leaves the unavailable specialist gap unresolved, and keeps the curriculum manifest unchanged.\n\nReproduce with `cargo run --quiet --bin stage374_self_directed_source_education`.\nMachine-readable report: `{}`\n",
             report.acquisition_preflight,
             report.holdout_preflight,
             report.source_candidates,
+            report.admitted_source_candidates,
+            report.rejected_source_candidates,
             report.source_validation_receipts,
             report.source_validation_replays,
             report.initial_gaps,

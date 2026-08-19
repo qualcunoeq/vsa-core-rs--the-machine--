@@ -48,6 +48,18 @@ name = "external_list_mean_promotion_gate"
 path = "src/bin/external_list_mean_promotion_gate.rs"
 
 [[bin]]
+name = "external_sequence_frontend_bench"
+path = "src/bin/external_sequence_frontend_bench.rs"
+
+[[bin]]
+name = "external_sequence_shadow_scorer"
+path = "src/bin/external_sequence_shadow_scorer.rs"
+
+[[bin]]
+name = "external_sequence_promotion_gate"
+path = "src/bin/external_sequence_promotion_gate.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

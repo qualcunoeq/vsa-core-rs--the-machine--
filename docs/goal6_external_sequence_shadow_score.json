@@ -1,0 +1,37 @@
+{
+  "schema": "goal6-external-sequence-shadow-score-v1",
+  "release_id": "external-math-exam-v1",
+  "partition": "development",
+  "source_domain": "external-source-sequence-shadow",
+  "questions_read": 3000,
+  "answer_hashes_read": 3000,
+  "plaintext_answers_read": 0,
+  "candidate_cases": 3,
+  "correct_shadow_candidates": 3,
+  "incorrect_shadow_candidates_rejected": 0,
+  "candidate_replays": 3,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "candidates": [
+    {
+      "id": "math-v1-development-0212",
+      "candidate_answer_sha256": "580811fa95269f3ecd4f22d176e079d36093573680b6ef66fa341e687a15b5da",
+      "reference_match": true,
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0389",
+      "candidate_answer_sha256": "454f63ac30c8322997ef025edff6abd23e0dbe7b8a3d5126a894e4a168c1b59b",
+      "reference_match": true,
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-2842",
+      "candidate_answer_sha256": "eb624dbe56eb6620ae62080c10a273cab73ae8eca98ab17b731446a31c79393a",
+      "reference_match": true,
+      "replay_verified": true
+    }
+  ],
+  "report_sha256": "09e171a1025d6d5e30e9f7e90a672f67b30295da58b2bbc689c17b2223cbde9b"
+}

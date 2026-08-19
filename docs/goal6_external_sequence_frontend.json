@@ -1,0 +1,56 @@
+{
+  "schema": "goal6-external-sequence-frontend-v1",
+  "source_domain": "external-source-sequence-shadow",
+  "source_catalog_sha256": "0e9df6ac84c6e24c0c80a9ba19e44191b2039fcd915d4dec126f88b7aafff1b4",
+  "independent_cases": 120,
+  "independent_supported": 80,
+  "independent_ambiguous": 20,
+  "independent_unsupported": 20,
+  "independent_exact_decisions": 120,
+  "independent_supported_values": 80,
+  "independent_frontend_replays": 120,
+  "independent_execution_replays": 80,
+  "independent_frontend_tamper_rejections": 120,
+  "independent_execution_tamper_rejections": 80,
+  "independent_false_authorizations": 0,
+  "independent_false_denials": 0,
+  "external_questions_read": 3000,
+  "external_answer_keys_read": 0,
+  "external_sequence_signals": 17,
+  "external_complete_frontends": 3,
+  "external_executable_candidates": 3,
+  "external_candidate_replays": 3,
+  "external_candidates": [
+    {
+      "id": "math-v1-development-0212",
+      "status": "Complete",
+      "value": {
+        "numerator": 181,
+        "denominator": 1
+      },
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0389",
+      "status": "Complete",
+      "value": {
+        "numerator": 103,
+        "denominator": 1
+      },
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-2842",
+      "status": "Complete",
+      "value": {
+        "numerator": 74,
+        "denominator": 1
+      },
+      "replay_verified": true
+    }
+  ],
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "e10cc39eec0db8ecc18b030c23adde59db54a027500562cbe9cfe2c76df5f73c"
+}

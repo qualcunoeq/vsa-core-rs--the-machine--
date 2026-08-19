@@ -1,0 +1,195 @@
+{
+  "schema": "goal6-external-portfolio-gaps-v1",
+  "release_id": "external-math-exam-v1",
+  "partition": "development",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "questions_read": 3000,
+  "answer_keys_read": 0,
+  "route_invocations": 12000,
+  "unique_candidates": 7,
+  "no_executable_route": 2993,
+  "multiple_route_ambiguities": 0,
+  "first_gate_counts": {
+    "ambiguous_frontend": 129,
+    "complete_frontend_execution_boundary": 1,
+    "missing_frontend_fields": 2860,
+    "no_validated_route": 3
+  },
+  "route_gaps": [
+    {
+      "route": "ArithmeticSequence",
+      "frontend_status_counts": {
+        "Ambiguous": 1,
+        "Complete": 3,
+        "Missing": 5,
+        "Unsupported": 2991
+      },
+      "execution_status_counts": {
+        "Complete": 3,
+        "not_run": 2997
+      },
+      "executable_cases": 3
+    },
+    {
+      "route": "BoundedCounting",
+      "frontend_status_counts": {
+        "Ambiguous": 101,
+        "Complete": 2,
+        "Missing": 291,
+        "Unsupported": 2606
+      },
+      "execution_status_counts": {
+        "Complete": 1,
+        "InvalidRange": 1,
+        "not_run": 2998
+      },
+      "executable_cases": 1
+    },
+    {
+      "route": "FiniteListMean",
+      "frontend_status_counts": {
+        "Ambiguous": 28,
+        "Complete": 2,
+        "Missing": 2937,
+        "Unsupported": 33
+      },
+      "execution_status_counts": {
+        "Complete": 2,
+        "not_run": 2998
+      },
+      "executable_cases": 2
+    },
+    {
+      "route": "UnitConversion",
+      "frontend_status_counts": {
+        "Ambiguous": 101,
+        "Complete": 1,
+        "Missing": 2726,
+        "Unsupported": 172
+      },
+      "execution_status_counts": {
+        "Complete": 1,
+        "not_run": 2999
+      },
+      "executable_cases": 1
+    }
+  ],
+  "source_documents_considered": 28,
+  "source_triage_candidates": [
+    {
+      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "provenance_fields_present": true,
+      "affected_residuals": 442,
+      "overlap_terms": 1119,
+      "lexical_score": 0.37387236886067493,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_finite_regression_source.txt",
+      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "provenance_fields_present": true,
+      "affected_residuals": 421,
+      "overlap_terms": 934,
+      "lexical_score": 0.31206147677915136,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "provenance_fields_present": true,
+      "affected_residuals": 328,
+      "overlap_terms": 736,
+      "lexical_score": 0.24590711660541262,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_finite_statistics_catalog.json",
+      "source_sha256": "9d76954caad3d079b385378ee25cafb709f5454d2369b1ec433fbbbc8179904c",
+      "provenance_fields_present": false,
+      "affected_residuals": 291,
+      "overlap_terms": 644,
+      "lexical_score": 0.21516872702973605,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
+      "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+      "provenance_fields_present": true,
+      "affected_residuals": 263,
+      "overlap_terms": 583,
+      "lexical_score": 0.1947878382893418,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/topology_without_tears_finite_definition.txt",
+      "source_sha256": "8482325b0dae935e43ab186d6e4b9a6f7b05f4d8a8d51174531ff69ac10334d7",
+      "provenance_fields_present": true,
+      "affected_residuals": 180,
+      "overlap_terms": 381,
+      "lexical_score": 0.1272970263949215,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_bounded_health_ratios_source.txt",
+      "source_sha256": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
+      "provenance_fields_present": true,
+      "affected_residuals": 174,
+      "overlap_terms": 371,
+      "lexical_score": 0.12395589709321751,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_linear_interpolation_catalog.txt",
+      "source_sha256": "82027d30794d88784a47524224a340ca007001f9d22ac7a5712ce13c03f42f03",
+      "provenance_fields_present": true,
+      "affected_residuals": 159,
+      "overlap_terms": 339,
+      "lexical_score": 0.11326428332776478,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_unit_conversion_goal6_catalog.txt",
+      "source_sha256": "561930f8e04ab44c41bebabffd83dda19e8d17e4e917d6467d9ba1b8cee7f74a",
+      "provenance_fields_present": true,
+      "affected_residuals": 155,
+      "overlap_terms": 338,
+      "lexical_score": 0.11293017039759438,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_chemistry_source.txt",
+      "source_sha256": "1b5f1bd18e802233abdbd96ffa51ed654216125559b3a2dcc13416892bfc9c1c",
+      "provenance_fields_present": false,
+      "affected_residuals": 152,
+      "overlap_terms": 327,
+      "lexical_score": 0.10925492816572001,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/topology_without_tears_finite_metric_definition.txt",
+      "source_sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+      "provenance_fields_present": true,
+      "affected_residuals": 133,
+      "overlap_terms": 280,
+      "lexical_score": 0.09355162044771133,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_bounded_economics_source.txt",
+      "source_sha256": "9eeb1f5b916305563eb3bc997b46a1c4b413fb97c1d09abe0c67dabdebec054d",
+      "provenance_fields_present": true,
+      "affected_residuals": 129,
+      "overlap_terms": 274,
+      "lexical_score": 0.09154694286668894,
+      "status": "triage_only"
+    }
+  ],
+  "source_ingestions": 0,
+  "promotion_proposals": 0,
+  "production_mutations": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "report_sha256": "02d4428b5a7d245184400b3918fc5e7b64c4c15b1cf1029c5c8df9b748a41ddb"
+}

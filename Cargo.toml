@@ -88,6 +88,18 @@ name = "external_shadow_learning_curve"
 path = "src/bin/external_shadow_learning_curve.rs"
 
 [[bin]]
+name = "goal6_external_portfolio_probe"
+path = "src/bin/goal6_external_portfolio_probe.rs"
+
+[[bin]]
+name = "goal6_external_portfolio_score"
+path = "src/bin/goal6_external_portfolio_score.rs"
+
+[[bin]]
+name = "goal6_external_portfolio_gap_analysis"
+path = "src/bin/goal6_external_portfolio_gap_analysis.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

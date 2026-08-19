@@ -1,0 +1,81 @@
+{
+  "schema": "goal6-external-portfolio-score-v1",
+  "release_id": "external-math-exam-v1",
+  "partition": "development",
+  "probe_report_sha256": "c05905eea9fb2f337621fd6e8c8998bebaa2d872f69619d9d629bfe47f9d6b34",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "questions_read": 3000,
+  "answer_hashes_read": 3000,
+  "plaintext_answers_read": 0,
+  "sealed_questions_read": 0,
+  "unique_candidate_cases": 7,
+  "correct_shadow_candidates": 7,
+  "incorrect_shadow_candidates_rejected": 0,
+  "candidate_replays": 7,
+  "route_ambiguities": 0,
+  "no_executable_route": 2993,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "candidates": [
+    {
+      "id": "math-v1-development-0212",
+      "selected_route": "arithmetic_sequence",
+      "candidate_answer_sha256": "580811fa95269f3ecd4f22d176e079d36093573680b6ef66fa341e687a15b5da",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0389",
+      "selected_route": "arithmetic_sequence",
+      "candidate_answer_sha256": "454f63ac30c8322997ef025edff6abd23e0dbe7b8a3d5126a894e4a168c1b59b",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0918",
+      "selected_route": "bounded_counting",
+      "candidate_answer_sha256": "e629fa6598d732768f7c726b4b621285f9c3b85303900aa912017db7617d8bdb",
+      "reference_match": true,
+      "matched_representation": "integer",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-1287",
+      "selected_route": "finite_list_mean",
+      "candidate_answer_sha256": "1da51b8d8ff98f6a48f80ae79fe3ca6c26e1abb7b7d125259255d6d2b875ea08",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-1858",
+      "selected_route": "finite_list_mean",
+      "candidate_answer_sha256": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-2842",
+      "selected_route": "arithmetic_sequence",
+      "candidate_answer_sha256": "eb624dbe56eb6620ae62080c10a273cab73ae8eca98ab17b731446a31c79393a",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-2924",
+      "selected_route": "unit_conversion",
+      "candidate_answer_sha256": "af43e9cf2da5603aab64e514e2c1e8ce5b418c827495b5cec1872f5cc0f3ed89",
+      "reference_match": true,
+      "matched_representation": "terminating_decimal",
+      "replay_verified": true
+    }
+  ],
+  "report_sha256": "e80a01c522cea4522555f8ea6eb84b495452d0ca5022aab002f222969e9e7bb9"
+}

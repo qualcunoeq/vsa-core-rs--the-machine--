@@ -191,6 +191,7 @@ pub mod source_bayes_frontend;
 pub mod source_bayes_pack;
 pub mod source_sequence_frontend;
 pub mod source_unit_frontend;
+pub mod goal6_external_portfolio;
 pub mod source_probability_bridge;
 pub mod spectral_linear_algebra_pack;
 pub mod spectral_frontend;

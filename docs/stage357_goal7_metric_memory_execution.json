@@ -1,0 +1,18 @@
+{
+  "schema": "stage357-goal7-metric-memory-execution-v1",
+  "source_sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+  "catalog_kind": "metric",
+  "retrieved_status": "unique",
+  "retrieved_replay_verified": true,
+  "execution_cases": 6,
+  "exact_execution_decisions": 6,
+  "execution_replay_verified": 6,
+  "execution_tamper_rejected": 6,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "append_status": "Appended",
+  "duplicate_status": "Duplicate",
+  "production_mutations": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "859a8822ef3d8d8b429081a0fa1bd5e8eda14705beea5e26510266ef19f468d9"
+}

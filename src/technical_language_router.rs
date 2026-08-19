@@ -30,6 +30,16 @@ use crate::number_theory_frontend::{
     NumberTheoryFrontendStatus,
 };
 use crate::number_theory_pack::{evaluate_number_theory, NumberTheoryStatus};
+use crate::ode_frontend::{
+    downstream_replay as ode_downstream_replay, formalize_ode_text,
+    replay_verified as ode_frontend_replay, OdeFrontendStatus,
+};
+use crate::ode_pack::{evaluate_ode, OdeStatus};
+use crate::polynomial_frontend::{
+    downstream_replay as polynomial_downstream_replay, formalize_polynomial_text,
+    replay_verified as polynomial_frontend_replay, PolynomialFrontendStatus,
+};
+use crate::polynomial_pack::evaluate_polynomial;
 use crate::source_formula_pack::biology_pack::biology_frontend::{
     formalize_biology_text, BiologyFrontendStatus,
 };
@@ -44,6 +54,8 @@ use crate::source_metric_pack::source_metric_frontend::{
 use crate::source_metric_pack::{evaluate_metric, MetricDefinitionRecord, MetricStatus};
 use crate::source_topology_frontend::{formalize_topology_text, TopologyFrontendStatus};
 use crate::source_topology_pack::{evaluate_topology, TopologyDefinitionRecord, TopologyStatus};
+use crate::spectral_frontend::{formalize_spectral_text, SpectralFrontendStatus};
+use crate::spectral_linear_algebra_pack::{evaluate_spectral, SpectralStatus};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::sync::OnceLock;
@@ -62,6 +74,9 @@ pub enum RouteDomain {
     FiniteTopology,
     Chemistry,
     Biology,
+    ODE,
+    Polynomial,
+    Spectral,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -230,6 +245,62 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
         ambiguous.extend([RouteDomain::MarkovHitting, RouteDomain::MarkovStationary]);
     }
     let lower_text = text.to_ascii_lowercase();
+
+    let ode_signal = lower_text.contains("differential equation") || lower_text.contains("ode");
+    if ode_signal {
+        let ode = formalize_ode_text(text, case_id);
+        if ode.status == OdeFrontendStatus::Complete
+            && ode_frontend_replay(&ode)
+            && ode_downstream_replay(&ode)
+            && ode.request.as_ref().is_some_and(|request| {
+                let result = evaluate_ode(request);
+                result.status == OdeStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::ODE);
+        } else if ode.status == OdeFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::ODE);
+        }
+    }
+
+    let polynomial_signal = lower_text.contains("polynomial") || lower_text.contains("prime field");
+    if polynomial_signal {
+        let polynomial = formalize_polynomial_text(text, case_id);
+        if polynomial.status == PolynomialFrontendStatus::Complete
+            && polynomial_frontend_replay(&polynomial)
+            && polynomial_downstream_replay(&polynomial)
+            && polynomial.request.as_ref().is_some_and(|request| {
+                let result = evaluate_polynomial(request);
+                result.status == crate::polynomial_pack::PolynomialStatus::Complete
+                    && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::Polynomial);
+        } else if polynomial.status == PolynomialFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::Polynomial);
+        }
+    }
+
+    let spectral_signal = lower_text.contains("eigenvalue")
+        || lower_text.contains("eigenspace")
+        || lower_text.contains("characteristic polynomial")
+        || lower_text.contains("diagonaliz")
+        || lower_text.contains("spectral decomposition")
+        || lower_text.contains("matrix power");
+    if spectral_signal {
+        let spectral = formalize_spectral_text(text);
+        if spectral.status == SpectralFrontendStatus::Complete
+            && spectral.replay_verified()
+            && spectral.request.as_ref().is_some_and(|request| {
+                let result = evaluate_spectral(request);
+                result.status == SpectralStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::Spectral);
+        } else if spectral.status == SpectralFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::Spectral);
+        }
+    }
 
     // The finite-state parser intentionally returns `Ambiguous` when its
     // required fields are absent.  Only expose that ambiguity to the
@@ -490,5 +561,33 @@ mod tests {
         assert_eq!(unsupported.status, RouteStatus::Unsupported);
         assert!(replay_verified(&chemistry));
         assert!(replay_verified(&biology));
+    }
+
+    #[test]
+    fn bounded_ode_polynomial_and_spectral_routes_require_explicit_inputs() {
+        let ode = route(
+            "Solve the bounded exact scalar ODE with constant derivative: initial=2 derivative=3 time=2.",
+            "ode-route",
+        );
+        assert_eq!(ode.status, RouteStatus::Authorized);
+        assert_eq!(ode.selected, Some(RouteDomain::ODE));
+
+        let polynomial = route(
+            "Over a prime field, evaluate polynomial p=[1,2,1] mod=5 at point=2.",
+            "polynomial-route",
+        );
+        assert_eq!(polynomial.status, RouteStatus::Authorized);
+        assert_eq!(polynomial.selected, Some(RouteDomain::Polynomial));
+
+        let spectral = route("Find the eigenvalues of [[2,0],[0,5]].", "spectral-route");
+        assert_eq!(spectral.status, RouteStatus::Authorized);
+        assert_eq!(spectral.selected, Some(RouteDomain::Spectral));
+
+        let missing = route("Find the eigenvalues of A.", "spectral-missing");
+        assert_eq!(missing.status, RouteStatus::Unsupported);
+        assert!(replay_verified(&ode));
+        assert!(replay_verified(&polynomial));
+        assert!(replay_verified(&spectral));
+        assert!(replay_verified(&missing));
     }
 }

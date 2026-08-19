@@ -91,7 +91,7 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
         CountingOperation::Permutation
     } else if lower.contains("combination") || lower.contains("unordered") {
         CountingOperation::Combination
-    } else if lower.contains("factorial") {
+    } else if lower.contains("factorial") || lower.contains("n!") || lower.contains("n !") {
         CountingOperation::Factorial
     } else if lower.contains("multiply")
         || lower.contains("product")
@@ -99,6 +99,21 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
     {
         CountingOperation::Product
     } else {
+        if ["count", "ways", "select", "arrange"]
+            .iter()
+            .any(|marker| lower.contains(marker))
+        {
+            return finish(CountingFrontendResult {
+                status: CountingFrontendStatus::Missing,
+                request: None,
+                unresolved: vec![
+                    "a counting request is present, but its bounded operation is not explicit"
+                        .into(),
+                ],
+                provenance,
+                replay_hash: String::new(),
+            });
+        }
         return finish(CountingFrontendResult {
             status: CountingFrontendStatus::Unsupported,
             request: None,
@@ -138,7 +153,17 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
     let factors = if operation == CountingOperation::Product {
         match (n, r) {
             (Some(left), Some(right)) => vec![left, right],
-            _ => Vec::new(),
+            _ => {
+                return finish(CountingFrontendResult {
+                    status: CountingFrontendStatus::Missing,
+                    request: None,
+                    unresolved: vec![
+                        "a multiplication count requires explicitly bound finite factors".into(),
+                    ],
+                    provenance,
+                    replay_hash: String::new(),
+                });
+            }
         }
     } else {
         Vec::new()
@@ -176,5 +201,12 @@ mod tests {
             "t",
         );
         assert_eq!(result.status, CountingFrontendStatus::Ambiguous);
+    }
+
+    #[test]
+    fn preserves_missing_operation_as_non_authorizing() {
+        let result = formalize_counting_text("Count the ways, but no model is stated.", "t");
+        assert_eq!(result.status, CountingFrontendStatus::Missing);
+        assert!(replay_verified(&result));
     }
 }

@@ -60,6 +60,10 @@ name = "external_sequence_promotion_gate"
 path = "src/bin/external_sequence_promotion_gate.rs"
 
 [[bin]]
+name = "external_counting_frontend_bench"
+path = "src/bin/external_counting_frontend_bench.rs"
+
+[[bin]]
 name = "external_shadow_learning_curve"
 path = "src/bin/external_shadow_learning_curve.rs"
 

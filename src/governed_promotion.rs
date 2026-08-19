@@ -148,6 +148,7 @@ pub fn stage_promotion(
         PromotionOutcome::CompetingBoundary
     } else if !policy.human_authorized
         || !policy.min_holdout
+        || !candidate.holdout_passed
         || candidate.false_authorizations > policy.max_false_authorizations
     {
         PromotionOutcome::PolicyDenied
@@ -439,5 +440,20 @@ mod tests {
         assert_eq!(report.replay_verified, 240);
         assert_eq!(report.tamper_rejected, 240);
         assert_eq!(report.live_registry_mutations, 0);
+    }
+
+    #[test]
+    fn candidate_holdout_failure_blocks_even_when_policy_requires_holdout() {
+        let registry = new_registry("world");
+        let candidate = candidate("candidate", "bounded", &[], false, 0, 0);
+        let policy = PromotionPolicy {
+            min_holdout: true,
+            max_false_authorizations: 0,
+            max_regressions: 0,
+            human_authorized: true,
+            migration_safe: true,
+        };
+        let receipt = stage_promotion(&registry, candidate, &policy, true, false);
+        assert_eq!(receipt.outcome, PromotionOutcome::PolicyDenied);
     }
 }

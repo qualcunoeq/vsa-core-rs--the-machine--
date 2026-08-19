@@ -1,0 +1,18 @@
+{
+  "schema": "stage373-independent-holdout-promotion-gate-v1",
+  "acquisition_preflight": true,
+  "holdout_preflight": true,
+  "cases": 2,
+  "exact_decisions": 2,
+  "clean_promotion": true,
+  "failed_holdout_blocked": true,
+  "clean_replay": true,
+  "failed_replay": true,
+  "clean_tamper_rejected": true,
+  "failed_tamper_rejected": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "source_hash": "3cbc119e5759642c2fa35814313d2acd6e98cc23f8e5998a18f05a4156454efc",
+  "holdout_hash": "ea70d52b58a737226f3bd38a255319361b9b96dd59cf087d68a6142f6cb20712",
+  "production_snapshot_unchanged": true
+}

@@ -24,6 +24,14 @@ name = "external_math_gap_analysis"
 path = "src/bin/external_math_gap_analysis.rs"
 
 [[bin]]
+name = "external_source_selection"
+path = "src/bin/external_source_selection.rs"
+
+[[bin]]
+name = "external_source_ingestion"
+path = "src/bin/external_source_ingestion.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

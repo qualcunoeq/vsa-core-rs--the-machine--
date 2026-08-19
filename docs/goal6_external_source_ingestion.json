@@ -1,0 +1,205 @@
+{
+  "schema": "external-source-ingestion-v1",
+  "release_id": "external-math-exam-v1",
+  "answer_keys_read": 0,
+  "proposals_considered": 9,
+  "source_documents_read": 9,
+  "hash_verified": 9,
+  "valid_catalogs": 9,
+  "generated_exercises": 51,
+  "generated_complete": 51,
+  "generated_replays": 51,
+  "mutation_cases": 27,
+  "mutation_rejections": 27,
+  "independent_exercise_evidence": 0,
+  "promotion_allowed": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "selection_manifest_matches": true,
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "replay_verified": true,
+  "receipts": [
+    {
+      "cluster_key": "Intermediate Algebra::missing_knowledge",
+      "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
+      "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 11,
+      "valid_catalog": true,
+      "provenance_records": 11,
+      "generated_exercises": 11,
+      "generated_complete": 11,
+      "generated_replays": 11,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Intermediate Algebra::missing_knowledge",
+      "source_path": "docs/sources/openstax_finite_regression_source.txt",
+      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Algebra::language_normalization_failure",
+      "source_path": "docs/sources/openstax_finite_regression_source.txt",
+      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Geometry::missing_method",
+      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Prealgebra::language_normalization_failure",
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Prealgebra::missing_prerequisite",
+      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Number Theory::missing_method",
+      "source_path": "docs/sources/openstax_finite_regression_source.txt",
+      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Number Theory::missing_method",
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    },
+    {
+      "cluster_key": "Counting & Probability::missing_prerequisite",
+      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "hash_verified": true,
+      "format": "formula_text",
+      "records": 5,
+      "valid_catalog": true,
+      "provenance_records": 5,
+      "generated_exercises": 5,
+      "generated_complete": 5,
+      "generated_replays": 5,
+      "mutation_cases": 3,
+      "mutation_rejections": 3,
+      "independent_exercise_evidence": false,
+      "promotion_status": "blocked",
+      "reasons": [
+        "generated exercises are derived from source records, not independent external exercise evidence"
+      ]
+    }
+  ],
+  "report_sha256": "6321eac40a3ff36ea9862e22f6a88c4f6ca6f1fe9cb2dd83213f46298bdfd6ad"
+}

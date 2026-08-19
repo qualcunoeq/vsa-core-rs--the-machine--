@@ -404,6 +404,18 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
             "OpenStax-derived finite Boolean evaluation and exhaustive validity checks",
         ),
         (
+            "source_derived_finite_automata",
+            "Source-derived bounded finite automata",
+            vec!["graph_theory", "combinatorics"],
+            vec![
+                "deterministic_finite_automaton",
+                "labelled_transition_graph",
+                "finite_state_trace",
+                "accepted_word_count",
+            ],
+            "separately ingested finite-automata source manifest with bounded graph, trace, and counting bridges",
+        ),
+        (
             "polynomial_algebra",
             "Bounded polynomial algebra over prime fields",
             vec![
@@ -540,6 +552,7 @@ pub fn breadth_first_manifest() -> CurriculumManifest {
                 | "source_derived_finite_set_operations"
                 | "source_derived_bounded_counting"
                 | "source_derived_bounded_truth_tables"
+                | "source_derived_finite_automata"
                 | "polynomial_algebra"
                 | "source_derived_complex_arithmetic"
                 | "bounded_complex_analysis"
@@ -595,7 +608,7 @@ mod tests {
     fn default_curriculum_is_acyclic_and_holdout_safe() {
         let manifest = breadth_first_manifest();
         assert!(manifest.validate().is_empty());
-        assert_eq!(manifest.packs.len(), 34);
+        assert_eq!(manifest.packs.len(), 35);
         assert!(manifest
             .packs
             .iter()

@@ -468,6 +468,10 @@ name = "stage318_finite_automata_integrated_checkpoint"
 path = "src/bin/stage318_finite_automata_integrated_checkpoint.rs"
 
 [[bin]]
+name = "stage319_automata_combinatorics_composition"
+path = "src/bin/stage319_automata_combinatorics_composition.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

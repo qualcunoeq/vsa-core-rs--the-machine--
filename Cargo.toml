@@ -496,6 +496,10 @@ name = "stage326_source_science_language_routes"
 path = "src/bin/stage326_source_science_language_routes.rs"
 
 [[bin]]
+name = "stage327_expanded_sealed_curriculum_exam"
+path = "src/bin/stage327_expanded_sealed_curriculum_exam.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

@@ -5,6 +5,7 @@ This is an answer-key-blind review queue derived from the frozenportfolio gap re
 - Development questions read: 3000
 - Source documents considered: 28
 - Triage candidates read / review queue: 12 / 5
+- Semantic-ready entries: 0
 - Answer keys read: 0
 - Source ingestions / promotion proposals / production mutations: 0 / 0 / 0
 - Manifest unchanged: true

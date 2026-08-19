@@ -28,6 +28,13 @@ struct GapReport {
     promotion_proposals: usize,
     production_mutations: usize,
     manifest_unchanged: bool,
+    route_gaps: Vec<RouteGap>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RouteGap {
+    route: String,
+    executable_cases: usize,
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -49,6 +56,9 @@ struct SourcePlanEntry {
     affected_residuals: usize,
     overlap_terms: usize,
     lexical_score: f64,
+    matching_route: Option<String>,
+    executable_cases: usize,
+    semantic_gate: &'static str,
     queue_rank: usize,
     decision: &'static str,
     semantic_validation_required: bool,
@@ -70,6 +80,7 @@ struct Report {
     source_documents_considered: usize,
     triage_candidates_read: usize,
     review_queue_size: usize,
+    semantic_ready_entries: usize,
     plan_entries: Vec<SourcePlanEntry>,
     source_ingestions: usize,
     promotion_proposals: usize,
@@ -118,27 +129,68 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
     triage.truncate(5);
 
+    // A source is actionable only when the validated route that would consume
+    // it has at least one complete executable residual. This prevents lexical
+    // overlap from becoming a de facto curriculum decision.
+    let route_evidence = gap
+        .route_gaps
+        .iter()
+        .map(|route| (route.route.as_str(), route.executable_cases))
+        .collect::<std::collections::BTreeMap<_, _>>();
+
+    fn route_for_source(path: &str) -> Option<&'static str> {
+        if path.contains("bounded_geometry") {
+            Some("BoundedGeometry")
+        } else if path.contains("finite_regression") {
+            Some("FiniteRegression")
+        } else if path.contains("finite_statistics") {
+            Some("FiniteStatistics")
+        } else {
+            None
+        }
+    }
+
     let plan_entries = triage
         .into_iter()
         .enumerate()
-        .map(|(index, candidate)| SourcePlanEntry {
-            source_path: candidate.source_path,
-            source_sha256: candidate.source_sha256,
-            provenance_fields_present: candidate.provenance_fields_present,
-            affected_residuals: candidate.affected_residuals,
-            overlap_terms: candidate.overlap_terms,
-            lexical_score: candidate.lexical_score,
-            queue_rank: index + 1,
-            decision: "review_queue_only",
-            semantic_validation_required: true,
-            independent_exercises_required: true,
-            ingestion_allowed: false,
-            promotion_allowed: false,
-            blocking_reasons: vec![
+        .map(|(index, candidate)| {
+            let matching_route = route_for_source(&candidate.source_path);
+            let executable_cases = matching_route
+                .and_then(|route| route_evidence.get(route).copied())
+                .unwrap_or(0);
+            let semantic_gate = if executable_cases > 0 {
+                "complete_route_evidence"
+            } else if matching_route.is_some() {
+                "lexical_only_no_complete_route"
+            } else {
+                "no_matching_validated_route"
+            };
+            let mut blocking_reasons = vec![
                 "lexical_overlap_is_not_semantic_coverage",
                 "independent_exercise_corpus_missing",
                 "source_scope_and_authority_require_review",
-            ],
+            ];
+            if executable_cases == 0 {
+                blocking_reasons.push("no_complete_executable_residual_for_source_route");
+            }
+            SourcePlanEntry {
+                source_path: candidate.source_path,
+                source_sha256: candidate.source_sha256,
+                provenance_fields_present: candidate.provenance_fields_present,
+                affected_residuals: candidate.affected_residuals,
+                overlap_terms: candidate.overlap_terms,
+                lexical_score: candidate.lexical_score,
+                matching_route: matching_route.map(String::from),
+                executable_cases,
+                semantic_gate,
+                queue_rank: index + 1,
+                decision: "review_queue_only",
+                semantic_validation_required: true,
+                independent_exercises_required: true,
+                ingestion_allowed: false,
+                promotion_allowed: false,
+                blocking_reasons,
+            }
         })
         .collect::<Vec<_>>();
 
@@ -155,6 +207,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         source_documents_considered: gap.source_documents_considered,
         triage_candidates_read,
         review_queue_size: plan_entries.len(),
+        semantic_ready_entries: plan_entries
+            .iter()
+            .filter(|entry| entry.semantic_gate == "complete_route_evidence")
+            .count(),
         plan_entries,
         source_ingestions: 0,
         promotion_proposals: 0,
@@ -198,6 +254,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
              - Development questions read: {}\n\
              - Source documents considered: {}\n\
              - Triage candidates read / review queue: {} / {}\n\
+             - Semantic-ready entries: {}\n\
              - Answer keys read: {}\n\
              - Source ingestions / promotion proposals / production mutations: {} / {} / {}\n\
              - Manifest unchanged: {}\n\
@@ -206,6 +263,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report.source_documents_considered,
             report.triage_candidates_read,
             report.review_queue_size,
+            report.semantic_ready_entries,
             report.answer_keys_read,
             report.source_ingestions,
             report.promotion_proposals,

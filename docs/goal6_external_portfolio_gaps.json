@@ -5,14 +5,14 @@
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "questions_read": 3000,
   "answer_keys_read": 0,
-  "route_invocations": 18000,
+  "route_invocations": 21000,
   "unique_candidates": 7,
   "no_executable_route": 2993,
   "multiple_route_ambiguities": 0,
   "first_gate_counts": {
-    "ambiguous_frontend": 129,
+    "ambiguous_frontend": 159,
     "complete_frontend_execution_boundary": 1,
-    "missing_frontend_fields": 2863
+    "missing_frontend_fields": 2833
   },
   "route_gaps": [
     {
@@ -74,6 +74,18 @@
       "frontend_status_counts": {
         "Missing": 2987,
         "Unsupported": 13
+      },
+      "execution_status_counts": {
+        "not_run": 3000
+      },
+      "executable_cases": 0
+    },
+    {
+      "route": "FiniteStatistics",
+      "frontend_status_counts": {
+        "Ambiguous": 61,
+        "Missing": 2932,
+        "Unsupported": 7
       },
       "execution_status_counts": {
         "not_run": 3000
@@ -212,5 +224,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "3870ebd0ebefd02dac92a5908a32ae4701b689949a84ad4ac2f3da84f2fbb3c2"
+  "report_sha256": "b1cd1ce98973ed1b0f3f3730c6a0de78f20974a27c7e15ac662adf2ce3bf71d7"
 }

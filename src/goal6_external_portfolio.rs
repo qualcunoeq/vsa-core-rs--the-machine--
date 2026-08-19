@@ -14,7 +14,10 @@ use crate::source_formula_frontend::formalize_formula_text;
 use crate::source_sequence_frontend::{
     formalize_sequence_terms_text, replay_verified as sequence_frontend_replay,
 };
-use crate::source_statistics_frontend::formalize_finite_list_mean_text;
+use crate::source_statistics_frontend::{
+    formalize_finite_list_mean_text, formalize_statistics_text,
+};
+use crate::source_statistics_pack::evaluate_statistics;
 use crate::source_statistics_pack::records as statistics_records;
 use crate::source_regression_pack::records as regression_records;
 use crate::source_unit_frontend::{
@@ -39,6 +42,7 @@ pub enum PortfolioRoute {
     UnitConversion,
     BoundedGeometry,
     FiniteRegression,
+    FiniteStatistics,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -139,6 +143,41 @@ fn mean_route(text: &str) -> RouteObservation {
         frontend.request.as_ref(),
         crate::source_statistics_pack::DOMAIN,
         &statistics_records(),
+    )
+}
+
+fn statistics_route(text: &str) -> RouteObservation {
+    let frontend = formalize_statistics_text(text);
+    let mut tampered = frontend.clone();
+    tampered.replay_hash.push('x');
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::FiniteStatistics,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend.replay_verified(),
+            false,
+            !tampered.replay_verified(),
+            false,
+        );
+    };
+    let execution = evaluate_statistics(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == FormulaStatus::Complete)
+        .then(|| execution.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
+        PortfolioRoute::FiniteStatistics,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend.replay_verified(),
+        execution.replay_verified(),
+        !tampered.replay_verified(),
+        !execution_tampered.replay_verified(),
     )
 }
 
@@ -248,6 +287,7 @@ fn regression_route(text: &str) -> RouteObservation {
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
         mean_route(text),
+        statistics_route(text),
         sequence_route(text, case_id),
         counting_route(text, case_id),
         unit_route(text, case_id),
@@ -270,7 +310,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 6);
+        assert_eq!(observations.len(), 7);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -287,6 +327,19 @@ mod tests {
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::BoundedGeometry);
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_labeled_statistics_selects_only_statistics_route() {
+        let observations = observe_all(
+            "Find the expected value of a binomial variable with n=8 and p=1/4.",
+            "test-statistics",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::FiniteStatistics);
         assert!(executable[0].execution_replay_verified);
         assert!(executable[0].execution_tamper_rejected);
     }

@@ -1,6 +1,6 @@
 # Goal 6 — answer-key-blind residual samples
 
-- Development questions / route invocations: 3000 / 18000
+- Development questions / route invocations: 3000 / 21000
 - Answer keys / sealed questions read: 0 / 0
 - Sample limit per route/status: 8
 - Production mutations: 0
@@ -12,5 +12,6 @@
 - **UnitConversion** frontend {"Ambiguous": 101, "Complete": 1, "Missing": 2726, "Unsupported": 172}; execution {"Complete": 1, "not_run": 2999}; sampled statuses "Ambiguous:8, Complete:1, Missing:8, Unsupported:8"
 - **BoundedGeometry** frontend {"Missing": 2987, "Unsupported": 13}; execution {"not_run": 3000}; sampled statuses "Missing:8, Unsupported:8"
 - **FiniteRegression** frontend {"Missing": 2987, "Unsupported": 13}; execution {"not_run": 3000}; sampled statuses "Missing:8, Unsupported:8"
+- **FiniteStatistics** frontend {"Ambiguous": 61, "Missing": 2932, "Unsupported": 7}; execution {"not_run": 3000}; sampled statuses "Ambiguous:8, Missing:8, Unsupported:7"
 
 Samples are prompt previews bound to hashes for diagnosis only;they do not authorize routes or expose answer keys.

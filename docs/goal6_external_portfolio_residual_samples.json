@@ -6,7 +6,7 @@
   "questions_read": 3000,
   "answer_keys_read": 0,
   "sealed_questions_read": 0,
-  "route_invocations": 18000,
+  "route_invocations": 21000,
   "sample_limit": 8,
   "route_summaries": [
     {
@@ -1015,11 +1015,191 @@
           }
         ]
       }
+    },
+    {
+      "route": "finite_statistics",
+      "frontend_status_counts": {
+        "Ambiguous": 61,
+        "Missing": 2932,
+        "Unsupported": 7
+      },
+      "execution_status_counts": {
+        "not_run": 3000
+      },
+      "samples_by_frontend_status": {
+        "Ambiguous": [
+          {
+            "case_id": "math-v1-development-0030",
+            "prompt_sha256": "e4ed15c52bfa39d313ad0fd89041a0780abb7cedf108f4a50791690ec77142af",
+            "prompt_preview": "Mr. Mendez awards extra credit on quizzes to his students with quiz grades that exceed the class mean. Given that 107 students take the same quiz, what is the largest number of students who can be awarded extra credit?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0205",
+            "prompt_sha256": "c52b8e852bf772d652ec9deeab59edddec5ffcd4f6afefe5a2701f8c0a1ed7f3",
+            "prompt_preview": "The median of the set of numbers $\\{$12, 38, 45, $x$, 14$\\}$ is five less than the mean. If $x$ is a negative integer, what is the value of $x$?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0238",
+            "prompt_sha256": "7f01f6be38331525c6f5a59d37d1eb6f4cc5f5c46a42d5dce6c0dc140e7b778f",
+            "prompt_preview": "The noon temperatures for seven consecutive days were $80^{\\circ}$, $79^{\\circ}$, $81^{\\circ}$, $85^{\\circ}$, $87^{\\circ}$, $89^{\\circ}$, and $87^{\\circ}$ Fahrenheit. What is the mean noon temperature, in degrees Fahrenheit, for the week?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0298",
+            "prompt_sha256": "4e891dcddc0045ad2c0ff473ca826b8c8f9df6b2c55aa273224705e7fea1ec20",
+            "prompt_preview": "Amerigo Vespucci has a map of America drawn on the complex plane. The map does not distort distances. Los Angeles corresponds to $0$ on this complex plane, and Boston corresponds to $2600i$. Meanwhile, Knoxville corresponds to the point $78",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0446",
+            "prompt_sha256": "7dcdb98da941659fa9c8886388cd8086629019e80b0f0599fa82c79e3e9c9e20",
+            "prompt_preview": "When $11^4$ is written out in base 10, the sum of its digits is $16=2^4$. What is the largest base $b$ such that the base-$b$ digits of $11^4$ do not add up to $2^4$? (Note: here, $11^4$ in base $b$ means that the base-$b$ number $11$ is ra",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0513",
+            "prompt_sha256": "6dbf6563aedd4f1eb6fef824214840c69470188738781f839b4021a4f81c2606",
+            "prompt_preview": "What is the arithmetic mean of all positive two-digit multiples of 7?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0588",
+            "prompt_sha256": "195806be2a50d68023e2480b0ee3d65ba8f230b75d2590d4bd3918eda204f641",
+            "prompt_preview": "Kim earned scores of 87, 83 and 88 on her first three mathematics examinations. If Kim receives a score of 90 on the fourth exam, then by how much will her average increase?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0589",
+            "prompt_sha256": "1bf3aef5e52c7e4f0f5c9a40c0f14a512cf0d708c445c4478df7f8c746e7a14b",
+            "prompt_preview": "An athlete's heart beats an average of 150 times per minute while running. How many times does the athlete's heart beat during a 26-mile race if the athlete runs at a pace of 5 minutes per mile?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          }
+        ],
+        "Missing": [
+          {
+            "case_id": "math-v1-development-0000",
+            "prompt_sha256": "2283d1a358afe7fc4bb150664a6f3415f3c6ac472a2bef933f7a70249dd6184e",
+            "prompt_preview": "If $x = 2$ and $y = 5$, then what is the value of $\\frac{x^4+2y^2}{6}$ ?",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0001",
+            "prompt_sha256": "fcac731e8c756e414931c545479f1abf982f5db913c7ea4ef7e7ef58f0f73684",
+            "prompt_preview": "The sequence of integers in the row of squares and in each of the two columns of squares form three distinct arithmetic sequences. What is the value of $N$? [asy] unitsize(0.35inch); draw((0,0)--(7,0)--(7,1)--(0,1)--cycle); draw((1,0)--(1,1",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0002",
+            "prompt_sha256": "70f1a5ac377177d6c8b7da930625137d4fabc3c2827f5e7aa717b11fa6ce70a2",
+            "prompt_preview": "What is the degree of the polynomial $(4 +5x^3 +100 +2\\pi x^4 + \\sqrt{10}x^4 +9)$?",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0003",
+            "prompt_sha256": "b4e3880b4dd91d2e3c563ce36f00eda83cb190263d06f373cd2128217d961802",
+            "prompt_preview": "Find the center of the circle with equation $x^2 - 6x + y^2 + 2y = 9$.",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0005",
+            "prompt_sha256": "3ae585360a877b0005b2dcccaea5f70258f08e24ac8217022de280559608d5aa",
+            "prompt_preview": "What is the value of $9^3 + 3(9^2) + 3(9) + 1$?",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0006",
+            "prompt_sha256": "1d14dc26f1cb0fcfd34db75d85ea8ed8192aa436d257fe96ac5215ab55df6c1f",
+            "prompt_preview": "Bill can buy jags, jigs and jogs for $\\$1$, $\\$2$ and $\\$7$ each, respectively. What is the largest number of jogs he can purchase if he must buy at least one of each item and will spend exactly $\\$50$?",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0007",
+            "prompt_sha256": "a177980c0047f18f2127641711355865aed93b1e2bfbcb1f52532e140fbd86a6",
+            "prompt_preview": "Jeremy made a Venn diagram showing the number of students in his class who own types of pets. There are 32 students in his class. In addition to the information in the Venn diagram, Jeremy knows half of the students have a dog, $\\frac{3}{8}",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0008",
+            "prompt_sha256": "467654b8a6bbc2ca98a139a71d3abf1cc67547e00be5c7a200898fa40464dc6a",
+            "prompt_preview": "If three people are selected at random from a group of seven men and three women, what is the probability that at least one woman is selected? Express your answer as a common fraction.",
+            "frontend_status": "Missing",
+            "execution_status": "not_run"
+          }
+        ],
+        "Unsupported": [
+          {
+            "case_id": "math-v1-development-0004",
+            "prompt_sha256": "ec8f30c7cab291d7a8a40f94bbfbb67e9a20b3fa5f752a81cca1294ab8aac296",
+            "prompt_preview": "Let \\[f(x) = \\left\\{ \\begin{array}{cl} ax+3, &\\text{ if }x>2, \\\\ x-5 &\\text{ if } -2 \\le x \\le 2, \\\\ 2x-b &\\text{ if } x <-2. \\end{array} \\right.\\]Find $a+b$ if the piecewise function is continuous (which means that its graph can be drawn w",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0181",
+            "prompt_sha256": "2162357bfadf516cd47e861edba5410605e2d3b5bae36bde533b2d5630d08301",
+            "prompt_preview": "Let \\[f(x) = \\begin{cases} 2x^2 - 3&\\text{if } x\\le 2, \\\\ ax + 4 &\\text{if } x>2. \\end{cases} \\]Find $a$ if the graph of $y=f(x)$ is continuous (which means the graph can be drawn without lifting your pencil from the paper).",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0216",
+            "prompt_sha256": "80c313ce3f377dcef5ee056c0c3c92bbb89a672aaedbeee8afda166fb69af296",
+            "prompt_preview": "Let \\[f(x) = \\begin{cases} 3x^2 + 2&\\text{if } x\\le 3, \\\\ ax - 1 &\\text{if } x>3. \\end{cases} \\]Find $a$ if the graph of $y=f(x)$ is continuous (which means the graph can be drawn without lifting your pencil from the paper).",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0529",
+            "prompt_sha256": "5664f1c199ef30e2b10465ad680e5271e72fb1c92eff22877fd9c690e250ba9c",
+            "prompt_preview": "Karen drove continuously from 9:40 a.m. until 1:20 p.m. of the same day and covered a distance of 165 miles. What was her average speed in miles per hour?",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-0754",
+            "prompt_sha256": "7b58f8762b78ba4ef7061b51c7a137388d79e386a46e674572a6e39e352d487d",
+            "prompt_preview": "Let \\[f(x) = \\begin{cases} x^2+2 &\\text{if } x<n, \\\\ 2x+5 &\\text{if }x\\ge{n}. \\end{cases} \\]If the graph $y=f(x)$ is continuous, find the sum of all possible values of $n$.",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-1271",
+            "prompt_sha256": "9dd2a4cb11c5abd98b7d9f22c650f42aa2a577aa0652af04a973a71f16c99363",
+            "prompt_preview": "How many continuous paths from $A$ to $B$, along segments of the figure, do not revisit any of the six labeled points? [asy] draw((0,0)--(3,0)--(3,2)--(0,2)--(0,0)--cycle,linewidth(2)); draw((0,2)--(1,0)--(3,2)--(0,2)--cycle,linewidth(2)); ",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-2283",
+            "prompt_sha256": "8ac2a5edc50fcb811161ef41a63e8423feab9f0cb29f0c45af386aece4216058",
+            "prompt_preview": "A spherical scoop of vanilla ice cream with radius of 2 inches is dropped onto the surface of a dish of hot chocolate sauce. As it melts, the ice cream spreads out uniformly forming a cylindrical region 8 inches in radius. Assuming the dens",
+            "frontend_status": "Unsupported",
+            "execution_status": "not_run"
+          }
+        ]
+      }
     }
   ],
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "production_mutations": 0,
-  "report_sha256": "19e3e8835f647c24df3300dd67e985ec34301dc89945b5e6bacc89419f6ec6d8"
+  "report_sha256": "56b5608a1b9b093c1cff3448306974e02a8e40b19f3642801ea75126b980f22b"
 }

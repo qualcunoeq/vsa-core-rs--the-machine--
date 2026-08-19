@@ -2,13 +2,14 @@
   "schema": "goal6-external-portfolio-source-plan-v1",
   "release_id": "external-math-exam-v1",
   "input_gap_schema": "goal6-external-portfolio-gaps-v1",
-  "input_gap_report_sha256": "3870ebd0ebefd02dac92a5908a32ae4701b689949a84ad4ac2f3da84f2fbb3c2",
+  "input_gap_report_sha256": "b1cd1ce98973ed1b0f3f3730c6a0de78f20974a27c7e15ac662adf2ce3bf71d7",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "development_questions_read": 3000,
   "answer_keys_read": 0,
   "source_documents_considered": 28,
   "triage_candidates_read": 12,
   "review_queue_size": 5,
+  "semantic_ready_entries": 0,
   "plan_entries": [
     {
       "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
@@ -17,6 +18,9 @@
       "affected_residuals": 442,
       "overlap_terms": 1119,
       "lexical_score": 0.373872368860675,
+      "matching_route": "BoundedGeometry",
+      "executable_cases": 0,
+      "semantic_gate": "lexical_only_no_complete_route",
       "queue_rank": 1,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -26,7 +30,8 @@
       "blocking_reasons": [
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
-        "source_scope_and_authority_require_review"
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
       ]
     },
     {
@@ -36,6 +41,9 @@
       "affected_residuals": 421,
       "overlap_terms": 934,
       "lexical_score": 0.31206147677915136,
+      "matching_route": "FiniteRegression",
+      "executable_cases": 0,
+      "semantic_gate": "lexical_only_no_complete_route",
       "queue_rank": 2,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -45,7 +53,8 @@
       "blocking_reasons": [
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
-        "source_scope_and_authority_require_review"
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
       ]
     },
     {
@@ -55,6 +64,9 @@
       "affected_residuals": 328,
       "overlap_terms": 736,
       "lexical_score": 0.24590711660541265,
+      "matching_route": "FiniteStatistics",
+      "executable_cases": 0,
+      "semantic_gate": "lexical_only_no_complete_route",
       "queue_rank": 3,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -64,7 +76,8 @@
       "blocking_reasons": [
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
-        "source_scope_and_authority_require_review"
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
       ]
     },
     {
@@ -74,6 +87,9 @@
       "affected_residuals": 291,
       "overlap_terms": 644,
       "lexical_score": 0.21516872702973605,
+      "matching_route": "FiniteStatistics",
+      "executable_cases": 0,
+      "semantic_gate": "lexical_only_no_complete_route",
       "queue_rank": 4,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -83,7 +99,8 @@
       "blocking_reasons": [
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
-        "source_scope_and_authority_require_review"
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
       ]
     },
     {
@@ -93,6 +110,9 @@
       "affected_residuals": 263,
       "overlap_terms": 583,
       "lexical_score": 0.1947878382893418,
+      "matching_route": null,
+      "executable_cases": 0,
+      "semantic_gate": "no_matching_validated_route",
       "queue_rank": 5,
       "decision": "review_queue_only",
       "semantic_validation_required": true,
@@ -102,7 +122,8 @@
       "blocking_reasons": [
         "lexical_overlap_is_not_semantic_coverage",
         "independent_exercise_corpus_missing",
-        "source_scope_and_authority_require_review"
+        "source_scope_and_authority_require_review",
+        "no_complete_executable_residual_for_source_route"
       ]
     }
   ],
@@ -113,5 +134,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "all_entries_blocked": true,
-  "report_sha256": "6618fa85f56121ecb0dd30f549ff3b428814ad56b62e95cbcd1750f9803867fb"
+  "report_sha256": "4229ab2aa60d53b9e56ff39a211cd4153593266d24dd45a69912e95f9d5968fb"
 }

@@ -10,4 +10,4 @@
 * false authorizations / denials: 0 / 0
 * parent memory unchanged: true
 
-Versions v18–v31 were stored as immutable typed records. A counterexample-driven bound correction changed current conclusions for four historical cases, while old decision receipts remained replayable. Deprecation, ontology split, merge metadata, missing-version refusal, and record tamper checks were exercised in a cloned memory only.
+Versions v18–v31 were stored as immutable typed records. A counterexample-driven bound correction changed current conclusions for three historical cases, while old decision receipts remained replayable. Deprecation, ontology split, merge metadata, missing-version refusal, and record tamper checks were exercised in a cloned memory only.

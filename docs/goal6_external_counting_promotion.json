@@ -1,0 +1,22 @@
+{
+  "schema": "external-counting-promotion-v1",
+  "candidate_id": "external_counting_frontend_v1",
+  "frontend_source_document_sha256": "88843184f34abdab6cba6dbd7cff3265a3b28e42e2d14f24ce02a9d3579f3257",
+  "frontend_exact_decisions": 120,
+  "frontend_supported_values": 80,
+  "frontend_replays": 120,
+  "frontend_tamper_rejections": 120,
+  "shadow_candidates": 1,
+  "shadow_correct": 1,
+  "shadow_incorrect_rejected": 0,
+  "shadow_replays": 1,
+  "shadow_false_authorizations": 0,
+  "staged_promotion": "Promoted",
+  "induced_regression_blocked": true,
+  "rollback_applied": true,
+  "historical_replay_verified": true,
+  "world_state_preserved": true,
+  "live_registry_mutations": 0,
+  "live_manifest_mutations": 0,
+  "report_sha256": "2e565aaf991e34de68ddb25d3144ed0dad404ab2f2a63fab81bce3fec61353b5"
+}

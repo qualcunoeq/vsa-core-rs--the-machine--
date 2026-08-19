@@ -2,7 +2,7 @@
   "schema": "goal6-external-portfolio-score-v1",
   "release_id": "external-math-exam-v1",
   "partition": "development",
-  "probe_report_sha256": "2bb4cac65a6d586c4001ae581657565439582cb0c11114db0f44d25047ef6bd3",
+  "probe_report_sha256": "b3fe9fdefa6b49d001e4a3004f5fd99fdab98df8bcdd724882c38871eb0e436d",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "questions_read": 3000,
   "answer_hashes_read": 3000,
@@ -77,5 +77,5 @@
       "replay_verified": true
     }
   ],
-  "report_sha256": "7d34e40f33f761dec07c5a08d60c4f79b7d7fe79e0283b18ce619eecf1bca99d"
+  "report_sha256": "e6f3ea75e41620d2614beef3a22e2aacdd29071e495d14c55cdb86c1dc4df52b"
 }

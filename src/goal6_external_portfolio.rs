@@ -16,6 +16,7 @@ use crate::source_sequence_frontend::{
 };
 use crate::source_statistics_frontend::formalize_finite_list_mean_text;
 use crate::source_statistics_pack::records as statistics_records;
+use crate::source_regression_pack::records as regression_records;
 use crate::source_unit_frontend::{
     formalize_unit_text, replay_verified as unit_frontend_replay,
 };
@@ -37,6 +38,7 @@ pub enum PortfolioRoute {
     BoundedCounting,
     UnitConversion,
     BoundedGeometry,
+    FiniteRegression,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -226,6 +228,22 @@ fn geometry_route(text: &str) -> RouteObservation {
     )
 }
 
+fn regression_route(text: &str) -> RouteObservation {
+    let records = regression_records();
+    let frontend = formalize_formula_text(text, crate::source_regression_pack::DOMAIN, &records);
+    let mut tampered = frontend.clone();
+    tampered.replay_hash.push('x');
+    formula_rational_observation(
+        PortfolioRoute::FiniteRegression,
+        format!("{:?}", frontend.status),
+        frontend.replay_verified(),
+        !tampered.replay_verified(),
+        frontend.request.as_ref(),
+        crate::source_regression_pack::DOMAIN,
+        &records,
+    )
+}
+
 /// Offer one prompt to every portfolio route, without a lexical pre-dispatch.
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
@@ -234,6 +252,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         counting_route(text, case_id),
         unit_route(text, case_id),
         geometry_route(text),
+        regression_route(text),
     ]
 }
 
@@ -251,7 +270,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 5);
+        assert_eq!(observations.len(), 6);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -268,6 +287,19 @@ mod tests {
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::BoundedGeometry);
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_regression_selects_only_regression_route() {
+        let observations = observe_all(
+            "Apply regression_slope: covariance_sum=12 and x_variance_sum=4.",
+            "test-regression",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::FiniteRegression);
         assert!(executable[0].execution_replay_verified);
         assert!(executable[0].execution_tamper_rejected);
     }

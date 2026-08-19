@@ -472,6 +472,10 @@ name = "stage319_automata_combinatorics_composition"
 path = "src/bin/stage319_automata_combinatorics_composition.rs"
 
 [[bin]]
+name = "stage321_finite_automata_source_ingestion"
+path = "src/bin/stage321_finite_automata_source_ingestion.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

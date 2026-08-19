@@ -1,0 +1,60 @@
+{
+  "schema": "stage321-finite-automata-source-ingestion-v1",
+  "source_sha256": "25a0799a102b81b49ad28856b89184e44ac7c69853de04a464e19b74c7c5cc3c",
+  "pack_report_sha256": "d4f65bb85762e7e57ed65a48298522cbc7276677b385a0fb1c67349aad0acad2",
+  "records": 5,
+  "records_validated": 5,
+  "exact_schema_decisions": 5,
+  "replay_verified": 5,
+  "tamper_rejections": 5,
+  "pack_ids_covered": 5,
+  "pack_ids_uncovered": 0,
+  "source_mutations_rejected": 5,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "curriculum_manifest_mutations": 0,
+  "hle_questions_read": 0,
+  "receipts": [
+    {
+      "id": "dfa-definition",
+      "fields_complete": true,
+      "unique_id": true,
+      "scope_nonempty": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "dfa-trace",
+      "fields_complete": true,
+      "unique_id": true,
+      "scope_nonempty": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "regular-boundary",
+      "fields_complete": true,
+      "unique_id": true,
+      "scope_nonempty": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "finite-replay",
+      "fields_complete": true,
+      "unique_id": true,
+      "scope_nonempty": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    },
+    {
+      "id": "bounded-execution",
+      "fields_complete": true,
+      "unique_id": true,
+      "scope_nonempty": true,
+      "replay_verified": true,
+      "tamper_rejected": true
+    }
+  ]
+}

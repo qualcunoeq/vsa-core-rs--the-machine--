@@ -1,0 +1,11 @@
+# Bounded finite-automata source manifest
+#
+# This manifest records the bounded source scope used by the shadow pack.
+# The fields are intentionally declarative; execution remains in a generic
+# DFA interpreter and is never selected by source-record or case identifier.
+
+dfa-definition|Sipser, Introduction to the Theory of Computation, 3e, section 1.1|deterministic finite automata and acceptance by a transition function|DFA definition and extended transition computation
+dfa-trace|MIT OpenCourseWare 6.045J, Lecture 1|finite-state traces over a finite alphabet|state-by-state execution over an input word
+regular-boundary|Stanford CS103, Regular Languages notes, finite automata section|finite automata are distinct from nondeterministic and epsilon machines|model-boundary distinctions
+finite-replay|governed curriculum replay protocol|deterministic typed traces and replay receipts|replay and tamper obligations
+bounded-execution|governed curriculum resource policy|explicit state and input budgets|resource and fail-closed boundary

@@ -104,6 +104,10 @@ name = "goal6_external_portfolio_source_plan"
 path = "src/bin/goal6_external_portfolio_source_plan.rs"
 
 [[bin]]
+name = "goal6_external_portfolio_residual_samples"
+path = "src/bin/goal6_external_portfolio_residual_samples.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

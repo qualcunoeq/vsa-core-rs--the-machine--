@@ -1,0 +1,20 @@
+{
+  "schema": "stage379-multi-source-self-directed-campaign-v1",
+  "preflight_verified": true,
+  "source_library_candidates": 4,
+  "validated_candidates": 3,
+  "rejected_candidates": 1,
+  "validation_receipts": 4,
+  "validation_replays": 4,
+  "initial_gaps": 4,
+  "resolved_gaps": 3,
+  "remaining_gaps": 1,
+  "campaign_rounds": 4,
+  "selected_rounds": 3,
+  "selected_modules": 3,
+  "campaign_replay_verified": true,
+  "manifest_unchanged": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "cde140bedbcb764f7cee46b6f80822a5a5541ab176185505e862923edefb5855"
+}

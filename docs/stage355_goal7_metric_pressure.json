@@ -1,0 +1,18 @@
+{
+  "schema": "stage355-goal7-metric-pressure-v1",
+  "source_sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+  "corpus_sha256": "87a8b0b3222e4d4b0eebaf3f8b1fc00f617005b4150f20296e7feb0b9cad54a4",
+  "cases": 21,
+  "complete_cases": 12,
+  "ambiguous_cases": 1,
+  "missing_cases": 2,
+  "unsupported_or_inconsistent_cases": 6,
+  "exact_decisions": 21,
+  "replay_verified": 21,
+  "tamper_rejected": 21,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_mutations": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "b1b2fbf320221833218d0d537b53a0d251080c19d2ea983bccee43a90c3a8c3f"
+}

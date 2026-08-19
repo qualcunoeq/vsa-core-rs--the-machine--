@@ -1,0 +1,189 @@
+{
+  "schema": "stage380-external-curriculum-source-manifest-v1",
+  "source_roots": [
+    "data/openstax_pdfs",
+    "data/libretexts_pdfs"
+  ],
+  "files": [
+    {
+      "path": "data/libretexts_pdfs/114850.pdf",
+      "family": "libretexts",
+      "bytes": 6515902,
+      "sha256": "dcc4549a08010f58c7bcf4effd4257ddf13f4913c48db17fb414ac6f1a45d91f",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/1252.pdf",
+      "family": "libretexts",
+      "bytes": 251109,
+      "sha256": "17351cfc5970fa42830a4a560737b07c75d187834b45e3506146e05e36201b12",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/22458.pdf",
+      "family": "libretexts",
+      "bytes": 692159,
+      "sha256": "4c6360da74ab8a81b90abbde65018e4a223c82f947d6da175daca361d11d61d9",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/33482.pdf",
+      "family": "libretexts",
+      "bytes": 225538,
+      "sha256": "c01691aa893e47e47f61a8885537c305925d4bab808b586a9afb7d51d28fd814",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/34975.pdf",
+      "family": "libretexts",
+      "bytes": 203205,
+      "sha256": "24cea28f071a7834cf3f5081df153730c9d8d31221f03521373418170a33988a",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/35040.pdf",
+      "family": "libretexts",
+      "bytes": 177765,
+      "sha256": "65e4bedfdfffe8f6d771f75f47c217c69fcdbfb2d56f5c155abf06884bd42055",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/48772.pdf",
+      "family": "libretexts",
+      "bytes": 250443,
+      "sha256": "7cba0c3a3b958790a9661706bf31c3e55effe2c834ae815e8d11fb7aa64ce4cd",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/4969.pdf",
+      "family": "libretexts",
+      "bytes": 6510322,
+      "sha256": "def9432facbb74c965148750ea11e61a601b7d8e038f057d00c3ca1edc61379b",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/6225.pdf",
+      "family": "libretexts",
+      "bytes": 219079,
+      "sha256": "3d324aaee3555a50d09099b6a5177d5575f06cdf6cb3149e4e12aeb9b2bc5e5f",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/libretexts_pdfs/95383.pdf",
+      "family": "libretexts",
+      "bytes": 203057,
+      "sha256": "91808b02443ad8a6fb8a39a51cf44a881f11ec0d0335eec89973a2df5d3a4da3",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 116281063,
+      "sha256": "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 52104540,
+      "sha256": "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/calculus-volume-2_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 47350759,
+      "sha256": "f6ac06038088711766e5b664a8114c8fcb0b7b88cfb38e92bbaf56ba2df43f4a",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 79186757,
+      "sha256": "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 84220165,
+      "sha256": "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 106819604,
+      "sha256": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 56728705,
+      "sha256": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 80988726,
+      "sha256": "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 22795257,
+      "sha256": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 23503369,
+      "sha256": "a79a953b75e570030c74ea6f700b8bd70f41dc8c01bf4e9618e6a0adba3a382a",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 63194495,
+      "sha256": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    },
+    {
+      "path": "data/openstax_pdfs/precalculus-2e_-_WEB.pdf",
+      "family": "openstax",
+      "bytes": 114386806,
+      "sha256": "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+      "extraction_status": "not_attempted",
+      "answer_key_status": "not_inspected"
+    }
+  ],
+  "file_count": 22,
+  "extraction_status": "not_attempted",
+  "answer_key_policy": "no answer keys are read or inferred during inventory",
+  "manifest_sha256": "90d42a6945eea636b041539138cd98b3e475557f7d0d4733df98f611ea01c346"
+}

@@ -119,7 +119,7 @@ fn source() -> SourceCitation {
         url: "https://openstax.org/details/books/precalculus-2e".into(),
         license: "CC BY 4.0; OpenStax attribution required".into(),
         retrieved_utc: "2026-08-17".into(),
-        evidence_span: "A polynomial in z is evaluated and differentiated componentwise; an affine map satisfies the Cauchy-Riemann equations when ux=vy and uy=-vx.".into(),
+        evidence_span: "A polynomial in z is evaluated and differentiated componentwise; an affine map u(x,y)+iv(x,y) is complex differentiable only when the Cauchy-Riemann equations u_x=v_y and u_y=-v_x hold.".into(),
     }
 }
 

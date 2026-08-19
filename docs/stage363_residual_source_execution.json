@@ -1,0 +1,21 @@
+{
+  "schema": "stage363-residual-source-execution-v1",
+  "sources": 2,
+  "metadata_replays": 2,
+  "metadata_tamper_rejections": 2,
+  "source_mutations": 6,
+  "source_mutations_rejected": 6,
+  "execution_cases": 14,
+  "exact_decisions": 14,
+  "execution_replays": 14,
+  "execution_tamper_rejections": 14,
+  "complete_cases": 8,
+  "ambiguous_cases": 2,
+  "missing_cases": 2,
+  "unsupported_or_invalid_cases": 2,
+  "source_matches": 14,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_mutations": 0,
+  "report_sha256": "7a59329d91d7993930af20d89a09f67b70c236d26c03d408915e936d2f7380f1"
+}

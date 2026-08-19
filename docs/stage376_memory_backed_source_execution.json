@@ -1,0 +1,20 @@
+{
+  "schema": "stage376-memory-backed-source-execution-v1",
+  "preflight_verified": true,
+  "retrieved_catalogs": 2,
+  "retrieval_replays": 2,
+  "authorized_executions": 2,
+  "execution_replays": 2,
+  "provenance_preserved": 2,
+  "safe_refusals": 4,
+  "refusal_replays": 4,
+  "ambiguous_refusals": 1,
+  "missing_input_refusals": 1,
+  "wrong_domain_refusals": 1,
+  "unknown_formula_refusals": 1,
+  "tampered_catalog_refusals": 1,
+  "parent_unchanged": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "corpus_sha256": "f3bc992476e160561a19322f5f8e63c849acf28773774340d8395ee93d89de1a"
+}

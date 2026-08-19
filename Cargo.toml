@@ -488,6 +488,10 @@ name = "stage324_finite_state_language_shift"
 path = "src/bin/stage324_finite_state_language_shift.rs"
 
 [[bin]]
+name = "stage325_metric_topology_language_routes"
+path = "src/bin/stage325_metric_topology_language_routes.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

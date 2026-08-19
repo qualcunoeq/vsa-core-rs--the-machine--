@@ -30,8 +30,15 @@ use crate::number_theory_frontend::{
     NumberTheoryFrontendStatus,
 };
 use crate::number_theory_pack::{evaluate_number_theory, NumberTheoryStatus};
+use crate::source_metric_pack::source_metric_frontend::{
+    formalize_metric_text, FrontendStatus as MetricFrontendStatus,
+};
+use crate::source_metric_pack::{evaluate_metric, MetricDefinitionRecord, MetricStatus};
+use crate::source_topology_frontend::{formalize_topology_text, TopologyFrontendStatus};
+use crate::source_topology_pack::{evaluate_topology, TopologyDefinitionRecord, TopologyStatus};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use std::sync::OnceLock;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "snake_case")]
@@ -43,6 +50,8 @@ pub enum RouteDomain {
     MarkovStationary,
     Mobius,
     NumberTheory,
+    FiniteMetric,
+    FiniteTopology,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -69,6 +78,31 @@ fn digest<T: Serialize>(value: &T) -> String {
         "{:x}",
         Sha256::digest(serde_json::to_vec(value).expect("route serializes"))
     )
+}
+
+fn metric_records() -> &'static [MetricDefinitionRecord] {
+    static RECORDS: OnceLock<Vec<MetricDefinitionRecord>> = OnceLock::new();
+    RECORDS.get_or_init(|| {
+        let source =
+            include_str!("../docs/sources/topology_without_tears_finite_metric_definition.txt");
+        let records = crate::source_metric_pack::extract_metric_definitions(source)
+            .expect("validated finite-metric source record");
+        crate::source_metric_pack::validate_metric_definitions(&records)
+            .expect("finite-metric source record validates");
+        records
+    })
+}
+
+fn topology_records() -> &'static [TopologyDefinitionRecord] {
+    static RECORDS: OnceLock<Vec<TopologyDefinitionRecord>> = OnceLock::new();
+    RECORDS.get_or_init(|| {
+        let source = include_str!("../docs/sources/topology_without_tears_finite_definition.txt");
+        let records = crate::source_topology_pack::extract_topology_definitions(source)
+            .expect("validated finite-topology source record");
+        crate::source_topology_pack::validate_topology_definitions(&records)
+            .expect("finite-topology source record validates");
+        records
+    })
 }
 
 fn payload(decision: &RouteDecision) -> impl Serialize + '_ {
@@ -185,11 +219,12 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
     } else if markov.status == MarkovFrontendStatus::Ambiguous {
         ambiguous.extend([RouteDomain::MarkovHitting, RouteDomain::MarkovStationary]);
     }
+    let lower_text = text.to_ascii_lowercase();
+
     // The finite-state parser intentionally returns `Ambiguous` when its
     // required fields are absent.  Only expose that ambiguity to the
     // dispatcher when the text actually claims to describe a state machine;
     // otherwise every unrelated technical question would become ambiguous.
-    let lower_text = text.to_ascii_lowercase();
     let state_signal = [
         "initial state",
         "transitions:",
@@ -212,6 +247,39 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
             authorized.push(RouteDomain::FiniteStateTransition);
         } else if state_status == StateDecision::Ambiguous {
             ambiguous.push(RouteDomain::FiniteStateTransition);
+        }
+    }
+
+    let metric_signal = lower_text.contains("metric") || lower_text.contains("distance function");
+    if metric_signal {
+        let metric = formalize_metric_text(text);
+        if metric.status == MetricFrontendStatus::Complete
+            && metric.replay_verified()
+            && metric.request.as_ref().is_some_and(|request| {
+                let result = evaluate_metric(request, metric_records());
+                result.status == MetricStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::FiniteMetric);
+        } else if metric.status == MetricFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::FiniteMetric);
+        }
+    }
+
+    let topology_signal = lower_text.contains("topology")
+        || lower_text.contains("points:")
+        || lower_text.contains("open sets:");
+    if topology_signal {
+        let topology = formalize_topology_text(text);
+        if topology.status == TopologyFrontendStatus::Complete
+            && topology.request.as_ref().is_some_and(|request| {
+                let result = evaluate_topology(request, topology_records());
+                result.status == TopologyStatus::Complete && result.replay_verified()
+            })
+        {
+            authorized.push(RouteDomain::FiniteTopology);
+        } else if topology.status == TopologyFrontendStatus::Ambiguous {
+            ambiguous.push(RouteDomain::FiniteTopology);
         }
     }
     authorized.sort();
@@ -328,5 +396,30 @@ mod tests {
         assert_eq!(ambiguous.status, RouteStatus::Ambiguous);
         assert!(replay_verified(&supported));
         assert!(replay_verified(&ambiguous));
+    }
+
+    #[test]
+    fn source_metric_and_topology_routes_require_explicit_carriers() {
+        let metric = route(
+            "For a finite metric on points: p0,p1,p2; distances: p0-p0=0,p0-p1=1,p0-p2=2,p1-p1=0,p1-p2=1,p2-p2=0; determine the distance from p0 to p2.",
+            "metric-route",
+        );
+        assert_eq!(metric.status, RouteStatus::Authorized);
+        assert_eq!(metric.selected, Some(RouteDomain::FiniteMetric));
+
+        let topology = route(
+            "Validate topology: points: {a,b,c}; open sets: {}; open sets: {a}; open sets: {a,b,c}.",
+            "topology-route",
+        );
+        assert_eq!(topology.status, RouteStatus::Authorized);
+        assert_eq!(topology.selected, Some(RouteDomain::FiniteTopology));
+
+        let missing = route(
+            "Determine the topology of a finite carrier without listing its open sets.",
+            "topology-missing",
+        );
+        assert_eq!(missing.status, RouteStatus::Unsupported);
+        assert!(replay_verified(&metric));
+        assert!(replay_verified(&topology));
     }
 }

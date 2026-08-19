@@ -484,6 +484,10 @@ name = "stage323_post_automata_technical_language"
 path = "src/bin/stage323_post_automata_technical_language.rs"
 
 [[bin]]
+name = "stage324_finite_state_language_shift"
+path = "src/bin/stage324_finite_state_language_shift.rs"
+
+[[bin]]
 name = "stage77_spectral_language_frontend"
 path = "src/bin/stage77_spectral_language_frontend.rs"
 

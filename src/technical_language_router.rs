@@ -22,7 +22,7 @@ use crate::finite_markov_frontend::{
 };
 use crate::finite_markov_hitting_pack::{evaluate as evaluate_hitting, HittingStatus};
 use crate::finite_markov_stationary_pack::{evaluate as evaluate_stationary, StationaryStatus};
-use crate::finite_state_contract::{formalize as formalize_state, StateDecision};
+use crate::finite_state_contract::{formalize_technical as formalize_state, StateDecision};
 use crate::mobius_frontend::{formalize_mobius_text, MobiusFrontendStatus};
 use crate::mobius_inversion_pack::{evaluate as evaluate_mobius, MobiusStatus};
 use crate::number_theory_frontend::{
@@ -190,9 +190,18 @@ pub fn route(text: &str, case_id: &str) -> RouteDecision {
     // dispatcher when the text actually claims to describe a state machine;
     // otherwise every unrelated technical question would become ambiguous.
     let lower_text = text.to_ascii_lowercase();
-    let state_signal = ["initial state", "transitions:", "event sequence"]
-        .iter()
-        .any(|marker| lower_text.contains(marker));
+    let state_signal = [
+        "initial state",
+        "transitions:",
+        "event sequence",
+        "start in state",
+        "begin in state",
+        "input event",
+        "final state",
+        "end in state",
+    ]
+    .iter()
+    .any(|marker| lower_text.contains(marker));
     if state_signal {
         let (state_status, state_artifact) = formalize_state(text);
         if state_status == StateDecision::Supported

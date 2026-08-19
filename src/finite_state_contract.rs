@@ -122,8 +122,7 @@ impl StateContract {
             errors.push("incorrect_artifact_contract".into());
         }
         if self.supported_forms.len() != 2
-            || self.required_bindings
-                != ["initial_state", "transition_table", "event_sequence"]
+            || self.required_bindings != ["initial_state", "transition_table", "event_sequence"]
         {
             errors.push("incomplete_supported_contract".into());
         }
@@ -150,7 +149,11 @@ impl StateContract {
     }
 
     pub fn split_hash(&self, split: StateSplit) -> String {
-        let cases: Vec<&StateCase> = self.cases.iter().filter(|case| case.split == split).collect();
+        let cases: Vec<&StateCase> = self
+            .cases
+            .iter()
+            .filter(|case| case.split == split)
+            .collect();
         sha256(&serde_json::to_vec(&cases).expect("state split serializes"))
     }
 }
@@ -161,24 +164,69 @@ fn sha256(bytes: &[u8]) -> String {
     format!("{:x}", hasher.finalize())
 }
 
-fn parse_bindings(text: &str) -> Option<(String, Vec<StateTransition>, Vec<String>, String, BTreeMap<String, bool>)> {
-    let initial = Regex::new(r"initial state\s*:\s*([a-z0-9_]+)").ok()?.captures(text)?.get(1)?.as_str().to_string();
-    let expected = Regex::new(r"expected state\s*:\s*([a-z0-9_]+)").ok()?.captures(text)?.get(1)?.as_str().to_string();
-    let event_caps = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)").ok()?.captures(text)?;
-    let events: Vec<String> = event_caps.get(1)?.as_str().split(',').map(str::trim).filter(|item| !item.is_empty()).map(String::from).collect();
-    if events.is_empty() { return None; }
-    let transition_regex = Regex::new(r"([a-z0-9_]+)\s*--\s*([a-z0-9_]+)(?:\s*\[([a-z0-9_]+)\])?\s*-->\s*([a-z0-9_]+)").ok()?;
-    let transitions: Vec<StateTransition> = transition_regex.captures_iter(text).map(|caps| StateTransition {
-        from: caps[1].into(), event: caps[2].into(), guard: caps.get(3).map(|value| value.as_str().into()), to: caps[4].into(),
-    }).collect();
-    if transitions.is_empty() { return None; }
+fn parse_bindings(
+    text: &str,
+) -> Option<(
+    String,
+    Vec<StateTransition>,
+    Vec<String>,
+    String,
+    BTreeMap<String, bool>,
+)> {
+    let initial = Regex::new(r"initial state\s*:\s*([a-z0-9_]+)")
+        .ok()?
+        .captures(text)?
+        .get(1)?
+        .as_str()
+        .to_string();
+    let expected = Regex::new(r"expected state\s*:\s*([a-z0-9_]+)")
+        .ok()?
+        .captures(text)?
+        .get(1)?
+        .as_str()
+        .to_string();
+    let event_caps = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)")
+        .ok()?
+        .captures(text)?;
+    let events: Vec<String> = event_caps
+        .get(1)?
+        .as_str()
+        .split(',')
+        .map(str::trim)
+        .filter(|item| !item.is_empty())
+        .map(String::from)
+        .collect();
+    if events.is_empty() {
+        return None;
+    }
+    let transition_regex = Regex::new(
+        r"([a-z0-9_]+)\s*--\s*([a-z0-9_]+)(?:\s*\[([a-z0-9_]+)\])?\s*-->\s*([a-z0-9_]+)",
+    )
+    .ok()?;
+    let transitions: Vec<StateTransition> = transition_regex
+        .captures_iter(text)
+        .map(|caps| StateTransition {
+            from: caps[1].into(),
+            event: caps[2].into(),
+            guard: caps.get(3).map(|value| value.as_str().into()),
+            to: caps[4].into(),
+        })
+        .collect();
+    if transitions.is_empty() {
+        return None;
+    }
     let mut guards = BTreeMap::new();
-    if let Some(caps) = Regex::new(r"guards\s*:\s*([a-z0-9_=, ]+)").ok()?.captures(text) {
+    if let Some(caps) = Regex::new(r"guards\s*:\s*([a-z0-9_=, ]+)")
+        .ok()?
+        .captures(text)
+    {
         for binding in caps[1].split(',') {
             let mut parts = binding.trim().split('=');
             let name = parts.next()?.trim();
             let value = parts.next()?.trim();
-            if name.is_empty() || !matches!(value, "true" | "false") { return None; }
+            if name.is_empty() || !matches!(value, "true" | "false") {
+                return None;
+            }
             guards.insert(name.into(), value == "true");
         }
     }
@@ -187,7 +235,20 @@ fn parse_bindings(text: &str) -> Option<(String, Vec<StateTransition>, Vec<Strin
 
 pub fn formalize(prompt: &str) -> (StateDecision, Option<StateTraceArtifact>) {
     let text = prompt.to_ascii_lowercase().replace(['\n', '\r'], " ");
-    if ["nondeterministic", "random transition", "probability", "timezone", "calendar", "unbounded", "continuous"].iter().any(|marker| text.contains(marker)) {
+    if [
+        "nondeterministic",
+        "random transition",
+        "probabilistic",
+        "stochastic",
+        "probability",
+        "timezone",
+        "calendar",
+        "unbounded",
+        "continuous",
+    ]
+    .iter()
+    .any(|marker| text.contains(marker))
+    {
         return (StateDecision::Unsupported, None);
     }
     let Some((initial, transitions, events, expected, guards)) = parse_bindings(text.trim()) else {
@@ -198,7 +259,11 @@ pub fn formalize(prompt: &str) -> (StateDecision, Option<StateTraceArtifact>) {
     }
     for pair in transitions.iter().enumerate() {
         for other in transitions.iter().skip(pair.0 + 1) {
-            if pair.1.from == other.from && pair.1.event == other.event && pair.1.guard == other.guard && pair.1.to != other.to {
+            if pair.1.from == other.from
+                && pair.1.event == other.event
+                && pair.1.guard == other.guard
+                && pair.1.to != other.to
+            {
                 return (StateDecision::Unsupported, None);
             }
         }
@@ -206,20 +271,43 @@ pub fn formalize(prompt: &str) -> (StateDecision, Option<StateTraceArtifact>) {
     let mut states = vec![initial.clone()];
     let mut current = initial.clone();
     for event in &events {
-        let candidates: Vec<&StateTransition> = transitions.iter().filter(|transition| transition.from == current && transition.event == *event).collect();
-        if candidates.is_empty() { return (StateDecision::Unsupported, None); }
-        let viable: Vec<&StateTransition> = candidates.iter().copied().filter(|transition| transition.guard.as_ref().is_none_or(|guard| guards.get(guard) == Some(&true))).collect();
+        let candidates: Vec<&StateTransition> = transitions
+            .iter()
+            .filter(|transition| transition.from == current && transition.event == *event)
+            .collect();
+        if candidates.is_empty() {
+            return (StateDecision::Unsupported, None);
+        }
+        let viable: Vec<&StateTransition> = candidates
+            .iter()
+            .copied()
+            .filter(|transition| {
+                transition
+                    .guard
+                    .as_ref()
+                    .is_none_or(|guard| guards.get(guard) == Some(&true))
+            })
+            .collect();
         if viable.is_empty() {
-            if candidates.iter().any(|transition| transition.guard.as_ref().is_some_and(|guard| !guards.contains_key(guard))) {
+            if candidates.iter().any(|transition| {
+                transition
+                    .guard
+                    .as_ref()
+                    .is_some_and(|guard| !guards.contains_key(guard))
+            }) {
                 return (StateDecision::Ambiguous, None);
             }
             return (StateDecision::Unsupported, None);
         }
-        if viable.len() != 1 { return (StateDecision::Unsupported, None); }
+        if viable.len() != 1 {
+            return (StateDecision::Unsupported, None);
+        }
         current = viable[0].to.clone();
         states.push(current.clone());
     }
-    if current != expected { return (StateDecision::Unsupported, None); }
+    if current != expected {
+        return (StateDecision::Unsupported, None);
+    }
     let artifact = StateTraceArtifact {
         initial_state: initial,
         events,
@@ -230,7 +318,39 @@ pub fn formalize(prompt: &str) -> (StateDecision, Option<StateTraceArtifact>) {
         guards,
         signature: "state-trace-v1".into(),
     };
-    if artifact.replay_verified() { (StateDecision::Supported, Some(artifact)) } else { (StateDecision::Unsupported, None) }
+    if artifact.replay_verified() {
+        (StateDecision::Supported, Some(artifact))
+    } else {
+        (StateDecision::Unsupported, None)
+    }
+}
+
+/// Normalize a small, explicit set of technical-language field aliases before
+/// invoking the frozen state-transition formalizer. This is deliberately not
+/// a semantic paraphrase engine: it rewrites only labels whose meaning is
+/// unambiguous in a finite-state problem and leaves transitions, guards, and
+/// targets to the existing fail-closed parser.
+pub fn formalize_technical(prompt: &str) -> (StateDecision, Option<StateTraceArtifact>) {
+    let mut text = prompt.to_ascii_lowercase().replace(['\n', '\r'], " ");
+    let label_rewrites = [
+        (r"\bstart(?:ing)? state\s*:\s*", "initial state: "),
+        (r"\bbegin(?:ning)? state\s*:\s*", "initial state: "),
+        (r"\bstart in state\s+", "initial state: "),
+        (r"\bbegin in state\s+", "initial state: "),
+        (r"\binput events?\s*:\s*", "event sequence: "),
+        (r"\bprocess(?:ed)? events?\s*:\s*", "event sequence: "),
+        (r"\bevents? to process\s*:\s*", "event sequence: "),
+        (r"\bfinal state\s*:\s*", "expected state: "),
+        (r"\bend in state\s+([a-z0-9_]+)", "expected state: $1"),
+        (r"\bfinish in state\s+([a-z0-9_]+)", "expected state: $1"),
+    ];
+    for (pattern, replacement) in label_rewrites {
+        text = Regex::new(pattern)
+            .expect("technical state label regex")
+            .replace_all(&text, replacement)
+            .into_owned();
+    }
+    formalize(&text)
 }
 
 /// Sandbox-only semantic faults for the finite-state pressure campaign.  The
@@ -245,38 +365,89 @@ pub fn formalize_with_defect(
         StateBehaviorDefect::IgnoreGuards => {
             let guard_re = Regex::new(r"\s*\[[a-z0-9_]+\]").unwrap();
             text = guard_re.replace_all(&text, "").into_owned();
-            text = Regex::new(r"guards\s*:\s*[a-z0-9_]+=(?:true|false)").unwrap().replace_all(&text, "").into_owned();
+            text = Regex::new(r"guards\s*:\s*[a-z0-9_]+=(?:true|false)")
+                .unwrap()
+                .replace_all(&text, "")
+                .into_owned();
         }
-        StateBehaviorDefect::SkipInvalidIntermediate | StateBehaviorDefect::ContinueAfterTerminal => {
-            if let Some(caps) = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)").unwrap().captures(&text) {
-                let events: Vec<&str> = caps[1].split(',').map(str::trim).filter(|event| !event.is_empty()).collect();
-                let valid: Vec<&str> = events.into_iter().filter(|event| *event != "close_unknown" && *event != "after_terminal" && *event != "unknown").collect();
+        StateBehaviorDefect::SkipInvalidIntermediate
+        | StateBehaviorDefect::ContinueAfterTerminal => {
+            if let Some(caps) = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)")
+                .unwrap()
+                .captures(&text)
+            {
+                let events: Vec<&str> = caps[1]
+                    .split(',')
+                    .map(str::trim)
+                    .filter(|event| !event.is_empty())
+                    .collect();
+                let valid: Vec<&str> = events
+                    .into_iter()
+                    .filter(|event| {
+                        *event != "close_unknown"
+                            && *event != "after_terminal"
+                            && *event != "unknown"
+                    })
+                    .collect();
                 let replacement = format!("event sequence: {}", valid.join(", "));
-                text = Regex::new(r"event sequence\s*:\s*[a-z0-9_, ]+").unwrap().replace(&text, replacement).into_owned();
+                text = Regex::new(r"event sequence\s*:\s*[a-z0-9_, ]+")
+                    .unwrap()
+                    .replace(&text, replacement)
+                    .into_owned();
             }
         }
         StateBehaviorDefect::ReorderEvents => {
-            if let Some(caps) = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)").unwrap().captures(&text) {
-                let mut events: Vec<&str> = caps[1].split(',').map(str::trim).filter(|event| !event.is_empty()).collect();
+            if let Some(caps) = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)")
+                .unwrap()
+                .captures(&text)
+            {
+                let mut events: Vec<&str> = caps[1]
+                    .split(',')
+                    .map(str::trim)
+                    .filter(|event| !event.is_empty())
+                    .collect();
                 events.reverse();
                 let replacement = format!("event sequence: {}", events.join(", "));
-                text = Regex::new(r"event sequence\s*:\s*[a-z0-9_, ]+").unwrap().replace(&text, replacement).into_owned();
+                text = Regex::new(r"event sequence\s*:\s*[a-z0-9_, ]+")
+                    .unwrap()
+                    .replace(&text, replacement)
+                    .into_owned();
             }
         }
         StateBehaviorDefect::FirstMatchingTransition => {
-            if let Some(duplicate) = Regex::new(r";\s*([a-z0-9_]+\s*--\s*[a-z0-9_]+\s*-->\s*[a-z0-9_]+)").unwrap().captures(&text) {
-                let suffix = duplicate.get(1).map(|value| value.as_str()).unwrap_or_default();
+            if let Some(duplicate) =
+                Regex::new(r";\s*([a-z0-9_]+\s*--\s*[a-z0-9_]+\s*-->\s*[a-z0-9_]+)")
+                    .unwrap()
+                    .captures(&text)
+            {
+                let suffix = duplicate
+                    .get(1)
+                    .map(|value| value.as_str())
+                    .unwrap_or_default();
                 text = text.replacen(&format!("; {suffix}"), "", 1);
             }
         }
         StateBehaviorDefect::AcceptUnknownStates => {
-            if text.contains("initial state: ghost") { text = text.replace("initial state: ghost", "initial state: locked"); }
+            if text.contains("initial state: ghost") {
+                text = text.replace("initial state: ghost", "initial state: locked");
+            }
         }
         StateBehaviorDefect::BypassSequenceBudget => {
-            if let Some(caps) = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)").unwrap().captures(&text) {
-                let events: Vec<&str> = caps[1].split(',').map(str::trim).filter(|event| !event.is_empty()).take(8).collect();
+            if let Some(caps) = Regex::new(r"event sequence\s*:\s*([a-z0-9_, ]+)")
+                .unwrap()
+                .captures(&text)
+            {
+                let events: Vec<&str> = caps[1]
+                    .split(',')
+                    .map(str::trim)
+                    .filter(|event| !event.is_empty())
+                    .take(8)
+                    .collect();
                 let replacement = format!("event sequence: {}", events.join(", "));
-                text = Regex::new(r"event sequence\s*:\s*[a-z0-9_, ]+").unwrap().replace(&text, replacement).into_owned();
+                text = Regex::new(r"event sequence\s*:\s*[a-z0-9_, ]+")
+                    .unwrap()
+                    .replace(&text, replacement)
+                    .into_owned();
             }
         }
         StateBehaviorDefect::OmitTraceReplay => {}
@@ -285,7 +456,9 @@ pub fn formalize_with_defect(
     if defect == StateBehaviorDefect::OmitTraceReplay {
         return (decision, artifact, false);
     }
-    let replay = artifact.as_ref().is_some_and(StateTraceArtifact::replay_verified);
+    let replay = artifact
+        .as_ref()
+        .is_some_and(StateTraceArtifact::replay_verified);
     (decision, artifact, replay)
 }
 
@@ -294,20 +467,48 @@ pub fn pressure_corpus() -> Vec<StateCase> {
     let mut id = 0usize;
     for index in 0..40 {
         let prompt = format!("Initial state: s{index}. Transitions: s{index} --go--> t{index}; t{index} --back--> s{index}. Event sequence: go, back, go. Expected state: t{index}.");
-        cases.push(StateCase { id: format!("state-pressure-supported-{id:03}"), prompt, expected: StateDecision::Supported, expected_state: Some(format!("t{index}")), split: if id < 120 { StateSplit::Development } else { StateSplit::Holdout } });
+        cases.push(StateCase {
+            id: format!("state-pressure-supported-{id:03}"),
+            prompt,
+            expected: StateDecision::Supported,
+            expected_state: Some(format!("t{index}")),
+            split: if id < 120 {
+                StateSplit::Development
+            } else {
+                StateSplit::Holdout
+            },
+        });
         id += 1;
     }
     for index in 0..20 {
         let prompt = format!("Initial state: idle{index}. Transitions: idle{index} --tick--> idle{index}. Event sequence: tick, tick, tick, tick. Expected state: idle{index}.");
-        cases.push(StateCase { id: format!("state-pressure-self-{index:03}"), prompt, expected: StateDecision::Supported, expected_state: Some(format!("idle{index}")), split: StateSplit::Development });
+        cases.push(StateCase {
+            id: format!("state-pressure-self-{index:03}"),
+            prompt,
+            expected: StateDecision::Supported,
+            expected_state: Some(format!("idle{index}")),
+            split: StateSplit::Development,
+        });
     }
     for index in 0..20 {
         let prompt = format!("Initial state: locked{index}. Transitions: locked{index} --open [key{index}]--> open{index}; open{index} --close--> locked{index}. Guards: key{index}=true. Event sequence: open, close. Expected state: locked{index}.");
-        cases.push(StateCase { id: format!("state-pressure-guarded-{index:03}"), prompt, expected: StateDecision::Supported, expected_state: Some(format!("locked{index}")), split: StateSplit::Development });
+        cases.push(StateCase {
+            id: format!("state-pressure-guarded-{index:03}"),
+            prompt,
+            expected: StateDecision::Supported,
+            expected_state: Some(format!("locked{index}")),
+            split: StateSplit::Development,
+        });
     }
     for index in 0..20 {
         let prompt = format!("Initial state: q{index}0. Transitions: q{index}0 --a--> q{index}1; q{index}1 --b--> q{index}2; q{index}2 --c--> q{index}0. Event sequence: a, b, c, a, b, c. Expected state: q{index}0.");
-        cases.push(StateCase { id: format!("state-pressure-cycle-{index:03}"), prompt, expected: StateDecision::Supported, expected_state: Some(format!("q{index}0")), split: StateSplit::Holdout });
+        cases.push(StateCase {
+            id: format!("state-pressure-cycle-{index:03}"),
+            prompt,
+            expected: StateDecision::Supported,
+            expected_state: Some(format!("q{index}0")),
+            split: StateSplit::Holdout,
+        });
     }
     let ambiguous = [
         "Initial state: locked. Transitions: locked --open [key_ok]--> open. Event sequence: open. Expected state: open.",
@@ -317,7 +518,17 @@ pub fn pressure_corpus() -> Vec<StateCase> {
         "Initial state: q0. Transitions: q0 --a--> q1. Event sequence: a, unknown.",
     ];
     for index in 0..40 {
-        cases.push(StateCase { id: format!("state-pressure-ambiguous-{index:03}"), prompt: ambiguous[index % ambiguous.len()].into(), expected: StateDecision::Ambiguous, expected_state: None, split: if index < 20 { StateSplit::Development } else { StateSplit::Holdout } });
+        cases.push(StateCase {
+            id: format!("state-pressure-ambiguous-{index:03}"),
+            prompt: ambiguous[index % ambiguous.len()].into(),
+            expected: StateDecision::Ambiguous,
+            expected_state: None,
+            split: if index < 20 {
+                StateSplit::Development
+            } else {
+                StateSplit::Holdout
+            },
+        });
     }
     let unsupported = [
         "Initial state: locked. Transitions: locked --open--> open. Event sequence: unknown. Expected state: locked.",
@@ -331,7 +542,17 @@ pub fn pressure_corpus() -> Vec<StateCase> {
         "Initial state: locked. Transitions: locked --open [key_ok]--> open. Guards: key_ok=false. Event sequence: open. Expected state: open.",
     ];
     for index in 0..100 {
-        cases.push(StateCase { id: format!("state-pressure-unsupported-{index:03}"), prompt: unsupported[index % unsupported.len()].into(), expected: StateDecision::Unsupported, expected_state: None, split: if index < 50 { StateSplit::Development } else { StateSplit::Holdout } });
+        cases.push(StateCase {
+            id: format!("state-pressure-unsupported-{index:03}"),
+            prompt: unsupported[index % unsupported.len()].into(),
+            expected: StateDecision::Unsupported,
+            expected_state: None,
+            split: if index < 50 {
+                StateSplit::Development
+            } else {
+                StateSplit::Holdout
+            },
+        });
     }
     cases
 }
@@ -356,23 +577,82 @@ pub fn contract() -> StateContract {
         ("Initial state: q0. Transitions: q0 --a--> q1; q1 --b--> q2; q2 --c--> q0. Event sequence: a, b, c, a, b. Expected state: q2.", "q2"),
     ];
     let mut cases = Vec::new();
-    for (index, (prompt, state)) in supported.into_iter().enumerate() { cases.push(StateCase { id: format!("state-dev-{index:02}"), prompt: prompt.into(), expected: StateDecision::Supported, expected_state: Some(state.into()), split: StateSplit::Development }); }
-    for (index, (prompt, state)) in holdout.into_iter().enumerate() { cases.push(StateCase { id: format!("state-holdout-{index:02}"), prompt: prompt.into(), expected: StateDecision::Supported, expected_state: Some(state.into()), split: StateSplit::Holdout }); }
+    for (index, (prompt, state)) in supported.into_iter().enumerate() {
+        cases.push(StateCase {
+            id: format!("state-dev-{index:02}"),
+            prompt: prompt.into(),
+            expected: StateDecision::Supported,
+            expected_state: Some(state.into()),
+            split: StateSplit::Development,
+        });
+    }
+    for (index, (prompt, state)) in holdout.into_iter().enumerate() {
+        cases.push(StateCase {
+            id: format!("state-holdout-{index:02}"),
+            prompt: prompt.into(),
+            expected: StateDecision::Supported,
+            expected_state: Some(state.into()),
+            split: StateSplit::Holdout,
+        });
+    }
     let ambiguous = [
         "Initial state: locked. Transitions: locked --open [key_ok]--> open. Event sequence: open. Expected state: open.",
         "Initial state: idle. Transitions: idle --start--> running. Event sequence: start.",
         "The machine has states and events, but the transition table is omitted.",
         "Initial state: q0. Transitions: q0 --a--> q1. Event sequence: a. Expected state: q1. Guards: key_ok=maybe.",
     ];
-    for (index, prompt) in ambiguous.into_iter().enumerate() { cases.push(StateCase { id: format!("state-amb-{index:02}"), prompt: prompt.into(), expected: StateDecision::Ambiguous, expected_state: None, split: if index % 2 == 0 { StateSplit::Development } else { StateSplit::Holdout } }); }
+    for (index, prompt) in ambiguous.into_iter().enumerate() {
+        cases.push(StateCase {
+            id: format!("state-amb-{index:02}"),
+            prompt: prompt.into(),
+            expected: StateDecision::Ambiguous,
+            expected_state: None,
+            split: if index % 2 == 0 {
+                StateSplit::Development
+            } else {
+                StateSplit::Holdout
+            },
+        });
+    }
     let unsupported = [
         "Initial state: locked. Transitions: locked --open--> open. Event sequence: close. Expected state: locked.",
         "Initial state: q0. Transitions: q0 --a--> q1; q0 --a--> q2. Event sequence: a. Expected state: q1.",
         "This is a nondeterministic state machine with a random transition.",
         "Initial state: q0. Transitions: q0 --a--> q1. Event sequence: a. Expected state: q2.",
     ];
-    for (index, prompt) in unsupported.into_iter().enumerate() { cases.push(StateCase { id: format!("state-unsup-{index:02}"), prompt: prompt.into(), expected: StateDecision::Unsupported, expected_state: None, split: if index % 2 == 0 { StateSplit::Development } else { StateSplit::Holdout } }); }
-    StateContract { contract_id: "FiniteStateTransitionV1".into(), input_artifact: "RawPrompt".into(), output_artifact: "StateTransitionTrace".into(), supported_forms: vec!["deterministic_transition_table".into(), "bounded_guarded_sequence".into()], required_bindings: vec!["initial_state".into(), "transition_table".into(), "event_sequence".into()], predicates: vec!["deterministic_transitions".into(), "guard_resolution".into(), "bounded_trace".into()], cases }
+    for (index, prompt) in unsupported.into_iter().enumerate() {
+        cases.push(StateCase {
+            id: format!("state-unsup-{index:02}"),
+            prompt: prompt.into(),
+            expected: StateDecision::Unsupported,
+            expected_state: None,
+            split: if index % 2 == 0 {
+                StateSplit::Development
+            } else {
+                StateSplit::Holdout
+            },
+        });
+    }
+    StateContract {
+        contract_id: "FiniteStateTransitionV1".into(),
+        input_artifact: "RawPrompt".into(),
+        output_artifact: "StateTransitionTrace".into(),
+        supported_forms: vec![
+            "deterministic_transition_table".into(),
+            "bounded_guarded_sequence".into(),
+        ],
+        required_bindings: vec![
+            "initial_state".into(),
+            "transition_table".into(),
+            "event_sequence".into(),
+        ],
+        predicates: vec![
+            "deterministic_transitions".into(),
+            "guard_resolution".into(),
+            "bounded_trace".into(),
+        ],
+        cases,
+    }
 }
 
 #[cfg(test)]
@@ -384,9 +664,15 @@ mod tests {
         let contract = contract();
         assert!(contract.validation_errors().is_empty());
         assert_eq!(contract.cases.len(), 18);
-        let correct = contract.cases.iter().filter(|case| formalize(&case.prompt).0 == case.expected).count();
+        let correct = contract
+            .cases
+            .iter()
+            .filter(|case| formalize(&case.prompt).0 == case.expected)
+            .count();
         assert_eq!(correct, contract.cases.len());
-        assert!(formalize(&contract.cases[0].prompt).1.is_some_and(|artifact| artifact.replay_verified()));
+        assert!(formalize(&contract.cases[0].prompt)
+            .1
+            .is_some_and(|artifact| artifact.replay_verified()));
         assert!(!contract.release_hash().is_empty());
     }
 
@@ -394,13 +680,48 @@ mod tests {
     fn pressure_corpus_covers_state_boundaries() {
         let cases = pressure_corpus();
         assert_eq!(cases.len(), 240);
-        assert_eq!(cases.iter().filter(|case| case.expected == StateDecision::Supported).count(), 100);
-        assert_eq!(cases.iter().filter(|case| case.expected == StateDecision::Ambiguous).count(), 40);
-        assert_eq!(cases.iter().filter(|case| case.expected == StateDecision::Unsupported).count(), 100);
+        assert_eq!(
+            cases
+                .iter()
+                .filter(|case| case.expected == StateDecision::Supported)
+                .count(),
+            100
+        );
+        assert_eq!(
+            cases
+                .iter()
+                .filter(|case| case.expected == StateDecision::Ambiguous)
+                .count(),
+            40
+        );
+        assert_eq!(
+            cases
+                .iter()
+                .filter(|case| case.expected == StateDecision::Unsupported)
+                .count(),
+            100
+        );
         let mut ids = BTreeSet::new();
         assert!(cases.iter().all(|case| ids.insert(case.id.clone())));
-        let correct = cases.iter().filter(|case| formalize(&case.prompt).0 == case.expected).count();
+        let correct = cases
+            .iter()
+            .filter(|case| formalize(&case.prompt).0 == case.expected)
+            .count();
         assert_eq!(correct, cases.len());
         assert!(!pressure_hash().is_empty());
+    }
+
+    #[test]
+    fn technical_aliases_normalize_only_explicit_state_fields() {
+        let prompt = "Begin in state locked. Transitions: locked --open--> open; open --close--> locked. Input events: open, close. Finish in state locked.";
+        let (decision, artifact) = formalize_technical(prompt);
+        assert_eq!(decision, StateDecision::Supported);
+        assert!(artifact.is_some_and(|trace| trace.replay_verified()));
+
+        let missing =
+            "Begin in state locked. Transitions: locked --open--> open. Input events: open.";
+        let (decision, artifact) = formalize_technical(missing);
+        assert_eq!(decision, StateDecision::Ambiguous);
+        assert!(artifact.is_none());
     }
 }

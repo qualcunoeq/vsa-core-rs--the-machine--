@@ -1,0 +1,22 @@
+{
+  "schema": "stage372-source-language-holdout-v1",
+  "corpus_sha256": "7644a64513d61749cb83de7f1b611a6c52f5cf41860c88e32f44d6ff096ff18f",
+  "source_records": 2,
+  "cases": 80,
+  "supported": 36,
+  "ambiguous": 20,
+  "unsupported": 24,
+  "exact_decisions": 80,
+  "route_decisions": 80,
+  "frontend_cases": 60,
+  "frontend_replays": 60,
+  "frontend_tamper_rejections": 60,
+  "downstream_executions": 38,
+  "downstream_authorized": 36,
+  "downstream_replays": 38,
+  "downstream_tamper_rejections": 38,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "hle_questions_read": 0
+}

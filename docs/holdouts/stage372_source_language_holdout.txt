@@ -1,0 +1,82 @@
+# Independently authored source-language holdout.
+# Format: EXPECTED<TAB>technical report
+SUPPORTED	Given prior=1/2, likelihood=1/3, and evidence=1/4, compute the Bayes posterior.
+UNSUPPORTED	The evidence is 1/5 and the prior is 2/3; calculate the posterior probability from prior likelihood and evidence with likelihood=1/7.
+SUPPORTED	Use Bayes posterior: likelihood=1/2 prior=1/4 evidence=1/3.
+SUPPORTED	After defining the three finite probabilities, determine the Bayes posterior with prior=1/3 likelihood=1/5 evidence=1/2.
+SUPPORTED	Compute the posterior probability from prior likelihood and evidence where evidence=1/6, prior=1/2, and likelihood=1/4.
+SUPPORTED	For a finite exact calculation, apply Bayes posterior to prior=2/5 likelihood=1/3 evidence=1/2.
+SUPPORTED	The report states prior=1/2 and likelihood=1/6. Calculate the Bayes posterior using evidence=1/3.
+SUPPORTED	With evidence=2/3, likelihood=1/4, and prior=1/5, find the Bayes posterior.
+SUPPORTED	Determine the posterior probability from prior likelihood and evidence: prior=1/7 likelihood=2/5 evidence=1/2.
+SUPPORTED	No approximation is intended; compute Bayes posterior from likelihood=1/3, evidence=1/4, prior=1/2.
+SUPPORTED	Use the finite rule and calculate the Bayes posterior with evidence=1/5 prior=1/3 likelihood=1/2.
+SUPPORTED	The requested object is the Bayes posterior. Its inputs are prior=2/7 likelihood=1/3 evidence=1/2.
+SUPPORTED	Calculate the posterior probability from prior likelihood and evidence after setting prior=1/2, evidence=1/7, likelihood=1/4.
+SUPPORTED	For prior=1/3 and likelihood=1/5, use evidence=1/2 to compute Bayes posterior.
+SUPPORTED	Apply Bayes posterior to the exact values evidence=1/3, prior=1/4, likelihood=1/2.
+SUPPORTED	Compute the posterior probability from prior likelihood and evidence; likelihood=2/5, prior=1/3, evidence=1/2.
+SUPPORTED	A finite report gives evidence=1/4, likelihood=1/2, and prior=1/5. Determine Bayes posterior.
+SUPPORTED	Find the Bayes posterior for prior=1/6 likelihood=1/3 evidence=2/5.
+SUPPORTED	The target is posterior probability from prior likelihood and evidence, with evidence=1/2 prior=2/5 likelihood=1/3.
+SUPPORTED	Calculate Bayes posterior exactly: prior=1/4; likelihood=1/2; evidence=1/3.
+SUPPORTED	Using linear interpolation, compute x=2 x1=0 y1=4 x2=4 y2=12.
+SUPPORTED	The target x=3 lies between endpoints x1=1 and x2=5; determine linear interpolation with y1=2 and y2=10.
+SUPPORTED	Apply linear interpolation to x1=2, y1=5, x2=8, y2=17, x=5.
+UNSUPPORTED	For the two points, use x1=0 y1=1 and x2=10 y2=21; calculate the interpolated value at x=7.
+SUPPORTED	Compute linear interpolation with y2=14, x=4, x2=6, y1=2, x1=2.
+SUPPORTED	The requested operation is interpolate between two points: x=1 x1=0 y1=3 x2=4 y2=11.
+SUPPORTED	Given x1=3, y1=9, x2=9, y2=21, evaluate linear interpolation at x=6.
+SUPPORTED	Use linear interpolation for x=8 with endpoints (x1=4,y1=10) and (x2=12,y2=26).
+SUPPORTED	The exact target is x=5. Compute linear interpolation from x1=1 y1=0 x2=9 y2=16.
+UNSUPPORTED	Determine the interpolated value: x2=7 y2=15 x1=1 y1=3 x=4.
+SUPPORTED	No extrapolation is requested; calculate linear interpolation with x=2, x1=0, y1=8, x2=4, y2=16.
+SUPPORTED	For endpoints x1=2 y1=6 and x2=10 y2=22, use linear interpolation at x=6.
+SUPPORTED	Compute the value from the linear interpolation relation with x=3 x1=1 y1=5 x2=5 y2=13.
+SUPPORTED	The report asks to interpolate between two points: x=9 x1=5 y1=20 x2=13 y2=36.
+UNSUPPORTED	Use linear interpolation, not an asymptotic approximation: x=6 x1=2 y1=4 x2=10 y2=20.
+UNSUPPORTED	Find the interpolated value at x=1 from x1=-1 y1=2 and x2=3 y2=10.
+SUPPORTED	Calculate linear interpolation where x1=10 y1=30 x2=14 y2=38 and x=12.
+SUPPORTED	The target is a linear interpolation at x=7; the endpoints are x1=3 y1=1 and x2=11 y2=17.
+SUPPORTED	Apply the relation interpolate between two points using x=4 x1=2 y1=7 x2=8 y2=19.
+SUPPORTED	Compute linear interpolation exactly for x=5 x1=1 y1=2 x2=9 y2=18.
+SUPPORTED	The desired value is obtained by linear interpolation: x=3, x1=0, y1=0, x2=6, y2=12.
+AMBIGUOUS	Compute the Bayes posterior or linear interpolation with prior=1/2 likelihood=1/3 evidence=1/4 x=2 x1=0 y1=4 x2=4 y2=12.
+AMBIGUOUS	Use linear interpolation or the Bayes posterior: x=2 x1=0 y1=1 x2=4 y2=9 prior=1/2 likelihood=1/3 evidence=1/4.
+AMBIGUOUS	The report asks to apply Bayes posterior or interpolate between two points; all listed values are exact.
+AMBIGUOUS	Determine the posterior probability from prior likelihood and evidence or the interpolated value, with prior=1/2 likelihood=1/3 evidence=1/4 x=2 x1=0 y1=0 x2=4 y2=8.
+AMBIGUOUS	Compute linear interpolation or posterior probability from prior likelihood and evidence using the declared quantities.
+AMBIGUOUS	Apply the Bayes posterior or linear interpolation rule; the requested target is not uniquely stated.
+AMBIGUOUS	Use the Bayes posterior or an alternative interpretation with prior=1/2 likelihood=1/3 evidence=1/4.
+AMBIGUOUS	Compute linear interpolation or an alternative interpretation with x=2 x1=0 y1=0 x2=4 y2=8.
+AMBIGUOUS	The phrase Bayes posterior or another formula leaves the operative target unresolved: prior=1/2 likelihood=1/3 evidence=1/4.
+AMBIGUOUS	The phrase linear interpolation or another formula leaves the operative target unresolved: x=2 x1=0 y1=0 x2=4 y2=8.
+AMBIGUOUS	Use the posterior probability from prior likelihood and evidence or a second formula, with prior=1/2 likelihood=1/3 evidence=1/4.
+AMBIGUOUS	Use interpolate between two points or a second formula, with x=2 x1=0 y1=0 x2=4 y2=8.
+AMBIGUOUS	Compute Bayes posterior or linear interpolation; the source does not state which target is intended.
+AMBIGUOUS	Compute linear interpolation or Bayes posterior; the source does not state which target is intended.
+AMBIGUOUS	Apply posterior probability from prior likelihood and evidence or linear interpolation to the same report.
+AMBIGUOUS	Apply linear interpolation or posterior probability from prior likelihood and evidence to the same report.
+AMBIGUOUS	The requested formula is Bayes posterior or an alternative interpretation, with prior=1/2 likelihood=1/3 evidence=1/4.
+AMBIGUOUS	The requested formula is linear interpolation or an alternative interpretation, with x=2 x1=0 y1=0 x2=4 y2=8.
+AMBIGUOUS	Determine Bayes posterior or interpolate between two points; no target disambiguation is supplied.
+AMBIGUOUS	Determine interpolate between two points or Bayes posterior; no target disambiguation is supplied.
+UNSUPPORTED	Approximate the Bayes posterior using prior=1/2 likelihood=1/3 evidence=1/4.
+UNSUPPORTED	Give a continuous approximation to Bayes posterior with prior=1/2 likelihood=1/3 evidence=1/4.
+UNSUPPORTED	Use an asymptotic Bayes posterior for prior=1/2 likelihood=1/3 evidence=1/4.
+UNSUPPORTED	Compute Bayes posterior with prior=1/2 likelihood=1/3 but omit the evidence value.
+UNSUPPORTED	Find the Bayes posterior from prior=1/2 evidence=1/4, with likelihood not supplied.
+UNSUPPORTED	Approximate linear interpolation at x=2 x1=0 y1=4 x2=4 y2=12.
+UNSUPPORTED	Give a continuous approximation to linear interpolation at x=2 x1=0 y1=4 x2=4 y2=12.
+UNSUPPORTED	Use an asymptotic linear interpolation formula for x=2 x1=0 y1=4 x2=4 y2=12.
+UNSUPPORTED	Compute linear interpolation with x=2 x1=0 y1=4 x2=4 but omit y2.
+UNSUPPORTED	Find linear interpolation from x=2 x1=0 y1=4 y2=12, with x2 not supplied.
+UNSUPPORTED	Compute an unlisted source expression for prior=1/2 likelihood=1/3 evidence=1/4.
+UNSUPPORTED	Use a formula not present in the cited catalogs with x=2 x1=0 y1=4 x2=4 y2=12.
+UNSUPPORTED	Determine the posterior using an unspecified model; prior=1/2 and evidence=1/4 are insufficient.
+UNSUPPORTED	Determine an interpolated quantity but do not state which source relation or target is intended.
+UNSUPPORTED	Use numerical approximation and ignore the exact finite source boundary for the posterior.
+UNSUPPORTED	Use numerical approximation and ignore the exact finite source boundary for interpolation.
+UNSUPPORTED	Compute the Bayes posterior with prior=1/2 likelihood=1/3 evidence=0.
+UNSUPPORTED	Compute linear interpolation with coincident endpoints x1=2 x2=2 y1=4 y2=8 x=2.
+UNSUPPORTED	Compute a continuous limit of the posterior probability from prior likelihood and evidence.

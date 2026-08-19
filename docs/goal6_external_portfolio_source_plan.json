@@ -2,11 +2,11 @@
   "schema": "goal6-external-portfolio-source-plan-v1",
   "release_id": "external-math-exam-v1",
   "input_gap_schema": "goal6-external-portfolio-gaps-v1",
-  "input_gap_report_sha256": "e2410a579220fa7ed7e4e2bb4d4e98aedc0a1c6fdc231126717f87252b60f120",
+  "input_gap_report_sha256": "b0b9b4a4a9b60a3839094e4833d0053c79ab005d78c4fa31a33caedda1db2655",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "development_questions_read": 3000,
   "answer_keys_read": 0,
-  "source_documents_considered": 28,
+  "source_documents_considered": 29,
   "triage_candidates_read": 12,
   "review_queue_size": 5,
   "semantic_ready_entries": 1,
@@ -133,5 +133,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "all_entries_blocked": true,
-  "report_sha256": "192884992446074a100f3551ce80a5ac71dc2d57ee39e7ea59257f0c5f794371"
+  "report_sha256": "07ef90689acd93c742401e1f6feec40043dfc778cb511c7f5e8c6ef18e9cc836"
 }

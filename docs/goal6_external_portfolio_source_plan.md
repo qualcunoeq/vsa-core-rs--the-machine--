@@ -3,7 +3,7 @@
 This is an answer-key-blind review queue derived from the frozen portfolio gap report. Lexical overlap is triage evidence only; no source was ingested, synthesized, promoted, or routed.
 
 - Development questions read: 3000
-- Source documents considered: 28
+- Source documents considered: 29
 - Triage candidates read / review queue: 12 / 5
 - Semantic-ready entries: 1
 - Answer keys read: 0

@@ -1,7 +1,7 @@
 {
   "schema": "goal6-external-sequence-frontend-v1",
   "source_domain": "external-source-sequence-shadow",
-  "source_catalog_sha256": "0e9df6ac84c6e24c0c80a9ba19e44191b2039fcd915d4dec126f88b7aafff1b4",
+  "source_catalog_sha256": "5ad8f617ed86d634480cf822c06dde0b0e9bb024fecc7daad035f2f6812ccce0",
   "independent_cases": 120,
   "independent_supported": 80,
   "independent_ambiguous": 20,
@@ -52,5 +52,5 @@
   "production_authorizations": 0,
   "false_authorizations": 0,
   "manifest_unchanged": true,
-  "report_sha256": "e10cc39eec0db8ecc18b030c23adde59db54a027500562cbe9cfe2c76df5f73c"
+  "report_sha256": "db585af2cb823ccaf07478612461c9204f34112eb8850489b57497c6aff6bfa3"
 }

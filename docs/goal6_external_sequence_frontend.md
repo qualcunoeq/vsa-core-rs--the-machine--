@@ -7,4 +7,4 @@
 - External candidate replay: 3
 - Production authorizations / false authorizations: 0 / 0
 - Manifest unchanged: true
-- Source catalog SHA-256: `0e9df6ac84c6e24c0c80a9ba19e44191b2039fcd915d4dec126f88b7aafff1b4`
+- Source catalog SHA-256: `5ad8f617ed86d634480cf822c06dde0b0e9bb024fecc7daad035f2f6812ccce0`

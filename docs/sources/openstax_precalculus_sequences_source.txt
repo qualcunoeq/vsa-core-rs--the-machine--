@@ -1,0 +1,62 @@
+# Source-backed transcription for bounded arithmetic and geometric sequences.
+# Every record is explicit; omitted assumptions are never inferred.
+
+BEGIN FORMULA arithmetic_nth_term
+ALIASES: arithmetic sequence term | affine sequence
+EXPRESSION: a1 + (n - 1) * d
+INPUTS: a1, n, d
+ASSUMPTIONS: n is a positive integer
+CONSTRAINTS: positive_integer:n
+SOURCE_ID: openstax-precalculus-2e:sequences-series
+TITLE: Precalculus 2e
+SECTION: Sequences, Series, and the Binomial Theorem
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: chapter formula review: arithmetic sequence identities
+END FORMULA
+
+BEGIN FORMULA arithmetic_partial_sum
+ALIASES: arithmetic series sum
+EXPRESSION: n * (2 * a1 + (n - 1) * d) / 2
+INPUTS: a1, n, d
+ASSUMPTIONS: n is a positive integer
+CONSTRAINTS: positive_integer:n
+SOURCE_ID: openstax-precalculus-2e:sequences-series
+TITLE: Precalculus 2e
+SECTION: Sequences, Series, and the Binomial Theorem
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: chapter formula review: arithmetic series identities
+END FORMULA
+
+BEGIN FORMULA geometric_nth_term
+ALIASES: geometric sequence term
+EXPRESSION: a1 * r^(n - 1)
+INPUTS: a1, n, r
+ASSUMPTIONS: n is a positive integer; exponent is n-1
+CONSTRAINTS: positive_integer:n
+SOURCE_ID: openstax-precalculus-2e:sequences-series
+TITLE: Precalculus 2e
+SECTION: Sequences, Series, and the Binomial Theorem
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: chapter formula review: geometric sequence identities
+END FORMULA
+
+BEGIN FORMULA geometric_partial_sum
+ALIASES: geometric series sum
+EXPRESSION: a1 * (r^n - 1) / (r - 1)
+INPUTS: a1, n, r
+ASSUMPTIONS: n is a positive integer; r is not 1
+CONSTRAINTS: positive_integer:n; not_equal_integer:r=1
+SOURCE_ID: openstax-precalculus-2e:sequences-series
+TITLE: Precalculus 2e
+SECTION: Sequences, Series, and the Binomial Theorem
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-16
+EVIDENCE: chapter formula review: geometric series identities
+END FORMULA

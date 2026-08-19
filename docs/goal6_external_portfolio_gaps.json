@@ -107,7 +107,7 @@
       "executable_cases": 1
     }
   ],
-  "source_documents_considered": 28,
+  "source_documents_considered": 29,
   "source_triage_candidates": [
     {
       "source_path": "docs/sources/openstax_finite_statistics_source.txt",
@@ -152,6 +152,15 @@
       "affected_residuals": 263,
       "overlap_terms": 583,
       "lexical_score": 0.1950485112077618,
+      "status": "triage_only"
+    },
+    {
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
+      "provenance_fields_present": true,
+      "affected_residuals": 191,
+      "overlap_terms": 431,
+      "lexical_score": 0.14419538307126128,
       "status": "triage_only"
     },
     {
@@ -207,15 +216,6 @@
       "overlap_terms": 280,
       "lexical_score": 0.0936768149882904,
       "status": "triage_only"
-    },
-    {
-      "source_path": "docs/sources/openstax_bounded_economics_source.txt",
-      "source_sha256": "9eeb1f5b916305563eb3bc997b46a1c4b413fb97c1d09abe0c67dabdebec054d",
-      "provenance_fields_present": true,
-      "affected_residuals": 129,
-      "overlap_terms": 274,
-      "lexical_score": 0.09166945466711275,
-      "status": "triage_only"
     }
   ],
   "source_ingestions": 0,
@@ -224,5 +224,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "e2410a579220fa7ed7e4e2bb4d4e98aedc0a1c6fdc231126717f87252b60f120"
+  "report_sha256": "b0b9b4a4a9b60a3839094e4833d0053c79ab005d78c4fa31a33caedda1db2655"
 }

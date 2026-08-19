@@ -667,7 +667,10 @@ fn formulas() -> Vec<FormulaRecord> {
 /// language frontends.  The records remain data; callers must still select an
 /// expected domain and pass them through `evaluate_formula_records`.
 pub fn source_formula_records() -> Vec<FormulaRecord> {
-    formulas()
+    extract_formula_records(include_str!(
+        "../docs/sources/openstax_precalculus_sequences_source.txt"
+    ))
+    .expect("source-derived sequence catalog extracts and validates")
 }
 
 fn digest<T: Serialize>(value: &T) -> String {

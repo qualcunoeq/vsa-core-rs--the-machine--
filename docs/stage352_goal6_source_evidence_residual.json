@@ -1,0 +1,163 @@
+{
+  "schema": "stage352-goal6-source-evidence-residual-v1",
+  "discovery_report_sha256": "d6f451eb4c1b92dabc951985846e68aeff7a8c72b8ee9fd6354f0cf80641f807",
+  "source_manifest_sha256": "43cb30f18ac7f1aad287abe60f36e4af254259385668e1065c2efefc21cc1db3",
+  "residual_documents": 13,
+  "evidence_envelopes": 7,
+  "rejected_documents": 6,
+  "replay_verified": 7,
+  "tamper_rejected": 7,
+  "source_mutations": 28,
+  "source_mutations_rejected": 28,
+  "executable_envelopes": 0,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "production_mutations": 0,
+  "manifest_unchanged": true,
+  "observations": [
+    {
+      "path": "docs/sources/bounded_finite_automata_source.txt",
+      "source_sha256": "25a0799a102b81b49ad28856b89184e44ac7c69853de04a464e19b74c7c5cc3c",
+      "accepted_as_evidence": false,
+      "replay_verified": false,
+      "tamper_rejected": false,
+      "source_mutations": 0,
+      "source_mutations_rejected": 0,
+      "executable": false,
+      "residual_sha256": null
+    },
+    {
+      "path": "docs/sources/mit_analytic_number_theory_arithmetic_functions.txt",
+      "source_sha256": "d012aca23d7b8aa819f79943702d49d7d0424a5fbd8b61f2b19a057875cb0feb",
+      "accepted_as_evidence": false,
+      "replay_verified": false,
+      "tamper_rejected": false,
+      "source_mutations": 0,
+      "source_mutations_rejected": 0,
+      "executable": false,
+      "residual_sha256": null
+    },
+    {
+      "path": "docs/sources/mit_analytic_number_theory_character_definition.txt",
+      "source_sha256": "53d49ea094afe0b13fc017f9439e742724032d02eff183010dcbf5644976c31f",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "51a1125932e2290de1cee95822734644e0af2775125597860fce9b919d9a8b01"
+    },
+    {
+      "path": "docs/sources/openstax_biology_source.txt",
+      "source_sha256": "c5a3e964c5ecffecfa8f26b305f2a45dc06dc2e59524f84af6d637fba152b028",
+      "accepted_as_evidence": false,
+      "replay_verified": false,
+      "tamper_rejected": false,
+      "source_mutations": 0,
+      "source_mutations_rejected": 0,
+      "executable": false,
+      "residual_sha256": null
+    },
+    {
+      "path": "docs/sources/openstax_bounded_complex_analysis_source.txt",
+      "source_sha256": "e04b5c7564577ea1810ad7381f2df0065ef9edf902e6889420aca493e2bef4b7",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "3b24bd13c0d6df3164839af5bb2d8cae1173f9d4a29c87eec5c9bb4543169ab1"
+    },
+    {
+      "path": "docs/sources/openstax_chemistry_source.txt",
+      "source_sha256": "1b5f1bd18e802233abdbd96ffa51ed654216125559b3a2dcc13416892bfc9c1c",
+      "accepted_as_evidence": false,
+      "replay_verified": false,
+      "tamper_rejected": false,
+      "source_mutations": 0,
+      "source_mutations_rejected": 0,
+      "executable": false,
+      "residual_sha256": null
+    },
+    {
+      "path": "docs/sources/openstax_counting_principles_catalog.txt",
+      "source_sha256": "b4e255f017722540045d9d62d3f9eb0f2cb3c86a179a7b7d11ee331252363792",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "b1d563b41d567f0db880b4ece876d28497fc1203efa6d859a3a83458be0d173b"
+    },
+    {
+      "path": "docs/sources/openstax_finite_markov_hitting_source.txt",
+      "source_sha256": "7820ad4e529d21143b893f988ffc96c1ba43c86a15e440bbd11726deb105ebf0",
+      "accepted_as_evidence": false,
+      "replay_verified": false,
+      "tamper_rejected": false,
+      "source_mutations": 0,
+      "source_mutations_rejected": 0,
+      "executable": false,
+      "residual_sha256": null
+    },
+    {
+      "path": "docs/sources/openstax_finite_markov_stationary_source.txt",
+      "source_sha256": "f108abcf5d89bdf051a0985f2a2d191b6a9debeefbdf18853c33aaea57fb5f36",
+      "accepted_as_evidence": false,
+      "replay_verified": false,
+      "tamper_rejected": false,
+      "source_mutations": 0,
+      "source_mutations_rejected": 0,
+      "executable": false,
+      "residual_sha256": null
+    },
+    {
+      "path": "docs/sources/openstax_finite_set_operations_catalog.txt",
+      "source_sha256": "57f6d1ac3e3b0d6e9d687e3a11830f7c08fb99523c74190f6e8b3422840dc8c9",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "737e921fd482d93f563089cc560ba89c648446e0918e8e9707f27a075ed12f97"
+    },
+    {
+      "path": "docs/sources/openstax_truth_table_catalog.txt",
+      "source_sha256": "c2523254cd63b526d35f0dc0f59f616081fa52d5efc55a81158bc0858e2b639f",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "8e06382176163a0d699151935036417a1071bbea28d4629c94aab8b089656b4f"
+    },
+    {
+      "path": "docs/sources/topology_without_tears_finite_metric_definition.txt",
+      "source_sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "9609d321adb094c9be21c7218f4614a4aceefe90af9d815d5540c378ef5960e0"
+    },
+    {
+      "path": "docs/sources/topology_without_tears_simplicial_homology_definition.txt",
+      "source_sha256": "6fc676133cb57bb1660316038329c528974b4476308f188c2196551d0979ac86",
+      "accepted_as_evidence": true,
+      "replay_verified": true,
+      "tamper_rejected": true,
+      "source_mutations": 4,
+      "source_mutations_rejected": 4,
+      "executable": false,
+      "residual_sha256": "f26fc292de58aa052073676b5902e2a0291604bccbcfc7b0b1594c518f738494"
+    }
+  ],
+  "report_sha256": "6eb9096761ea162f0bef989d886ba13d62fe3ff4ab2eb0cfaf1740475a9f5c93"
+}

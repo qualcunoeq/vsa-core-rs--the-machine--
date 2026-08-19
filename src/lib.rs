@@ -188,6 +188,7 @@ pub mod source_residual_clustering;
 pub mod source_module_discovery;
 pub mod source_multiformat_discovery;
 pub mod source_multiformat_memory;
+pub mod source_metadata;
 pub mod source_interpolation_frontend;
 pub mod source_logic_frontend;
 pub mod source_logic_pack;

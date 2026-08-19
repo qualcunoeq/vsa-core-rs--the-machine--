@@ -1,0 +1,20 @@
+{
+  "schema": "stage361-source-metadata-homology-v1",
+  "source_sha256": "6fc676133cb57bb1660316038329c528974b4476308f188c2196551d0979ac86",
+  "metadata_replay_verified": true,
+  "metadata_tamper_rejected": true,
+  "source_mutations": 4,
+  "source_mutations_rejected": 4,
+  "execution_cases": 12,
+  "exact_decisions": 12,
+  "execution_replay_verified": 12,
+  "execution_tamper_rejected": 12,
+  "complete_cases": 4,
+  "ambiguous_cases": 2,
+  "unsupported_or_invalid_cases": 6,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "source_match_verified": true,
+  "production_mutations": 0,
+  "report_sha256": "58243e249d7e363f318c86d9ebab097cdcf4c4a838ecff9f27dd7ef4fe341edf"
+}

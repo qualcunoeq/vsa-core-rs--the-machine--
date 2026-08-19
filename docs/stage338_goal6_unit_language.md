@@ -1,4 +1,4 @@
-# Stage 334 — Goal 6 source-selected technical language
+# Stage 338 — Goal 6 source-selected unit technical language
 
 - Selected source / route: `docs/sources/openstax_unit_conversion_goal6_catalog.txt` / `UnitConversion`
 - Source records: 5

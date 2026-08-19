@@ -51,10 +51,162 @@ fn rational_token(token: &str) -> Option<Rational> {
     let cleaned = token.trim_matches(|character: char| {
         !character.is_ascii_digit() && character != '-' && character != '/'
     });
+    if let Some((whole, fraction)) = cleaned.split_once('.') {
+        if whole.is_empty() || fraction.is_empty() || !fraction.chars().all(|c| c.is_ascii_digit()) {
+            return None;
+        }
+        let sign = if whole.starts_with('-') { -1 } else { 1 };
+        let whole_digits = whole.trim_start_matches('-');
+        let numerator = whole_digits.parse::<i128>().ok()? * sign;
+        let scale = 10_i128.checked_pow(fraction.len() as u32)?;
+        let fractional = fraction.parse::<i128>().ok()? * sign;
+        return Rational::new(numerator * scale + fractional, scale);
+    }
     if let Some((numerator, denominator)) = cleaned.split_once('/') {
         return Rational::new(numerator.parse().ok()?, denominator.parse().ok()?);
     }
     Rational::new(cleaned.parse().ok()?, 1)
+}
+
+fn parse_explicit_list(segment: &str) -> Option<Vec<Rational>> {
+    let normalized = segment
+        .replace(['{', '}', '[', ']'], " ")
+        .replace(" and ", ",")
+        .replace(" AND ", ",");
+    let mut values = Vec::new();
+    for item in normalized.split(',') {
+        let item = item.trim();
+        if item.is_empty() {
+            continue;
+        }
+        let tokens: Vec<&str> = item.split_whitespace().collect();
+        if tokens.len() != 1 {
+            return None;
+        }
+        values.push(rational_token(tokens[0])?);
+    }
+    (values.len() >= 2).then_some(values)
+}
+
+/// Parse only an explicitly enumerated finite list whose arithmetic mean is
+/// requested.  This bridge deliberately refuses ranges, filtering, symbolic
+/// entries, and optimization/constraint problems; those require separate
+/// semantics rather than a convenient sum/count guess.
+pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
+    let lower = text.to_ascii_lowercase();
+    if !(lower.contains("mean") || lower.contains("average")) {
+        return result(
+            FrontendStatus::Missing,
+            None,
+            None,
+            vec![text.into()],
+            Vec::new(),
+            vec!["no mean or average target was stated".into()],
+        );
+    }
+    let rejected_semantics = [
+        "from", "through", "prime", "multiple", "positive", "negative", "median", "largest",
+        "smallest", "expression", "variable", "unknown", "reciprocal", "added to", "list becomes",
+    ];
+    if rejected_semantics.iter().any(|marker| lower.contains(marker)) {
+        return result(
+            FrontendStatus::Unsupported,
+            None,
+            None,
+            vec![text.into()],
+            Vec::new(),
+            vec!["mean request requires range, filtering, symbolic, or optimization semantics".into()],
+        );
+    }
+    let candidates = if let (Some(start), Some(end)) = (lower.find('{'), lower.rfind('}')) {
+        (end > start).then(|| &text[start..=end])
+    } else if let Some(start) = lower.find("mean of") {
+        let start = start + "mean of".len();
+        let end = text[start..]
+            .find(|character: char| matches!(character, '?' | '.' | ';'))
+            .map(|offset| start + offset)
+            .unwrap_or(text.len());
+        Some(&text[start..end])
+    } else if let Some(start) = lower.find("average of") {
+        let start = start + "average of".len();
+        let end = text[start..]
+            .find(|character: char| matches!(character, '?' | '.' | ';'))
+            .map(|offset| start + offset)
+            .unwrap_or(text.len());
+        Some(&text[start..end])
+    } else if let Some(start) = lower.find("scores are") {
+        let start = start + "scores are".len();
+        let end = text[start..]
+            .find(|character: char| matches!(character, '?' | '.' | ';'))
+            .map(|offset| start + offset)
+            .unwrap_or(text.len());
+        Some(&text[start..end])
+    } else {
+        None
+    };
+    let Some(segment) = candidates else {
+        return result(
+            FrontendStatus::Ambiguous,
+            None,
+            None,
+            vec![text.into()],
+            vec!["arithmetic_mean".into()],
+            vec!["mean target exists but no explicit finite list was located".into()],
+        );
+    };
+    let segment_end = ["what is", "what's", "calculate", "compute", "find "]
+        .iter()
+        .filter_map(|marker| segment.to_ascii_lowercase().find(marker))
+        .min();
+    let segment = segment_end.map(|end| &segment[..end]).unwrap_or(segment);
+    let structural_segment = segment.replace(" and ", ",");
+    if structural_segment
+        .chars()
+        .any(|character| character.is_ascii_alphabetic())
+    {
+        let lower_segment = structural_segment.to_ascii_lowercase();
+        let symbolic = lower_segment.contains('x')
+            || lower_segment.contains('+')
+            || lower_segment.contains("variable")
+            || lower_segment.contains("expression");
+        if !symbolic {
+            return result(
+                FrontendStatus::Ambiguous,
+                None,
+                None,
+                vec![text.into()],
+                vec!["arithmetic_mean".into()],
+                vec!["a mean target exists but the list contents are not explicit".into()],
+            );
+        }
+        return result(
+            FrontendStatus::Unsupported,
+            None,
+            None,
+            vec![text.into()],
+            Vec::new(),
+            vec!["symbolic or word-valued list entries require another capability".into()],
+        );
+    }
+    let Some(values) = parse_explicit_list(segment) else {
+        return result(
+            FrontendStatus::Ambiguous,
+            None,
+            None,
+            vec![text.into()],
+            vec!["arithmetic_mean".into()],
+            vec!["list syntax is not an explicit finite numeric enumeration".into()],
+        );
+    };
+    let sum = values
+        .iter()
+        .fold(Rational::new(0, 1).expect("zero is valid"), |acc, value| acc.add(value).unwrap());
+    let count = Rational::new(values.len() as i128, 1).expect("list count is positive");
+    with_request(
+        "arithmetic_mean",
+        BTreeMap::from([("sum".into(), sum), ("count".into(), count)]),
+        vec![format!("explicit-list-span:{segment}")],
+    )
 }
 
 fn labeled_value(text: &str, labels: &[&str]) -> Option<(String, Rational)> {
@@ -279,5 +431,29 @@ mod tests {
         let ambiguous = formalize_statistics_text("Find the average from total=30 and count=5.");
         assert_eq!(ambiguous.status, FrontendStatus::Ambiguous);
         assert!(ambiguous.replay_verified());
+    }
+
+    #[test]
+    fn explicit_list_mean_lowers_without_inventing_range_or_filter_semantics() {
+        let complete = formalize_finite_list_mean_text(
+            "Jeff's scores are 89, 92, 88, 95 and 91. What is the arithmetic mean?",
+        );
+        assert_eq!(complete.status, FrontendStatus::Complete);
+        let request = complete.request.as_ref().unwrap();
+        assert_eq!(request.inputs["sum"], Rational::new(455, 1).unwrap());
+        assert_eq!(request.inputs["count"], Rational::new(5, 1).unwrap());
+        assert!(complete.replay_verified());
+
+        let range = formalize_finite_list_mean_text(
+            "What is the arithmetic mean of the integers from -4 through 5?",
+        );
+        assert_eq!(range.status, FrontendStatus::Unsupported);
+        assert!(range.replay_verified());
+
+        let symbolic = formalize_finite_list_mean_text(
+            "The arithmetic mean of x + 8, 15, and 2x is 24.",
+        );
+        assert_ne!(symbolic.status, FrontendStatus::Complete);
+        assert!(symbolic.replay_verified());
     }
 }

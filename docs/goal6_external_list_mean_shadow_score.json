@@ -1,0 +1,26 @@
+{
+  "schema": "external-list-mean-shadow-score-v1",
+  "release_id": "external-math-exam-v1",
+  "partition": "development",
+  "questions_read": 4000,
+  "answer_hashes_read": 3000,
+  "plaintext_answers_read": 0,
+  "candidate_cases": 1,
+  "correct_shadow_candidates": 1,
+  "incorrect_shadow_candidates_rejected": 0,
+  "candidate_replays": 1,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "candidates": [
+    {
+      "id": "math-v1-development-1858",
+      "candidate_answer_sha256": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db",
+      "reference_match": true,
+      "replay_verified": true
+    }
+  ],
+  "report_sha256": "117e803a1e615f2ef94a566f16fc1b7762bbe65889a05d401c8e76350863846b"
+}

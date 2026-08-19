@@ -36,6 +36,14 @@ name = "external_source_alias_probe"
 path = "src/bin/external_source_alias_probe.rs"
 
 [[bin]]
+name = "external_list_mean_frontend_bench"
+path = "src/bin/external_list_mean_frontend_bench.rs"
+
+[[bin]]
+name = "external_list_mean_shadow_scorer"
+path = "src/bin/external_list_mean_shadow_scorer.rs"
+
+[[bin]]
 name = "bond_pipeline"
 path = "src/bin/bond_pipeline.rs"
 

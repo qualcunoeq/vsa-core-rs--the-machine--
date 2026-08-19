@@ -1,10 +1,10 @@
 {
   "schema": "stage334-goal6-source-selected-language-v1",
-  "source_plan_sha256": "962afed7aaadcf2fda67dba71fb202555af8b2f3af3335c24f1a88c753d3c5bd",
-  "input_gap_report_sha256": "b0b9b4a4a9b60a3839094e4833d0053c79ab005d78c4fa31a33caedda1db2655",
+  "source_plan_sha256": "3ffb3cb2097a0e4509693f297c691be38732507f93dabbb625b24eb11318d0b7",
+  "input_gap_report_sha256": "f77b9f8119285288cf0ffe6722964e5a98f6dac2bc4a4097096dc4f7b7a05f1b",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "selected_source_path": "docs/sources/openstax_finite_statistics_source.txt",
-  "selected_source_sha256": "9f8e6c0273cf527acd717c2d08d96dfec096f7a4d705d073bf02b9c9a06d8dec",
+  "selected_source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
   "selected_route": "FiniteListMean",
   "source_record_count": 6,
   "development_cases": 240,
@@ -5134,5 +5134,5 @@
       "false_denial": false
     }
   ],
-  "report_sha256": "17f9a6701c4b5c0076ac68fcd978d3c7f0f79bd6a49c501ddf3a50b1f9bf21e5"
+  "report_sha256": "b2cc79b2b1e7c647cac619b0e39eb6d84eb3a2402dcfd93c6b9032d45a01e1e5"
 }

@@ -141,6 +141,102 @@ fn parse_rational(value: &str) -> Option<Rational> {
     }
 }
 
+fn parse_simple_numeric_list(segment: &str) -> Option<Vec<Rational>> {
+    let chars = segment.trim().chars().collect::<Vec<_>>();
+    let mut values = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        while chars.get(index).is_some_and(|character| {
+            character.is_ascii_whitespace() || matches!(character, ',' | ';')
+        }) {
+            index += 1;
+        }
+        if index >= chars.len() {
+            break;
+        }
+        if chars[index..].starts_with(&['a', 'n', 'd'])
+            && (index + 3 == chars.len() || !chars[index + 3].is_ascii_alphanumeric())
+        {
+            index += 3;
+            continue;
+        }
+        let start = index;
+        if chars[index] == '-' {
+            index += 1;
+        }
+        let digit_start = index;
+        while chars.get(index).is_some_and(char::is_ascii_digit) {
+            index += 1;
+        }
+        if index == digit_start {
+            return None;
+        }
+        if chars.get(index) == Some(&'/') && chars.get(index + 1).is_some_and(char::is_ascii_digit)
+        {
+            index += 1;
+            while chars.get(index).is_some_and(char::is_ascii_digit) {
+                index += 1;
+            }
+        }
+        if chars
+            .get(index)
+            .is_some_and(|character| character.is_ascii_alphanumeric() || *character == '.')
+        {
+            return None;
+        }
+        let token = chars[start..index].iter().collect::<String>();
+        values.push(parse_rational(&token)?);
+    }
+    (2..=20).contains(&values.len()).then_some(values)
+}
+
+fn sentence_end(text: &str, start: usize) -> usize {
+    text[start..]
+        .find(|character: char| matches!(character, '.' | '?' | '!' | '\n'))
+        .map_or(text.len(), |offset| start + offset)
+}
+
+fn finite_list_inputs(text: &str) -> Option<(Rational, Rational, Vec<String>)> {
+    let lower = text.to_ascii_lowercase();
+    // This path is deliberately structural.  It accepts only a standalone
+    // numeric list, never every numeral that happens to occur in a question.
+    if lower.matches("arithmetic mean").count() != 1 {
+        return None;
+    }
+    let mean_phrase = "arithmetic mean of";
+    let mean_start = lower.find(mean_phrase)?;
+    let mean_end = mean_start + mean_phrase.len();
+    let mut candidates = Vec::new();
+
+    // Direct form: "the arithmetic mean of 4, 8 and 12".
+    let direct_end = sentence_end(text, mean_end);
+    if let Some(values) = parse_simple_numeric_list(&text[mean_end..direct_end]) {
+        candidates.push((mean_end, direct_end, values));
+    }
+
+    // Declared-list form: "scores are 89, 92, 88 ... What is the mean".
+    // Only an explicit `are` declaration is accepted; ranges, filters, sets,
+    // equations, and symbolic expressions therefore remain outside this path.
+    let mut search = 0;
+    while let Some(relative) = lower[search..mean_start].find(" are ") {
+        let are_start = search + relative + " are ".len();
+        let end = sentence_end(text, are_start);
+        if let Some(values) = parse_simple_numeric_list(&text[are_start..end]) {
+            candidates.push((are_start, end, values));
+        }
+        search = are_start;
+    }
+    if candidates.len() != 1 {
+        return None;
+    }
+    let (start, end, values) = candidates.pop().unwrap();
+    let sum = values
+        .iter()
+        .try_fold(Rational::zero(), |total, value| total.add(value))?;
+    let count = Rational::new(values.len() as i128, 1)?;
+    Some((sum, count, vec![format!("numeric-list:{start}..{end}")]))
+}
+
 fn labeled_values(text: &str, label: &str) -> Vec<(String, Rational)> {
     let lower = text.to_ascii_lowercase().replace(['_', '-'], " ");
     let label = normalize_phrase(label);
@@ -275,7 +371,17 @@ pub fn formalize_source_formula_text(
     let record = matches[0];
     let mut inputs = BTreeMap::new();
     let mut spans = base_spans;
+    if record.required_inputs == ["sum", "count"] {
+        if let Some((sum, count, list_spans)) = finite_list_inputs(text) {
+            inputs.insert("sum".into(), sum);
+            inputs.insert("count".into(), count);
+            spans.extend(list_spans);
+        }
+    }
     for input in &record.required_inputs {
+        if inputs.contains_key(input) {
+            continue;
+        }
         let values = labeled_values(text, input);
         if values.len() != 1 {
             return output(
@@ -473,6 +579,62 @@ mod tests {
         let missing =
             formalize_source_formula_text("Use the sample mean: sum=30.", DOMAIN, &records);
         assert_eq!(missing.status, FrontendStatus::Missing);
+    }
+
+    #[test]
+    fn generic_frontend_binds_one_explicit_finite_numeric_list() {
+        let result = formalize_source_formula_text(
+            "What is the arithmetic mean of 14, 22 and 36?",
+            DOMAIN,
+            &records(),
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        let request = result.request.as_ref().expect("list binds a request");
+        assert_eq!(request.inputs["sum"], Rational::new(72, 1).unwrap());
+        assert_eq!(request.inputs["count"], Rational::new(3, 1).unwrap());
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn generic_frontend_does_not_turn_mean_equality_into_a_list() {
+        let result = formalize_source_formula_text(
+            "The arithmetic mean of 5, 8 and 17 equals the mean of 12 and y.",
+            DOMAIN,
+            &records(),
+        );
+        assert_eq!(result.status, FrontendStatus::Missing);
+        assert!(result.request.is_none());
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn generic_frontend_rejects_filters_ranges_variables_and_expressions() {
+        let near_misses = [
+            "Find the arithmetic mean of the prime numbers in this list: 21, 23, 25, 27, 29.",
+            "What is the arithmetic mean of the integers from -4 through 5, inclusive?",
+            "Given that 10 is the arithmetic mean of the set {6, 13, 18, 4, x}, find x.",
+            "The arithmetic mean of nine numbers is 54. If two numbers u and v are added, find their mean.",
+            "The arithmetic mean of five expressions is 24: x + 8, 15, 2x, 13, and 2x + 4.",
+        ];
+        for prompt in near_misses {
+            let result = formalize_source_formula_text(prompt, DOMAIN, &records());
+            assert_ne!(result.status, FrontendStatus::Complete, "{prompt}");
+            assert!(replay_verified(&result), "{prompt}");
+        }
+    }
+
+    #[test]
+    fn generic_frontend_accepts_only_an_explicit_declared_numeric_list() {
+        let result = formalize_source_formula_text(
+            "Jeff's five assignment scores are 89, 92, 88, 95 and 91. What is the arithmetic mean of these five scores?",
+            DOMAIN,
+            &records(),
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        let request = result.request.as_ref().expect("declared list binds");
+        assert_eq!(request.inputs["sum"], Rational::new(455, 1).unwrap());
+        assert_eq!(request.inputs["count"], Rational::new(5, 1).unwrap());
+        assert!(replay_verified(&result));
     }
 
     #[test]

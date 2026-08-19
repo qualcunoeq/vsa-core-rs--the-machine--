@@ -1,7 +1,7 @@
 {
   "schema": "stage333-goal6-source-selected-acquisition-v1",
-  "source_plan_sha256": "f49aafdfc1f25ab45a0120f542ca2fe1de94e0f9dd59a2ac7114d97e0d21719f",
-  "input_gap_report_sha256": "b0b9b4a4a9b60a3839094e4833d0053c79ab005d78c4fa31a33caedda1db2655",
+  "source_plan_sha256": "3ffb3cb2097a0e4509693f297c691be38732507f93dabbb625b24eb11318d0b7",
+  "input_gap_report_sha256": "f77b9f8119285288cf0ffe6722964e5a98f6dac2bc4a4097096dc4f7b7a05f1b",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "selected_source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
   "selected_source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
@@ -4232,5 +4232,5 @@
       "false_denial": false
     }
   ],
-  "report_sha256": "981a232d7d57a29f11492acd93e45a58830a0de8bb374e31658aa024ef579b21"
+  "report_sha256": "287a49b5a5d2483f99b613fa2703ab91ba142b33940c5ea43eea15fd5e9e7498"
 }

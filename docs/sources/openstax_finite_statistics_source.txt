@@ -2,7 +2,7 @@
 # The extractor accepts only explicit blocks and never fills omitted fields.
 
 BEGIN FORMULA arithmetic_mean
-ALIASES: sample mean | mean from sum and count
+ALIASES: sample mean | arithmetic mean | mean from sum and count
 EXPRESSION: sum / count
 INPUTS: sum, count
 ASSUMPTIONS: count is positive; values share one scale

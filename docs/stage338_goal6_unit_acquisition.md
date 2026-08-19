@@ -1,4 +1,4 @@
-# Stage 338 — Goal 6 source-selected unit acquisition
+# Stage 333 — Goal 6 source-selected acquisition
 
 - Selected source / route: `docs/sources/openstax_unit_conversion_goal6_catalog.txt` / `UnitConversion`
 - Source records / validation: 5 / true

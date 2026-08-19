@@ -111,7 +111,7 @@
   "source_triage_candidates": [
     {
       "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "9f8e6c0273cf527acd717c2d08d96dfec096f7a4d705d073bf02b9c9a06d8dec",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
       "affected_residuals": 532,
       "overlap_terms": 1244,
@@ -224,5 +224,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "b0b9b4a4a9b60a3839094e4833d0053c79ab005d78c4fa31a33caedda1db2655"
+  "report_sha256": "f77b9f8119285288cf0ffe6722964e5a98f6dac2bc4a4097096dc4f7b7a05f1b"
 }

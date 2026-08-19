@@ -106,6 +106,7 @@ pub mod math;
 pub mod math_ingest;
 pub mod math_method_mining;
 pub mod math_methods;
+pub mod mathematical_research;
 pub mod mechanics_situation;
 pub mod meta_reasoning;
 pub mod method_synthesis;

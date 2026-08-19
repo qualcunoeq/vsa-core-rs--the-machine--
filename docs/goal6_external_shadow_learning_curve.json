@@ -1,5 +1,5 @@
 {
-  "schema": "goal6-external-shadow-learning-curve-v1",
+  "schema": "goal6-external-shadow-learning-curve-v2",
   "development_cases": 3000,
   "answer_keys_read": 0,
   "plaintext_answers_read": 0,
@@ -27,6 +27,14 @@
       "false_authorizations": 0,
       "replay_verified": 3,
       "production_authorizations": 0
+    },
+    {
+      "label": "bounded_counting_shadow",
+      "evaluated_cases": 3000,
+      "correct_shadow": 0,
+      "false_authorizations": 0,
+      "replay_verified": 0,
+      "production_authorizations": 0
     }
   ],
   "cumulative_candidates": 5,
@@ -36,5 +44,5 @@
   "candidate_ids_disjoint": true,
   "route_reports_unchanged": true,
   "production_authorizations": 0,
-  "report_sha256": "42de925914315724c3159d29366120e88bac53bd260622210945bff1a3a25523"
+  "report_sha256": "547d0d4d1a6951d5bb8f53c90e923a746082f74c340f5a7c8d3ef3d76e4b93bf"
 }

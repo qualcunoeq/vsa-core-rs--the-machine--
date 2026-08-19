@@ -3,6 +3,7 @@
 - Baseline: 0/3000 authorized, 0 false authorizations
 - Finite-list-mean shadow: 2/2 correct candidates, 2/2 replay
 - Arithmetic-sequence shadow: 3/3 correct candidates, 3/3 replay
+- Bounded-counting shadow: 0/3000 complete candidates, 0/0 replay (signals: 92)
 - Cumulative correct shadow candidates: 5
 - Cumulative candidate replay: 5
 - Candidate IDs disjoint: true

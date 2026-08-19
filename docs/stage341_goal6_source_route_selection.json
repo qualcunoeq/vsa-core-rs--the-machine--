@@ -1,0 +1,73 @@
+{
+  "schema": "stage341-goal6-source-route-selection-v1",
+  "plan_sha256": "3ffb3cb2097a0e4509693f297c691be38732507f93dabbb625b24eb11318d0b7",
+  "input_gap_report_sha256": "f77b9f8119285288cf0ffe6722964e5a98f6dac2bc4a4097096dc4f7b7a05f1b",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "route_observations": [
+    {
+      "route": "ArithmeticSequence",
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
+      "development_questions": 3000,
+      "development_frontend_complete": 0,
+      "development_execution_complete": 0,
+      "development_replay_verified": 3000,
+      "development_tamper_rejected": 3000,
+      "sealed_questions": 1000,
+      "sealed_frontend_complete": 0,
+      "sealed_execution_complete": 0,
+      "sealed_replay_verified": 1000,
+      "sealed_tamper_rejected": 1000,
+      "development_candidate_hashes": [],
+      "sealed_candidate_hashes": []
+    },
+    {
+      "route": "FiniteListMean",
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "development_questions": 3000,
+      "development_frontend_complete": 2,
+      "development_execution_complete": 2,
+      "development_replay_verified": 3000,
+      "development_tamper_rejected": 3000,
+      "sealed_questions": 1000,
+      "sealed_frontend_complete": 0,
+      "sealed_execution_complete": 0,
+      "sealed_replay_verified": 1000,
+      "sealed_tamper_rejected": 1000,
+      "development_candidate_hashes": [
+        "6b93bee1cfff9b24944b4a23ecfc41546805a93a65ba53d4f2b168fd3a8e533c",
+        "321d1657fb0a664f9b728e5782904d9dfb5e0b831f0d54568573d904083d90a2"
+      ],
+      "sealed_candidate_hashes": []
+    },
+    {
+      "route": "UnitConversion",
+      "source_path": "docs/sources/openstax_unit_conversion_goal6_catalog.txt",
+      "source_sha256": "561930f8e04ab44c41bebabffd83dda19e8d17e4e917d6467d9ba1b8cee7f74a",
+      "development_questions": 3000,
+      "development_frontend_complete": 0,
+      "development_execution_complete": 0,
+      "development_replay_verified": 3000,
+      "development_tamper_rejected": 3000,
+      "sealed_questions": 1000,
+      "sealed_frontend_complete": 0,
+      "sealed_execution_complete": 0,
+      "sealed_replay_verified": 1000,
+      "sealed_tamper_rejected": 1000,
+      "development_candidate_hashes": [],
+      "sealed_candidate_hashes": []
+    }
+  ],
+  "selected_route": "FiniteListMean",
+  "selected_source_path": "docs/sources/openstax_finite_statistics_source.txt",
+  "selected_source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+  "development_selection_basis": "max executable generic coverage on development; deterministic lexical tie-break",
+  "selected_development_candidates": 2,
+  "selected_sealed_candidates": 0,
+  "answer_keys_read": 0,
+  "plaintext_answers_read": 0,
+  "production_mutations": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "6b9b48687fe9f8fdb82708ad2d90582fa63b119113f83ae9eda803d4169824f0"
+}

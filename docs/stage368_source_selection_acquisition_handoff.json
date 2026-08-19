@@ -1,0 +1,16 @@
+{
+  "schema": "stage368-source-selection-acquisition-handoff-v1",
+  "corpus_sha256": "9763174a963c696fe2c8f57f5b6e8bccd09b988931c6e68fe92c791b7446169c",
+  "metadata_lineages_selected": 2,
+  "selection_replay_verified": true,
+  "selected_source_matches_catalog": true,
+  "executable_catalog_lineages": 1,
+  "source_records": 4,
+  "source_module_replay_verified": true,
+  "supported_exercises": 4,
+  "exact_decisions": 4,
+  "execution_replays": 4,
+  "promotion_blocked_without_two_executable_lineages": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0
+}

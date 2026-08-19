@@ -1,0 +1,38 @@
+{
+  "schema": "stage313-post-curriculum-hle-checkpoint-v1",
+  "checkpoint": "post-stage312-integrated-curriculum",
+  "evaluator": "src/bin/stage_l_hle_checkpoint_4.rs",
+  "producer_commit": "4dfefc9",
+  "evaluator_source_sha256": "ea2492b174d9b85d4405fbddddae8eb799d1141da69d2b45afdcbf5d7ec05c00",
+  "dataset": "data/hle.jsonl",
+  "dataset_sha256": "31b26cc8e352af16bedb9a714feb788ae562be38898ab92dc54b4665882bf1c6",
+  "curriculum_checkpoint": "docs/stage312_integrated_curriculum_checkpoint.json",
+  "curriculum_checkpoint_sha256": "cd0d6107355e385363629a4c8a17646c094b896dc1f0bfbd2bbdf1b5c3bebdbc",
+  "trace_sha256": "68488db733d41e94ebc5e6d18ca20a5f7e3a933fe6ff4fcbd696d9603edfb640",
+  "cases": 2500,
+  "correct_authorized_answers": 0,
+  "incorrect_authorized_answers": 0,
+  "false_authorizations": 0,
+  "terminal_counts": {
+    "visual_input_required": 151,
+    "language_normalization_failure": 236,
+    "missing_factual_knowledge": 1815,
+    "missing_reasoning_method": 217,
+    "unsupported_or_ambiguous": 81
+  },
+  "route_counts": {
+    "Chess": 44,
+    "Code": 6,
+    "FactualQA": 1376,
+    "LifeScience": 556,
+    "Math": 402,
+    "Physics": 116
+  },
+  "pack_receipt_invocations": 0,
+  "replay_verified": 0,
+  "replay_not_applicable": 2500,
+  "replay_failed": 0,
+  "registry_mutated": false,
+  "evaluation_worktree": "isolated detached worktree at 4dfefc9",
+  "answers_exposed_to_acquisition": false
+}

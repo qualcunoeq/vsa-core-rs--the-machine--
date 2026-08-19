@@ -1,46 +1,34 @@
 {
   "schema": "stage337-goal6-source-selected-sequence-transfer-v1",
-  "partition": "development",
-  "questions_read": 3000,
+  "partition": "sealed",
+  "questions_read": 1000,
   "selected_source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
   "selected_source_sha256": "52073f4cf79c3c5ad61465a6d7d19d80f90012dd62e83fa7b2ea7cf48df4b5cf",
   "selected_route": "ArithmeticSequence",
   "source_records": 4,
-  "frontend_complete": 3,
-  "frontend_ambiguous": 1,
-  "frontend_missing": 5,
-  "frontend_unsupported": 2991,
-  "execution_complete": 3,
-  "frontend_replay_verified": 3000,
-  "execution_replay_verified": 3,
-  "frontend_tamper_rejected": 3000,
-  "execution_tamper_rejected": 3,
-  "candidate_count": 3,
+  "frontend_complete": 1,
+  "frontend_ambiguous": 0,
+  "frontend_missing": 2,
+  "frontend_unsupported": 997,
+  "execution_complete": 1,
+  "frontend_replay_verified": 1000,
+  "execution_replay_verified": 1,
+  "frontend_tamper_rejected": 1000,
+  "execution_tamper_rejected": 1,
+  "candidate_count": 1,
   "candidates": [
     {
-      "id": "math-v1-development-0212",
-      "prompt_sha256": "aeece09e57b6f83c3b4898eb700e8d2b28ed1aa7f97578022222138e9c0e1d3c",
-      "value_sha256": "c3667732689c20dd5ad6cb626b1d09343a6bd3094c7799be6e7d7d4c9c1b1c90",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-0389",
-      "prompt_sha256": "362a810daab0c890b2eaadbc4ed7a0e544de35c4adf9c404f9dd5d53a97d5bd6",
-      "value_sha256": "af2f1aebdd8325b9cbef4f4de6021c84025e095f2c91bda04dad5ca4707f748e",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-2842",
-      "prompt_sha256": "809c81f6fdfb57d079501d69f7fd0dfe1ebe995d047365e94de186cee72e477a",
-      "value_sha256": "0b94fcc6c075078217cf55103f92342c31e76752b4a5c75aa96ad69f22f9f968",
+      "id": "math-v1-sealed-0001",
+      "prompt_sha256": "a9fa331086bb33b185ab38c3fca43540600b1cf15a8432b346b8ea20c943774a",
+      "value_sha256": "96490824d04ddfaf2111fa9b0fa3510afd9c3eaf8281438fdb75c53cff1fa848",
       "replay_verified": true
     }
   ],
   "answer_keys_read": 0,
   "production_mutations": 0,
   "manifest_unchanged": true,
-  "source_plan_sha256": "962afed7aaadcf2fda67dba71fb202555af8b2f3af3335c24f1a88c753d3c5bd",
+  "source_plan_sha256": "f49aafdfc1f25ab45a0120f542ca2fe1de94e0f9dd59a2ac7114d97e0d21719f",
   "input_gap_report_sha256": "b0b9b4a4a9b60a3839094e4833d0053c79ab005d78c4fa31a33caedda1db2655",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
-  "report_sha256": "6925042e77254ba94ad42d6ce7d31cabf8833a08d900350bf288f526fd491bc4"
+  "report_sha256": "2cb9cb97005d38ea9eb585ba30d2176a150ed1d768c2906c621bed79599b92c7"
 }

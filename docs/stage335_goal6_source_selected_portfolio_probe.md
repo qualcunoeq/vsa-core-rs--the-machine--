@@ -1,9 +1,9 @@
 # Stage 335 — source-selected external portfolio probe
 
-- Partition / questions read: development / 3000
+- Partition / questions read: sealed / 1000
 - Selected source / route: `docs/sources/openstax_finite_statistics_source.txt` / `FiniteListMean`
-- Frontend complete / ambiguous / missing / unsupported: 0 / 0 / 2987 / 13
-- Frontend replay / tamper: 3000 / 3000
+- Frontend complete / ambiguous / missing / unsupported: 0 / 0 / 995 / 5
+- Frontend replay / tamper: 1000 / 1000
 - Execution complete / replay / tamper: 0 / 0 / 0
 - Shadow candidates: 0
 - Answer keys / plaintext answers / production mutations: 0 / 0 / 0

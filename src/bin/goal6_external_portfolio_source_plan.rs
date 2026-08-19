@@ -127,11 +127,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .then_with(|| right.overlap_terms.cmp(&left.overlap_terms))
             .then_with(|| left.source_path.cmp(&right.source_path))
     });
-    // Retain the top lexical queue plus lower-ranked entries that may carry
-    // complete executable-route evidence.  The semantic gate below, not rank,
-    // decides whether any entry is actionable.
-    triage.truncate(8);
-
     // A source is actionable only when the validated route that would consume
     // it has at least one complete executable residual. This prevents lexical
     // overlap from becoming a de facto curriculum decision.
@@ -164,12 +159,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         } else if path.contains("precalculus_sequences") {
             Some("ArithmeticSequence")
+        } else if path.contains("unit_conversion") {
+            Some("UnitConversion")
         } else {
             None
         }
     }
 
-    let plan_entries = triage
+    // Retain the top lexical queue plus any lower-ranked source whose
+    // attributed route has complete executable evidence.  The semantic gate
+    // below, not rank, decides whether an entry is actionable.
+    let mut retained = triage
+        .into_iter()
+        .enumerate()
+        .filter(|(index, candidate)| {
+            *index < 8
+                || route_for_source(&candidate.source_path, &route_evidence)
+                    .and_then(|route| route_evidence.get(route).copied())
+                    .is_some_and(|cases| cases > 0)
+        })
+        .map(|(_, candidate)| candidate)
+        .collect::<Vec<_>>();
+    retained.sort_by(|left, right| {
+        right
+            .affected_residuals
+            .cmp(&left.affected_residuals)
+            .then_with(|| right.overlap_terms.cmp(&left.overlap_terms))
+            .then_with(|| left.source_path.cmp(&right.source_path))
+    });
+
+    let plan_entries = retained
         .into_iter()
         .enumerate()
         .map(|(index, candidate)| {

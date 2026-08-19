@@ -1,0 +1,56 @@
+{
+  "schema": "stage318-finite-automata-integrated-checkpoint-v1",
+  "reports": [
+    {
+      "report": "docs/stage314_finite_automata_source_pack.json",
+      "report_sha256": "d4f65bb85762e7e57ed65a48298522cbc7276677b385a0fb1c67349aad0acad2",
+      "cases": 240,
+      "exact": 240,
+      "replay": 240,
+      "tamper": 240,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    {
+      "report": "docs/stage315_finite_automata_composition.json",
+      "report_sha256": "ce449c242270d252b0ba24769841816180e4797c4c429a527eecaa52ce2a3a3f",
+      "cases": 240,
+      "exact": 240,
+      "replay": 240,
+      "tamper": 240,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    {
+      "report": "docs/stage316_finite_automata_promotion_rollback.json",
+      "report_sha256": "b1215f0e8e0134f73248578e9e2ed3c0c4ea225180838f36af78eb135c3dddff",
+      "cases": 240,
+      "exact": 240,
+      "replay": 240,
+      "tamper": 240,
+      "false_authorizations": 0,
+      "false_denials": 0
+    },
+    {
+      "report": "docs/stage317_finite_automata_independent_holdout.json",
+      "report_sha256": "e59827d5e0f4643021bc909a8cd97992775d3acd029c6064af5aac85a679537f",
+      "cases": 100,
+      "exact": 100,
+      "replay": 60,
+      "tamper": 60,
+      "false_authorizations": 0,
+      "false_denials": 0
+    }
+  ],
+  "aggregate_cases": 820,
+  "aggregate_exact_decisions": 820,
+  "aggregate_replay_verified": 780,
+  "aggregate_replay_not_applicable": 40,
+  "aggregate_tamper_rejections": 780,
+  "aggregate_false_authorizations": 0,
+  "aggregate_false_denials": 0,
+  "aggregate_supported_or_promoted": 400,
+  "live_registry_mutations": 0,
+  "curriculum_manifest_mutations": 0,
+  "hle_questions_read": 0
+}

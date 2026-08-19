@@ -16,6 +16,21 @@ RETRIEVED: 2026-08-16
 EVIDENCE: section 2.5: definition of the arithmetic mean from sum and count
 END FORMULA
 
+BEGIN FORMULA mean_equality_unknown
+ALIASES: unknown from equality of two finite means | equal finite means
+EXPRESSION: right_count * left_sum / left_count - right_known_sum
+INPUTS: left_sum, left_count, right_known_sum, right_count
+ASSUMPTIONS: both counts are positive; the right mean has exactly one unknown additive value; values share one scale
+CONSTRAINTS: positive:left_count; positive:right_count
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Measures of Central Tendency and Variability
+URL: https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-19
+EVIDENCE: arithmetic mean definition rearranged for one unknown in an equality of two finite means
+END FORMULA
+
 BEGIN FORMULA weighted_mean
 ALIASES: weighted average
 EXPRESSION: weighted_sum / total_weight

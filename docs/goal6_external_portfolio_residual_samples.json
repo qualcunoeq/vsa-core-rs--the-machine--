@@ -12,14 +12,14 @@
     {
       "route": "finite_list_mean",
       "frontend_status_counts": {
-        "Ambiguous": 25,
-        "Complete": 4,
+        "Ambiguous": 23,
+        "Complete": 6,
         "Missing": 2937,
         "Unsupported": 34
       },
       "execution_status_counts": {
-        "Complete": 4,
-        "not_run": 2996
+        "Complete": 6,
+        "not_run": 2994
       },
       "samples_by_frontend_status": {
         "Ambiguous": [
@@ -45,20 +45,6 @@
             "execution_status": "not_run"
           },
           {
-            "case_id": "math-v1-development-0833",
-            "prompt_sha256": "bbec2b1467927cac36c935561c347fa9acf6c615eb3e039b42b0a46b6febdd27",
-            "prompt_preview": "The mean (average) of 6, 9 and 18 is equal to the mean (average) of 12 and $y$. What is the value of $y$?",
-            "frontend_status": "Ambiguous",
-            "execution_status": "not_run"
-          },
-          {
-            "case_id": "math-v1-development-0868",
-            "prompt_sha256": "826a695bdf85a4b67a6f19af1c2fc694fb2d2f5f59b12db175837ffd04150be1",
-            "prompt_preview": "The mean of $5,8$ and $17$ is equal to the mean of $12$ and $y$. What is the value of $y$?",
-            "frontend_status": "Ambiguous",
-            "execution_status": "not_run"
-          },
-          {
             "case_id": "math-v1-development-0973",
             "prompt_sha256": "da2a255a151ae01377748944c7dbc6732edcfba8fe35c2a3055031c9fbd1b5d8",
             "prompt_preview": "The sum of four numbers is one-half. What is the mean of the four numbers? Express your answer as a common fraction.",
@@ -78,6 +64,20 @@
             "prompt_preview": "According to the graph, what is the average monthly balance, in dollars, of David's savings account during the four-month period shown? [asy] draw((0,0)--(13,0)--(13,8)--(0,8)--cycle,linewidth(1)); draw((0,2)--(13,2),linewidth(1)); draw((0,",
             "frontend_status": "Ambiguous",
             "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-1253",
+            "prompt_sha256": "97655745dc8a1ce1e7ca91023fe62b818b74671c42c62dcf8570978ed5c8673b",
+            "prompt_preview": "The Gauss family has three boys aged $7,$ a girl aged $14,$ and a boy aged $15.$ What is the mean (average) of the ages of the children?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
+          },
+          {
+            "case_id": "math-v1-development-1461",
+            "prompt_sha256": "fd3eb750aa520582bbfa022e022d049872c32b5b8576ebe7e39bd9c7eaec34c3",
+            "prompt_preview": "The average age of the three Wilson children is 7 years. If the two younger children are 4 years old and 7 years old, how many years old is the oldest child?",
+            "frontend_status": "Ambiguous",
+            "execution_status": "not_run"
           }
         ],
         "Complete": [
@@ -85,6 +85,20 @@
             "case_id": "math-v1-development-0238",
             "prompt_sha256": "7f01f6be38331525c6f5a59d37d1eb6f4cc5f5c46a42d5dce6c0dc140e7b778f",
             "prompt_preview": "The noon temperatures for seven consecutive days were $80^{\\circ}$, $79^{\\circ}$, $81^{\\circ}$, $85^{\\circ}$, $87^{\\circ}$, $89^{\\circ}$, and $87^{\\circ}$ Fahrenheit. What is the mean noon temperature, in degrees Fahrenheit, for the week?",
+            "frontend_status": "Complete",
+            "execution_status": "Complete"
+          },
+          {
+            "case_id": "math-v1-development-0833",
+            "prompt_sha256": "bbec2b1467927cac36c935561c347fa9acf6c615eb3e039b42b0a46b6febdd27",
+            "prompt_preview": "The mean (average) of 6, 9 and 18 is equal to the mean (average) of 12 and $y$. What is the value of $y$?",
+            "frontend_status": "Complete",
+            "execution_status": "Complete"
+          },
+          {
+            "case_id": "math-v1-development-0868",
+            "prompt_sha256": "826a695bdf85a4b67a6f19af1c2fc694fb2d2f5f59b12db175837ffd04150be1",
+            "prompt_preview": "The mean of $5,8$ and $17$ is equal to the mean of $12$ and $y$. What is the value of $y$?",
             "frontend_status": "Complete",
             "execution_status": "Complete"
           },
@@ -1215,5 +1229,5 @@
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "production_mutations": 0,
-  "report_sha256": "9f0b9d7c6f2fa05820553ca83802c24223bae85aa2e1f1e976c392724d22003b"
+  "report_sha256": "89d8b79bcdb16e3dae9811f91a0e42312377603d1d547c36b1bdd9419d98f59a"
 }

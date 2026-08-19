@@ -2,18 +2,18 @@
   "schema": "goal6-external-portfolio-score-v1",
   "release_id": "external-math-exam-v1",
   "partition": "development",
-  "probe_report_sha256": "d6acd6d77b81e92aff83447134f6d65166f22a29bf444cd994629c8fe314085a",
+  "probe_report_sha256": "e3258ff7fc074eeb0a30570773204cfbb5c8a56e0e5888eb5035812417ad57eb",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "questions_read": 3000,
   "answer_hashes_read": 3000,
   "plaintext_answers_read": 0,
   "sealed_questions_read": 0,
-  "unique_candidate_cases": 9,
-  "correct_shadow_candidates": 9,
+  "unique_candidate_cases": 11,
+  "correct_shadow_candidates": 11,
   "incorrect_shadow_candidates_rejected": 0,
-  "candidate_replays": 9,
+  "candidate_replays": 11,
   "route_ambiguities": 0,
-  "no_executable_route": 2991,
+  "no_executable_route": 2989,
   "production_authorizations": 0,
   "false_authorizations": 0,
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
@@ -40,6 +40,22 @@
       "id": "math-v1-development-0389",
       "selected_route": "arithmetic_sequence",
       "candidate_answer_sha256": "454f63ac30c8322997ef025edff6abd23e0dbe7b8a3d5126a894e4a168c1b59b",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0833",
+      "selected_route": "finite_list_mean",
+      "candidate_answer_sha256": "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
+      "reference_match": true,
+      "matched_representation": "fraction",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-development-0868",
+      "selected_route": "finite_list_mean",
+      "candidate_answer_sha256": "2c624232cdd221771294dfbb310aca000a0df6ac8b66b696d90ef06fdefb64a3",
       "reference_match": true,
       "matched_representation": "fraction",
       "replay_verified": true
@@ -93,5 +109,5 @@
       "replay_verified": true
     }
   ],
-  "report_sha256": "f891a786f0a6991ce02255911bc86d63e21446295ae8404b4621010fe73c382d"
+  "report_sha256": "f2046c9baccaa0c949955f18e7b16fbad452293514e21334a051af83a10d2692"
 }

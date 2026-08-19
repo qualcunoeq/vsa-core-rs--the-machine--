@@ -11,8 +11,8 @@ This is an answer-key-blind review queue derived from the frozenportfolio gap re
 - Manifest unchanged: true
 - All queue entries blocked: true
 
-1. `docs/sources/openstax_bounded_geometry_source.txt` — 442 residuals, lexical score 0.374, blocked pending semantic validation and independent exercises
-2. `docs/sources/openstax_finite_regression_source.txt` — 421 residuals, lexical score 0.312, blocked pending semantic validation and independent exercises
-3. `docs/sources/openstax_finite_statistics_source.txt` — 328 residuals, lexical score 0.246, blocked pending semantic validation and independent exercises
-4. `docs/sources/openstax_finite_statistics_catalog.json` — 291 residuals, lexical score 0.215, blocked pending semantic validation and independent exercises
+1. `docs/sources/openstax_finite_statistics_source.txt` — 532 residuals, lexical score 0.416, blocked pending semantic validation and independent exercises
+2. `docs/sources/openstax_bounded_geometry_source.txt` — 442 residuals, lexical score 0.374, blocked pending semantic validation and independent exercises
+3. `docs/sources/openstax_finite_regression_source.txt` — 419 residuals, lexical score 0.310, blocked pending semantic validation and independent exercises
+4. `docs/sources/openstax_finite_statistics_catalog.json` — 289 residuals, lexical score 0.214, blocked pending semantic validation and independent exercises
 5. `docs/sources/openstax_complex_arithmetic_source.txt` — 263 residuals, lexical score 0.195, blocked pending semantic validation and independent exercises

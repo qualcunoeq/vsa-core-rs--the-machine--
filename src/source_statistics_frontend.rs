@@ -195,6 +195,84 @@ fn natural_numeric_list_mean(text: &str) -> Option<(Vec<Rational>, String)> {
     Some((values, format!("natural-list-span:{}..{}", start, start + end)))
 }
 
+fn single_symbol(token: &str) -> Option<String> {
+    let symbol: String = token
+        .chars()
+        .filter(|character| character.is_ascii_alphabetic())
+        .collect();
+    (symbol.len() == 1).then_some(symbol)
+}
+
+/// Recognize only an explicitly stated equality of two finite means with one
+/// unknown additive value on the right. This is a source-backed equation
+/// contract, not a general symbolic equation solver.
+fn mean_equality_unknown(text: &str) -> Option<(BTreeMap<String, Rational>, String)> {
+    let lower = text.to_ascii_lowercase();
+    let mean_pos = lower.find("mean")?;
+    let left_of = lower[mean_pos..].find(" of ")? + mean_pos + 4;
+    let connector = [" is equal to the mean", " is equal to the average"]
+        .iter()
+        .filter_map(|marker| lower[left_of..].find(marker).map(|offset| (offset, *marker)))
+        .min_by_key(|(offset, _)| *offset)?;
+    let connector_start = left_of + connector.0;
+    let left_segment = text[left_of..connector_start].trim();
+    let left_values = parse_explicit_list(&left_segment.replace(" and ", ","))?;
+    let right_start = connector_start + connector.1.len();
+    let right_of = lower[right_start..].find(" of ")? + right_start + 4;
+    let right_end = text[right_of..]
+        .find(|character: char| matches!(character, '.' | '?' | ';'))
+        .map(|offset| right_of + offset)
+        .unwrap_or(text.len());
+    let right_segment = text[right_of..right_end]
+        .replace(" and ", ",")
+        .replace(" AND ", ",");
+    let right_items: Vec<&str> = right_segment
+        .split(',')
+        .map(str::trim)
+        .filter(|item| !item.is_empty())
+        .collect();
+    if right_items.len() != 2 {
+        return None;
+    }
+    let mut known_sum = None;
+    let mut unknown_symbol = None;
+    for item in right_items {
+        if let Some(value) = rational_token(item) {
+            if known_sum.is_some() {
+                return None;
+            }
+            known_sum = Some(value);
+        } else if let Some(symbol) = single_symbol(item) {
+            if unknown_symbol.is_some() {
+                return None;
+            }
+            unknown_symbol = Some(symbol);
+        } else {
+            return None;
+        }
+    }
+    let known_sum = known_sum?;
+    let unknown_symbol = unknown_symbol?;
+    let inputs = BTreeMap::from([
+        (
+            "left_sum".into(),
+            left_values
+                .iter()
+                .fold(Rational::zero(), |acc, value| acc.add(value).unwrap()),
+        ),
+        (
+            "left_count".into(),
+            Rational::new(left_values.len() as i128, 1).expect("left list is non-empty"),
+        ),
+        ("right_known_sum".into(), known_sum),
+        ("right_count".into(), Rational::new(2, 1).expect("right list has two entries")),
+    ]);
+    Some((
+        inputs,
+        format!("mean-equality-span:{}..{};unknown:{}", left_of, right_end, unknown_symbol),
+    ))
+}
+
 /// Parse only an explicitly enumerated finite list whose arithmetic mean is
 /// requested.  This bridge deliberately refuses ranges, filtering, symbolic
 /// entries, and optimization/constraint problems; those require separate
@@ -239,6 +317,9 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
             Vec::new(),
             vec!["request asks for a derived change or rate, not a finite-list mean".into()],
         );
+    }
+    if let Some((inputs, span)) = mean_equality_unknown(text) {
+        return with_request("mean_equality_unknown", inputs, vec![span]);
     }
     if let Some((values, span)) = natural_numeric_list_mean(text) {
         let sum = values.iter().fold(Rational::zero(), |acc, value| {
@@ -614,5 +695,32 @@ mod tests {
         );
         assert_ne!(symbolic.status, FrontendStatus::Complete);
         assert!(symbolic.replay_verified());
+    }
+
+    #[test]
+    fn finite_mean_equality_binds_one_unknown_without_general_symbolic_solving() {
+        let complete = formalize_finite_list_mean_text(
+            "The mean (average) of 6, 9 and 18 is equal to the mean (average) of 12 and y. What is the value of y?",
+        );
+        assert_eq!(complete.status, FrontendStatus::Complete, "{complete:?}");
+        assert_eq!(complete.formula.as_deref(), Some("mean_equality_unknown"));
+        let request = complete.request.as_ref().unwrap();
+        assert_eq!(request.inputs["left_sum"], Rational::new(33, 1).unwrap());
+        assert_eq!(request.inputs["left_count"], Rational::new(3, 1).unwrap());
+        assert_eq!(request.inputs["right_known_sum"], Rational::new(12, 1).unwrap());
+        assert_eq!(request.inputs["right_count"], Rational::new(2, 1).unwrap());
+        assert!(complete.replay_verified());
+
+        let alternate = formalize_finite_list_mean_text(
+            "The mean of 5,8 and 17 is equal to the mean of 12 and y. What is the value of y?",
+        );
+        assert_eq!(alternate.status, FrontendStatus::Complete, "{alternate:?}");
+        assert!(alternate.replay_verified());
+
+        let ambiguous = formalize_finite_list_mean_text(
+            "The mean of a list is equal to the mean of another list. Find the unknown value.",
+        );
+        assert_ne!(ambiguous.status, FrontendStatus::Complete);
+        assert!(ambiguous.replay_verified());
     }
 }

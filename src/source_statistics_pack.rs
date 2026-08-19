@@ -69,5 +69,22 @@ mod tests {
             crate::source_formula_pack::FormulaStatus::Inconsistent
         );
         assert!(invalid.replay_verified());
+
+        let equality = FormulaRequest {
+            formula: "mean_equality_unknown".into(),
+            inputs: BTreeMap::from([
+                ("left_sum".into(), q(33, 1)),
+                ("left_count".into(), q(3, 1)),
+                ("right_known_sum".into(), q(12, 1)),
+                ("right_count".into(), q(2, 1)),
+            ]),
+            domain: DOMAIN.into(),
+            ambiguity: None,
+            provenance: vec!["unit-test:equality".into()],
+        };
+        let equality = evaluate_statistics(&equality);
+        assert_eq!(equality.status, crate::source_formula_pack::FormulaStatus::Complete);
+        assert_eq!(equality.value, Some(q(10, 1)));
+        assert!(equality.replay_verified());
     }
 }

@@ -7,29 +7,29 @@
   "answer_keys_read": 0,
   "sealed_questions_read": 0,
   "route_invocations": 21000,
-  "unique_shadow_candidates": 9,
+  "unique_shadow_candidates": 11,
   "multiple_route_ambiguities": 0,
-  "no_executable_route": 2991,
+  "no_executable_route": 2989,
   "frontend_replay_receipts": 21000,
-  "execution_replay_receipts": 10,
+  "execution_replay_receipts": 12,
   "frontend_tamper_rejections": 21000,
-  "execution_tamper_rejections": 10,
+  "execution_tamper_rejections": 12,
   "selected_route_counts": {
     "ArithmeticSequence": 3,
     "BoundedCounting": 1,
-    "FiniteListMean": 4,
+    "FiniteListMean": 6,
     "UnitConversion": 1
   },
   "frontend_status_counts": {
-    "\"Ambiguous\"": 289,
-    "\"Complete\"": 10,
+    "\"Ambiguous\"": 287,
+    "\"Complete\"": 12,
     "\"Missing\"": 14865,
     "\"Unsupported\"": 5836
   },
   "execution_status_counts": {
-    "\"Complete\"": 9,
+    "\"Complete\"": 11,
     "\"InvalidRange\"": 1,
-    "\"not_run\"": 20990
+    "\"not_run\"": 20988
   },
   "production_authorizations": 0,
   "false_authorizations": 0,
@@ -74204,14 +74204,20 @@
       "route_observations": [
         {
           "route": "finite_list_mean",
-          "frontend_status": "Ambiguous",
-          "execution_status": "not_run",
-          "executable": false,
-          "candidate": null,
+          "frontend_status": "Complete",
+          "execution_status": "Complete",
+          "executable": true,
+          "candidate": {
+            "kind": "rational",
+            "value": {
+              "numerator": 10,
+              "denominator": 1
+            }
+          },
           "frontend_replay_verified": true,
-          "execution_replay_verified": false,
+          "execution_replay_verified": true,
           "frontend_tamper_rejected": true,
-          "execution_tamper_rejected": false
+          "execution_tamper_rejected": true
         },
         {
           "route": "finite_statistics",
@@ -74280,12 +74286,14 @@
           "execution_tamper_rejected": false
         }
       ],
-      "executable_route_count": 0,
-      "executable_routes": [],
-      "decision": "no_executable_route",
-      "replay_verified_routes": 0,
+      "executable_route_count": 1,
+      "executable_routes": [
+        "finite_list_mean"
+      ],
+      "decision": "unique_shadow_candidate",
+      "replay_verified_routes": 1,
       "frontend_tamper_rejected_routes": 7,
-      "execution_tamper_rejected_routes": 0
+      "execution_tamper_rejected_routes": 1
     },
     {
       "id": "math-v1-development-0834",
@@ -77319,14 +77327,20 @@
       "route_observations": [
         {
           "route": "finite_list_mean",
-          "frontend_status": "Ambiguous",
-          "execution_status": "not_run",
-          "executable": false,
-          "candidate": null,
+          "frontend_status": "Complete",
+          "execution_status": "Complete",
+          "executable": true,
+          "candidate": {
+            "kind": "rational",
+            "value": {
+              "numerator": 8,
+              "denominator": 1
+            }
+          },
           "frontend_replay_verified": true,
-          "execution_replay_verified": false,
+          "execution_replay_verified": true,
           "frontend_tamper_rejected": true,
-          "execution_tamper_rejected": false
+          "execution_tamper_rejected": true
         },
         {
           "route": "finite_statistics",
@@ -77395,12 +77409,14 @@
           "execution_tamper_rejected": false
         }
       ],
-      "executable_route_count": 0,
-      "executable_routes": [],
-      "decision": "no_executable_route",
-      "replay_verified_routes": 0,
+      "executable_route_count": 1,
+      "executable_routes": [
+        "finite_list_mean"
+      ],
+      "decision": "unique_shadow_candidate",
+      "replay_verified_routes": 1,
       "frontend_tamper_rejected_routes": 7,
-      "execution_tamper_rejected_routes": 0
+      "execution_tamper_rejected_routes": 1
     },
     {
       "id": "math-v1-development-0869",
@@ -267107,5 +267123,5 @@
       "execution_tamper_rejected_routes": 0
     }
   ],
-  "report_sha256": "d6acd6d77b81e92aff83447134f6d65166f22a29bf444cd994629c8fe314085a"
+  "report_sha256": "e3258ff7fc074eeb0a30570773204cfbb5c8a56e0e5888eb5035812417ad57eb"
 }

@@ -6,11 +6,11 @@
   "questions_read": 3000,
   "answer_keys_read": 0,
   "route_invocations": 21000,
-  "unique_candidates": 9,
-  "no_executable_route": 2991,
+  "unique_candidates": 11,
+  "no_executable_route": 2989,
   "multiple_route_ambiguities": 0,
   "first_gate_counts": {
-    "ambiguous_frontend": 157,
+    "ambiguous_frontend": 155,
     "complete_frontend_execution_boundary": 1,
     "missing_frontend_fields": 2833
   },
@@ -58,16 +58,16 @@
     {
       "route": "FiniteListMean",
       "frontend_status_counts": {
-        "Ambiguous": 25,
-        "Complete": 4,
+        "Ambiguous": 23,
+        "Complete": 6,
         "Missing": 2937,
         "Unsupported": 34
       },
       "execution_status_counts": {
-        "Complete": 4,
-        "not_run": 2996
+        "Complete": 6,
+        "not_run": 2994
       },
-      "executable_cases": 4
+      "executable_cases": 6
     },
     {
       "route": "FiniteRegression",
@@ -110,39 +110,39 @@
   "source_documents_considered": 28,
   "source_triage_candidates": [
     {
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "9f8e6c0273cf527acd717c2d08d96dfec096f7a4d705d073bf02b9c9a06d8dec",
+      "provenance_fields_present": true,
+      "affected_residuals": 532,
+      "overlap_terms": 1244,
+      "lexical_score": 0.4161927065908331,
+      "status": "triage_only"
+    },
+    {
       "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
       "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
       "provenance_fields_present": true,
       "affected_residuals": 442,
       "overlap_terms": 1119,
-      "lexical_score": 0.3741223671013039,
+      "lexical_score": 0.374372699899632,
       "status": "triage_only"
     },
     {
       "source_path": "docs/sources/openstax_finite_regression_source.txt",
       "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
       "provenance_fields_present": true,
-      "affected_residuals": 421,
-      "overlap_terms": 934,
-      "lexical_score": 0.3122701437646272,
-      "status": "triage_only"
-    },
-    {
-      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
-      "provenance_fields_present": true,
-      "affected_residuals": 328,
-      "overlap_terms": 736,
-      "lexical_score": 0.24607154797726513,
+      "affected_residuals": 419,
+      "overlap_terms": 928,
+      "lexical_score": 0.31047172967547676,
       "status": "triage_only"
     },
     {
       "source_path": "docs/sources/openstax_finite_statistics_catalog.json",
       "source_sha256": "9d76954caad3d079b385378ee25cafb709f5454d2369b1ec433fbbbc8179904c",
       "provenance_fields_present": false,
-      "affected_residuals": 291,
-      "overlap_terms": 644,
-      "lexical_score": 0.215312604480107,
+      "affected_residuals": 289,
+      "overlap_terms": 639,
+      "lexical_score": 0.21378387420541986,
       "status": "triage_only"
     },
     {
@@ -151,7 +151,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 263,
       "overlap_terms": 583,
-      "lexical_score": 0.1949180875961217,
+      "lexical_score": 0.1950485112077618,
       "status": "triage_only"
     },
     {
@@ -160,7 +160,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 180,
       "overlap_terms": 381,
-      "lexical_score": 0.12738214643931794,
+      "lexical_score": 0.12746738039478087,
       "status": "triage_only"
     },
     {
@@ -169,7 +169,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 174,
       "overlap_terms": 371,
-      "lexical_score": 0.1240387830157138,
+      "lexical_score": 0.12412177985948478,
       "status": "triage_only"
     },
     {
@@ -178,7 +178,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 159,
       "overlap_terms": 339,
-      "lexical_score": 0.11334002006018054,
+      "lexical_score": 0.1134158581465373,
       "status": "triage_only"
     },
     {
@@ -187,7 +187,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 155,
       "overlap_terms": 338,
-      "lexical_score": 0.11300568371782013,
+      "lexical_score": 0.1130812980930077,
       "status": "triage_only"
     },
     {
@@ -196,7 +196,7 @@
       "provenance_fields_present": false,
       "affected_residuals": 152,
       "overlap_terms": 327,
-      "lexical_score": 0.10932798395185557,
+      "lexical_score": 0.109401137504182,
       "status": "triage_only"
     },
     {
@@ -205,7 +205,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 133,
       "overlap_terms": 280,
-      "lexical_score": 0.09361417586091608,
+      "lexical_score": 0.0936768149882904,
       "status": "triage_only"
     },
     {
@@ -214,7 +214,7 @@
       "provenance_fields_present": true,
       "affected_residuals": 129,
       "overlap_terms": 274,
-      "lexical_score": 0.09160815780675359,
+      "lexical_score": 0.09166945466711275,
       "status": "triage_only"
     }
   ],
@@ -224,5 +224,5 @@
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
-  "report_sha256": "d94f0fefbefaf1f0980db24c64445fe445f1512a825689f3f55be12e60054956"
+  "report_sha256": "e2410a579220fa7ed7e4e2bb4d4e98aedc0a1c6fdc231126717f87252b60f120"
 }

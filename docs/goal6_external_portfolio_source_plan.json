@@ -1,0 +1,117 @@
+{
+  "schema": "goal6-external-portfolio-source-plan-v1",
+  "release_id": "external-math-exam-v1",
+  "input_gap_schema": "goal6-external-portfolio-gaps-v1",
+  "input_gap_report_sha256": "02d4428b5a7d245184400b3918fc5e7b64c4c15b1cf1029c5c8df9b748a41ddb",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "development_questions_read": 3000,
+  "answer_keys_read": 0,
+  "source_documents_considered": 28,
+  "triage_candidates_read": 12,
+  "review_queue_size": 5,
+  "plan_entries": [
+    {
+      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
+      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "provenance_fields_present": true,
+      "affected_residuals": 442,
+      "overlap_terms": 1119,
+      "lexical_score": 0.373872368860675,
+      "queue_rank": 1,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_finite_regression_source.txt",
+      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "provenance_fields_present": true,
+      "affected_residuals": 421,
+      "overlap_terms": 934,
+      "lexical_score": 0.31206147677915136,
+      "queue_rank": 2,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "provenance_fields_present": true,
+      "affected_residuals": 328,
+      "overlap_terms": 736,
+      "lexical_score": 0.24590711660541265,
+      "queue_rank": 3,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_finite_statistics_catalog.json",
+      "source_sha256": "9d76954caad3d079b385378ee25cafb709f5454d2369b1ec433fbbbc8179904c",
+      "provenance_fields_present": false,
+      "affected_residuals": 291,
+      "overlap_terms": 644,
+      "lexical_score": 0.21516872702973605,
+      "queue_rank": 4,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review"
+      ]
+    },
+    {
+      "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
+      "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+      "provenance_fields_present": true,
+      "affected_residuals": 263,
+      "overlap_terms": 583,
+      "lexical_score": 0.1947878382893418,
+      "queue_rank": 5,
+      "decision": "review_queue_only",
+      "semantic_validation_required": true,
+      "independent_exercises_required": true,
+      "ingestion_allowed": false,
+      "promotion_allowed": false,
+      "blocking_reasons": [
+        "lexical_overlap_is_not_semantic_coverage",
+        "independent_exercise_corpus_missing",
+        "source_scope_and_authority_require_review"
+      ]
+    }
+  ],
+  "source_ingestions": 0,
+  "promotion_proposals": 0,
+  "production_mutations": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "all_entries_blocked": true,
+  "report_sha256": "bc1349c69c0194699fade0bb146defd99f7347c15a8e4e543a6738097cfd24c7"
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "external-math-exam-baseline-v1",
+  "release_id": "external-math-exam-v1",
+  "producer_commit": "4703dfa",
+  "split": "sealed",
+  "cases": 1000,
+  "terminal_counts": {"false_abstention": 1000},
+  "first_gate_counts": {
+    "language_normalization_failure": 182,
+    "missing_knowledge": 678,
+    "missing_method": 132,
+    "missing_prerequisite": 8
+  },
+  "correct_authorized": 0,
+  "incorrect_authorized": 0,
+  "false_authorizations": 0,
+  "false_abstentions": 1000,
+  "replay_verified": 0,
+  "replay_not_applicable": 1000,
+  "replay_failed": 0,
+  "registry_mutated": false,
+  "source_manifest_sha256": "992faa1ec8f08542a86206394c95a7366771ee1beda52055ab230564fe642c78",
+  "questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "oracle_sha256": "2c2712196b4d0bd63e0389ab23953ba69ff12cad85db2dfa3f19059747624fbf",
+  "curriculum_manifest_sha256": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "trace_sha256": "dc029e015a84ef237bd4faf26ddf17cda855cef5995eb6c86479d84d60c9e62d",
+  "total_execution_time_ms": 23935.681604999994,
+  "max_execution_time_ms": 546.913673
+}

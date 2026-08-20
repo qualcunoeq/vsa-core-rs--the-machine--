@@ -1,0 +1,19 @@
+{
+  "answer_key_policy": "answer keys are never read, parsed, inferred, or stored",
+  "answer_like_rejected": 17805,
+  "baseline_readiness_reason": "candidates still require exact multi-line quality review and answer-key alignment",
+  "baseline_ready": false,
+  "corpus_sha256": "514981326fe58910cbad22285c407628ee97146a03fc1f939bcb136a825a4ab0",
+  "development_count": 114,
+  "extracted_files": 12,
+  "nonquestion_fragments_development": 0,
+  "nonquestion_rejected": 12,
+  "question_candidates_development": 114,
+  "question_candidates_sealed": 9,
+  "schema": "stage383-external-problem-assembly-v1",
+  "sealed_holdout_count": 9,
+  "sealed_manifest_sha256": "0767f7f1b5f78ba2c98db5e8676b1685fc239aa0f2c22cbd8fcd8b063fd9faad",
+  "sealed_prompt_text_stored": false,
+  "source_files": 12,
+  "source_manifest_sha256": "90d42a6945eea636b041539138cd98b3e475557f7d0d4733df98f611ea01c346"
+}

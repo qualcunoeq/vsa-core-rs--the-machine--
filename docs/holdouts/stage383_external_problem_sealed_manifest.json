@@ -1,0 +1,101 @@
+[
+  {
+    "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:59152:317704f630bfe707",
+    "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+    "source_line": 59152,
+    "prompt_sha256": "317704f630bfe7071229ed189ec40046f73b0446301ae2b8f52b439e71fa8b55",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:59176:59cd532307e29ae1",
+    "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+    "source_line": 59176,
+    "prompt_sha256": "59cd532307e29ae1c61383779a8199199a3b31372b895df2d62399172b2f67da",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:7473:e59c77c24bc0ac4a",
+    "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+    "source_line": 7473,
+    "prompt_sha256": "e59c77c24bc0ac4a0afe289a77ac155e60ad1af2317d5ddc1743124d7271d3a3",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802:31163:bd6ede170decb0be",
+    "source_path": "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+    "source_line": 31163,
+    "prompt_sha256": "bd6ede170decb0be64bc1cc877f61f6529a02aa741520a255e64166cf00465d0",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5:39186:bd6ede170decb0be",
+    "source_path": "data/openstax_pdfs/precalculus-2e_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+    "source_line": 39186,
+    "prompt_sha256": "bd6ede170decb0be64bc1cc877f61f6529a02aa741520a255e64166cf00465d0",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55:49498:c7de63a8e179a0d8",
+    "source_path": "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+    "source_line": 49498,
+    "prompt_sha256": "c7de63a8e179a0d82b0bb2e854d7fe27a1c0b53f1755c603d76ed1b9123014d1",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55:50515:3b81b786bb83fb82",
+    "source_path": "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+    "source_line": 50515,
+    "prompt_sha256": "3b81b786bb83fb82ddcbd8365feebda10f4b56224421ff2d1b7ca260b70d0f90",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0:45000:bd6ede170decb0be",
+    "source_path": "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0",
+    "source_line": 45000,
+    "prompt_sha256": "bd6ede170decb0be64bc1cc877f61f6529a02aa741520a255e64166cf00465d0",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  },
+  {
+    "record_id": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e:28192:639e572932f83c16",
+    "source_path": "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+    "source_family": "openstax",
+    "source_sha256": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e",
+    "source_line": 28192,
+    "prompt_sha256": "639e572932f83c16b9d99c48e1378383138aa50ad9068d72e660e18e98207897",
+    "split": "sealed_holdout",
+    "assembly_status": "question_candidate_needs_alignment",
+    "answer_key_status": "not_read"
+  }
+]

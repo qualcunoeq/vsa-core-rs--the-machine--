@@ -1,8 +1,8 @@
 # Goal 6 — answer-key-blind external source selection
 
-- Source documents considered: 27
-- Proposals: 83
-- Shadow candidates: 9
+- Source documents considered: 29
+- Proposals: 84
+- Shadow candidates: 14
 - Answer keys read: 0
 - Manifest unchanged: true
 - False authorizations: 0

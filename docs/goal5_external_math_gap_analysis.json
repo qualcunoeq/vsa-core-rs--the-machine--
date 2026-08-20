@@ -1,7 +1,7 @@
 {
   "schema": "external-math-gap-analysis-v1",
   "release_id": "external-math-exam-v1",
-  "producer_commit": "4fdee57",
+  "producer_commit": "1e2c0da",
   "questions_read": 4000,
   "development_questions": 3000,
   "answer_keys_read": 0,

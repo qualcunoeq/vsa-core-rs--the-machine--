@@ -2,7 +2,7 @@
   "schema": "external-source-selection-v1",
   "release_id": "external-math-exam-v1",
   "answer_keys_read": 0,
-  "source_documents_considered": 27,
+  "source_documents_considered": 29,
   "proposals": [
     {
       "cluster_key": "Prealgebra::missing_knowledge",
@@ -39,6 +39,40 @@
       ]
     },
     {
+      "cluster_key": "Prealgebra::missing_knowledge",
+      "first_gate": "missing_knowledge",
+      "affected_cases": 381,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 11,
+      "lexical_score": 0.05188679245283019,
+      "expected_utility": 4191,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "11 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Algebra::missing_knowledge",
+      "first_gate": "missing_knowledge",
+      "affected_cases": 253,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 14,
+      "lexical_score": 0.08045977011494253,
+      "expected_utility": 3542,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "14 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
       "cluster_key": "Geometry::missing_knowledge",
       "first_gate": "missing_knowledge",
       "affected_cases": 289,
@@ -52,23 +86,6 @@
       "status": "rejected",
       "reasons": [
         "12 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Prealgebra::missing_knowledge",
-      "first_gate": "missing_knowledge",
-      "affected_cases": 381,
-      "source_path": "docs/sources/openstax_bounded_health_ratios_source.txt",
-      "source_sha256": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 9,
-      "lexical_score": 0.04245283018867924,
-      "expected_utility": 3429,
-      "acquisition_cost": 3638,
-      "status": "rejected",
-      "reasons": [
-        "9 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
     },
@@ -175,19 +192,36 @@
       ]
     },
     {
-      "cluster_key": "Algebra::missing_knowledge",
+      "cluster_key": "Geometry::missing_knowledge",
       "first_gate": "missing_knowledge",
-      "affected_cases": 253,
-      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
-      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
+      "affected_cases": 289,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 8,
-      "lexical_score": 0.04597701149425287,
-      "expected_utility": 2024,
-      "acquisition_cost": 3023,
+      "distinct_overlap_terms": 7,
+      "lexical_score": 0.046357615894039736,
+      "expected_utility": 2023,
+      "acquisition_cost": 3961,
       "status": "rejected",
       "reasons": [
-        "8 distinct prompt/source terms overlap",
+        "7 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Geometry::missing_knowledge",
+      "first_gate": "missing_knowledge",
+      "affected_cases": 289,
+      "source_path": "docs/sources/openstax_unit_conversion_goal6_catalog.txt",
+      "source_sha256": "561930f8e04ab44c41bebabffd83dda19e8d17e4e917d6467d9ba1b8cee7f74a",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 7,
+      "lexical_score": 0.046357615894039736,
+      "expected_utility": 2023,
+      "acquisition_cost": 2767,
+      "status": "rejected",
+      "reasons": [
+        "7 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
     },
@@ -226,37 +260,37 @@
       ]
     },
     {
-      "cluster_key": "Geometry::missing_knowledge",
+      "cluster_key": "Intermediate Algebra::missing_knowledge",
       "first_gate": "missing_knowledge",
-      "affected_cases": 289,
-      "source_path": "docs/sources/openstax_finite_regression_source.txt",
-      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "affected_cases": 217,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.039735099337748346,
-      "expected_utility": 1734,
-      "acquisition_cost": 3519,
-      "status": "rejected",
+      "distinct_overlap_terms": 8,
+      "lexical_score": 0.11594202898550725,
+      "expected_utility": 1736,
+      "acquisition_cost": 3961,
+      "status": "shadow_candidate",
       "reasons": [
-        "6 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
+        "8 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
       ]
     },
     {
-      "cluster_key": "Geometry::missing_knowledge",
+      "cluster_key": "Intermediate Algebra::missing_knowledge",
       "first_gate": "missing_knowledge",
-      "affected_cases": 289,
-      "source_path": "docs/sources/openstax_unit_conversion_catalog.txt",
-      "source_sha256": "c69295d239b6149cf514bec1a3269fcd6244ec533829cf645e0f82a32a679d1e",
+      "affected_cases": 217,
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.039735099337748346,
-      "expected_utility": 1734,
-      "acquisition_cost": 2122,
-      "status": "rejected",
+      "distinct_overlap_terms": 8,
+      "lexical_score": 0.11594202898550725,
+      "expected_utility": 1736,
+      "acquisition_cost": 2411,
+      "status": "shadow_candidate",
       "reasons": [
-        "6 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
+        "8 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
       ]
     },
     {
@@ -277,37 +311,20 @@
       ]
     },
     {
-      "cluster_key": "Intermediate Algebra::missing_knowledge",
-      "first_gate": "missing_knowledge",
-      "affected_cases": 217,
-      "source_path": "docs/sources/openstax_finite_regression_source.txt",
-      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "cluster_key": "Algebra::language_normalization_failure",
+      "first_gate": "language_normalization_failure",
+      "affected_cases": 138,
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 7,
-      "lexical_score": 0.10144927536231885,
-      "expected_utility": 1519,
-      "acquisition_cost": 3519,
+      "distinct_overlap_terms": 10,
+      "lexical_score": 0.12658227848101267,
+      "expected_utility": 1380,
+      "acquisition_cost": 2411,
       "status": "shadow_candidate",
       "reasons": [
-        "7 distinct prompt/source terms overlap",
+        "10 distinct prompt/source terms overlap",
         "source has explicit provenance fields"
-      ]
-    },
-    {
-      "cluster_key": "Intermediate Algebra::missing_knowledge",
-      "first_gate": "missing_knowledge",
-      "affected_cases": 217,
-      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.08695652173913043,
-      "expected_utility": 1302,
-      "acquisition_cost": 3092,
-      "status": "rejected",
-      "reasons": [
-        "6 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
       ]
     },
     {
@@ -338,6 +355,23 @@
       "lexical_score": 0.054945054945054944,
       "expected_utility": 1160,
       "acquisition_cost": 3519,
+      "status": "rejected",
+      "reasons": [
+        "5 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Precalculus::missing_knowledge",
+      "first_gate": "missing_knowledge",
+      "affected_cases": 232,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 5,
+      "lexical_score": 0.054945054945054944,
+      "expected_utility": 1160,
+      "acquisition_cost": 3961,
       "status": "rejected",
       "reasons": [
         "5 distinct prompt/source terms overlap",
@@ -362,6 +396,23 @@
       ]
     },
     {
+      "cluster_key": "Algebra::language_normalization_failure",
+      "first_gate": "language_normalization_failure",
+      "affected_cases": 138,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 8,
+      "lexical_score": 0.10126582278481013,
+      "expected_utility": 1104,
+      "acquisition_cost": 3961,
+      "status": "shadow_candidate",
+      "reasons": [
+        "8 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
+      ]
+    },
+    {
       "cluster_key": "Geometry::missing_method",
       "first_gate": "missing_method",
       "affected_cases": 69,
@@ -379,57 +430,6 @@
       ]
     },
     {
-      "cluster_key": "Algebra::language_normalization_failure",
-      "first_gate": "language_normalization_failure",
-      "affected_cases": 138,
-      "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
-      "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 7,
-      "lexical_score": 0.08860759493670886,
-      "expected_utility": 966,
-      "acquisition_cost": 6332,
-      "status": "rejected",
-      "reasons": [
-        "7 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Precalculus::missing_knowledge",
-      "first_gate": "missing_knowledge",
-      "affected_cases": 232,
-      "source_path": "docs/sources/openstax_linear_interpolation_catalog.txt",
-      "source_sha256": "82027d30794d88784a47524224a340ca007001f9d22ac7a5712ce13c03f42f03",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 4,
-      "lexical_score": 0.04395604395604396,
-      "expected_utility": 928,
-      "acquisition_cost": 965,
-      "status": "rejected",
-      "reasons": [
-        "4 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Algebra::language_normalization_failure",
-      "first_gate": "language_normalization_failure",
-      "affected_cases": 138,
-      "source_path": "docs/sources/openstax_finite_statistics_catalog.json",
-      "source_sha256": "9d76954caad3d079b385378ee25cafb709f5454d2369b1ec433fbbbc8179904c",
-      "provenance_fields_present": false,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.0759493670886076,
-      "expected_utility": 828,
-      "acquisition_cost": 4099,
-      "status": "rejected",
-      "reasons": [
-        "6 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
       "cluster_key": "Intermediate Algebra::missing_method",
       "first_gate": "missing_method",
       "affected_cases": 106,
@@ -444,6 +444,91 @@
       "reasons": [
         "7 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Intermediate Algebra::language_normalization_failure",
+      "first_gate": "language_normalization_failure",
+      "affected_cases": 97,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 7,
+      "lexical_score": 0.09859154929577464,
+      "expected_utility": 679,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "7 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Intermediate Algebra::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 106,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 6,
+      "lexical_score": 0.061855670103092786,
+      "expected_utility": 636,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "6 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Precalculus::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 106,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 6,
+      "lexical_score": 0.06741573033707865,
+      "expected_utility": 636,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "6 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Precalculus::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 106,
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 6,
+      "lexical_score": 0.06741573033707865,
+      "expected_utility": 636,
+      "acquisition_cost": 2411,
+      "status": "rejected",
+      "reasons": [
+        "6 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Precalculus::language_normalization_failure",
+      "first_gate": "language_normalization_failure",
+      "affected_cases": 85,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 7,
+      "lexical_score": 0.1044776119402985,
+      "expected_utility": 595,
+      "acquisition_cost": 3961,
+      "status": "shadow_candidate",
+      "reasons": [
+        "7 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
       ]
     },
     {
@@ -474,40 +559,6 @@
       "lexical_score": 0.056179775280898875,
       "expected_utility": 530,
       "acquisition_cost": 3023,
-      "status": "rejected",
-      "reasons": [
-        "5 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Precalculus::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 106,
-      "source_path": "docs/sources/openstax_finite_regression_source.txt",
-      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 5,
-      "lexical_score": 0.056179775280898875,
-      "expected_utility": 530,
-      "acquisition_cost": 3519,
-      "status": "rejected",
-      "reasons": [
-        "5 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Precalculus::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 106,
-      "source_path": "docs/sources/topology_without_tears_finite_metric_definition.txt",
-      "source_sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 5,
-      "lexical_score": 0.056179775280898875,
-      "expected_utility": 530,
-      "acquisition_cost": 908,
       "status": "rejected",
       "reasons": [
         "5 distinct prompt/source terms overlap",
@@ -549,19 +600,19 @@
       ]
     },
     {
-      "cluster_key": "Precalculus::language_normalization_failure",
-      "first_gate": "language_normalization_failure",
-      "affected_cases": 85,
-      "source_path": "docs/sources/openstax_finite_regression_source.txt",
-      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+      "cluster_key": "Algebra::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 62,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.08955223880597014,
-      "expected_utility": 510,
-      "acquisition_cost": 3519,
+      "distinct_overlap_terms": 8,
+      "lexical_score": 0.0975609756097561,
+      "expected_utility": 496,
+      "acquisition_cost": 3961,
       "status": "rejected",
       "reasons": [
-        "6 distinct prompt/source terms overlap",
+        "8 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
     },
@@ -600,6 +651,23 @@
       ]
     },
     {
+      "cluster_key": "Number Theory::language_normalization_failure",
+      "first_gate": "language_normalization_failure",
+      "affected_cases": 55,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 9,
+      "lexical_score": 0.0782608695652174,
+      "expected_utility": 495,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "9 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
       "cluster_key": "Intermediate Algebra::language_normalization_failure",
       "first_gate": "language_normalization_failure",
       "affected_cases": 97,
@@ -610,23 +678,6 @@
       "lexical_score": 0.07042253521126761,
       "expected_utility": 485,
       "acquisition_cost": 649,
-      "status": "rejected",
-      "reasons": [
-        "5 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Intermediate Algebra::language_normalization_failure",
-      "first_gate": "language_normalization_failure",
-      "affected_cases": 97,
-      "source_path": "docs/sources/openstax_bounded_complex_analysis_source.txt",
-      "source_sha256": "e04b5c7564577ea1810ad7381f2df0065ef9edf902e6889420aca493e2bef4b7",
-      "provenance_fields_present": false,
-      "distinct_overlap_terms": 5,
-      "lexical_score": 0.07042253521126761,
-      "expected_utility": 485,
-      "acquisition_cost": 791,
       "status": "rejected",
       "reasons": [
         "5 distinct prompt/source terms overlap",
@@ -651,6 +702,23 @@
       ]
     },
     {
+      "cluster_key": "Geometry::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 69,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 7,
+      "lexical_score": 0.0472972972972973,
+      "expected_utility": 483,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "7 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
       "cluster_key": "Intermediate Algebra::missing_method",
       "first_gate": "missing_method",
       "affected_cases": 106,
@@ -664,40 +732,6 @@
       "status": "rejected",
       "reasons": [
         "4 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Intermediate Algebra::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 106,
-      "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
-      "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 4,
-      "lexical_score": 0.041237113402061855,
-      "expected_utility": 424,
-      "acquisition_cost": 6332,
-      "status": "rejected",
-      "reasons": [
-        "4 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Geometry::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 69,
-      "source_path": "docs/sources/openstax_linear_interpolation_catalog.txt",
-      "source_sha256": "82027d30794d88784a47524224a340ca007001f9d22ac7a5712ce13c03f42f03",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.04054054054054054,
-      "expected_utility": 414,
-      "acquisition_cost": 965,
-      "status": "rejected",
-      "reasons": [
-        "6 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
     },
@@ -753,37 +787,20 @@
       ]
     },
     {
-      "cluster_key": "Algebra::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 62,
-      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 5,
-      "lexical_score": 0.06097560975609756,
-      "expected_utility": 310,
-      "acquisition_cost": 3092,
-      "status": "rejected",
-      "reasons": [
-        "5 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Number Theory::language_normalization_failure",
+      "cluster_key": "Prealgebra::language_normalization_failure",
       "first_gate": "language_normalization_failure",
-      "affected_cases": 55,
+      "affected_cases": 49,
       "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 5,
-      "lexical_score": 0.043478260869565216,
-      "expected_utility": 275,
-      "acquisition_cost": 3092,
-      "status": "rejected",
+      "distinct_overlap_terms": 7,
+      "lexical_score": 0.15555555555555556,
+      "expected_utility": 343,
+      "acquisition_cost": 3961,
+      "status": "shadow_candidate",
       "reasons": [
-        "5 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
+        "7 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
       ]
     },
     {
@@ -821,20 +838,20 @@
       ]
     },
     {
-      "cluster_key": "Prealgebra::language_normalization_failure",
-      "first_gate": "language_normalization_failure",
-      "affected_cases": 49,
+      "cluster_key": "Geometry::missing_prerequisite",
+      "first_gate": "missing_prerequisite",
+      "affected_cases": 26,
       "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
-      "distinct_overlap_terms": 5,
-      "lexical_score": 0.1111111111111111,
-      "expected_utility": 245,
-      "acquisition_cost": 3092,
-      "status": "shadow_candidate",
+      "distinct_overlap_terms": 9,
+      "lexical_score": 0.057692307692307696,
+      "expected_utility": 234,
+      "acquisition_cost": 3961,
+      "status": "rejected",
       "reasons": [
-        "5 distinct prompt/source terms overlap",
-        "source has explicit provenance fields"
+        "9 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
       ]
     },
     {
@@ -848,6 +865,23 @@
       "lexical_score": 0.046218487394957986,
       "expected_utility": 220,
       "acquisition_cost": 3023,
+      "status": "rejected",
+      "reasons": [
+        "11 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Prealgebra::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 20,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 11,
+      "lexical_score": 0.046218487394957986,
+      "expected_utility": 220,
+      "acquisition_cost": 3961,
       "status": "rejected",
       "reasons": [
         "11 distinct prompt/source terms overlap",
@@ -885,40 +919,6 @@
       "status": "rejected",
       "reasons": [
         "9 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Prealgebra::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 20,
-      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 8,
-      "lexical_score": 0.03361344537815126,
-      "expected_utility": 160,
-      "acquisition_cost": 3092,
-      "status": "rejected",
-      "reasons": [
-        "8 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Geometry::missing_prerequisite",
-      "first_gate": "missing_prerequisite",
-      "affected_cases": 26,
-      "source_path": "docs/sources/openstax_bounded_health_ratios_source.txt",
-      "source_sha256": "2b7960d72599b5f90091ffc995b1cb483920801db15eb13082e0bbf30245efb3",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 6,
-      "lexical_score": 0.038461538461538464,
-      "expected_utility": 156,
-      "acquisition_cost": 3638,
-      "status": "rejected",
-      "reasons": [
-        "6 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
     },
@@ -1079,13 +1079,13 @@
       "cluster_key": "Precalculus::missing_prerequisite",
       "first_gate": "missing_prerequisite",
       "affected_cases": 5,
-      "source_path": "docs/sources/topology_without_tears_finite_metric_definition.txt",
-      "source_sha256": "40c8088946cfaac91e76cee883653a0a817c8bd5a2f2b7165c6c7b8e2c93ec0c",
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
       "distinct_overlap_terms": 5,
       "lexical_score": 0.06097560975609756,
       "expected_utility": 25,
-      "acquisition_cost": 908,
+      "acquisition_cost": 3961,
       "status": "rejected",
       "reasons": [
         "5 distinct prompt/source terms overlap",
@@ -1161,6 +1161,23 @@
       ]
     },
     {
+      "cluster_key": "Number Theory::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 3,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 5,
+      "lexical_score": 0.20833333333333334,
+      "expected_utility": 15,
+      "acquisition_cost": 3961,
+      "status": "shadow_candidate",
+      "reasons": [
+        "5 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
+      ]
+    },
+    {
       "cluster_key": "Algebra::representation_gap",
       "first_gate": "representation_gap",
       "affected_cases": 4,
@@ -1198,6 +1215,40 @@
       "cluster_key": "Algebra::missing_prerequisite",
       "first_gate": "missing_prerequisite",
       "affected_cases": 3,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 4,
+      "lexical_score": 0.07272727272727272,
+      "expected_utility": 12,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "4 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Number Theory::missing_method",
+      "first_gate": "missing_method",
+      "affected_cases": 3,
+      "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+      "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 4,
+      "lexical_score": 0.16666666666666666,
+      "expected_utility": 12,
+      "acquisition_cost": 2411,
+      "status": "shadow_candidate",
+      "reasons": [
+        "4 distinct prompt/source terms overlap",
+        "source has explicit provenance fields"
+      ]
+    },
+    {
+      "cluster_key": "Algebra::missing_prerequisite",
+      "first_gate": "missing_prerequisite",
+      "affected_cases": 3,
       "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
       "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
       "provenance_fields_present": true,
@@ -1229,23 +1280,6 @@
       ]
     },
     {
-      "cluster_key": "Algebra::missing_prerequisite",
-      "first_gate": "missing_prerequisite",
-      "affected_cases": 3,
-      "source_path": "docs/sources/openstax_finite_regression_source.txt",
-      "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 3,
-      "lexical_score": 0.05454545454545454,
-      "expected_utility": 9,
-      "acquisition_cost": 3519,
-      "status": "rejected",
-      "reasons": [
-        "3 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
       "cluster_key": "Number Theory::missing_method",
       "first_gate": "missing_method",
       "affected_cases": 3,
@@ -1256,40 +1290,6 @@
       "lexical_score": 0.125,
       "expected_utility": 9,
       "acquisition_cost": 3519,
-      "status": "shadow_candidate",
-      "reasons": [
-        "3 distinct prompt/source terms overlap",
-        "source has explicit provenance fields"
-      ]
-    },
-    {
-      "cluster_key": "Number Theory::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 3,
-      "source_path": "docs/sources/openstax_finite_statistics_catalog.json",
-      "source_sha256": "9d76954caad3d079b385378ee25cafb709f5454d2369b1ec433fbbbc8179904c",
-      "provenance_fields_present": false,
-      "distinct_overlap_terms": 3,
-      "lexical_score": 0.125,
-      "expected_utility": 9,
-      "acquisition_cost": 4099,
-      "status": "rejected",
-      "reasons": [
-        "3 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Number Theory::missing_method",
-      "first_gate": "missing_method",
-      "affected_cases": 3,
-      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
-      "source_sha256": "e60853079541ad86a4ef857edb3c44ad08483237feaee25f9f4855aaae49fd7d",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 3,
-      "lexical_score": 0.125,
-      "expected_utility": 9,
-      "acquisition_cost": 3092,
       "status": "shadow_candidate",
       "reasons": [
         "3 distinct prompt/source terms overlap",
@@ -1334,16 +1334,33 @@
       "cluster_key": "Prealgebra::missing_prerequisite",
       "first_gate": "missing_prerequisite",
       "affected_cases": 3,
-      "source_path": "docs/sources/openstax_unit_conversion_catalog.txt",
-      "source_sha256": "c69295d239b6149cf514bec1a3269fcd6244ec533829cf645e0f82a32a679d1e",
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
       "provenance_fields_present": true,
       "distinct_overlap_terms": 2,
       "lexical_score": 0.058823529411764705,
       "expected_utility": 6,
-      "acquisition_cost": 2122,
+      "acquisition_cost": 3961,
       "status": "rejected",
       "reasons": [
         "2 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
+    },
+    {
+      "cluster_key": "Prealgebra::representation_gap",
+      "first_gate": "representation_gap",
+      "affected_cases": 2,
+      "source_path": "docs/sources/openstax_unit_conversion_goal6_catalog.txt",
+      "source_sha256": "561930f8e04ab44c41bebabffd83dda19e8d17e4e917d6467d9ba1b8cee7f74a",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 3,
+      "lexical_score": 0.06818181818181818,
+      "expected_utility": 6,
+      "acquisition_cost": 2767,
+      "status": "rejected",
+      "reasons": [
+        "3 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
     },
@@ -1358,23 +1375,6 @@
       "lexical_score": 0.045454545454545456,
       "expected_utility": 4,
       "acquisition_cost": 3533,
-      "status": "rejected",
-      "reasons": [
-        "2 distinct prompt/source terms overlap",
-        "insufficient provenance or lexical evidence"
-      ]
-    },
-    {
-      "cluster_key": "Prealgebra::representation_gap",
-      "first_gate": "representation_gap",
-      "affected_cases": 2,
-      "source_path": "docs/sources/openstax_bounded_geometry_source.txt",
-      "source_sha256": "11585e310c4d868b58237d59eba114ddb82cf9dab4fd928db6ad0b97f620dd39",
-      "provenance_fields_present": true,
-      "distinct_overlap_terms": 2,
-      "lexical_score": 0.045454545454545456,
-      "expected_utility": 4,
-      "acquisition_cost": 3023,
       "status": "rejected",
       "reasons": [
         "2 distinct prompt/source terms overlap",
@@ -1414,11 +1414,28 @@
         "2 distinct prompt/source terms overlap",
         "insufficient provenance or lexical evidence"
       ]
+    },
+    {
+      "cluster_key": "Counting & Probability::missing_prerequisite",
+      "first_gate": "missing_prerequisite",
+      "affected_cases": 1,
+      "source_path": "docs/sources/openstax_finite_statistics_source.txt",
+      "source_sha256": "cb935aaf7d099bbea76f918992096d78bc79968afec037692f8544fa0cc55fcc",
+      "provenance_fields_present": true,
+      "distinct_overlap_terms": 2,
+      "lexical_score": 0.08,
+      "expected_utility": 2,
+      "acquisition_cost": 3961,
+      "status": "rejected",
+      "reasons": [
+        "2 distinct prompt/source terms overlap",
+        "insufficient provenance or lexical evidence"
+      ]
     }
   ],
-  "selected_shadow_proposals": 9,
+  "selected_shadow_proposals": 14,
   "manifest_sha256": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "false_authorizations": 0,
-  "report_sha256": "b02cd04ad50db28dd3ae116393f0236db0c0cde2da5977b1761f2343b141c834"
+  "report_sha256": "68b503cc58d9285fe254bf6709a8d3586c206ae22f1214669cc62812b39eb585"
 }

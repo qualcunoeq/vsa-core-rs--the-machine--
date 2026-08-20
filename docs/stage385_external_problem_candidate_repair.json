@@ -1,0 +1,32 @@
+{
+  "answer_key_policy": "answer keys are never read, parsed, inferred, or stored",
+  "baseline_readiness_reason": "candidate splitting is improved, but answer alignment and exact problem quality review remain incomplete",
+  "baseline_ready": false,
+  "checks_passed": 10,
+  "checks_total": 10,
+  "child_candidates_after_dedup": 257,
+  "child_candidates_before_dedup": 284,
+  "clean_candidates_after_repair": 36,
+  "duplicate_child_prompts_removed": 27,
+  "false_authorizations": 0,
+  "integrity_passed": true,
+  "parent_candidates": 114,
+  "production_mutations": 0,
+  "quality_audit_sha256": "a853d152629bd843be6d14a8a0a1b7cd00e7fccca6a291c15d78b1aa09465650",
+  "quality_flag_counts": {
+    "layout_or_external_context": 28,
+    "multiple_numbered_items_remaining": 21,
+    "short_candidate": 2,
+    "split_parent_context_review": 182,
+    "truncated_tail_review": 56
+  },
+  "repaired_digest": "624e7a7f53b3137ae6d4f5b4eed123b9c41bbea536a0cd3786cfb17c97605b0d",
+  "replay_digest": "4105b65d5afcd6a906e87ffb858ba7d7e908d7a480e0a7d3dc0d2d07c9f92aec",
+  "replay_verified": true,
+  "schema": "stage385-external-problem-candidate-repair-v1",
+  "sealed_holdout_count": 9,
+  "sealed_metadata_digest": "3329ad865559b9c7b3685032fb4efc748e34e7b6331ebfd7e8e4bc4fd00c8238",
+  "sealed_prompt_text_stored": false,
+  "source_manifest_sha256": "90d42a6945eea636b041539138cd98b3e475557f7d0d4733df98f611ea01c346",
+  "split_parent_candidates": 32
+}

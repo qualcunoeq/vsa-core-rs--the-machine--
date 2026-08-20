@@ -1,0 +1,28 @@
+{
+  "answer_key_policy": "answer keys are never read, parsed, inferred, or stored",
+  "assembly_report_sha256": "c106b92f1fb3f40941198c0587c7bf368392668242875b906a0dd7b07cb5299c",
+  "baseline_readiness_reason": "page-aware candidates still contain duplicate and review-flagged records; deterministic repair and independent answer alignment remain incomplete",
+  "baseline_ready": false,
+  "checks_passed": 11,
+  "checks_total": 11,
+  "clean_candidates": 2475,
+  "development_count": 6539,
+  "duplicate_prompt_hashes": 1132,
+  "false_authorizations": 0,
+  "integrity_passed": true,
+  "production_mutations": 0,
+  "quality_flag_counts": {
+    "heading_or_section_leakage": 245,
+    "layout_or_external_context": 755,
+    "multiple_numbered_items": 858,
+    "short_candidate": 36,
+    "truncated_tail_review": 1230,
+    "unpunctuated_tail_review": 3286
+  },
+  "quality_replay_digest": "50375c9b12020dca95e4c2248650d512494d1e4a8b7e73552b0ddd85e3fe643d",
+  "replay_verified": true,
+  "schema": "stage388-page-aware-external-problem-quality-audit-v1",
+  "sealed_holdout_count": 1091,
+  "sealed_prompt_text_stored": false,
+  "source_manifest_sha256": "90d42a6945eea636b041539138cd98b3e475557f7d0d4733df98f611ea01c346"
+}

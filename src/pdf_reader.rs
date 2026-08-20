@@ -22,6 +22,27 @@ pub fn extract_text(path: &str) -> Result<String, String> {
     Ok(text)
 }
 
+/// Extract PDF text one page at a time.
+///
+/// Keeping page boundaries is important for source-derived corpus assembly:
+/// the flattened extractor can otherwise join the final exercise on one page
+/// with a heading or answer fragment from the next page. Callers must still
+/// treat the returned text as untrusted source material and preserve the page
+/// index in any derived provenance.
+pub fn extract_pages(path: &str) -> Result<Vec<String>, String> {
+    let path_obj = Path::new(path);
+    if !path_obj.exists() {
+        return Err(format!("File not found: {path}"));
+    }
+    let bytes = std::fs::read(path_obj).map_err(|e| format!("Failed to read file: {e}"))?;
+    let pages = pdf_extract::extract_text_from_mem_by_pages(&bytes)
+        .map_err(|e| format!("PDF page extraction error: {e}"))?;
+    if pages.is_empty() || pages.iter().all(|page| page.trim().is_empty()) {
+        return Err("PDF extracted no page text (possibly scanned/image-based).".to_string());
+    }
+    Ok(pages)
+}
+
 /// Extract definition-like SVO triples from raw PDF text.
 /// Returns Vec<(subject, verb, object)> — suitable for qa.store_fact().
 pub fn extract_definitions(text: &str, _source: &str) -> Vec<(String, String, String)> {
@@ -248,6 +269,14 @@ mod tests {
         assert!(result.is_ok(), "Should extract text from prealgebra PDF");
         let text = result.unwrap();
         assert!(text.len() > 1000, "Should extract substantial text");
+    }
+
+    #[test]
+    fn test_extract_pages_preserves_nonempty_pages() {
+        let pages = extract_pages("data/openstax_pdfs/prealgebra-2e_-_WEB.pdf")
+            .expect("Should extract pages from prealgebra PDF");
+        assert!(!pages.is_empty());
+        assert!(pages.iter().any(|page| !page.trim().is_empty()));
     }
 
     #[test]

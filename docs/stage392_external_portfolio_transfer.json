@@ -1,0 +1,40 @@
+{
+  "schema": "stage392-external-portfolio-transfer-v1",
+  "producer_commit": "c6b7555",
+  "release_id": "external-math-exam-v1",
+  "questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "development": {
+    "questions": 3000,
+    "route_invocations": 21000,
+    "unique_shadow_candidates": 11,
+    "no_executable_route": 2989,
+    "multiple_route_ambiguities": 0,
+    "correct_shadow_candidates": 11,
+    "incorrect_shadow_candidates_rejected": 0,
+    "candidate_replays": 11,
+    "plaintext_answers_read": 0,
+    "sealed_questions_read": 0,
+    "false_authorizations": 0,
+    "manifest_unchanged": true,
+    "probe_artifact_sha256": "d44323acaba0645bd04e65f119a01ebc2a78419dca1011133c915a5e2d7681e3",
+    "score_artifact_sha256": "21a1f94c88726f2627a37d5b08265a750756c08088cca443a2263a118857a1c6"
+  },
+  "sealed": {
+    "questions": 1000,
+    "unique_shadow_candidates": 1,
+    "no_executable_route": 999,
+    "multiple_route_ambiguities": 0,
+    "correct_shadow_candidates": 1,
+    "incorrect_shadow_candidates_rejected": 0,
+    "candidate_replays": 1,
+    "answer_hashes_read": 1000,
+    "plaintext_answers_read": 0,
+    "sealed_questions_read": 1000,
+    "false_authorizations": 0,
+    "manifest_unchanged": true,
+    "probe_artifact_sha256": "daa5becd02d2d66daa9f152cbfddfa86181ea9695a86fb023bc43fa877313142",
+    "score_artifact_sha256": "3dbc698749cd9d73ee1da14d15cee71b6d34497ea2d9b7f4e939b92fe2526902"
+  },
+  "production_authorizations": 0,
+  "live_registry_mutation": false
+}

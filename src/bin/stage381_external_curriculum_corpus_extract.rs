@@ -8,6 +8,7 @@
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use std::collections::BTreeSet;
 use std::fs;
 
 const SOURCE_MANIFEST: &str = "docs/stage380_external_curriculum_source_manifest.json";
@@ -17,6 +18,15 @@ const DEV_JSON: &str = "docs/stage381_external_curriculum_dev.json";
 const SEALED_JSON: &str = "docs/holdouts/stage381_external_curriculum_sealed_manifest.json";
 const SEED_SOURCES: &[&str] = &[
     "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+    "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+    "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+    "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf",
+    "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+    "data/openstax_pdfs/calculus-volume-2_-_WEB.pdf",
+    "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf",
+    "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+    "data/openstax_pdfs/precalculus-2e_-_WEB.pdf",
+    "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
     "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf",
     "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
 ];
@@ -83,6 +93,28 @@ struct Report {
 
 fn digest_bytes(bytes: &[u8]) -> String {
     format!("{:x}", Sha256::digest(bytes))
+}
+
+fn stable_record_digest(records: &[SealedRecord]) -> String {
+    let material = records
+        .iter()
+        .map(|record| {
+            format!(
+                "{}|{}|{}|{}|{}|{}|{}|{}|{}",
+                record.record_id,
+                record.source_path,
+                record.source_family,
+                record.source_sha256,
+                record.source_line,
+                record.candidate_kind,
+                record.prompt_sha256,
+                record.split,
+                record.answer_key_status,
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+    digest_bytes(material.as_bytes())
 }
 
 fn clean_line(line: &str) -> String {
@@ -267,7 +299,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     records.sort_by(|left, right| left.record_id.cmp(&right.record_id));
-    records.dedup_by(|left, right| left.prompt_sha256 == right.prompt_sha256);
+    let mut seen_prompt_hashes = BTreeSet::new();
+    records.retain(|record| seen_prompt_hashes.insert(record.prompt_sha256.clone()));
     let development_count = records.iter().filter(|r| r.split == "development").count();
     let validation_count = records.iter().filter(|r| r.split == "validation").count();
     let sealed_holdout_count = records
@@ -303,11 +336,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .into_iter()
         .filter(|record| record.split != "sealed_holdout")
         .collect::<Vec<_>>();
-    let sealed_holdout_manifest_sha256 = digest_bytes(&serde_json::to_vec(&sealed_records)?);
-    let corpus_sha256 = digest_bytes(&serde_json::to_vec(&(
-        &development_records,
-        &sealed_records,
-    ))?);
+    let sealed_holdout_manifest_sha256 = stable_record_digest(&sealed_records);
+    let development_digest_material = development_records
+        .iter()
+        .map(|record| {
+            format!(
+                "{}|{}|{}|{}|{}|{}|{}|{}|{}|{}",
+                record.record_id,
+                record.source_path,
+                record.source_family,
+                record.source_sha256,
+                record.source_line,
+                record.candidate_kind,
+                record.prompt_sha256,
+                record.split,
+                record.answer_key_status,
+                record.prompt,
+            )
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+    let corpus_sha256 = digest_bytes(
+        format!(
+            "dev:{}\nsealed:{}",
+            digest_bytes(development_digest_material.as_bytes()),
+            sealed_holdout_manifest_sha256
+        )
+        .as_bytes(),
+    );
     let report = Report {
         schema: "stage381-external-curriculum-corpus-extract-v1",
         source_manifest_schema: manifest.schema,

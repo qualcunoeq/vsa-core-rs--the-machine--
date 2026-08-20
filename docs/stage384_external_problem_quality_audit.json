@@ -1,0 +1,30 @@
+{
+  "answer_key_policy": "answer keys are never read, parsed, inferred, or stored",
+  "assembly_report_sha256": "df53319ef9548149dcab64e5dd46d651634f477fe4134d3818dee03bd92f03f7",
+  "baseline_readiness_reason": "candidate quality is measured, but exact problem assembly and independent answer-key alignment remain incomplete",
+  "baseline_ready": false,
+  "checks_passed": 11,
+  "checks_total": 11,
+  "clean_candidates": 16,
+  "development_count": 114,
+  "development_digest": "d011fa91c0f92a4bce944f42a170ba78fe55be26f2920b372b0ecd0dc30f1343",
+  "duplicate_prompt_hashes": 11,
+  "false_authorizations": 0,
+  "integrity_passed": true,
+  "production_mutations": 0,
+  "quality_flag_counts": {
+    "heading_or_section_leakage": 4,
+    "layout_or_external_context": 31,
+    "multiple_numbered_items": 24,
+    "truncated_tail_review": 26,
+    "unpunctuated_tail_review": 61
+  },
+  "quality_replay_digest": "5a003ac0c5d98ee35f6768654565ae69883eed72e3cfd228c7ba18c3547de7b4",
+  "question_candidates": 114,
+  "replay_verified": true,
+  "schema": "stage384-external-problem-quality-audit-v1",
+  "sealed_holdout_count": 9,
+  "sealed_metadata_digest": "0712007a4482477bd8256d54d62c8845689ff98fc1991aa8e6b5981ab4da0449",
+  "sealed_prompt_text_stored": false,
+  "source_manifest_sha256": "90d42a6945eea636b041539138cd98b3e475557f7d0d4733df98f611ea01c346"
+}

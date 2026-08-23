@@ -36,6 +36,19 @@ pub enum JointPredicate {
     ProductEven,
     ProductOdd,
     SumPrime,
+    FirstAndSecond {
+        first: DieCondition,
+        second: DieCondition,
+    },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum DieCondition {
+    LessThan(i64),
+    GreaterThan(i64),
+    Equal(i64),
+    Even,
+    Odd,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -215,6 +228,10 @@ fn find_integer_after(lower: &str, markers: &[&str]) -> Option<i64> {
             if let Some(value) = parse_integer(token) {
                 return Some(value);
             }
+            if let Some(value) = number_word(token.trim_matches(|c: char| !c.is_ascii_alphabetic()))
+            {
+                return Some(value as i64);
+            }
         }
     }
     None
@@ -222,6 +239,17 @@ fn find_integer_after(lower: &str, markers: &[&str]) -> Option<i64> {
 
 fn one_joint_predicate(lower: &str) -> Result<JointPredicate, FrontendStatus> {
     let mut candidates = Vec::new();
+    if let (Some(first_start), Some(second_start)) =
+        (lower.find("first die"), lower.find("second die"))
+    {
+        if first_start < second_start {
+            let first_text = &lower[first_start..second_start];
+            let second_text = &lower[second_start..];
+            let first = die_condition(first_text)?;
+            let second = die_condition(second_text)?;
+            candidates.push(JointPredicate::FirstAndSecond { first, second });
+        }
+    }
     if lower.contains("sum") && lower.contains("prime") {
         candidates.push(JointPredicate::SumPrime);
     }
@@ -285,6 +313,47 @@ fn one_joint_predicate(lower: &str) -> Result<JointPredicate, FrontendStatus> {
     }
 }
 
+fn die_condition(text: &str) -> Result<DieCondition, FrontendStatus> {
+    let mut candidates = Vec::new();
+    if let Some(value) = find_integer_after(text, &["less than or equal to ", "at most "]) {
+        candidates.push(DieCondition::LessThan(value + 1));
+    } else if let Some(value) = find_integer_after(text, &["less than ", "below "]) {
+        candidates.push(DieCondition::LessThan(value));
+    }
+    if let Some(value) = find_integer_after(text, &["greater than or equal to ", "at least "]) {
+        candidates.push(DieCondition::GreaterThan(value - 1));
+    } else if let Some(value) = find_integer_after(text, &["greater than ", "above "]) {
+        candidates.push(DieCondition::GreaterThan(value));
+    }
+    if candidates.is_empty() {
+        if let Some(value) = find_integer_after(
+            text,
+            &[
+                "shows ",
+                "show ",
+                "rolling a ",
+                "rolling an ",
+                "equals ",
+                "is ",
+            ],
+        ) {
+            candidates.push(DieCondition::Equal(value));
+        }
+    }
+    if text.contains("even") {
+        candidates.push(DieCondition::Even);
+    }
+    if text.contains("odd") {
+        candidates.push(DieCondition::Odd);
+    }
+    candidates.dedup();
+    match candidates.as_slice() {
+        [condition] => Ok(condition.clone()),
+        [] => Err(FrontendStatus::Missing),
+        _ => Err(FrontendStatus::Ambiguous),
+    }
+}
+
 fn one_die_predicate(lower: &str) -> Result<EventPredicate, FrontendStatus> {
     let mut candidates = Vec::new();
     if lower.contains("negative outcome") || lower.contains("negative result") {
@@ -335,13 +404,32 @@ fn one_die_predicate(lower: &str) -> Result<EventPredicate, FrontendStatus> {
 /// Formalize one or two explicitly uniform integer dice and one finite event.
 pub fn formalize(text: &str, case_id: &str) -> FrontendResult {
     let lower = text.to_ascii_lowercase();
+    // Math delimiters are presentation syntax, not evidence that the labels
+    // are non-integer.  Keep the original text in provenance, but normalize
+    // delimiters for this narrow explicit-label check.
+    let label_text = lower.replace('$', "");
     let provenance = vec![
         format!("finite-experiment-frontend:{case_id}"),
         format!("source-span:0..{}", text.len()),
         "explicit-finite-die-grammar".into(),
     ];
-    if (lower.contains("three ") || lower.contains("four ") || lower.contains("five "))
-        && lower.contains("dice")
+    let explicit_three_or_more = [
+        "three dice",
+        "four dice",
+        "five dice",
+        "three fair",
+        "three standard",
+        "three uniform",
+        "four fair",
+        "four standard",
+        "four uniform",
+        "five fair",
+        "five standard",
+        "five uniform",
+    ]
+    .iter()
+    .any(|marker| lower.contains(marker));
+    if explicit_three_or_more
         || lower.contains("without replacement")
         || lower.contains("loaded ")
         || lower.contains("biased ")
@@ -414,7 +502,12 @@ pub fn formalize(text: &str, case_id: &str) -> FrontendResult {
             ),
         };
     }
-    if lower.contains("labeled") && !lower.contains("labels 1") && !lower.contains("numbered 1") {
+    if lower.contains("labeled")
+        && !label_text.contains("labels 1")
+        && !label_text.contains("labeled with digits 1")
+        && !label_text.contains("labeled 1")
+        && !label_text.contains("numbered 1")
+    {
         return output(
             FrontendStatus::Unsupported,
             None,
@@ -455,6 +548,19 @@ fn matches_joint(predicate: &JointPredicate, left: i64, right: i64) -> bool {
         JointPredicate::ProductEven => (left * right) % 2 == 0,
         JointPredicate::ProductOdd => (left * right) % 2 != 0,
         JointPredicate::SumPrime => is_prime(left + right),
+        JointPredicate::FirstAndSecond { first, second } => {
+            condition_matches(first, left) && condition_matches(second, right)
+        }
+    }
+}
+
+fn condition_matches(condition: &DieCondition, value: i64) -> bool {
+    match condition {
+        DieCondition::LessThan(bound) => value < *bound,
+        DieCondition::GreaterThan(bound) => value > *bound,
+        DieCondition::Equal(target) => value == *target,
+        DieCondition::Even => value % 2 == 0,
+        DieCondition::Odd => value % 2 != 0,
     }
 }
 
@@ -591,6 +697,31 @@ mod tests {
         assert_eq!(
             execute(&result).unwrap().value,
             Some(Rational::new(1, 2).unwrap())
+        );
+    }
+
+    #[test]
+    fn first_and_second_die_conditions_are_structural() {
+        let result = formalize(
+            "Two fair six-sided dice are rolled. What is the probability that the first die is less than 3 and the second die is greater than 3?",
+            "test-separate-events",
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        let execution = execute(&result).unwrap();
+        assert_eq!(execution.value, Some(Rational::new(1, 6).unwrap()));
+        assert!(execution_replay_verified(&execution));
+    }
+
+    #[test]
+    fn labeled_octahedral_pair_is_supported_when_labels_are_explicit() {
+        let result = formalize(
+            "A pair of fair octahedral dice with faces labeled with digits 1 through 8 is rolled. What is the probability that their sum is 15?",
+            "test-octahedral",
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        assert_eq!(
+            execute(&result).unwrap().value,
+            Some(Rational::new(1, 32).unwrap())
         );
     }
 }

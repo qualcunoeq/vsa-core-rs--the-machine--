@@ -1,5 +1,5 @@
 {
-  "schema": "stage439-finite-experiment-frontend-v1",
+  "schema": "stage441-finite-experiment-extension-v1",
   "cases": 240,
   "supported": 120,
   "ambiguous": 40,
@@ -13,8 +13,7 @@
   "execution_tamper_rejections": 120,
   "false_authorizations": 0,
   "false_denials": 0,
-  "provenance_complete": 240,
   "source_sha256": "dd6ec9441201db541a19c2900f2acff8032e6a881cef3f8233f0cb5ced706b44",
-  "corpus_sha256": "8dc2422312cdf7ea33d3cee0ada6f08525d5beb5d5d0d77b1665d5f4471d8bed",
-  "report_sha256": "d20d839636aa2725543866ed87d09a4cec955c8b5cd926a0217a6e8fa8613bd3"
+  "corpus_sha256": "9758e3f730da7917d5a4ac279a29345b5c4e24090ffd14ba3ca05f0ee7ff8a83",
+  "report_sha256": "e4a3da4d64e7e44a0fb82fcf4d31506205a09a296b6b03fa5862aae0dbd3bd70"
 }

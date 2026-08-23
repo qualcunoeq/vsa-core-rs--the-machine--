@@ -77,6 +77,7 @@ fn joint_matches(predicate: &JointPredicate, left: i64, right: i64) -> bool {
         JointPredicate::ProductEven => (left * right) % 2 == 0,
         JointPredicate::ProductOdd => (left * right) % 2 != 0,
         JointPredicate::SumPrime => prime(left + right),
+        JointPredicate::FirstAndSecond { .. } => false,
     }
 }
 

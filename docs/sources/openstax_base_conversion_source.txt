@@ -1,0 +1,15 @@
+# Source-derived bounded positional-numeral conversion record.
+# Source basis: OpenStax Prealgebra 2e, numeration systems and place value.
+# The implementation accepts only finite nonnegative integer numerals with an
+# explicit source and target base.  Fractions, negative values, and base
+# arithmetic beyond conversion are outside this record.
+SOURCE_ID: openstax-prealgebra-2e:numeration-systems
+TITLE: Prealgebra 2e
+SECTION: Numeration Systems
+URL: https://openstax.org/details/books/prealgebra-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-23
+EVIDENCE: finite positional numeral conversion preserves the represented integer
+SCOPE: bases 2 through 36; nonnegative finite integer numerals; exact output
+UNSUPPORTED: fractions, negative numerals, approximate output, digit-count derivations
+RULE: evaluate source-base positional digits, then re-encode the exact integer in the target base

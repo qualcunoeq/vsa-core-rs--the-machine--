@@ -1,0 +1,40 @@
+{
+  "schema": "stage399-external-base-conversion-score-v1",
+  "partition": "sealed",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_sha256": "eec7dc71312671399a76520cccea9ef986552f6553e8576e05870cceae349bdb",
+  "questions_read": 1000,
+  "answer_hashes_read": 1000,
+  "plaintext_answers_read": 0,
+  "base_candidates": 3,
+  "correct_shadow_candidates": 3,
+  "rejected_shadow_candidates": 0,
+  "candidate_replays": 3,
+  "route_ambiguities": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "candidates": [
+    {
+      "id": "math-v1-sealed-0616",
+      "value": "695",
+      "reference_match": true,
+      "matched_representation": "695",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-sealed-0651",
+      "value": "141",
+      "reference_match": true,
+      "matched_representation": "141_{13}",
+      "replay_verified": true
+    },
+    {
+      "id": "math-v1-sealed-0687",
+      "value": "1200",
+      "reference_match": true,
+      "matched_representation": "1200_7",
+      "replay_verified": true
+    }
+  ]
+}

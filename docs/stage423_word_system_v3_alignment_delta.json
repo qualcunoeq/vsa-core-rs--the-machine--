@@ -1,0 +1,15 @@
+{
+  "schema": "stage423-word-system-v3-alignment-delta-v1",
+  "base_alignment": "docs/stage421_word_system_v2_alignment_delta.json",
+  "corpus_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "records": [
+    {
+      "record_id": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e:619:29:3d0497bd1aa47ae7:part1",
+      "expected_status": "complete",
+      "answer_sha256": "69ae1158a24e0c0bbc7efada9f91ca0a0762e7de815eb32485bdc3524be7ce14",
+      "source": "OpenStax Elementary Algebra 2e page 619 exercise 186; independent equation oracle for x=7y and x+y=-16",
+      "source_sha256": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e"
+    }
+  ],
+  "plaintext_answers_stored": false
+}

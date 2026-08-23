@@ -1,0 +1,64 @@
+{
+  "schema": "stage406-gap-selected-overlap-transfer-v1",
+  "partition": "development",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+  "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+  "source_id": "openstax-precalculus-2e:sequences-series",
+  "source_records": 4,
+  "gap_id": "gap::finite-arithmetic-sequence-term-evaluation",
+  "operation_scope": "finite arithmetic-sequence term evaluation",
+  "candidate_sources": 3,
+  "selected_sources": 1,
+  "rejected_decoys": 2,
+  "gap_selection_replay": true,
+  "baseline_route_observations": 3000,
+  "baseline_route_ambiguities": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "answer_keys_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "partition_report": {
+    "questions": 3000,
+    "baseline_executable": 22,
+    "baseline_unique_ids": 22,
+    "selected_frontend_complete": 3,
+    "selected_frontend_ambiguous": 1,
+    "selected_frontend_missing": 5,
+    "selected_frontend_unsupported": 2991,
+    "selected_execution_complete": 3,
+    "selected_replays": 3,
+    "selected_tamper_rejections": 3,
+    "selected_unique_ids": 3,
+    "incremental_unique_ids": 0,
+    "answer_hashes_read": 0,
+    "plaintext_answers_read": 0,
+    "correct_selected_candidates": 0,
+    "candidates": [
+      {
+        "id": "math-v1-development-0212",
+        "candidate_hash": "c3667732689c20dd5ad6cb626b1d09343a6bd3094c7799be6e7d7d4c9c1b1c90",
+        "baseline_also_executable": true,
+        "reference_match": null,
+        "replay_verified": true
+      },
+      {
+        "id": "math-v1-development-0389",
+        "candidate_hash": "af2f1aebdd8325b9cbef4f4de6021c84025e095f2c91bda04dad5ca4707f748e",
+        "baseline_also_executable": true,
+        "reference_match": null,
+        "replay_verified": true
+      },
+      {
+        "id": "math-v1-development-2842",
+        "candidate_hash": "0b94fcc6c075078217cf55103f92342c31e76752b4a5c75aa96ad69f22f9f968",
+        "baseline_also_executable": true,
+        "reference_match": null,
+        "replay_verified": true
+      }
+    ]
+  },
+  "report_sha256": "36bf9011de0f5a9cce300b653c70385086a267c0da361b8d3407a6d63cbbb72d"
+}

@@ -1,0 +1,50 @@
+{
+  "schema": "stage406-gap-selected-overlap-transfer-v1",
+  "partition": "sealed",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_path": "docs/sources/openstax_precalculus_sequences_source.txt",
+  "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+  "source_id": "openstax-precalculus-2e:sequences-series",
+  "source_records": 4,
+  "gap_id": "gap::finite-arithmetic-sequence-term-evaluation",
+  "operation_scope": "finite arithmetic-sequence term evaluation",
+  "candidate_sources": 3,
+  "selected_sources": 1,
+  "rejected_decoys": 2,
+  "gap_selection_replay": true,
+  "baseline_route_observations": 1000,
+  "baseline_route_ambiguities": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "answer_keys_read": 1000,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "partition_report": {
+    "questions": 1000,
+    "baseline_executable": 4,
+    "baseline_unique_ids": 4,
+    "selected_frontend_complete": 1,
+    "selected_frontend_ambiguous": 0,
+    "selected_frontend_missing": 2,
+    "selected_frontend_unsupported": 997,
+    "selected_execution_complete": 1,
+    "selected_replays": 1,
+    "selected_tamper_rejections": 1,
+    "selected_unique_ids": 1,
+    "incremental_unique_ids": 0,
+    "answer_hashes_read": 1000,
+    "plaintext_answers_read": 0,
+    "correct_selected_candidates": 1,
+    "candidates": [
+      {
+        "id": "math-v1-sealed-0001",
+        "candidate_hash": "96490824d04ddfaf2111fa9b0fa3510afd9c3eaf8281438fdb75c53cff1fa848",
+        "baseline_also_executable": true,
+        "reference_match": true,
+        "replay_verified": true
+      }
+    ]
+  },
+  "report_sha256": "f04990be01fd98e3f923257304c54a91ae9cdcaa3ed1594cbb1fa9e3e52467a6"
+}

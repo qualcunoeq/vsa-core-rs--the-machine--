@@ -66,6 +66,59 @@ fn marker_count(text: &str, marker: &str) -> usize {
     text.match_indices(marker).count()
 }
 
+/// Parse a deliberately narrow natural-language or function-call GCD target.
+/// Both operands must be literal integers; expressions such as `5!`, ratios,
+/// or a mixed gcd/lcm request are left to the existing fail-closed path.
+fn explicit_gcd_pair(text: &str) -> Option<(i64, i64)> {
+    let lower = text.to_ascii_lowercase();
+    let (suffix, natural_phrase) = if let Some(start) = lower.find("greatest common divisor of") {
+        (
+            &text[start + "greatest common divisor of".len()..],
+            true,
+        )
+    } else if let Some(start) = lower.find("gcd(") {
+        (&text[start + "gcd(".len()..], false)
+    } else {
+        return None;
+    };
+    fn integer_prefix(text: &str) -> Option<(i64, &str)> {
+        let text = text.trim_start();
+        let sign_len = if text.starts_with('−') {
+            '−'.len_utf8()
+        } else if text.starts_with('-') {
+            1
+        } else {
+            0
+        };
+        let mut end = sign_len;
+        while text[end..]
+            .chars()
+            .next()
+            .is_some_and(|character| character.is_ascii_digit())
+        {
+            end += text[end..].chars().next().unwrap().len_utf8();
+        }
+        if end == sign_len {
+            return None;
+        }
+        let value = text[..end].replace('−', "-").parse().ok()?;
+        Some((value, &text[end..]))
+    }
+
+    let (first, remainder) = integer_prefix(suffix)?;
+    let remainder = remainder.trim_start();
+    let remainder = if natural_phrase {
+        remainder.strip_prefix("and")?.trim_start()
+    } else {
+        remainder.strip_prefix(',')?.trim_start()
+    };
+    let (second, trailing) = integer_prefix(remainder)?;
+    if trailing.chars().any(|character| matches!(character, '!' | '/' | '^' | '+' | '*')) {
+        return None;
+    }
+    Some((first, second))
+}
+
 fn request(
     operation: NumberTheoryOperation,
     a: Option<i64>,
@@ -189,6 +242,25 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
         });
     }
 
+    if let Some((a, b)) = explicit_gcd_pair(text) {
+        let request = request(
+            NumberTheoryOperation::GcdBezout,
+            Some(a),
+            Some(b),
+            None,
+            None,
+            None,
+            provenance.clone(),
+        );
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Complete,
+            request: Some(request),
+            unresolved: Vec::new(),
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+
     let operation = if lower.contains("bezout")
         || lower.contains("bézout")
         || (lower.contains("gcd") && lower.contains("greatest common divisor"))
@@ -300,5 +372,40 @@ mod tests {
             "scoped",
         );
         assert_eq!(scoped.status, NumberTheoryFrontendStatus::Ambiguous);
+    }
+
+    #[test]
+    fn binds_explicit_natural_language_gcd_pair() {
+        let result = formalize_number_theory_text(
+            "Find the greatest common divisor of 91 and 72.",
+            "gcd-natural",
+        );
+        assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+        let request = result.request.as_ref().unwrap();
+        assert_eq!(request.operation, NumberTheoryOperation::GcdBezout);
+        assert_eq!(request.a, Some(91));
+        assert_eq!(request.b, Some(72));
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn binds_explicit_gcd_call() {
+        let result = formalize_number_theory_text("Compute gcd(40304, 30203).", "gcd-call");
+        assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn refuses_expression_operands_and_mixed_lcm_request() {
+        let expression = formalize_number_theory_text(
+            "Find the greatest common divisor of 5! and 8!/3!.",
+            "gcd-expression",
+        );
+        assert_ne!(expression.status, NumberTheoryFrontendStatus::Complete);
+        let mixed = formalize_number_theory_text(
+            "Find the greatest common divisor and least common multiple of 100 and 120.",
+            "gcd-lcm",
+        );
+        assert_ne!(mixed.status, NumberTheoryFrontendStatus::Complete);
     }
 }

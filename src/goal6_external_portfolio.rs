@@ -49,6 +49,12 @@ use crate::source_mean_update_frontend::{
     formalize_mean_update_text, replay_verified as mean_update_frontend_replay,
 };
 use crate::source_mean_update_pack::evaluate as evaluate_mean_update;
+use crate::number_theory_frontend::{
+    formalize_number_theory_text, replay_verified as number_theory_frontend_replay,
+};
+use crate::number_theory_pack::{
+    evaluate_number_theory, NumberTheoryArtifact, NumberTheoryOperation, NumberTheoryStatus,
+};
 use crate::source_progression_mean_frontend::formalize_progression_mean_text;
 use crate::source_progression_mean_pack::evaluate as evaluate_progression_mean;
 use crate::source_regression_pack::source_regression_frontend::formalize_regression_text;
@@ -84,6 +90,7 @@ pub enum PortfolioRoute {
     FrequencyTableMean,
     ComplexArithmetic,
     BayesPosterior,
+    NumberTheoryGcd,
     ArithmeticSequence,
     ArithmeticProgressionMean,
     NaturalCombination,
@@ -307,6 +314,59 @@ fn bayes_posterior_route(text: &str, case_id: &str) -> RouteObservation {
         .map(PortfolioCandidate::Rational);
     observation(
         PortfolioRoute::BayesPosterior,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        execution.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
+    )
+}
+
+fn number_theory_gcd_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_number_theory_text(text, case_id);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = number_theory_frontend_replay(&frontend);
+    let frontend_tamper = !number_theory_frontend_replay(&frontend_tampered);
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::NumberTheoryGcd,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    if request.operation != NumberTheoryOperation::GcdBezout {
+        return observation(
+            PortfolioRoute::NumberTheoryGcd,
+            format!("{:?}", frontend.status),
+            "unsupported_route_operation",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    }
+    let execution = evaluate_number_theory(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == NumberTheoryStatus::Complete)
+        .then(|| execution.artifact.clone())
+        .flatten()
+        .and_then(|artifact| match artifact {
+            NumberTheoryArtifact::GcdBezout { gcd, .. } => u128::try_from(gcd).ok(),
+            _ => None,
+        })
+        .map(PortfolioCandidate::ExactCount);
+    observation(
+        PortfolioRoute::NumberTheoryGcd,
         format!("{:?}", frontend.status),
         format!("{:?}", execution.status),
         candidate,
@@ -779,6 +839,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         frequency_table_mean_route(text),
         complex_arithmetic_route(text),
         bayes_posterior_route(text, case_id),
+        number_theory_gcd_route(text, case_id),
         statistics_route(text),
         sequence_route(text, case_id),
         progression_mean_route(text),
@@ -810,7 +871,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 18);
+        assert_eq!(observations.len(), 19);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -923,7 +984,7 @@ Score & Number of Students \\
             "Use Bayes theorem with prior=3/100, likelihood=3/4, evidence=1/5 to find the posterior.",
             "test-bayes",
         );
-        assert_eq!(observations.len(), 18);
+        assert_eq!(observations.len(), 19);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::BayesPosterior);
@@ -932,6 +993,25 @@ Score & Number of Students \\
             Some(PortfolioCandidate::Rational(
                 crate::probability_pack::Rational::new(9, 80).unwrap()
             ))
+        );
+        assert!(executable[0].frontend_replay_verified);
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].frontend_tamper_rejected);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_natural_gcd_selects_only_number_theory_route() {
+        let observations = observe_all(
+            "Find the greatest common divisor of 91 and 72.",
+            "test-natural-gcd",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::NumberTheoryGcd);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::ExactCount(1))
         );
         assert!(executable[0].frontend_replay_verified);
         assert!(executable[0].execution_replay_verified);

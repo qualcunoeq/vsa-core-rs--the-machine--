@@ -180,6 +180,8 @@ fn parse_equations(source: &str) -> Vec<(LinearForm, LinearForm)> {
     let equation_region = [
         " given ",
         " when ",
+        " assuming ",
+        " where ",
         " has a solution",
         " find ",
         " compute ",
@@ -204,8 +206,14 @@ fn parse_equations(source: &str) -> Vec<(LinearForm, LinearForm)> {
                 .trim()
                 .rsplit_once(" is ")
                 .map(|(_, rest)| rest)
+                .or_else(|| left.trim().rsplit_once(" are ").map(|(_, rest)| rest))
                 .or_else(|| left.trim().rsplit_once("equations ").map(|(_, rest)| rest))
                 .unwrap_or(left.trim());
+            let left = left
+                .trim()
+                .trim_start_matches("system:")
+                .trim_start_matches("equations:")
+                .trim();
             let right = right
                 .trim()
                 .trim_matches(|character| matches!(character, '.' | '?' | ','));
@@ -574,5 +582,18 @@ mod tests {
             "multiple-targets",
         );
         assert_eq!(result.status, FrontendStatus::Unsupported);
+    }
+
+    #[test]
+    fn equation_prefix_variants_remain_structural() {
+        let result = formalize(
+            "The equations are 3*x+y=a; 2*x+5*y=2*a. Assuming x=2, calculate a.",
+            "prefix-variant",
+        );
+        assert_eq!(result.status, FrontendStatus::Complete);
+        assert_eq!(
+            execute(result.request.as_ref().unwrap()).value,
+            Rational::new(26, 3)
+        );
     }
 }

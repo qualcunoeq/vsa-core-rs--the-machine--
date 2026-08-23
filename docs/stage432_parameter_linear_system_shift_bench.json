@@ -1,0 +1,21 @@
+{
+  "schema": "stage432-parameter-linear-system-shift-bench-v1",
+  "cases": 280,
+  "supported_cases": 120,
+  "missing_cases": 40,
+  "ambiguous_cases": 40,
+  "unsupported_cases": 80,
+  "exact_frontend_statuses": 280,
+  "exact_execution_statuses": 130,
+  "execution_emitted": 130,
+  "supported_values": 120,
+  "incorrect_values": 0,
+  "frontend_replay_verified": 280,
+  "frontend_tamper_rejected": 280,
+  "execution_replay_verified": 130,
+  "execution_tamper_rejected": 130,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_unchanged": true,
+  "corpus_sha256": "1058bc320bc6a036398ee084824cd17e046662065072c45ad230b7e757fc6956"
+}

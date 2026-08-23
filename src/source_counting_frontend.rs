@@ -149,6 +149,26 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
             replay_hash: String::new(),
         });
     }
+    if has_latex_binomial {
+        let binomial_occurrences = lower.matches("\\binom").count()
+            + lower.matches("\\dbinom").count();
+        let compound_operator = lower.contains("\\times")
+            || lower.contains("\\cdot")
+            || lower.contains('+')
+            || lower.contains('*')
+            || lower.contains('=');
+        if binomial_occurrences > 1 || compound_operator {
+            return finish(CountingFrontendResult {
+                status: CountingFrontendStatus::Unsupported,
+                request: None,
+                unresolved: vec![
+                    "compound binomial expressions require a broader symbolic counting method".into(),
+                ],
+                provenance,
+                replay_hash: String::new(),
+            });
+        }
+    }
     let operation = if has_latex_binomial {
         if explicit_ordered || lower.contains("permutation") {
             return finish(CountingFrontendResult {
@@ -345,6 +365,16 @@ mod tests {
             "conflict",
         );
         assert_eq!(result.status, CountingFrontendStatus::Ambiguous);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn rejects_compound_latex_binomial_expression() {
+        let result = formalize_counting_text(
+            r"Compute $\dbinom{9}{2}\times\dbinom{7}{2}$.",
+            "compound",
+        );
+        assert_eq!(result.status, CountingFrontendStatus::Unsupported);
         assert!(replay_verified(&result));
     }
 }

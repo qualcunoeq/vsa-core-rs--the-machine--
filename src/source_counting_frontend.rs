@@ -75,8 +75,35 @@ fn phrase_selection_values(text: &str) -> Option<(u64, u64)> {
     (values.len() == 2).then(|| (values[0], values[1]))
 }
 
+/// Parse only explicit numeric LaTeX binomial notation.  Symbolic entries,
+/// malformed braces, and alternate domain uses remain outside this frontend.
+fn latex_binomial_values(text: &str) -> Option<(u64, u64)> {
+    let lower = text.to_ascii_lowercase();
+    let marker = ["\\binom{", "\\dbinom{"]
+        .iter()
+        .find(|marker| lower.contains(**marker))?;
+    let start = lower.find(marker)? + marker.len();
+    let remainder = &text[start..];
+    let close_n = remainder.find('}')?;
+    let n_text = remainder[..close_n].trim();
+    let after_n = remainder[close_n + 1..].trim_start();
+    let after_open = after_n.strip_prefix('{')?;
+    let close_r = after_open.find('}')?;
+    let r_text = after_open[..close_r].trim();
+    if n_text.is_empty()
+        || r_text.is_empty()
+        || !n_text.chars().all(|character| character.is_ascii_digit())
+        || !r_text.chars().all(|character| character.is_ascii_digit())
+    {
+        return None;
+    }
+    Some((n_text.parse().ok()?, r_text.parse().ok()?))
+}
+
 pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendResult {
     let lower = text.to_ascii_lowercase();
+    let latex_binomial = latex_binomial_values(text);
+    let has_latex_binomial = lower.contains("\\binom") || lower.contains("\\dbinom");
     let explicit_unordered = lower.contains("unordered")
         || lower.contains("order does not matter")
         || (lower.contains("order") && lower.contains("does not matter"));
@@ -109,6 +136,7 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
     }
     if lower.contains(" or ")
         || lower.contains("either")
+        || lower.contains("ambiguous")
         || (lower.contains("permutation")
             && lower.contains("combination")
             && !lower.contains("order matters"))
@@ -121,7 +149,20 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
             replay_hash: String::new(),
         });
     }
-    let operation = if lower.contains("permutation") || (explicit_ordered && !explicit_unordered) {
+    let operation = if has_latex_binomial {
+        if explicit_ordered || lower.contains("permutation") {
+            return finish(CountingFrontendResult {
+                status: CountingFrontendStatus::Ambiguous,
+                request: None,
+                unresolved: vec![
+                    "LaTeX binomial notation conflicts with an ordered counting request".into(),
+                ],
+                provenance,
+                replay_hash: String::new(),
+            });
+        }
+        CountingOperation::Combination
+    } else if lower.contains("permutation") || (explicit_ordered && !explicit_unordered) {
         CountingOperation::Permutation
     } else if lower.contains("combination") || explicit_unordered {
         CountingOperation::Combination
@@ -158,10 +199,10 @@ pub fn formalize_counting_text(text: &str, case_id: &str) -> CountingFrontendRes
             replay_hash: String::new(),
         });
     };
-    let mut n = binding(&lower, "n=")
+    let mut n = latex_binomial.map(|(n, _)| n).or_else(|| binding(&lower, "n="))
         .or_else(|| binding(&lower, "n ="))
         .or_else(|| binding(&lower, "total="));
-    let mut r = binding(&lower, "r=")
+    let mut r = latex_binomial.map(|(_, r)| r).or_else(|| binding(&lower, "r="))
         .or_else(|| binding(&lower, "r ="))
         .or_else(|| binding(&lower, "choose="));
     if matches!(
@@ -266,7 +307,7 @@ mod tests {
             "t",
         );
         assert_eq!(result.status, CountingFrontendStatus::Complete);
-        let request = result.request.unwrap();
+        let request = result.request.as_ref().unwrap();
         assert_eq!(request.n, Some(52));
         assert_eq!(request.r, Some(3));
         assert_eq!(request.operation, CountingOperation::Combination);
@@ -276,6 +317,34 @@ mod tests {
     fn refuses_phrase_selection_without_order_semantics() {
         let result = formalize_counting_text("Choose 3 cards from a deck of 52.", "t");
         assert_eq!(result.status, CountingFrontendStatus::Missing);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn binds_numeric_latex_binomial_as_combination() {
+        let result = formalize_counting_text(r"Compute $\dbinom{8}{4}$.", "latex");
+        assert_eq!(result.status, CountingFrontendStatus::Complete);
+        let request = result.request.as_ref().unwrap();
+        assert_eq!(request.operation, CountingOperation::Combination);
+        assert_eq!(request.n, Some(8));
+        assert_eq!(request.r, Some(4));
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn preserves_symbolic_latex_binomial_as_missing() {
+        let result = formalize_counting_text(r"What is $\binom{n}{k}$?", "symbolic");
+        assert_eq!(result.status, CountingFrontendStatus::Missing);
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn rejects_latex_binomial_when_ordered_semantics_conflict() {
+        let result = formalize_counting_text(
+            r"Interpret $\binom{5}{2}$ as an ordered permutation.",
+            "conflict",
+        );
+        assert_eq!(result.status, CountingFrontendStatus::Ambiguous);
         assert!(replay_verified(&result));
     }
 }

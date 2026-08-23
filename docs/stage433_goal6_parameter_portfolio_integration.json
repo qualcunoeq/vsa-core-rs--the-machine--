@@ -1,0 +1,21 @@
+{
+  "schema": "stage433-goal6-parameter-portfolio-integration-v1",
+  "portfolio_routes": 13,
+  "development_questions": 3000,
+  "answer_hashes_read": 3000,
+  "unique_shadow_candidates": 23,
+  "correct_shadow_candidates": 23,
+  "rejected_shadow_candidates": 0,
+  "candidate_replays": 23,
+  "route_ambiguities": 0,
+  "no_executable_route": 2977,
+  "plaintext_answers_read": 0,
+  "sealed_questions_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "focused_route_tests": 9,
+  "focused_route_tests_passed": 9,
+  "probe_report_sha256": "310064da1ece1e23c85e2fc3fcb36d697550e6114ce7acbb559ac377883827e7",
+  "score_report_sha256": "530eb12e63d16fb3a38d13fb8276c76e9d3d5ef7951b38bb45744819551bf06c"
+}

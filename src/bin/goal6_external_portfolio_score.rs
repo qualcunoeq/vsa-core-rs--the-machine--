@@ -148,7 +148,6 @@ fn candidate_forms(candidate: &PortfolioCandidate) -> Vec<(&'static str, String)
             }
             forms
         }
-        PortfolioCandidate::Text(value) => vec![("text", value.clone())],
     }
 }
 

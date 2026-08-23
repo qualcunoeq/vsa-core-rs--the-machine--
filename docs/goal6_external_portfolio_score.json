@@ -2,32 +2,24 @@
   "schema": "goal6-external-portfolio-score-v1",
   "release_id": "external-math-exam-v1",
   "partition": "development",
-  "probe_report_sha256": "310064da1ece1e23c85e2fc3fcb36d697550e6114ce7acbb559ac377883827e7",
+  "probe_report_sha256": "e3258ff7fc074eeb0a30570773204cfbb5c8a56e0e5888eb5035812417ad57eb",
   "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
   "questions_read": 3000,
   "answer_hashes_read": 3000,
   "plaintext_answers_read": 0,
   "sealed_questions_read": 0,
-  "unique_candidate_cases": 23,
-  "correct_shadow_candidates": 23,
+  "unique_candidate_cases": 11,
+  "correct_shadow_candidates": 11,
   "incorrect_shadow_candidates_rejected": 0,
-  "candidate_replays": 23,
+  "candidate_replays": 11,
   "route_ambiguities": 0,
-  "no_executable_route": 2977,
+  "no_executable_route": 2989,
   "production_authorizations": 0,
   "false_authorizations": 0,
   "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
   "manifest_unchanged": true,
   "candidates": [
-    {
-      "id": "math-v1-development-0093",
-      "selected_route": "base_conversion",
-      "candidate_answer_sha256": "1da51b8d8ff98f6a48f80ae79fe3ca6c26e1abb7b7d125259255d6d2b875ea08",
-      "reference_match": true,
-      "matched_representation": "text",
-      "replay_verified": true
-    },
     {
       "id": "math-v1-development-0212",
       "selected_route": "arithmetic_sequence",
@@ -48,30 +40,6 @@
       "id": "math-v1-development-0389",
       "selected_route": "arithmetic_sequence",
       "candidate_answer_sha256": "454f63ac30c8322997ef025edff6abd23e0dbe7b8a3d5126a894e4a168c1b59b",
-      "reference_match": true,
-      "matched_representation": "fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-0463",
-      "selected_route": "natural_combination",
-      "candidate_answer_sha256": "7688b6ef52555962d008fff894223582c484517cea7da49ee67800adc7fc8866",
-      "reference_match": true,
-      "matched_representation": "integer",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-0513",
-      "selected_route": "arithmetic_progression_mean",
-      "candidate_answer_sha256": "7688b6ef52555962d008fff894223582c484517cea7da49ee67800adc7fc8866",
-      "reference_match": true,
-      "matched_representation": "fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-0588",
-      "selected_route": "mean_update",
-      "candidate_answer_sha256": "6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
       "reference_match": true,
       "matched_representation": "fraction",
       "replay_verified": true
@@ -101,73 +69,9 @@
       "replay_verified": true
     },
     {
-      "id": "math-v1-development-0973",
-      "selected_route": "finite_list_mean",
-      "candidate_answer_sha256": "52e90ae24326591c8161e2e05a8f3b9b57287ca13aba3be7e84043691e160ba6",
-      "reference_match": true,
-      "matched_representation": "latex_fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-0984",
-      "selected_route": "parameter_linear_system",
-      "candidate_answer_sha256": "6f3a05213f73265ca61bdeaf7af41c21c5ef401eddc1646de97892fac21c16a4",
-      "reference_match": true,
-      "matched_representation": "latex_fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-1108",
-      "selected_route": "base_conversion",
-      "candidate_answer_sha256": "ff5a1ae012afa5d4c889c50ad427aaf545d31a4fac04ffc1c4d03d403ba4250a",
-      "reference_match": true,
-      "matched_representation": "text",
-      "replay_verified": true
-    },
-    {
       "id": "math-v1-development-1287",
       "selected_route": "finite_list_mean",
       "candidate_answer_sha256": "1da51b8d8ff98f6a48f80ae79fe3ca6c26e1abb7b7d125259255d6d2b875ea08",
-      "reference_match": true,
-      "matched_representation": "fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-1372",
-      "selected_route": "natural_combination",
-      "candidate_answer_sha256": "6f4b6612125fb3a0daecd2799dfd6c9c299424fd920f9b308110a2c1fbd8f443",
-      "reference_match": true,
-      "matched_representation": "integer",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-1461",
-      "selected_route": "finite_list_mean",
-      "candidate_answer_sha256": "4a44dc15364204a80fe80e9039455cc1608281820fe2b24f1e5233ade6af1dd5",
-      "reference_match": true,
-      "matched_representation": "fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-1598",
-      "selected_route": "finite_list_mean",
-      "candidate_answer_sha256": "6f4b6612125fb3a0daecd2799dfd6c9c299424fd920f9b308110a2c1fbd8f443",
-      "reference_match": true,
-      "matched_representation": "fraction",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-1727",
-      "selected_route": "base_conversion",
-      "candidate_answer_sha256": "a48317286e0445e807090fe301da37ceb30a15c4df3aa6c06a8d9cde05c0fd83",
-      "reference_match": true,
-      "matched_representation": "text",
-      "replay_verified": true
-    },
-    {
-      "id": "math-v1-development-1826",
-      "selected_route": "finite_list_mean",
-      "candidate_answer_sha256": "19581e27de7ced00ff1ce50b2047e7a567c76b1cbaebabe5ef03f7c3017bb5b7",
       "reference_match": true,
       "matched_representation": "fraction",
       "replay_verified": true
@@ -205,5 +109,5 @@
       "replay_verified": true
     }
   ],
-  "report_sha256": "530eb12e63d16fb3a38d13fb8276c76e9d3d5ef7951b38bb45744819551bf06c"
+  "report_sha256": "f2046c9baccaa0c949955f18e7b16fbad452293514e21334a051af83a10d2692"
 }

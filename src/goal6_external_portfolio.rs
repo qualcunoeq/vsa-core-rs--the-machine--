@@ -26,6 +26,8 @@ use crate::source_combination_frontend::{
     formalize_combination_text, replay_verified as combination_frontend_replay,
 };
 use crate::source_combination_pack::evaluate_combination;
+use crate::source_complex_pack::source_complex_frontend::formalize_complex_text;
+use crate::source_complex_pack::{evaluate_complex, ComplexArtifact, ComplexStatus};
 use crate::source_counting_frontend::formalize_counting_text;
 use crate::source_counting_pack::{
     evaluate as evaluate_counting, CountingArtifact, CountingStatus,
@@ -78,6 +80,7 @@ pub const CATEGORY_SELECTION_DOMAIN: &str = crate::source_category_selection_pac
 pub enum PortfolioRoute {
     FiniteListMean,
     FrequencyTableMean,
+    ComplexArithmetic,
     ArithmeticSequence,
     ArithmeticProgressionMean,
     NaturalCombination,
@@ -98,6 +101,10 @@ pub enum PortfolioRoute {
 #[serde(rename_all = "snake_case", tag = "kind", content = "value")]
 pub enum PortfolioCandidate {
     Rational(crate::probability_pack::Rational),
+    ComplexPair {
+        real: crate::probability_pack::Rational,
+        imag: crate::probability_pack::Rational,
+    },
     ExactCount(u128),
     Text(String),
 }
@@ -225,6 +232,46 @@ fn frequency_table_mean_route(text: &str) -> RouteObservation {
         candidate,
         frontend_replay,
         statistics.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
+    )
+}
+
+fn complex_arithmetic_route(text: &str) -> RouteObservation {
+    let frontend = formalize_complex_text(text);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = frontend.replay_verified();
+    let frontend_tamper = !frontend_tampered.replay_verified();
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::ComplexArithmetic,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = evaluate_complex(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == ComplexStatus::Complete)
+        .then(|| execution.artifact.clone())
+        .flatten()
+        .map(|artifact| match artifact {
+            ComplexArtifact::Scalar(value) => PortfolioCandidate::Rational(value),
+            ComplexArtifact::Pair { real, imag } => PortfolioCandidate::ComplexPair { real, imag },
+        });
+    observation(
+        PortfolioRoute::ComplexArithmetic,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        execution.replay_verified(),
         frontend_tamper,
         !execution_tampered.replay_verified(),
     )
@@ -690,6 +737,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
         mean_route(text),
         frequency_table_mean_route(text),
+        complex_arithmetic_route(text),
         statistics_route(text),
         sequence_route(text, case_id),
         progression_mean_route(text),
@@ -721,7 +769,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 16);
+        assert_eq!(observations.len(), 17);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -803,6 +851,26 @@ Score & Number of Students \\
             Some(PortfolioCandidate::Rational(
                 crate::probability_pack::Rational::new(80, 1).unwrap()
             ))
+        );
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_complex_arithmetic_selects_only_complex_route() {
+        let observations = observe_all(
+            "Find the product of (3-4i) and (2+5i).",
+            "test-complex-arithmetic",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::ComplexArithmetic);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::ComplexPair {
+                real: crate::probability_pack::Rational::new(26, 1).unwrap(),
+                imag: crate::probability_pack::Rational::new(7, 1).unwrap(),
+            })
         );
         assert!(executable[0].execution_replay_verified);
         assert!(executable[0].execution_tamper_rejected);

@@ -148,6 +148,36 @@ fn candidate_forms(candidate: &PortfolioCandidate) -> Vec<(&'static str, String)
             }
             forms
         }
+        PortfolioCandidate::ComplexPair { real, imag } => {
+            fn rational_text(value: &the_machine::probability_pack::Rational) -> String {
+                if value.denominator == 1 {
+                    value.numerator.to_string()
+                } else {
+                    format!("{}/{}", value.numerator, value.denominator)
+                }
+            }
+            let real = rational_text(real);
+            let imag = rational_text(imag);
+            if imag == "0" {
+                return vec![
+                    ("complex_real", real.clone()),
+                    ("complex_real_with_imaginary_zero", format!("{real}+0i")),
+                    ("complex_real_parenthesized", format!("({real})")),
+                ];
+            }
+            let signed = if imag.starts_with('-') {
+                format!("{real}{imag}i")
+            } else {
+                format!("{real}+{imag}i")
+            };
+            vec![
+                ("complex", signed.clone()),
+                ("complex_parenthesized", format!("({signed})")),
+                ("complex_spaced_plus", signed.replace('+', " + ")),
+                ("complex_spaced_minus", signed.replace('-', " - ")),
+                ("complex_spaced", format!("{real} + {imag}i")),
+            ]
+        }
         PortfolioCandidate::Text(value) => vec![("text", value.clone())],
     }
 }

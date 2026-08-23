@@ -224,6 +224,7 @@ pub mod source_statistics_pack;
 pub mod source_progression_mean_frontend;
 pub mod source_progression_mean_pack;
 pub mod source_topology_frontend;
+pub mod source_word_system_frontend;
 pub mod source_topology_graph_bridge;
 pub mod source_topology_pack;
 pub mod strategic_route_benchmark;

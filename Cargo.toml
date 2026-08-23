@@ -1175,6 +1175,10 @@ path = "src/bin/stage415_semantic_coherence_audit.rs"
 name = "stage416_external_linear_system_probe"
 path = "src/bin/stage416_external_linear_system_probe.rs"
 
+[[bin]]
+name = "stage417_word_system_frontend_bench"
+path = "src/bin/stage417_word_system_frontend_bench.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

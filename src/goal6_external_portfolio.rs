@@ -5,6 +5,10 @@
 //! their receipts replay. This module does not read answer keys, select by
 //! lexical hints, authorize production, or mutate a registry.
 
+use crate::source_combination_frontend::{
+    formalize_combination_text, replay_verified as combination_frontend_replay,
+};
+use crate::source_combination_pack::evaluate_combination;
 use crate::source_counting_frontend::formalize_counting_text;
 use crate::source_counting_pack::{
     evaluate as evaluate_counting, CountingArtifact, CountingStatus,
@@ -41,6 +45,7 @@ pub enum PortfolioRoute {
     FiniteListMean,
     ArithmeticSequence,
     ArithmeticProgressionMean,
+    NaturalCombination,
     BoundedCounting,
     UnitConversion,
     BoundedGeometry,
@@ -234,6 +239,45 @@ fn progression_mean_route(text: &str) -> RouteObservation {
     )
 }
 
+fn natural_combination_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_combination_text(text, case_id);
+    let mut tampered = frontend.clone();
+    tampered.replay_hash.push('x');
+    let frontend_replay = combination_frontend_replay(&frontend);
+    let frontend_tamper = !combination_frontend_replay(&tampered);
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::NaturalCombination,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = evaluate_combination(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == CountingStatus::Complete)
+        .then(|| execution.artifact.clone())
+        .flatten()
+        .map(|artifact| match artifact {
+            CountingArtifact::ExactCount(value) => PortfolioCandidate::ExactCount(value),
+        });
+    observation(
+        PortfolioRoute::NaturalCombination,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        crate::source_counting_pack::replay_verified(&execution),
+        frontend_tamper,
+        !crate::source_counting_pack::replay_verified(&execution_tampered),
+    )
+}
+
 fn counting_route(text: &str, case_id: &str) -> RouteObservation {
     let frontend = formalize_counting_text(text, case_id);
     let mut frontend_tampered = frontend.clone();
@@ -328,6 +372,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         statistics_route(text),
         sequence_route(text, case_id),
         progression_mean_route(text),
+        natural_combination_route(text, case_id),
         counting_route(text, case_id),
         unit_route(text, case_id),
         geometry_route(text),
@@ -349,10 +394,31 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 8);
+        assert_eq!(observations.len(), 9);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
+        assert!(observations
+            .iter()
+            .all(|item| item.frontend_replay_verified));
+        assert!(observations
+            .iter()
+            .all(|item| item.frontend_tamper_rejected));
+    }
+
+    #[test]
+    fn route_blind_natural_combination_selects_only_combination() {
+        let observations = observe_all(
+            "In how many ways can a student choose three out of eight classes?",
+            "test-combination",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::NaturalCombination);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::ExactCount(56))
+        );
         assert!(observations
             .iter()
             .all(|item| item.frontend_replay_verified));

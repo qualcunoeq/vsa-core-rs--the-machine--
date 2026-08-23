@@ -1,0 +1,39 @@
+{
+  "schema": "stage431-parameter-linear-system-external-alignment-v1",
+  "questions_path": "data/external_math_exam_v1/questions.jsonl",
+  "oracle_path": "data/external_math_exam_v1/oracle_development.jsonl",
+  "questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "declared_questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "oracle_sha256": "5bc0e75c5af49d0500cf14437c566e1eed398dd9aeef32c91d05062b83b22ec0",
+  "declared_oracle_sha256": "5bc0e75c5af49d0500cf14437c566e1eed398dd9aeef32c91d05062b83b22ec0",
+  "development_questions_read": 3000,
+  "sealed_questions_read": 1000,
+  "complete_frontends": 1,
+  "complete_executions": 1,
+  "oracle_matches": 1,
+  "incorrect_shadow_answers": 0,
+  "frontend_replay_verified": 3000,
+  "frontend_tamper_rejected": 3000,
+  "execution_replay_verified": 1,
+  "execution_tamper_rejected": 1,
+  "answer_hashes_read": 3000,
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "results": [
+    {
+      "id": "math-v1-development-0984",
+      "prompt_sha256": "86060e9a9a54c43c82e92b0addebeda4237f72420188fd542786e4c6484ce145",
+      "frontend_status": "complete",
+      "answer_sha256": "6e6443b7c78b3d914242e4acfcb422e4b3dd4cbb06425fcbed34088b440c81c0",
+      "expected_answer_sha256": "6e6443b7c78b3d914242e4acfcb422e4b3dd4cbb06425fcbed34088b440c81c0",
+      "oracle_match": true,
+      "frontend_replay": true,
+      "frontend_tamper_rejected": true,
+      "execution_replay": true,
+      "execution_tamper_rejected": true
+    }
+  ],
+  "report_sha256": "aaf812a3fe585af7a670bfce759dc2e873b5e636b037f58609fba54534bc61e7"
+}

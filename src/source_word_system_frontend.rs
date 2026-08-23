@@ -265,6 +265,155 @@ pub fn formalize_two_number_system(text: &str, case_id: &str) -> WordSystemResul
     })
 }
 
+/// Shadow-only V2 contract with independently validated wording variants.
+/// V1 remains frozen; this function accepts only explicit, orientation-safe
+/// synonyms and equality-only bounded multiples.
+pub fn formalize_two_number_system_v2(text: &str, case_id: &str) -> WordSystemResult {
+    let lower = text.to_ascii_lowercase();
+    let provenance = vec![format!("source-word-system-frontend-v2:{case_id}")];
+    if !lower.contains("two number") {
+        return finish(WordSystemResult {
+            status: WordSystemStatus::Unsupported,
+            request: None,
+            evidence: Vec::new(),
+            unresolved: vec!["exactly two numbers are required".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+
+    let sum_markers = [
+        ("sum of the two number", "is "),
+        ("sum of two number", "is "),
+        ("total of the two number", "is "),
+        ("total of two number", "is "),
+        ("two number add up to ", ""),
+        ("two number total ", ""),
+        ("two numbers add up to ", ""),
+        ("two numbers total ", ""),
+    ];
+    let mut sum = None;
+    for (marker, separator) in sum_markers {
+        if let Some(index) = lower.find(marker) {
+            let suffix = &lower[index + marker.len()..];
+            let suffix = if separator.is_empty() {
+                suffix
+            } else {
+                let Some(offset) = suffix.find(separator) else {
+                    return finish(WordSystemResult {
+                        status: WordSystemStatus::Ambiguous,
+                        request: None,
+                        evidence: vec![marker.into()],
+                        unresolved: vec!["sum marker has no explicit value".into()],
+                        provenance,
+                        replay_hash: String::new(),
+                    });
+                };
+                &suffix[offset + separator.len()..]
+            };
+            sum = leading_integer(suffix).map(|(value, _)| value);
+            if sum.is_none() {
+                return finish(WordSystemResult {
+                    status: WordSystemStatus::Ambiguous,
+                    request: None,
+                    evidence: vec![marker.into()],
+                    unresolved: vec!["sum must be an explicit bounded integer".into()],
+                    provenance,
+                    replay_hash: String::new(),
+                });
+            }
+            break;
+        }
+    }
+    let Some(sum) = sum else {
+        return finish(WordSystemResult {
+            status: WordSystemStatus::Missing,
+            request: None,
+            evidence: Vec::new(),
+            unresolved: vec!["an explicit sum of two numbers is required".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    };
+
+    let relation = if let Some(index) = lower.find("one number exceeds the other by ") {
+        leading_integer(&lower[index + "one number exceeds the other by ".len()..])
+            .map(|(offset, _)| (1, offset))
+    } else if let Some(index) = lower.find("one number is greater than the other by ") {
+        leading_integer(&lower[index + "one number is greater than the other by ".len()..])
+            .map(|(offset, _)| (1, offset))
+    } else if let Some(index) = lower.find("one number is smaller than the other by ") {
+        leading_integer(&lower[index + "one number is smaller than the other by ".len()..])
+            .map(|(offset, _)| (1, -offset))
+    } else if let Some(index) = lower.find("the larger number is ") {
+        let suffix = &lower[index + "the larger number is ".len()..];
+        leading_integer(suffix).and_then(|(offset, rest)| {
+            rest.contains("more than the smaller number")
+                .then_some((1, offset))
+        })
+    } else if let Some(index) = lower.find("one number is ") {
+        let suffix = &lower[index + "one number is ".len()..];
+        if suffix.starts_with("twice the other") {
+            Some((2, 0))
+        } else if suffix.starts_with("three times the other") {
+            Some((3, 0))
+        } else if suffix.starts_with("four times the other") {
+            Some((4, 0))
+        } else if suffix.starts_with("five times the other") {
+            Some((5, 0))
+        } else {
+            leading_integer(suffix).and_then(|(offset, rest)| {
+                if rest.contains("less than three times the other") {
+                    Some((3, -offset))
+                } else if rest.contains("less than twice the other") {
+                    Some((2, -offset))
+                } else if rest.contains("less than the other")
+                    || rest.contains("smaller than the other")
+                {
+                    Some((1, -offset))
+                } else if rest.contains("more than the other")
+                    || rest.contains("greater than the other")
+                {
+                    Some((1, offset))
+                } else if rest.contains("times the other") {
+                    (2..=5).contains(&offset).then_some((offset, 0))
+                } else {
+                    None
+                }
+            })
+        }
+    } else {
+        None
+    };
+    let Some((multiplier, delta)) = relation else {
+        return finish(WordSystemResult {
+            status: WordSystemStatus::Ambiguous,
+            request: None,
+            evidence: vec![format!("sum={sum}")],
+            unresolved: vec!["the relation orientation or offset is not uniquely supported".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    };
+    let request = WordSystemRequest {
+        equations: vec![format!("x+y={sum}"), format!("x-{multiplier}*y={delta}")],
+        variables: vec!["x".into(), "y".into()],
+        provenance: provenance.clone(),
+    };
+    finish(WordSystemResult {
+        status: WordSystemStatus::Complete,
+        request: Some(request),
+        evidence: vec![
+            format!("sum={sum}"),
+            format!("multiplier={multiplier}"),
+            format!("delta={delta}"),
+        ],
+        unresolved: Vec::new(),
+        provenance,
+        replay_hash: String::new(),
+    })
+}
+
 pub fn execute_word_system(result: &WordSystemResult) -> Option<LinearSystemExecutionReceipt> {
     if result.status != WordSystemStatus::Complete || !replay_verified(result) {
         return None;
@@ -312,6 +461,28 @@ mod tests {
         let receipt = execute_word_system(&result).expect("unique negative system");
         assert_eq!(receipt.result, r#"{"x": "-18", "y": "2"}"#);
         assert!(execution_replay_verified(&receipt));
+    }
+
+    #[test]
+    fn v2_accepts_explicit_relation_synonyms_and_multiples() {
+        let greater = formalize_two_number_system_v2(
+            "The total of the two numbers is 20. One number exceeds the other by 4.",
+            "v2-greater",
+        );
+        assert_eq!(greater.status, WordSystemStatus::Complete);
+        assert_eq!(
+            execute_word_system(&greater).unwrap().result,
+            r#"{"x": "12", "y": "8"}"#
+        );
+        let multiple = formalize_two_number_system_v2(
+            "Two numbers add up to negative thirty. One number is five times the other.",
+            "v2-multiple",
+        );
+        assert_eq!(multiple.status, WordSystemStatus::Complete);
+        assert_eq!(
+            execute_word_system(&multiple).unwrap().result,
+            r#"{"x": "-25", "y": "-5"}"#
+        );
     }
 
     #[test]

@@ -1,0 +1,22 @@
+{
+  "schema": "stage421-word-system-v2-alignment-delta-v1",
+  "base_alignment": "docs/stage418_word_system_alignment.json",
+  "corpus_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "records": [
+    {
+      "record_id": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e:619:24:bf643fddb0b54047:part1",
+      "expected_status": "complete",
+      "answer_sha256": "a1fe2095b3976fa6c30c1f71800218d6d17daaea233900a3bbacd06be5fe0dfb",
+      "source": "OpenStax Elementary Algebra 2e page 619 exercise 185; independent equation oracle for x=5y and x+y=-30",
+      "source_sha256": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e"
+    },
+    {
+      "record_id": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e:619:29:3d0497bd1aa47ae7:part1",
+      "expected_status": "ambiguous",
+      "answer_sha256": null,
+      "source": "OpenStax Elementary Algebra 2e page 619 exercise 186; multiplier seven is outside the bounded V2 contract",
+      "source_sha256": "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e"
+    }
+  ],
+  "plaintext_answers_stored": false
+}

@@ -1,0 +1,332 @@
+{
+  "schema": "stage425-probability-family-audit-v1",
+  "corpus_path": "docs/stage389_page_aware_external_problem_dev.json",
+  "corpus_file_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "declared_corpus_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "source_records": 5566,
+  "quality_clean_records": 2105,
+  "quality_rejected_records": 3461,
+  "probability_signal_records": 108,
+  "family_summaries": [
+    {
+      "family": "uniform_die",
+      "candidates": 12,
+      "development": 11,
+      "validation": 1,
+      "distinct_sources": 2,
+      "explicit_experiment_definition": 0,
+      "explicit_event_target": 12,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "0c57e9c62ad4762b5aeea66d7fdead72798e50fea8ea8fe59c5d45f0c1d0a83b",
+        "7ec77a449af13e582476c8343d40966ca6837c6316008fd8773a0e577b53b049",
+        "4542369cd2361a26a0848c8fa5cfef776b34895eff2fc3f18d67dfde7000f34d",
+        "6f72d478596cfcdbdf0ebda6ec6a61945f0fcafd510af806924f0cc1e0840989",
+        "23459886717c9e2ce241bbd65a51037ef2627c90dafbd7cd78e33df0b1c68e01",
+        "1b491a10009b718c5fa1e9296d463edad0ec391f090e40b36daa04d02ba143bf",
+        "627a525f43bf8a304d6bfc7d060df2709fc78d8f02f92c34b774767d754bd6ce",
+        "406afeea91bdfdb7744893acb535c5df84ca2786ebf8685d7a1b8674c34a6c6a"
+      ]
+    },
+    {
+      "family": "labeled_die",
+      "candidates": 37,
+      "development": 26,
+      "validation": 11,
+      "distinct_sources": 1,
+      "explicit_experiment_definition": 19,
+      "explicit_event_target": 37,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "7b8273e1ad205e9533bad1948ada4f7ff3bfde43c75f85afbb1e769ddd729b53",
+        "b1c3706ecd855f4564cae5f31ba86a90a2fcb8b5980c7d24bf5f071b9e33238d",
+        "fcdc81041843e115168900222f956ec86c4d1e0802ca39d943b70fc9690fb32e",
+        "40b96ff2391ca97e387c0618071e7327e0c3daf4278f8756c588e6496feb1923",
+        "95c8bedfa8963b1cbfe0762c1f3667cfc797ee4769286685b5222d865225dc89",
+        "8b20bd0bd3beac64d3b834bb0b1a9efa2d789891ea1462b75e3769030501e3f0",
+        "15c5809294c294d45f316aae304f5181a79ca8c40589ba633e08618e07b23de5",
+        "a8a09b7a1c14a5ca3d8f8e682994027c5bfe5ba6ae9233e0b84747e67723c5e1"
+      ]
+    },
+    {
+      "family": "card_or_tile_draw",
+      "candidates": 34,
+      "development": 27,
+      "validation": 7,
+      "distinct_sources": 1,
+      "explicit_experiment_definition": 22,
+      "explicit_event_target": 34,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "84eaefa8bf34674a006b7315cd83fd451727d311b6ae14a354db09d31ef21f4b",
+        "6c4961924fe160d43e4741cb381ef9f64fe3b8aa461e654350e53c8a718d0c5a",
+        "f687cf27122629f9b42d9695db8d0e28e8d650c2cb06d4ecd9aa2df115fc5698",
+        "9e470378ec170e9e95fa2fcef59f73056aafb162bd481af0106bd750ceb03b97",
+        "1d77dd1f3fd4f787f2c71231965f57e069d1b112abac5c530ed8e90f8cf320ed",
+        "c408a24312cf32be15be534025ece3e4ea33ddd2f3d456e8c1d1de5de3baed13",
+        "215140f6b66251421929f8e0dd9ea4ebf9b00aca63739f5d1d200531314a8527",
+        "65816ac4ea550a6de7ce8d84f0504bfaf7a1fce697e089ff299959f3f4ef2280"
+      ]
+    },
+    {
+      "family": "repeated_game",
+      "candidates": 6,
+      "development": 3,
+      "validation": 3,
+      "distinct_sources": 1,
+      "explicit_experiment_definition": 0,
+      "explicit_event_target": 6,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "c06c5ec1bd86c9c6c80649a9ba3b7049c545d4e4777ea10d7d8f26e1231607ce",
+        "c0a5e7d97c98567d89ec4ea1fc5c3e09fc97f028d596d6880abc4c1419e28347",
+        "5bf853d17cbd3d0374489e260ee991b4f401aa0ddd681de2ea1446cd27f0249c",
+        "6d02726824c73cdbf7ae988d43e10a69e6e206b6b8a5c1b1881e121def3efdac",
+        "1abf6a87dd7abe85f672543b1cc0f4f3894da0a93e99f0dfb69f74a478ad894f",
+        "d579f256614e277b1dba3fdc73d7b52ddf805704d728e6448a154b47e63e0156"
+      ]
+    },
+    {
+      "family": "empirical_or_subjective",
+      "candidates": 7,
+      "development": 5,
+      "validation": 2,
+      "distinct_sources": 1,
+      "explicit_experiment_definition": 2,
+      "explicit_event_target": 6,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "94851b15f292469c4e506fdb49065505564ac5ad88e42f0287b55a60ea96e834",
+        "d37dde756ebada88098d7ccaddd3924f2388ca62a2a1c2c5060ea465c6682d25",
+        "9c1d8932c03d7f0ca10aabae7f218764a38ec7e0d4a684965b8deb42aaceddbc",
+        "11c6b20bdf89f39150ebaf27e21f2bdb1becfb24441182b92e46bfecd40df7b1",
+        "140656c573b1ab99b61f2b353104c205d8749b30e31c14a1b6f40acac6490ba9",
+        "74ff2b00855af016b7889df26e6137a287778a0a0e220dab0d8597a42bbd7ac5",
+        "1a002e15bb8adb57155f6b59570ad80164ea89048091193f220b5b7f08471a20"
+      ]
+    },
+    {
+      "family": "coin_experiment",
+      "candidates": 7,
+      "development": 6,
+      "validation": 1,
+      "distinct_sources": 2,
+      "explicit_experiment_definition": 0,
+      "explicit_event_target": 7,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "991d1fd850fbd0161ef75e5ea76d3e02a8ed2502a492911c2dd652d76b02d1f4",
+        "e695c70d0fdc86717060f2a36529da3efcb562885e6928d36750ae9f648dd62e",
+        "812ac60854a233e89db8fabf75819a8f8ff136cb8fd3a89f0b9765d02ff5ee7a",
+        "0f0dcba9d3684c8703a9f718454f9e598d8d4a66449e0a16185f92288f6973a3",
+        "f10ebe7b178fa7f162927687b6cf230b5e0694ddd784a0aa2bc708cae86cc6ea",
+        "df29081ce25f1e9366559dc59e3fbee9aa84ce14fd63c6d2aa0c47d5a4470a8d",
+        "8159c48fe03b0600f0719a9896a3b9a1ba412234de1ca73a73a3f703dd076e54"
+      ]
+    },
+    {
+      "family": "other_finite_experiment",
+      "candidates": 5,
+      "development": 4,
+      "validation": 1,
+      "distinct_sources": 3,
+      "explicit_experiment_definition": 0,
+      "explicit_event_target": 4,
+      "literal_distribution_frontend_inputs": 0,
+      "prompt_hashes": [
+        "196f0e368411499dfbf3f0057f0e3cf7b26d3e5e70ff05fba71c7651ed8d03d0",
+        "8cefc4a19ecae5d8c85901430640c801551b9855467bab08fabfe86c3eaa82af",
+        "37881ada328996fdb42c33e58ab2e8ea9d1308e40b193ea423d4041dfd929742",
+        "ccef9fe9e878b6e8e1ed13a57de43a2d361470e7f9a28abd80e097ea0c5c07b7",
+        "ed04bd57c29d0d04994481629f4e91c07468ad7b41a5ef340ea31cc9fd37a2ea"
+      ]
+    }
+  ],
+  "uniform_or_labeled_candidates": [
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:779:42:d738e7ee4c9886d3:part1",
+      "split": "validation",
+      "prompt_sha256": "d738e7ee4c9886d3bf47d825cde84512baa32dba41197026affd287755a46127",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:779:44:3825d4af3c7a586f:part1",
+      "split": "validation",
+      "prompt_sha256": "3825d4af3c7a586ff6f5aeda6829d38396b3d2761fd2e6bc0331e4d74df391e7",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:779:46:373e4d5e15a4bed9:part1",
+      "split": "development",
+      "prompt_sha256": "373e4d5e15a4bed964d12a5d3b89ecd21b064655552e40301619c50720cb14af",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:779:48:7d9804257106bfba:part1",
+      "split": "development",
+      "prompt_sha256": "7d9804257106bfba42d29282d5712e82c82192d5ee4e1e9c8be5d8f82cd0e9a0",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:785:18:986949a4c127c974:part1",
+      "split": "development",
+      "prompt_sha256": "986949a4c127c9745a053add714c1ea48543a519baa11849844223ac3994c469",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:785:19:83be2c113280b413:part1",
+      "split": "development",
+      "prompt_sha256": "83be2c113280b413d1709ade25f398b4656446f1f8c25a63dd1084ca49ab0b15",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:785:20:0f68e6a7d0fe813e:part1",
+      "split": "validation",
+      "prompt_sha256": "0f68e6a7d0fe813e41d770bc303cca1666b13a8c5e1bce87ea932ab73288348a",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:785:21:dbf3d3f2bd2da60b:part1",
+      "split": "development",
+      "prompt_sha256": "dbf3d3f2bd2da60b5aaa9cc60a75bf0ec687fd835e4d984f44d07416d5b202d4",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:785:22:912a205010e54a0f:part1",
+      "split": "development",
+      "prompt_sha256": "912a205010e54a0fcff1581d177918f3bb6ea8ac3c5bfd96596a2f667d9e0081",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:785:23:bab10f03d846161f:part1",
+      "split": "development",
+      "prompt_sha256": "bab10f03d846161f14969cacef0d2e78e9d50011afb5c050cf03bf2ab33fca42",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:797:53:1133d94099f33f79:part1",
+      "split": "development",
+      "prompt_sha256": "1133d94099f33f7956e19094c819351ef816184876f5cba39206704da5f0dbab",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:797:54:dbd5db2cc59abe16:part1",
+      "split": "validation",
+      "prompt_sha256": "dbd5db2cc59abe16a35f699226ce12ffaa1bbaeaeaacece30222fec277e5e531",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:797:55:df5bf8e4a1ca98b2:part1",
+      "split": "development",
+      "prompt_sha256": "df5bf8e4a1ca98b2212afef0bce322f209938bb5ff4ade692a2e0fca68331e39",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:822:16:7598f728add9eecc:part1",
+      "split": "development",
+      "prompt_sha256": "7598f728add9eeccddde9a0978b35e2e514b3050c184e95d39901630012d2cfa",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:822:17:6c904919856c95cb:part1",
+      "split": "development",
+      "prompt_sha256": "6c904919856c95cb7ea48d5f799f18655d9f1f7ab681b38fa6937b5c022acd53",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:822:18:1806fc0ffd2cede7:part1",
+      "split": "development",
+      "prompt_sha256": "1806fc0ffd2cede77d9b3e06ccb84fff0b14ae3f4ac70648cbf0160d97a2fa77",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:822:19:5f20c1e112d3c5e6:part1",
+      "split": "development",
+      "prompt_sha256": "5f20c1e112d3c5e6f73892630893ab8aaeb620aa17f47bc2bc8fc26e24a28241",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:822:20:a859d189af54278c:part1",
+      "split": "development",
+      "prompt_sha256": "a859d189af54278c2076a6dd5c1d77e983bfff6a5244625223f683694161feef",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:822:21:f0306a82bae994ae:part1",
+      "split": "development",
+      "prompt_sha256": "f0306a82bae994aeb099895e1d843362e8f054d4679e60233159a51b1922d5f4",
+      "family": "labeled_die",
+      "typed_candidate": "finite_uniform_experiment_event",
+      "existing_frontend": "none",
+      "missing_handoff": "the existing frontend requires explicit outcomes and probabilities; natural-language sample-space and event predicates are not lowered"
+    }
+  ],
+  "promising_family_count": 1,
+  "capability_contracts_proposed": 0,
+  "answer_keys_read": 0,
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "sealed_manifest_path": "docs/holdouts/stage389_page_aware_external_problem_sealed_manifest.json",
+  "sealed_manifest_sha256": "ac4227bff20decad585210b8e0d4c60401f6056092b718e99157e4f208a1b8de",
+  "declared_sealed_manifest_sha256": "ac4227bff20decad585210b8e0d4c60401f6056092b718e99157e4f208a1b8de",
+  "sealed_manifest_records": 1091,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "report_sha256": "45c5fa1cd94e9b90eefc2882871be283027e0ce82f6005a172e97862e4d28e72"
+}

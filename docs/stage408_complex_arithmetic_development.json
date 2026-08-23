@@ -1,0 +1,49 @@
+{
+  "schema": "stage408-complex-arithmetic-transfer-v1",
+  "partition": "development",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
+  "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+  "source_id": "openstax-precalculus-2e:complex-numbers-3-1",
+  "gap_id": "gap::finite-rectangular-complex-arithmetic",
+  "operation_scope": "finite rectangular complex arithmetic",
+  "candidate_sources": 3,
+  "selected_sources": 1,
+  "rejected_decoys": 2,
+  "gap_selection_replay": true,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "answer_keys_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "partition_report": {
+    "questions": 3000,
+    "baseline_executable": 22,
+    "baseline_ambiguities": 0,
+    "frontend_complete": 1,
+    "frontend_ambiguous": 65,
+    "frontend_missing": 2365,
+    "frontend_unsupported": 569,
+    "execution_complete": 1,
+    "frontend_replay_verified": 3000,
+    "execution_replay_verified": 1,
+    "frontend_tamper_rejected": 3000,
+    "execution_tamper_rejected": 1,
+    "selected_unique_ids": 1,
+    "incremental_unique_ids": 1,
+    "answer_hashes_read": 0,
+    "plaintext_answers_read": 0,
+    "correct_selected_candidates": 0,
+    "candidates": [
+      {
+        "id": "math-v1-development-2603",
+        "candidate_hash": "346a2e8bf0806e4a201fbaa6df53caaf690b26c5c87da67c3a03917d881a1ae7",
+        "baseline_also_executable": false,
+        "reference_match": null,
+        "replay_verified": true
+      }
+    ]
+  },
+  "report_sha256": "f1f1ccaac6bba771cd981ea0a22ede83df8a57f4d3c0f034cf3a0d0516f5021c"
+}

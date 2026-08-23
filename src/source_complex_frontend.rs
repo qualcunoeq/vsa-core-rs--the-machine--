@@ -123,6 +123,21 @@ fn detect_operation(lower: &str) -> Result<ComplexOperation, Vec<String>> {
         return Ok(ComplexOperation::PolarConversion);
     }
     let mut candidates = Vec::new();
+    // Mathematical operator evidence is accepted only when it sits between
+    // two parenthesized operands.  A minus sign inside a literal such as
+    // `(3-2i)` is not, by itself, a subtraction request.
+    if lower.contains(")/(") {
+        candidates.push(ComplexOperation::Divide);
+    }
+    if lower.contains(")*(") || lower.contains(")(") {
+        candidates.push(ComplexOperation::Multiply);
+    }
+    if lower.contains(")-(") {
+        candidates.push(ComplexOperation::Subtract);
+    }
+    if lower.contains(")+(") {
+        candidates.push(ComplexOperation::Add);
+    }
     if lower.contains("conjugate") {
         candidates.push(ComplexOperation::Conjugate);
     }
@@ -162,6 +177,20 @@ fn detect_operation(lower: &str) -> Result<ComplexOperation, Vec<String>> {
 /// Parse a deliberately bounded natural-language complex arithmetic request.
 pub fn formalize_complex_text(text: &str) -> ComplexFrontendResult {
     let lower = text.to_ascii_lowercase();
+    if lower.contains('|')
+        || lower.contains("absolute value")
+        || lower.contains("modulus")
+        || lower.contains("magnitude")
+    {
+        return result(
+            FrontendStatus::Unsupported,
+            None,
+            None,
+            vec![text.into()],
+            Vec::new(),
+            vec!["modulus and absolute-value targets require a distinct scalar operation".into()],
+        );
+    }
     if lower.contains("decimal")
         || lower.contains("approx")
         || lower.contains("limit")
@@ -210,6 +239,22 @@ pub fn formalize_complex_text(text: &str) -> ComplexFrontendResult {
         );
     }
     let spans = parenthesized_literals(text);
+    if !spans.iter().any(|span| span.contains('i')) {
+        return result(
+            FrontendStatus::Unsupported,
+            Some(operation),
+            None,
+            if spans.is_empty() {
+                vec![text.into()]
+            } else {
+                spans
+            },
+            Vec::new(),
+            vec![
+                "rectangular complex arithmetic requires an explicit imaginary-unit marker".into(),
+            ],
+        );
+    }
     let parsed: Vec<_> = spans
         .iter()
         .filter_map(|span| parse_complex_literal(span))
@@ -290,6 +335,29 @@ mod tests {
         );
         assert_eq!(
             formalize_complex_text("Convert (3-4i) to polar form.").status,
+            FrontendStatus::Unsupported
+        );
+    }
+
+    #[test]
+    fn explicit_symbolic_operators_formalize_without_word_hints() {
+        let difference = formalize_complex_text("Simplify (3-2i)-(5-2i).");
+        assert_eq!(difference.status, FrontendStatus::Complete);
+        assert_eq!(difference.operation, Some(ComplexOperation::Subtract));
+        let product = formalize_complex_text("Simplify (2-2i)(5+5i), where i^2=-1.");
+        assert_eq!(product.status, FrontendStatus::Complete);
+        assert_eq!(product.operation, Some(ComplexOperation::Multiply));
+        assert!(difference.replay_verified() && product.replay_verified());
+    }
+
+    #[test]
+    fn rejects_modulus_and_plain_parenthesized_reals() {
+        assert_eq!(
+            formalize_complex_text("Evaluate |(12-9i)(8+15i)|.").status,
+            FrontendStatus::Unsupported
+        );
+        assert_eq!(
+            formalize_complex_text("Simplify 361+2(19)(6)+36=x.").status,
             FrontendStatus::Unsupported
         );
     }

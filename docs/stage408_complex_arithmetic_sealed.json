@@ -1,0 +1,56 @@
+{
+  "schema": "stage408-complex-arithmetic-transfer-v1",
+  "partition": "sealed",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_path": "docs/sources/openstax_complex_arithmetic_source.txt",
+  "source_sha256": "3a5a4fd6a9da0fd26f179f984b5a9234a9d07f3299b970708c82d5d6bdd0d547",
+  "source_id": "openstax-precalculus-2e:complex-numbers-3-1",
+  "gap_id": "gap::finite-rectangular-complex-arithmetic",
+  "operation_scope": "finite rectangular complex arithmetic",
+  "candidate_sources": 3,
+  "selected_sources": 1,
+  "rejected_decoys": 2,
+  "gap_selection_replay": true,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "answer_keys_read": 1000,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "partition_report": {
+    "questions": 1000,
+    "baseline_executable": 4,
+    "baseline_ambiguities": 0,
+    "frontend_complete": 2,
+    "frontend_ambiguous": 22,
+    "frontend_missing": 785,
+    "frontend_unsupported": 191,
+    "execution_complete": 2,
+    "frontend_replay_verified": 1000,
+    "execution_replay_verified": 2,
+    "frontend_tamper_rejected": 1000,
+    "execution_tamper_rejected": 2,
+    "selected_unique_ids": 2,
+    "incremental_unique_ids": 2,
+    "answer_hashes_read": 1000,
+    "plaintext_answers_read": 0,
+    "correct_selected_candidates": 2,
+    "candidates": [
+      {
+        "id": "math-v1-sealed-0317",
+        "candidate_hash": "321be31b0062bf9fbb6850fd0552269efb0f3d12046c17f12e9e7c8c4651e137",
+        "baseline_also_executable": false,
+        "reference_match": true,
+        "replay_verified": true
+      },
+      {
+        "id": "math-v1-sealed-0527",
+        "candidate_hash": "321be31b0062bf9fbb6850fd0552269efb0f3d12046c17f12e9e7c8c4651e137",
+        "baseline_also_executable": false,
+        "reference_match": true,
+        "replay_verified": true
+      }
+    ]
+  },
+  "report_sha256": "6689010f46b9cc5527669426b0f2af5b0378c5bf9c149547e35f0030ad06dac3"
+}

@@ -86,12 +86,30 @@ fn digest<T: Serialize>(value: &T) -> String {
 
 fn oracle() -> BTreeMap<&'static str, Rational> {
     BTreeMap::from([
-        ("7598f728add9eeccddde9a0978b35e2e514b3050c184e95d39901630012d2cfa", Rational::new(0, 1).unwrap()),
-        ("6c904919856c95cb7ea48d5f799f18655d9f1f7ab681b38fa6937b5c022acd53", Rational::new(1, 1).unwrap()),
-        ("1806fc0ffd2cede77d9b3e06ccb84fff0b14ae3f4ac70648cbf0160d97a2fa77", Rational::new(1, 12).unwrap()),
-        ("5f20c1e112d3c5e6f73892630893ab8aaeb620aa17f47bc2bc8fc26e24a28241", Rational::new(1, 2).unwrap()),
-        ("a859d189af54278c2076a6dd5c1d77e983bfff6a5244625223f683694161feef", Rational::new(11, 12).unwrap()),
-        ("f0306a82bae994aeb099895e1d843362e8f054d4679e60233159a51b1922d5f4", Rational::new(1, 4).unwrap()),
+        (
+            "7598f728add9eeccddde9a0978b35e2e514b3050c184e95d39901630012d2cfa",
+            Rational::new(0, 1).unwrap(),
+        ),
+        (
+            "6c904919856c95cb7ea48d5f799f18655d9f1f7ab681b38fa6937b5c022acd53",
+            Rational::new(1, 1).unwrap(),
+        ),
+        (
+            "1806fc0ffd2cede77d9b3e06ccb84fff0b14ae3f4ac70648cbf0160d97a2fa77",
+            Rational::new(1, 12).unwrap(),
+        ),
+        (
+            "5f20c1e112d3c5e6f73892630893ab8aaeb620aa17f47bc2bc8fc26e24a28241",
+            Rational::new(1, 2).unwrap(),
+        ),
+        (
+            "a859d189af54278c2076a6dd5c1d77e983bfff6a5244625223f683694161feef",
+            Rational::new(11, 12).unwrap(),
+        ),
+        (
+            "f0306a82bae994aeb099895e1d843362e8f054d4679e60233159a51b1922d5f4",
+            Rational::new(1, 4).unwrap(),
+        ),
     ])
 }
 
@@ -110,12 +128,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let selected: BTreeMap<_, _> = reachability
         .candidate_records
         .iter()
-        .map(|candidate| (candidate.record_id.as_str(), candidate.prompt_sha256.as_str()))
+        .map(|candidate| {
+            (
+                candidate.record_id.as_str(),
+                candidate.prompt_sha256.as_str(),
+            )
+        })
         .collect();
     let expected = oracle();
     let before = breadth_first_manifest().replay_hash();
     let mut results = Vec::new();
-    for record in records.iter().filter(|record| selected.contains_key(record.record_id.as_str())) {
+    for record in records
+        .iter()
+        .filter(|record| selected.contains_key(record.record_id.as_str()))
+    {
         assert_eq!(record.split, "development");
         assert_eq!(record.answer_key_status, "not_read");
         assert_eq!(selected[record.record_id.as_str()], record.prompt_sha256);
@@ -140,13 +166,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 (frontend.status, None, false, true)
             };
-        let oracle_match = status == FrontendStatus::Complete && value.as_ref() == Some(expected_value);
+        let oracle_match =
+            status == FrontendStatus::Complete && value.as_ref() == Some(expected_value);
         results.push(ResultRecord {
             record_id: record.record_id.clone(),
             prompt_sha256: record.prompt_sha256.clone(),
             status,
             value: value_text(&value),
-            expected_value: format!("{}/{}", expected_value.numerator, expected_value.denominator),
+            expected_value: format!(
+                "{}/{}",
+                expected_value.numerator, expected_value.denominator
+            ),
             oracle_match,
             frontend_replay: replay_verified(&frontend),
             frontend_tamper_rejected: !replay_verified(&frontend_tampered),
@@ -163,13 +193,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         corpus_sha256,
         declared_corpus_sha256: CORPUS_SHA256,
         candidate_count: results.len(),
-        complete_executions: results.iter().filter(|result| result.status == FrontendStatus::Complete).count(),
+        complete_executions: results
+            .iter()
+            .filter(|result| result.status == FrontendStatus::Complete)
+            .count(),
         oracle_matches: results.iter().filter(|result| result.oracle_match).count(),
         incorrect_oracle_matches: results.iter().filter(|result| !result.oracle_match).count(),
-        frontend_replay_verified: results.iter().filter(|result| result.frontend_replay).count(),
-        frontend_tamper_rejected: results.iter().filter(|result| result.frontend_tamper_rejected).count(),
-        execution_replay_verified: results.iter().filter(|result| result.execution_replay).count(),
-        execution_tamper_rejected: results.iter().filter(|result| result.execution_tamper_rejected).count(),
+        frontend_replay_verified: results
+            .iter()
+            .filter(|result| result.frontend_replay)
+            .count(),
+        frontend_tamper_rejected: results
+            .iter()
+            .filter(|result| result.frontend_tamper_rejected)
+            .count(),
+        execution_replay_verified: results
+            .iter()
+            .filter(|result| result.execution_replay)
+            .count(),
+        execution_tamper_rejected: results
+            .iter()
+            .filter(|result| result.execution_tamper_rejected)
+            .count(),
         answer_keys_read: 0,
         plaintext_answers_read: 0,
         production_authorizations: 0,
@@ -180,7 +225,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
     let mut report = report_without_hash;
     report.report_sha256 = digest(&report);
-    fs::write("docs/stage429_uniform_die_external_execution.json", serde_json::to_vec_pretty(&report)?)?;
+    fs::write(
+        "docs/stage429_uniform_die_external_execution.json",
+        serde_json::to_vec_pretty(&report)?,
+    )?;
     fs::write(
         "docs/stage429_uniform_die_external_execution.md",
         format!(

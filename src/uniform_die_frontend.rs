@@ -133,10 +133,15 @@ fn parse_sides(text: &str) -> Vec<u32> {
             let start = text.find(marker).unwrap() + marker.len();
             let tail = &text[start..];
             let plausible = match marker {
-                "standard " | "fair " | "uniform " =>
-                    tail.contains("-sided die") || tail.contains("-sided") || tail.contains(" faces"),
+                "standard " | "fair " | "uniform " => {
+                    tail.contains("-sided die")
+                        || tail.contains("-sided")
+                        || tail.contains(" faces")
+                }
                 "with " => tail.contains("faces"),
-                "of " => tail.contains("equally likely faces") || tail.contains("equally-likely faces"),
+                "of " => {
+                    tail.contains("equally likely faces") || tail.contains("equally-likely faces")
+                }
                 "each of " | "each of the " => tail.contains("faces") || tail.contains("outcomes"),
                 _ => false,
             };
@@ -321,9 +326,8 @@ pub fn formalize(text: &str, case_id: &str) -> FrontendResult {
         );
     }
     let Some(sides) = side_candidates.first().copied() else {
-        let size_evidence = lower.contains("-sided")
-            || lower.contains(" faces")
-            || lower.contains(" outcomes");
+        let size_evidence =
+            lower.contains("-sided") || lower.contains(" faces") || lower.contains(" outcomes");
         return output(
             if size_evidence {
                 FrontendStatus::Missing
@@ -551,7 +555,10 @@ mod tests {
             "A die with 10 faces is rolled. Find the probability of an even value.",
         ];
         for text in ambiguous {
-            assert_eq!(formalize(text, "boundary").status, FrontendStatus::Ambiguous);
+            assert_eq!(
+                formalize(text, "boundary").status,
+                FrontendStatus::Ambiguous
+            );
         }
         let unsupported = [
             "Two fair 6-sided dice are rolled. Find the probability of a sum below 8.",
@@ -559,7 +566,10 @@ mod tests {
             "A fair 6-sided die is rolled repeatedly. Find the probability of exactly two even results.",
         ];
         for text in unsupported {
-            assert_eq!(formalize(text, "boundary").status, FrontendStatus::Unsupported);
+            assert_eq!(
+                formalize(text, "boundary").status,
+                FrontendStatus::Unsupported
+            );
         }
     }
 }

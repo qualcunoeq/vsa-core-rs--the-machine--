@@ -13,6 +13,7 @@ const MAX_INPUT: u64 = 100_000;
 #[serde(rename_all = "snake_case")]
 pub enum NumberTheoryOperation {
     GcdBezout,
+    Remainder,
     ModularInverse,
     LinearCongruence,
     ChineseRemainder,
@@ -189,6 +190,33 @@ pub fn evaluate_number_theory(request: &NumberTheoryRequest) -> NumberTheoryResu
         "inputs bounded by 100000 where applicable".into(),
     ];
     match request.operation {
+        NumberTheoryOperation::Remainder => {
+            let (Some(value), Some(modulus)) = (request.a, request.modulus) else {
+                return result(
+                    request,
+                    NumberTheoryStatus::Missing,
+                    None,
+                    assumptions,
+                    vec!["integer dividend and positive divisor are required".into()],
+                );
+            };
+            if modulus == 0 || modulus > MAX_INPUT {
+                return result(
+                    request,
+                    NumberTheoryStatus::Unsupported,
+                    None,
+                    assumptions,
+                    vec!["divisor is outside the bounded remainder range".into()],
+                );
+            }
+            result(
+                request,
+                NumberTheoryStatus::Complete,
+                Some(NumberTheoryArtifact::Scalar(value.rem_euclid(modulus as i64) as u64)),
+                assumptions,
+                Vec::new(),
+            )
+        }
         NumberTheoryOperation::GcdBezout => {
             let (Some(a), Some(b)) = (request.a, request.b) else {
                 return result(

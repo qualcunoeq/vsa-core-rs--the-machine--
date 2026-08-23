@@ -119,6 +119,47 @@ fn explicit_gcd_pair(text: &str) -> Option<(i64, i64)> {
     Some((first, second))
 }
 
+/// Parse only a literal integer remainder request.  The verbal relation must
+/// explicitly say that one literal integer is divided by another literal
+/// integer; powers, sums, polynomials, variables, and sequences do not pass.
+fn explicit_remainder_pair(text: &str) -> Option<(i64, u64)> {
+    let lower = text.to_ascii_lowercase();
+    if ["power", "polynomial", "sequence", "sum", "product", "integer n"]
+        .iter()
+        .any(|term| lower.contains(term))
+    {
+        return None;
+    }
+    let start = lower
+        .find("remainder when")
+        .map(|index| index + "remainder when".len())
+        .or_else(|| lower.find("remainder of").map(|index| index + "remainder of".len()))?;
+    let suffix = &text[start..];
+    let suffix_lower = lower[start..].to_string();
+    let marker = suffix_lower
+        .find(" is divided by ")
+        .map(|index| (index, " is divided by ".len()))
+        .or_else(|| suffix_lower.find(" divided by ").map(|index| (index, " divided by ".len())))?;
+    let left = suffix[..marker.0].trim();
+    let right = suffix[marker.0 + marker.1..].trim();
+    let parse_literal = |value: &str| -> Option<i64> {
+        let value = value.trim_matches(|character: char| {
+            character.is_whitespace() || matches!(character, '.' | '?' | '$' | ',' | ')')
+        });
+        if value.is_empty()
+            || value.chars().any(|character| {
+                !character.is_ascii_digit() && character != '-' && character != '−'
+            })
+        {
+            return None;
+        }
+        value.replace('−', "-").parse().ok()
+    };
+    let dividend = parse_literal(left)?;
+    let divisor = u64::try_from(parse_literal(right)?).ok()?;
+    Some((dividend, divisor))
+}
+
 fn request(
     operation: NumberTheoryOperation,
     a: Option<i64>,
@@ -261,6 +302,25 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
         });
     }
 
+    if let Some((value, divisor)) = explicit_remainder_pair(text) {
+        let request = request(
+            NumberTheoryOperation::Remainder,
+            Some(value),
+            None,
+            None,
+            Some(divisor),
+            None,
+            provenance.clone(),
+        );
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Complete,
+            request: Some(request),
+            unresolved: Vec::new(),
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+
     let operation = if lower.contains("bezout")
         || lower.contains("bézout")
         || (lower.contains("gcd") && lower.contains("greatest common divisor"))
@@ -303,6 +363,7 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
 
     let missing = match operation {
         NumberTheoryOperation::GcdBezout => [a.is_none(), b.is_none()].iter().any(|v| *v),
+        NumberTheoryOperation::Remainder => a.is_none() || modulus.is_none(),
         NumberTheoryOperation::ModularInverse => a.is_none() || modulus.is_none(),
         NumberTheoryOperation::LinearCongruence => a.is_none() || b.is_none() || modulus.is_none(),
         NumberTheoryOperation::ChineseRemainder => {
@@ -407,5 +468,29 @@ mod tests {
             "gcd-lcm",
         );
         assert_ne!(mixed.status, NumberTheoryFrontendStatus::Complete);
+    }
+
+    #[test]
+    fn binds_literal_remainder_request() {
+        let result = formalize_number_theory_text(
+            "What is the remainder when 5462 is divided by 9?",
+            "remainder-natural",
+        );
+        assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+        let request = result.request.as_ref().unwrap();
+        assert_eq!(request.operation, NumberTheoryOperation::Remainder);
+        assert_eq!(request.a, Some(5462));
+        assert_eq!(request.modulus, Some(9));
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn refuses_compound_remainder_expression() {
+        let result = formalize_number_theory_text(
+            "What is the remainder when 1^2 + 2^2 is divided by 11?",
+            "remainder-compound",
+        );
+        assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
+        assert!(replay_verified(&result));
     }
 }

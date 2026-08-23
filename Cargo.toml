@@ -1183,6 +1183,10 @@ path = "src/bin/stage417_word_system_frontend_bench.rs"
 name = "stage418_word_system_alignment"
 path = "src/bin/stage418_word_system_alignment.rs"
 
+[[bin]]
+name = "stage419_word_system_shift_audit"
+path = "src/bin/stage419_word_system_shift_audit.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

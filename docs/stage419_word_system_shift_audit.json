@@ -1,0 +1,19 @@
+{
+  "schema": "stage419-word-system-shift-audit-v1",
+  "cases": 240,
+  "expected_complete": 120,
+  "expected_ambiguous": 30,
+  "expected_missing": 30,
+  "expected_unsupported": 60,
+  "exact_statuses": 240,
+  "complete_executions": 120,
+  "frontend_replays": 240,
+  "frontend_tamper_rejections": 240,
+  "execution_replays": 120,
+  "execution_tamper_rejections": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "registry_unchanged": true,
+  "corpus_sha256": "81653d4c006924234be66d6cb9033e23942a043820eaa8cacb0acc2122d4c843",
+  "report_sha256": "1331387ad65547e2ea51b83b9f74c02df4ecc4709719274daa554827be55b26f"
+}

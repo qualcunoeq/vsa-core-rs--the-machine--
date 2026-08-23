@@ -1,0 +1,50 @@
+{
+  "schema": "stage405-gap-selected-external-transfer-v1",
+  "corpus_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_records": 2,
+  "selected_source_ids": [
+    "openstax-introductory-statistics-2e:health:incidence",
+    "openstax-principles-economics-3e:revenue"
+  ],
+  "answer_keys_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "live_mutations": 0,
+  "development": {
+    "questions": 3000,
+    "candidate_formula_mentions": 0,
+    "complete_frontends": 0,
+    "ambiguous_frontends": 0,
+    "missing_frontends": 2987,
+    "unsupported_frontends": 13,
+    "downstream_attempts": 0,
+    "downstream_complete": 0,
+    "downstream_replays": 0
+  },
+  "validation": {
+    "questions": 0,
+    "candidate_formula_mentions": 0,
+    "complete_frontends": 0,
+    "ambiguous_frontends": 0,
+    "missing_frontends": 0,
+    "unsupported_frontends": 0,
+    "downstream_attempts": 0,
+    "downstream_complete": 0,
+    "downstream_replays": 0
+  },
+  "sealed": {
+    "questions": 1000,
+    "candidate_formula_mentions": 0,
+    "complete_frontends": 0,
+    "ambiguous_frontends": 0,
+    "missing_frontends": 995,
+    "unsupported_frontends": 5,
+    "downstream_attempts": 0,
+    "downstream_complete": 0,
+    "downstream_replays": 0
+  },
+  "status_totals": {
+    "Missing": 3982,
+    "Unsupported": 18
+  }
+}

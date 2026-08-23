@@ -1,0 +1,42 @@
+{
+  "schema": "stage394-external-progression-mean-transfer-v1",
+  "external_questions_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_sha256": "f92f74e0de178f21202e5f1f8c65e9cb6b8d363e20df21de94dc1f8e561df9db",
+  "independent_benchmark_sha256": "a1bc1ae506f922534a33f2619f990579149d36edc43265709437b180aaf0d46f",
+  "development": {
+    "questions": 3000,
+    "route_invocations": 24000,
+    "unique_candidates": 13,
+    "correct_candidates": 13,
+    "candidate_replays": 13,
+    "false_authorizations": 0,
+    "selected_routes": {
+      "arithmetic_progression_mean": 1,
+      "arithmetic_sequence": 3,
+      "bounded_counting": 1,
+      "finite_list_mean": 7,
+      "unit_conversion": 1
+    },
+    "probe_report_sha256": "3954ebcd1383996ed6c2586c8a3bd3a0e377f91868d1cdb74eaefcdd2e101ee8",
+    "score_report_sha256": "6b3a7ed029677987089322ba8eccc733dff6446d8e51f8b8b30d3bf27087b918",
+    "probe_file_sha256": "40495243b6a197098bb68603bda4ff5c4f8b0eca51c7dc992d51a65cd5a3ae7a",
+    "score_file_sha256": "e9445d62962be0706510892b299c4e44e0b72d4be94e802f5450e2920f1616bc"
+  },
+  "sealed": {
+    "questions": 1000,
+    "route_invocations": 8000,
+    "unique_candidates": 1,
+    "correct_candidates": 1,
+    "candidate_replays": 1,
+    "false_authorizations": 0,
+    "probe_report_sha256": "9b7e0eab749cd37f259b404d5445e2d8bdf0088a3267dc128f05ffb47d23799b",
+    "score_report_sha256": "b24d07e1e35fc28463098cfb013e78ba4eb2f7fca471f87fd1ea14b6e0872fa4",
+    "probe_file_sha256": "2c1a328d31952db7e5b39bd256f47a8b9b16f5378842e5481628cd8a537d5281",
+    "score_file_sha256": "12aee60a6e75c6fe3116b614b7dbc47d529cf58d116aa45ad1640a70fc6040ed"
+  },
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "manifest_unchanged": true,
+  "new_development_case": "math-v1-development-0513",
+  "new_sealed_case": false
+}

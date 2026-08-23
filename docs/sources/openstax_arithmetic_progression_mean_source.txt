@@ -1,0 +1,18 @@
+# Source-backed bounded arithmetic-progression mean relation.
+# The relation is represented as a generic formula record; the frontend must
+# establish a finite arithmetic progression and its endpoints before use.
+
+BEGIN FORMULA arithmetic_progression_mean
+ALIASES: arithmetic progression mean | mean of an arithmetic sequence | average of an arithmetic progression
+EXPRESSION: (first + last) / 2
+INPUTS: first, last
+ASSUMPTIONS: the values form a finite arithmetic progression with a nonzero integer step; first and last are the declared endpoints
+CONSTRAINTS: -
+SOURCE_ID: openstax-precalculus-2e:sequences-series
+TITLE: Precalculus 2e
+SECTION: Sequences, Series, and the Binomial Theorem
+URL: https://openstax.org/details/books/precalculus-2e
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-23
+EVIDENCE: arithmetic-sequence identities and finite arithmetic-series endpoint symmetry
+END FORMULA

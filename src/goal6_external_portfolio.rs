@@ -6,11 +6,16 @@
 //! lexical hints, authorize production, or mutate a registry.
 
 use crate::source_counting_frontend::formalize_counting_text;
-use crate::source_counting_pack::{evaluate as evaluate_counting, CountingArtifact, CountingStatus};
+use crate::source_counting_pack::{
+    evaluate as evaluate_counting, CountingArtifact, CountingStatus,
+};
+use crate::source_formula_frontend::formalize_formula_text;
 use crate::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, source_formula_records, FormulaStatus,
 };
-use crate::source_formula_frontend::formalize_formula_text;
+use crate::source_progression_mean_frontend::formalize_progression_mean_text;
+use crate::source_progression_mean_pack::evaluate as evaluate_progression_mean;
+use crate::source_regression_pack::records as regression_records;
 use crate::source_sequence_frontend::{
     formalize_sequence_terms_text, replay_verified as sequence_frontend_replay,
 };
@@ -19,10 +24,7 @@ use crate::source_statistics_frontend::{
 };
 use crate::source_statistics_pack::evaluate_statistics;
 use crate::source_statistics_pack::records as statistics_records;
-use crate::source_regression_pack::records as regression_records;
-use crate::source_unit_frontend::{
-    formalize_unit_text, replay_verified as unit_frontend_replay,
-};
+use crate::source_unit_frontend::{formalize_unit_text, replay_verified as unit_frontend_replay};
 use serde::Serialize;
 
 pub const SEQUENCE_DOMAIN: &str = "external-source-sequence-shadow";
@@ -38,6 +40,7 @@ pub const GEOMETRY_SOURCE: &str =
 pub enum PortfolioRoute {
     FiniteListMean,
     ArithmeticSequence,
+    ArithmeticProgressionMean,
     BoundedCounting,
     UnitConversion,
     BoundedGeometry,
@@ -79,9 +82,7 @@ fn observation(
         route,
         frontend_status: frontend_status.into(),
         execution_status: execution_status.into(),
-        executable: candidate.is_some()
-            && frontend_replay_verified
-            && execution_replay_verified,
+        executable: candidate.is_some() && frontend_replay_verified && execution_replay_verified,
         candidate,
         frontend_replay_verified,
         execution_replay_verified,
@@ -196,6 +197,43 @@ fn sequence_route(text: &str, case_id: &str) -> RouteObservation {
     )
 }
 
+fn progression_mean_route(text: &str) -> RouteObservation {
+    let frontend = formalize_progression_mean_text(text);
+    let mut tampered = frontend.clone();
+    tampered.replay_hash.push('x');
+    let frontend_replay = crate::source_progression_mean_frontend::replay_verified(&frontend);
+    let frontend_tamper = !crate::source_progression_mean_frontend::replay_verified(&tampered);
+    let Some(request) = frontend.frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::ArithmeticProgressionMean,
+            format!("{:?}", frontend.frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = evaluate_progression_mean(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == FormulaStatus::Complete)
+        .then(|| execution.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
+        PortfolioRoute::ArithmeticProgressionMean,
+        format!("{:?}", frontend.frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        execution.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
+    )
+}
+
 fn counting_route(text: &str, case_id: &str) -> RouteObservation {
     let frontend = formalize_counting_text(text, case_id);
     let mut frontend_tampered = frontend.clone();
@@ -289,6 +327,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         mean_route(text),
         statistics_route(text),
         sequence_route(text, case_id),
+        progression_mean_route(text),
         counting_route(text, case_id),
         unit_route(text, case_id),
         geometry_route(text),
@@ -310,12 +349,16 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 7);
+        assert_eq!(observations.len(), 8);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
-        assert!(observations.iter().all(|item| item.frontend_replay_verified));
-        assert!(observations.iter().all(|item| item.frontend_tamper_rejected));
+        assert!(observations
+            .iter()
+            .all(|item| item.frontend_replay_verified));
+        assert!(observations
+            .iter()
+            .all(|item| item.frontend_tamper_rejected));
     }
 
     #[test]

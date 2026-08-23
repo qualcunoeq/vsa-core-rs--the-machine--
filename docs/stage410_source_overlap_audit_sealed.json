@@ -1,0 +1,58 @@
+{
+  "schema": "stage410-source-overlap-audit-v1",
+  "partition": "sealed",
+  "questions": 1000,
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "legacy_routes": 12,
+  "legacy_unique_ids": 4,
+  "cumulative_unique_ids": 4,
+  "cumulative_route_ambiguities": 0,
+  "source_selection_replays": 3,
+  "source_selection_failures": 0,
+  "lineages": [
+    {
+      "lineage": "finite_set",
+      "source_path": "docs/sources/openstax_finite_set_operations_catalog.txt",
+      "scope": "finite explicit set operations",
+      "selected": true,
+      "rejected_decoys": 1,
+      "frontend_complete": 1,
+      "execution_complete": 0,
+      "frontend_replay_verified": 1000,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 1000,
+      "execution_tamper_rejected": 0
+    },
+    {
+      "lineage": "truth_table",
+      "source_path": "docs/sources/openstax_truth_table_catalog.txt",
+      "scope": "bounded propositional truth tables",
+      "selected": true,
+      "rejected_decoys": 1,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "frontend_replay_verified": 1000,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 1000,
+      "execution_tamper_rejected": 0
+    },
+    {
+      "lineage": "linear_interpolation",
+      "source_path": "docs/sources/openstax_linear_interpolation_catalog.txt",
+      "scope": "finite linear interpolation",
+      "selected": true,
+      "rejected_decoys": 1,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "frontend_replay_verified": 1000,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 1000,
+      "execution_tamper_rejected": 0
+    }
+  ],
+  "answer_keys_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "0f6e4dd9afe121a1049f59762a6fccbb8d84880fa1be94a740967fe3947f1fc5"
+}

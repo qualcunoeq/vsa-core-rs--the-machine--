@@ -249,13 +249,15 @@ fn base_candidate(
     assert!(!base_frontend_replay(&frontend_tampered));
     assert!(!base_execution_replay(&execution_tampered));
     let candidate_hash = digest(&(numeral, decimal, execution.base, execution.target_base));
-    let reference_match = cumulative_unique.then(|| {
-        oracle.get(&question.id).is_some_and(|expected| {
+    let reference_match = if cumulative_unique {
+        oracle.get(&question.id).map(|expected| {
             base_forms(numeral, decimal, execution.target_base)
                 .into_iter()
                 .any(|form| digest_bytes(form.as_bytes()) == *expected)
         })
-    });
+    } else {
+        None
+    };
     Some(CandidateReceipt {
         id: question.id.clone(),
         route: NewRoute::BaseArithmetic,
@@ -293,13 +295,15 @@ fn complex_candidate(
     assert!(!frontend_tampered.replay_verified());
     assert!(!execution_tampered.replay_verified());
     let candidate_hash = digest(artifact);
-    let reference_match = cumulative_unique.then(|| {
-        oracle.get(&question.id).is_some_and(|expected| {
+    let reference_match = if cumulative_unique {
+        oracle.get(&question.id).map(|expected| {
             complex_forms(artifact)
                 .into_iter()
                 .any(|form| digest_bytes(form.as_bytes()) == *expected)
         })
-    });
+    } else {
+        None
+    };
     Some(CandidateReceipt {
         id: question.id.clone(),
         route: NewRoute::ComplexArithmetic,

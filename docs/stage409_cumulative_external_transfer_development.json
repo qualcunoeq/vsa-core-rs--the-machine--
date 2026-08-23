@@ -60,7 +60,7 @@
         "candidate_hash": "f6746c6244d52ef8ab55b0502b1414a7898b1abdf26caf4becb266dc910e1f70",
         "cumulative_route_unique": true,
         "baseline_also_executable": false,
-        "reference_match": false,
+        "reference_match": null,
         "frontend_replay_verified": true,
         "execution_replay_verified": true,
         "frontend_tamper_rejected": true,
@@ -72,7 +72,7 @@
         "candidate_hash": "ea768f1a1fcee1a0b9c84c0bf8128740a7414c338865226099dbf8611e1ea287",
         "cumulative_route_unique": true,
         "baseline_also_executable": false,
-        "reference_match": false,
+        "reference_match": null,
         "frontend_replay_verified": true,
         "execution_replay_verified": true,
         "frontend_tamper_rejected": true,
@@ -84,7 +84,7 @@
         "candidate_hash": "fa1808235f8be05e9082578fefcd70005bb6a7b77757da5d941d618c73dd6804",
         "cumulative_route_unique": true,
         "baseline_also_executable": false,
-        "reference_match": false,
+        "reference_match": null,
         "frontend_replay_verified": true,
         "execution_replay_verified": true,
         "frontend_tamper_rejected": true,
@@ -96,7 +96,7 @@
         "candidate_hash": "5b7f3fbe9815e4bf3087807c8208ab2986fec3e9c3a08490e8857f6a1a5d9011",
         "cumulative_route_unique": true,
         "baseline_also_executable": false,
-        "reference_match": false,
+        "reference_match": null,
         "frontend_replay_verified": true,
         "execution_replay_verified": true,
         "frontend_tamper_rejected": true,
@@ -108,7 +108,7 @@
         "candidate_hash": "346a2e8bf0806e4a201fbaa6df53caaf690b26c5c87da67c3a03917d881a1ae7",
         "cumulative_route_unique": true,
         "baseline_also_executable": false,
-        "reference_match": false,
+        "reference_match": null,
         "frontend_replay_verified": true,
         "execution_replay_verified": true,
         "frontend_tamper_rejected": true,
@@ -116,5 +116,5 @@
       }
     ]
   },
-  "report_sha256": "726d8172bda8b1d1a1553a34fd96c23862e8ba9173e43266e7db20444271b3e3"
+  "report_sha256": "3907f561ad36cc3a3f4077f3788dc44d9f96bf32f02a627e5070283b0354f8f3"
 }

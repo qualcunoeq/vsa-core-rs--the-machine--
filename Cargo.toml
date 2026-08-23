@@ -396,6 +396,10 @@ name = "stage397_external_mean_update_language_bench"
 path = "src/bin/stage397_external_mean_update_language_bench.rs"
 
 [[bin]]
+name = "stage398_external_mean_target_bench"
+path = "src/bin/stage398_external_mean_target_bench.rs"
+
+[[bin]]
 name = "source_statistics_shifted_bench"
 path = "src/bin/source_statistics_shifted_bench.rs"
 

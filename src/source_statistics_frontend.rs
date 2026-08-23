@@ -341,6 +341,236 @@ fn single_symbol(token: &str) -> Option<String> {
     (symbol.len() == 1).then_some(symbol)
 }
 
+fn last_rational_token(text: &str) -> Option<Rational> {
+    let mut last = None;
+    let chars: Vec<char> = text.chars().collect();
+    let mut index = 0;
+    while index < chars.len() {
+        if !chars[index].is_ascii_digit() {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        while chars.get(index).is_some_and(char::is_ascii_digit) {
+            index += 1;
+        }
+        if chars.get(index) == Some(&'/') {
+            index += 1;
+            while chars.get(index).is_some_and(char::is_ascii_digit) {
+                index += 1;
+            }
+        }
+        let token: String = chars[start..index].iter().collect();
+        last = rational_token(&token);
+    }
+    last
+}
+
+fn numeric_tokens(text: &str) -> Vec<Rational> {
+    let chars: Vec<char> = text.chars().collect();
+    let mut values = Vec::new();
+    let mut index = 0;
+    while index < chars.len() {
+        if !chars[index].is_ascii_digit() {
+            index += 1;
+            continue;
+        }
+        let start = index;
+        while chars.get(index).is_some_and(char::is_ascii_digit) {
+            index += 1;
+        }
+        if chars.get(index) == Some(&'/') {
+            index += 1;
+            while chars.get(index).is_some_and(char::is_ascii_digit) {
+                index += 1;
+            }
+        }
+        if let Some(value) = rational_token(&chars[start..index].iter().collect::<String>()) {
+            values.push(value);
+        }
+    }
+    values
+}
+
+fn explicit_values_and_unknown(segment: &str) -> Option<(Vec<Rational>, usize)> {
+    let trimmed = segment.trim();
+    let trimmed = trimmed
+        .find('{')
+        .map(|start| &trimmed[start..])
+        .unwrap_or(trimmed);
+    let normalized = trimmed
+        .strip_prefix("the set ")
+        .or_else(|| trimmed.strip_prefix("a set "))
+        .unwrap_or(trimmed)
+        .replace(['{', '}', '[', ']', '(', ')'], " ")
+        .replace(" and ", ",")
+        .replace(" AND ", ",");
+    let mut values = Vec::new();
+    let mut unknown_count = 0;
+    for item in normalized.split(',') {
+        let item = item.trim();
+        if item.is_empty() || item == "the set" || item == "a set" {
+            continue;
+        }
+        let tokens: Vec<&str> = item.split_whitespace().collect();
+        let token = if tokens.len() == 1 {
+            tokens[0]
+        } else {
+            let descriptors = [
+                "the", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+                "ten", "values", "value", "readings", "reading", "numbers", "number", "ages",
+                "age", "students", "student",
+            ];
+            if !tokens[..tokens.len() - 1]
+                .iter()
+                .all(|word| descriptors.contains(&word.to_ascii_lowercase().as_str()))
+            {
+                return None;
+            }
+            tokens[tokens.len() - 1]
+        };
+        if let Some(value) = rational_token(token) {
+            values.push(value);
+        } else if single_symbol(token).is_some() {
+            unknown_count += 1;
+        } else {
+            return None;
+        }
+    }
+    (values.len() + unknown_count >= 2 && unknown_count == 1).then_some((values, unknown_count))
+}
+
+/// Bind a stated finite mean and one remaining value without invoking a
+/// general symbolic solver. The source formula already provides the exact
+/// rearrangement; this frontend only accepts an explicit finite count and
+/// exactly one unknown additive value.
+fn mean_target_one_unknown(text: &str) -> Option<(BTreeMap<String, Rational>, String)> {
+    let lower = text.to_ascii_lowercase();
+    if !(lower.contains("mean") || lower.contains("average"))
+        || [
+            "median",
+            "minimum",
+            "maximum",
+            "weighted",
+            "graph",
+            "table",
+            "average speed",
+            "average rate",
+            "difference",
+            "sum of",
+            "product",
+        ]
+        .iter()
+        .any(|marker| lower.contains(marker))
+    {
+        return None;
+    }
+    let markers = [
+        " is the arithmetic mean of ",
+        " is the mean of ",
+        " is the average of ",
+    ];
+    for marker in markers {
+        let Some(position) = lower.find(marker) else {
+            continue;
+        };
+        let target = last_rational_token(&text[..position])?;
+        let punctuation_end = text[position + marker.len()..]
+            .find(|character: char| matches!(character, '.' | '?' | ';'))
+            .map(|offset| position + marker.len() + offset)
+            .unwrap_or(text.len());
+        let end = text[position + marker.len()..]
+            .find('}')
+            .map(|offset| position + marker.len() + offset + 1)
+            .map_or(punctuation_end, |close| close.min(punctuation_end));
+        let segment = &text[position + marker.len()..end];
+        let (known_values, _) = explicit_values_and_unknown(segment)?;
+        let right_count = known_values.len() + 1;
+        let right_known_sum = known_values
+            .iter()
+            .try_fold(Rational::zero(), |sum, value| sum.add(value))?;
+        return Some((
+            BTreeMap::from([
+                ("left_sum".into(), target),
+                ("left_count".into(), Rational::new(1, 1)?),
+                ("right_known_sum".into(), right_known_sum),
+                ("right_count".into(), Rational::new(right_count as i128, 1)?),
+            ]),
+            format!("mean-target-set-span:{}..{}", position, end),
+        ));
+    }
+
+    for marker in ["mean of ", "average of "] {
+        let Some(position) = lower.find(marker) else {
+            continue;
+        };
+        let segment_start = position + marker.len();
+        let is_offset = lower[segment_start..].find(" is ")?;
+        let is_position = segment_start + is_offset;
+        let target_start = is_position + " is ".len();
+        let target_end = lower[target_start..]
+            .find(|character: char| {
+                character.is_ascii_whitespace() || matches!(character, '.' | '?' | ';')
+            })
+            .map(|offset| target_start + offset)
+            .unwrap_or(text.len());
+        let target = rational_token(&lower[target_start..target_end])?;
+        let segment = &text[segment_start..is_position];
+        let (known_values, _) = explicit_values_and_unknown(segment)?;
+        let right_count = known_values.len() + 1;
+        let right_known_sum = known_values
+            .iter()
+            .try_fold(Rational::zero(), |sum, value| sum.add(value))?;
+        return Some((
+            BTreeMap::from([
+                ("left_sum".into(), target),
+                ("left_count".into(), Rational::new(1, 1)?),
+                ("right_known_sum".into(), right_known_sum),
+                ("right_count".into(), Rational::new(right_count as i128, 1)?),
+            ]),
+            format!("mean-target-reverse-span:{}..{}", position, target_end),
+        ));
+    }
+
+    let average_position = lower.find("average")?;
+    let is_position = lower[average_position..].find(" is ")? + average_position;
+    let target_start = is_position + " is ".len();
+    let target_end = lower[target_start..]
+        .find(|character: char| {
+            character.is_ascii_whitespace() || matches!(character, '.' | '?' | ';')
+        })
+        .map(|offset| target_start + offset)
+        .unwrap_or(text.len());
+    let target = rational_token(&lower[target_start..target_end])?;
+    let before_is = &lower[average_position..is_position];
+    let of_position = before_is.find(" of ")?;
+    let count_and_subject = before_is[of_position + " of ".len()..].trim();
+    let total_count = count_and_subject
+        .split_whitespace()
+        .find_map(finite_count_token)?;
+    let remaining = &text[target_end..text.find('?').unwrap_or(text.len())];
+    let known_values = numeric_tokens(remaining);
+    let total = usize::try_from(total_count.numerator).ok()?;
+    if total == 0 || total != known_values.len() + 1 || total_count.denominator != 1 {
+        return None;
+    }
+    let right_known_sum = known_values
+        .iter()
+        .try_fold(Rational::zero(), |sum, value| sum.add(value))?;
+    Some((
+        BTreeMap::from([
+            ("left_sum".into(), target),
+            ("left_count".into(), Rational::new(1, 1)?),
+            ("right_known_sum".into(), right_known_sum),
+            ("right_count".into(), total_count),
+        ]),
+        format!(
+            "mean-target-count-span:{}..{}",
+            average_position, target_end
+        ),
+    ))
+}
+
 /// Recognize only an explicitly stated equality of two finite means with one
 /// unknown additive value on the right. This is a source-backed equation
 /// contract, not a general symbolic equation solver.
@@ -436,6 +666,9 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
             Vec::new(),
             vec!["no mean or average target was stated".into()],
         );
+    }
+    if let Some((inputs, span)) = mean_target_one_unknown(text) {
+        return with_request("mean_equality_unknown", inputs, vec![span]);
     }
     let rejected_semantics = [
         "from",
@@ -906,6 +1139,34 @@ mod tests {
         );
         assert_ne!(ambiguous.status, FrontendStatus::Complete);
         assert!(ambiguous.replay_verified());
+    }
+
+    #[test]
+    fn binds_stated_mean_with_one_remaining_value() {
+        let set_form = formalize_finite_list_mean_text(
+            "Given that 10 is the arithmetic mean of the set {6, 13, 18, 4, x}, what is x?",
+        );
+        assert_eq!(set_form.status, FrontendStatus::Complete, "{set_form:?}");
+        assert_eq!(set_form.formula.as_deref(), Some("mean_equality_unknown"));
+        assert_eq!(
+            set_form.request.as_ref().unwrap().inputs["right_known_sum"],
+            Rational::new(41, 1).unwrap()
+        );
+        assert!(set_form.replay_verified());
+
+        let prose_form = formalize_finite_list_mean_text(
+            "The average age of the three Wilson children is 7 years. If the two younger children are 4 years old and 7 years old, how many years old is the oldest child?",
+        );
+        assert_eq!(
+            prose_form.status,
+            FrontendStatus::Complete,
+            "{prose_form:?}"
+        );
+        assert_eq!(
+            prose_form.request.as_ref().unwrap().inputs["right_count"],
+            Rational::new(3, 1).unwrap()
+        );
+        assert!(prose_form.replay_verified());
     }
 
     #[test]

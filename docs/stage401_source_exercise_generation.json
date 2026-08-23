@@ -1,0 +1,18 @@
+{
+  "schema": "stage401-source-exercise-generation-v1",
+  "source_id": "openstax-precalculus-2e:sequences-series",
+  "source_sha256": "f891f41b69d873ee477a2714a23bdac69d12ccc4aaac17705de76f165830e741",
+  "discovered_records": 4,
+  "requested_per_record": 30,
+  "supported_exercises": 120,
+  "boundary_exercises": 4,
+  "supported_replays": 120,
+  "boundary_replays": 4,
+  "downstream_replays": 120,
+  "boundary_authorizations": 0,
+  "exercise_tamper_rejections": 120,
+  "boundary_tamper_rejections": 4,
+  "module_replay": true,
+  "report_replay": true,
+  "report_tamper_rejected": true
+}

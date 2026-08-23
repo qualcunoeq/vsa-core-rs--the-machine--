@@ -1,0 +1,18 @@
+{
+  "schema": "stage434-goal6-parameter-portfolio-sealed-v1",
+  "sealed_questions": 1000,
+  "answer_hashes_read": 1000,
+  "route_invocations": 13000,
+  "unique_shadow_candidates": 4,
+  "correct_shadow_candidates": 2,
+  "rejected_shadow_candidates": 2,
+  "candidate_replays": 4,
+  "route_ambiguities": 0,
+  "no_executable_route": 996,
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true,
+  "probe_report_sha256": "a73cba8bdfe44907598430e0ff2a13f915687c802e5699988a18ffd613952b33",
+  "score_report_sha256": "7dc80ced004b6ae67531320d05189deead74ac25b4f1646fb4e0e9406195d94e"
+}

@@ -5,6 +5,10 @@
 //! their receipts replay. This module does not read answer keys, select by
 //! lexical hints, authorize production, or mutate a registry.
 
+use crate::parameter_linear_system_frontend::{
+    execute as execute_parameter_system, execution_replay_verified as parameter_execution_replay,
+    formalize as formalize_parameter_system, replay_verified as parameter_frontend_replay,
+};
 use crate::source_base_conversion_frontend::{
     formalize_base_conversion_text, replay_verified as base_conversion_frontend_replay,
 };
@@ -73,6 +77,7 @@ pub enum PortfolioRoute {
     FiniteStatistics,
     BaseConversion,
     CategorySelection,
+    ParameterLinearSystem,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -499,6 +504,44 @@ fn category_selection_route(text: &str, case_id: &str) -> RouteObservation {
     )
 }
 
+fn parameter_linear_system_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_parameter_system(text, case_id);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = parameter_frontend_replay(&frontend);
+    let frontend_tamper = !parameter_frontend_replay(&frontend_tampered);
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::ParameterLinearSystem,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = execute_parameter_system(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status
+        == crate::parameter_linear_system_frontend::FrontendStatus::Complete)
+        .then(|| execution.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
+        PortfolioRoute::ParameterLinearSystem,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        parameter_execution_replay(&execution),
+        frontend_tamper,
+        !parameter_execution_replay(&execution_tampered),
+    )
+}
+
 /// Offer one prompt to every portfolio route, without a lexical pre-dispatch.
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
@@ -514,6 +557,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         regression_route(text),
         base_conversion_route(text, case_id),
         category_selection_route(text, case_id),
+        parameter_linear_system_route(text, case_id),
     ]
 }
 
@@ -531,7 +575,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 12);
+        assert_eq!(observations.len(), 13);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -642,6 +686,25 @@ mod tests {
         assert_eq!(
             executable[0].candidate,
             Some(PortfolioCandidate::ExactCount(8788))
+        );
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_parameter_system_selects_only_parameter_route() {
+        let observations = observe_all(
+            "The system is 3*x+y=a; 2*x+5*y=2*a. Given x=2, compute a.",
+            "test-parameter-system",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::ParameterLinearSystem);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::Rational(
+                crate::probability_pack::Rational::new(26, 3).unwrap()
+            ))
         );
         assert!(executable[0].execution_replay_verified);
         assert!(executable[0].execution_tamper_rejected);

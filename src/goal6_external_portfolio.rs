@@ -40,7 +40,7 @@ use crate::source_mean_update_frontend::{
 use crate::source_mean_update_pack::evaluate as evaluate_mean_update;
 use crate::source_progression_mean_frontend::formalize_progression_mean_text;
 use crate::source_progression_mean_pack::evaluate as evaluate_progression_mean;
-use crate::source_regression_pack::records as regression_records;
+use crate::source_regression_pack::source_regression_frontend::formalize_regression_text;
 use crate::source_sequence_frontend::{
     formalize_sequence_terms_text, replay_verified as sequence_frontend_replay,
 };
@@ -415,18 +415,39 @@ fn geometry_route(text: &str) -> RouteObservation {
 }
 
 fn regression_route(text: &str) -> RouteObservation {
-    let records = regression_records();
-    let frontend = formalize_formula_text(text, crate::source_regression_pack::DOMAIN, &records);
-    let mut tampered = frontend.clone();
-    tampered.replay_hash.push('x');
-    formula_rational_observation(
+    let frontend = formalize_regression_text(text);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = frontend.replay_verified();
+    let frontend_tamper = !frontend_tampered.replay_verified();
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::FiniteRegression,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = crate::source_regression_pack::evaluate_regression(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == FormulaStatus::Complete)
+        .then(|| execution.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
         PortfolioRoute::FiniteRegression,
         format!("{:?}", frontend.status),
-        frontend.replay_verified(),
-        !tampered.replay_verified(),
-        frontend.request.as_ref(),
-        crate::source_regression_pack::DOMAIN,
-        &records,
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        execution.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
     )
 }
 
@@ -637,7 +658,7 @@ mod tests {
     #[test]
     fn route_blind_regression_selects_only_regression_route() {
         let observations = observe_all(
-            "Apply regression_slope: covariance_sum=12 and x_variance_sum=4.",
+            "Find the slope with covariance_sum=12 and x_variance_sum=4.",
             "test-regression",
         );
         let executable = executable_routes(&observations);

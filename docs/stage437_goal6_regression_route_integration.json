@@ -1,0 +1,22 @@
+{
+  "schema": "stage437-goal6-regression-route-integration-v1",
+  "portfolio_routes": 13,
+  "development_questions": 3000,
+  "route_invocations": 39000,
+  "unique_candidates": 23,
+  "route_ambiguities": 0,
+  "no_executable_route": 2977,
+  "correct_shadow_candidates": 23,
+  "rejected_shadow_candidates": 0,
+  "candidate_replays": 23,
+  "frontend_replay_receipts": 39000,
+  "frontend_tamper_rejections": 39000,
+  "execution_replay_receipts": 24,
+  "execution_tamper_rejections": 24,
+  "false_authorizations": 0,
+  "plaintext_answers_read": 0,
+  "sealed_questions_read": 0,
+  "manifest_unchanged": true,
+  "probe_report_sha256": "be1f57812200fbb373d81914b7d76fd120b5973c94fea279a11c35d724dc4e7f",
+  "score_report_sha256": "1c5e92abd8e28715a4b9e2c1612c98a32c59b03d2a078256dd5fe2a374edb3de"
+}

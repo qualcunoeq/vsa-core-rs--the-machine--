@@ -1,0 +1,20 @@
+{
+  "schema": "stage436-source-regression-frontend-bench-v1",
+  "source_sha256": "267e1f495d229d25f7d729029907f42253805c11e2a9c840300670114afef597",
+  "corpus_sha256": "abc151e39a03343f3994d86b8f5c9a7c03cbd045ec4a4b46430b35c555b6bed5",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "supported_values": 120,
+  "frontend_replay_verified": 240,
+  "frontend_tamper_rejected": 240,
+  "execution_replay_verified": 120,
+  "execution_tamper_rejected": 120,
+  "source_provenance_preserved": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "f22b8ef63b8110ec4b9831e7bbb92a83b07c1c5137e2e61dd0ea592134764e61"
+}

@@ -1,0 +1,1187 @@
+{
+  "schema": "stage412-external-curriculum-baseline-v1",
+  "partition": "validation",
+  "records": 572,
+  "corpus_path": "docs/stage381_external_curriculum_dev.json",
+  "corpus_file_sha256": "5040600104c308484389dd8521a0fe7c73ca229859feb71e9c208dc88bd3f18e",
+  "declared_corpus_sha256": "25908c284af53959dd813bd9df51aec3761b7f637437da1e51fc348efa60fa7e",
+  "source_manifest_sha256": "90d42a6945eea636b041539138cd98b3e475557f7d0d4733df98f611ea01c346",
+  "sealed_manifest_path": "docs/holdouts/stage381_external_curriculum_sealed_manifest.json",
+  "sealed_manifest_sha256": "878befe6c41822c983c6eb2260e30ff5aebdd8d713f12337fbc01cfa14a0e7cc",
+  "declared_sealed_manifest_sha256": "f5db14844a7c7b83c038652c328599c9d640466fac84966bfc7a22faaf9a3e04",
+  "sealed_manifest_records": 260,
+  "answer_keys_read": 0,
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "route_count": 12,
+  "route_summaries": {
+    "arithmetic_progression_mean": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "arithmetic_sequence": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "base_conversion": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "bounded_counting": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "bounded_geometry": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "category_selection": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "finite_list_mean": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "finite_regression": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "finite_statistics": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "mean_update": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "natural_combination": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    },
+    "unit_conversion": {
+      "observations": 572,
+      "frontend_complete": 0,
+      "execution_complete": 0,
+      "executable": 0,
+      "frontend_replay_verified": 572,
+      "execution_replay_verified": 0,
+      "frontend_tamper_rejected": 572,
+      "execution_tamper_rejected": 0
+    }
+  },
+  "unique_route_records": 0,
+  "ambiguous_route_records": 0,
+  "no_route_records": 572,
+  "first_failure_counts": {
+    "no_complete_frontend": 572
+  },
+  "source_family_counts": {
+    "openstax": 572
+  },
+  "source_path_counts": {
+    "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf": 2,
+    "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf": 55,
+    "data/openstax_pdfs/calculus-volume-2_-_WEB.pdf": 12,
+    "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf": 35,
+    "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf": 147,
+    "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf": 92,
+    "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf": 19,
+    "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf": 55,
+    "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf": 6,
+    "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf": 13,
+    "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf": 82,
+    "data/openstax_pdfs/precalculus-2e_-_WEB.pdf": 54
+  },
+  "source_sha256_counts": {
+    "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2": 6,
+    "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb": 82,
+    "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38": 92,
+    "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802": 147,
+    "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5": 54,
+    "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55": 55,
+    "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f": 35,
+    "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0": 2,
+    "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990": 55,
+    "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e": 19,
+    "a79a953b75e570030c74ea6f700b8bd70f41dc8c01bf4e9618e6a0adba3a382a": 13,
+    "f6ac06038088711766e5b664a8114c8fcb0b7b88cfb38e92bbaf56ba2df43f4a": 12
+  },
+  "replay_verified": 6864,
+  "replay_failures": 0,
+  "tamper_rejections": 6864,
+  "tamper_failures": 0,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "residual_samples": [
+    {
+      "record_id": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2:20308:43f3a3f48a72e68d",
+      "source_path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 20308,
+      "candidate_kind": "numbered_problem",
+      "prompt_sha256": "43f3a3f48a72e68d4ed1452616551947c16fbeec51b822709a98b7a754ed57ed",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2:2222:b268e83c299d0f08",
+      "source_path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 2222,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "b268e83c299d0f08ffca1cdb645aae61103f26ee5914981134e26065f83432ed",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2:26979:0866dd00a9710089",
+      "source_path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 26979,
+      "candidate_kind": "numbered_problem",
+      "prompt_sha256": "0866dd00a9710089d1821abb521126aa59d8d628b3eb3b0cd180b244dd3e233f",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2:26980:57538fff280677e2",
+      "source_path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 26980,
+      "candidate_kind": "numbered_problem",
+      "prompt_sha256": "57538fff280677e225ba6695cd3d7fd690f2b187cd2e506a18115549d4fa145f",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2:29863:892c640e755de438",
+      "source_path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 29863,
+      "candidate_kind": "numbered_problem",
+      "prompt_sha256": "892c640e755de438619fc6a4fd44015a6b8edbd76316c66116243f8922995ef0",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2:29866:9d6448b7d58e5b4a",
+      "source_path": "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 29866,
+      "candidate_kind": "numbered_problem",
+      "prompt_sha256": "9d6448b7d58e5b4a4eb0004ad56f95ab7c2f8cb8b755b4675811cb72b43d823e",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:10865:12db6441b327a7b3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 10865,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "12db6441b327a7b348c33a31a13689254f160bf7126244691758ab815269c29f",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:1133:086cd14d0bf50831",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 1133,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "086cd14d0bf508314281e0d951a1c56f8bd856b2009ed31f50e943bbf9933194",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:1141:c5ad47fa876ee4a4",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 1141,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "c5ad47fa876ee4a4a293afba27b123860147b5772e37d85521aec914da86569c",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:11932:1145b75fd726e25f",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 11932,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "1145b75fd726e25f247588a52cbe23924457f92868e3227d71909fedd2a1653a",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:11944:bb11d98a5a9d6144",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 11944,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "bb11d98a5a9d61446a61d189e4322a7ee2f31b8acea5492c349e0dfc10c8d0e9",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:12180:3992ee04af2f5b04",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 12180,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "3992ee04af2f5b047ec9e7a186214c595f46335804728b57860702c0a59b4cbc",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:12481:07c70b1810f9f359",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 12481,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "07c70b1810f9f359d9613cb3a4d39c81f592fad0e71d4e9b0cbde73108acaa6c",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:13291:125da8318611048e",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 13291,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "125da8318611048e2620834e2fff52ab11bcc8932d546804498ca5762bb1bbb7",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:13303:2699c30cc904bcb1",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 13303,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "2699c30cc904bcb110dd4608ba7929ad16d3d96af5a7f7b9ae602797070efc8b",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:14619:6cbff6daa8c7cb07",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 14619,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "6cbff6daa8c7cb077ad17a36d1e913485a7260480744d5057228896140483c53",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:15013:d90e55e2f9ddb4e1",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 15013,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "d90e55e2f9ddb4e10b9eb5f5e694c0a9c92d53158b7a0eae28eecfbd763aadf0",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:15021:4e75433c39e6d5c7",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 15021,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "4e75433c39e6d5c7e313145f8109d63c4ae3384093e59ececa1ccd3ac451f246",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:15045:e4dc87bb9e0375f3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 15045,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "e4dc87bb9e0375f3cf38f9e7862b71c1079149587e1d32980f07082c36a03285",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:15780:daa20eb9a4cf6aec",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 15780,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "daa20eb9a4cf6aec0d5682d4583c063f21bf7e87998745c905c438e849ecc5a8",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:16357:d9d39c886bd1ae82",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 16357,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "d9d39c886bd1ae8295706431603ad5b2ad04d764927120c894e6c055e964512d",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:17468:08bc6c7c06f0a5fa",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 17468,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "08bc6c7c06f0a5fad06354915a329038ae4ddf89ca105235e5be6cb201503efd",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:17522:61b4947e41197697",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 17522,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "61b4947e41197697e7a223a824c387a74771816733e1a6465391df1f99d5df28",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:18228:ed033c5997919017",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 18228,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "ed033c5997919017c0aa91da6ac6e05696a9d858c58c8a8f70b7ba5224a1c434",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:18240:f7d65e78363f3b86",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 18240,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "f7d65e78363f3b86a294c481f7fbb9bd154cad32b143aac91fcb6795cc0a7b0f",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:18295:4ddc7b63cd70754a",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 18295,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "4ddc7b63cd70754ad3e5557492aa84784ce0d5ae1735ee6b8f0a717505856c86",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:1877:7f44114820d2352d",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 1877,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "7f44114820d2352d3fbfcc7fa8d440a9e038eed3f11cd4a4eed725400a3f1dd0",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:1885:9dcf5f1f44f36118",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 1885,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "9dcf5f1f44f36118dc1005ab7d08c3e874665d8a02cb7d1b48f1a588e9208d89",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:19721:448ef2046452516a",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 19721,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "448ef2046452516a375d0d1729192872645ecbde0674a113ebb7285b6d8bceb5",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:20714:cff36b3552b5249e",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 20714,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "cff36b3552b5249e6d6ff6d70c86dab89b8fcb0b10cf7bb8cb984ac81a415208",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:20784:f7074d5b7265803d",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 20784,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "f7074d5b7265803df74451447a3018395a25b8cd66c409540df0e51974f97e36",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:21442:c56a486f763cd941",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 21442,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "c56a486f763cd941bf5e6755812b27e5b58c6a32f66cc53ddf5828cc61893088",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:22039:dad68119224659df",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 22039,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "dad68119224659df27fb2d9e58f0d5d97bdda17d85761cd3a4d47975bd49c507",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:22477:b264fb69a1ae99ab",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 22477,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "b264fb69a1ae99ab1ccd4b654d499cd8ad8ea46eda89d518e0286143a0300fab",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:22646:9dd256097bac02e6",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 22646,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "9dd256097bac02e60288b3c678d00b2d484f0a87b0126d571fb15ad651a124a7",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:23338:1be572d0324772b7",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 23338,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "1be572d0324772b75740a46c0f52747a49636a8441b7c18f6eed6f73769caf49",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:23404:3ac12e80fd6ab3d3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 23404,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "3ac12e80fd6ab3d3badec60cfb4d047326f49dad4eb5fb623a9e07da969d44c2",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:23450:57dd761b8b569e27",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 23450,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "57dd761b8b569e275145c3ea0ef3ef54219faf382291a7ae5dd79a8a44c801db",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:24725:891d8e002c2c02a3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 24725,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "891d8e002c2c02a31a270e39d7e832dfe84124761e7679fe5671ac709831b72b",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:25285:116b7da6ef2d06a5",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 25285,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "116b7da6ef2d06a5301f831c0b3cd6c6bb81385be0ecb47c7e05dd271f44afdb",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:26127:2f6965f524cf6ad0",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 26127,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "2f6965f524cf6ad02ff5bf7c2b5b24f63d52805a531d179063c7da2c9b7df863",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:26340:073068f06487bc9f",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 26340,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "073068f06487bc9f77a8f6d6d2974305a1cd168b2f83d264d85602b7cfab404b",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:26503:bcacf43d4f95f98b",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 26503,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "bcacf43d4f95f98b0bc5d2c6d10d881aef8bd45733449d0e8e92b7b37255af19",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:27239:cf67c82929436481",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 27239,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "cf67c829294364813231912cd2f31862163b32cae021296c070ecea5d5fe6554",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:27245:c562685fbb5f0c32",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 27245,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "c562685fbb5f0c324b169d991670bc6174cc0bc627e99c277564f370ad186a47",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:27253:75f0265c7445a0df",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 27253,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "75f0265c7445a0df2ec25f766190bbbf8cd586e03a603f55c9ba5cd09ec974c8",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:27737:da4892d3f845d695",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 27737,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "da4892d3f845d6952d57b2bd070f039957bc3460d9362f95ee3cc789ba456836",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:27749:1cc3f8aa7eddd2e9",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 27749,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "1cc3f8aa7eddd2e9f8855ec6acfb906622340b882bbab82c05485a6466b467b3",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:28752:7f2f57ace0bcef73",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 28752,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "7f2f57ace0bcef73fa0b47c9a852263f839717c6f8bc4ec7f3454836ce36be7e",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:28764:f7ec22790965f8ec",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 28764,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "f7ec22790965f8ecd241196e536bdbebd2b0b3a71e4feaab04cd3cecfd5c1c98",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:29746:4417e1998d016cbf",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 29746,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "4417e1998d016cbfb0c22b80404a30fd866c4a8173f2bfe1ce004c9142e6d3a0",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:29808:9d8f766bf92c485c",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 29808,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "9d8f766bf92c485cff6984a40e2bebae5526d1fbe8c7955c4fc33ada6f5f35e3",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:29936:08f2422a2aaeb575",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 29936,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "08f2422a2aaeb5750924d8a1797d157d5c1beb22726621a16d61726aa8859847",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:30195:57f3548e1f81ae62",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 30195,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "57f3548e1f81ae62ce6df0657330887eb5e916aa4a45e9f47a8ef549690c5fa9",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:31853:9d11acf6c8d510b5",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 31853,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "9d11acf6c8d510b5d67545de37509a9a946fdf29f7a5d6a9567a1989f09b7bd9",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:32549:58583856a757f30c",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 32549,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "58583856a757f30c377a5efa065bc42ebdf2c62415639a672a688a572e61e6af",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:33260:753ca718c317f8b3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 33260,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "753ca718c317f8b3f705c3063ba5a5c7be3359f625836ac16d9e6fb0502cab61",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:34618:9ecb6acdef6e6ce5",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 34618,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "9ecb6acdef6e6ce5d0d36b5952a7d99faa7c2bca828f880494ffdbaac974130a",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:34728:30c964d424086905",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 34728,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "30c964d42408690524e0ba460e9d613f1ad7b14808ebf2e163608e36f49c17c8",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:35627:4dbe890f33ce7d0a",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 35627,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "4dbe890f33ce7d0a377775508b8c6d63d3f0fc5ada26b874c230523aba7993d5",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:35784:3a2b77cfb4ab9720",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 35784,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "3a2b77cfb4ab97207ea035b91cb942526726ffc4d37f9eae7b7a22d19cb49871",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:37278:1cc6ee9088cb65c6",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 37278,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "1cc6ee9088cb65c6bbe7eb616f7f0371f96d898e3e3da41b7c02ab314a579da1",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:38492:6be5abb12ac93484",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 38492,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "6be5abb12ac9348412287fcacab32ee856d184ae9dcb648a090802126a11d398",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:38666:b2d6d10d16d04ebe",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 38666,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "b2d6d10d16d04ebe6579765ecd34db5eb0ec34dce6e55b97251721e2fb15ae53",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:38713:931da85adc3d4449",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 38713,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "931da85adc3d4449f6c2b1955dd3427bd003cf0e68b5c5a715a9882b5d6e56c7",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:39943:e408526c6411c293",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 39943,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "e408526c6411c293293dd757522d2f156bbb77e3aca3aafd3d3e569d6915cbae",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:39998:8a4f284c423b8839",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 39998,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "8a4f284c423b88399e7b307edc6607d3a2202afa5e62e359258b460e4ad1dc20",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:40540:61f34a9e35d83bd3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 40540,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "61f34a9e35d83bd3854656ba4ccc43ec7d070e1cc309ce362d2dc134f7103e12",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:40566:6247c0477264ffae",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 40566,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "6247c0477264ffae9b61079c1f9c38ebba144bd471e70bed377f9d434dc65e86",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:41265:58b77e9ac740f4d9",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 41265,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "58b77e9ac740f4d9003318c9119b581bea9026f017736f3dbb20611150c82c1b",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:41996:4ecb7b9e819860ef",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 41996,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "4ecb7b9e819860ef93d4fdd1eed4f3d8b239593544257ced18ff7ce2bb633f5b",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:42489:618653f5375d41c3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 42489,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "618653f5375d41c34aafb2e6f1e923031c79b94060f6a91ab4df16b6521c65f1",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:42507:08553dc99f74e2a3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 42507,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "08553dc99f74e2a30661c433e6395996fe835d015e4387079be1b84e4b3f6855",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:43588:a74ad6aad0ae6ba1",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 43588,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "a74ad6aad0ae6ba105bad5add05c09ff9a2638a9e92aa62857ef4ad7a3cd2253",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:4532:cf71f84ea65c0b56",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 4532,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "cf71f84ea65c0b5612516ac17cd78c6f107422a9801801ef74baa494cb4aee89",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:45414:61740814abe5f193",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 45414,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "61740814abe5f193e71d3adbc82f86079b000234abac7238802fb751972bfa71",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:49497:ee6160fbd830eca0",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 49497,
+      "candidate_kind": "numbered_problem",
+      "prompt_sha256": "ee6160fbd830eca0df10db52d23fd7f845a838f2a2b3a359cda0bdee77754f70",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:6350:f7d54f4112c6e7e6",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 6350,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "f7d54f4112c6e7e686f4e01c413631d200205340c87c3240235f5afcea81620f",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:6386:80951f085edbf9cd",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 6386,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "80951f085edbf9cdf6cce36c858d8f2f1684e9fbf4f1edfa11e8965948c15d0e",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:6441:9366d971db7b758a",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 6441,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "9366d971db7b758a17325c0452198dd8df57f5e5a2d5660e9053c1378aaae360",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:7980:61d4b0b32ed207e3",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 7980,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "61d4b0b32ed207e361dd4da9443ce24546885274889e1f2c5123469429b450e6",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:8302:cfa8842a690626a4",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 8302,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "cfa8842a690626a4743b1a3af7d52b752ec364f05c50b5c72ccf1eeede144941",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:8364:89b8bee8f7391298",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 8364,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "89b8bee8f73912982224df3076c58a2162d4af4b819c0b4c596f1aaea67a74e2",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:8458:ed781f24a4df312c",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 8458,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "ed781f24a4df312c7a12457acf04c262dd9ef30f55c7620cec46f57d3788d19f",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:8466:6c7b99ea4639e118",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 8466,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "6c7b99ea4639e1182634a4221c44c1ecf12cc4d81d3274e1e636c69bdb4cb319",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:8503:8ad78f54f64167ff",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 8503,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "8ad78f54f64167ff39ccb43e0211bbdd33522d3e0403316d2613b2014eaeb884",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:9198:93a9726593b0e4fe",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 9198,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "93a9726593b0e4fe3173f93d20cf68131eabe9b3127013190db21835671d5cbd",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb:9233:250fe819aa58673d",
+      "source_path": "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 9233,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "250fe819aa58673d9b4432367f05c2df3fd8c7bfc283a05db12942091ac7ce7d",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:1011:d0a8e7f0874e6066",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 1011,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "d0a8e7f0874e6066024ac9230f8f1201d17a71a4cc9dc44148536559ddf48648",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:10389:a7078cae64d39ece",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 10389,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "a7078cae64d39ece9361d667d5199c79d475f28630751e7720b75038bc1307d5",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:10764:6b301b5620d1b54c",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 10764,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "6b301b5620d1b54c1ca29140f9d5df831e197c0ff3455ac9727e8a7515e4d0f0",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:11085:625a0bdf5a390ed7",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 11085,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "625a0bdf5a390ed73856b3b227fa80f2ee4fae9c55ffbb30908525aaf24154c0",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:11616:0862e92769b7de6b",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 11616,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "0862e92769b7de6bd0848ae7a0a8cf978f8bb4a59a9d22452289b6656ad7e0fd",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:12309:942007bebff579ab",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 12309,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "942007bebff579ab708e39a1be74a2c3f5dbd65a23f47fdc24d238cd756300e7",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:12361:39389a5c8d25948b",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 12361,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "39389a5c8d25948b257d0c56754e63033253454511eeb102291e1666472db993",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:12703:3a75496db8f8aeb2",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 12703,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "3a75496db8f8aeb23fd00f2255e75f6bb2cb9b17306ae94895a07b08a481610c",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:13050:a84c967aa7497d3d",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 13050,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "a84c967aa7497d3dca0fa62f430bbf54051cd20a14db7ddc8839a7e3e34f15eb",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:13060:7f9d4d552f7095b4",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 13060,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "7f9d4d552f7095b494fbc77b730f798fd9e0bc5049b9075ae5bc6e691ecb67ff",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:16109:62e0922ca6cff19f",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 16109,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "62e0922ca6cff19fb96f20af30615cddcb9f2b12cb7f4fac9453174b34322191",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:16115:61315eb41c178bb8",
+      "source_path": "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+      "source_family": "openstax",
+      "source_line": 16115,
+      "candidate_kind": "instruction",
+      "prompt_sha256": "61315eb41c178bb83aace372a526ce2618aa41cde6d44a41b554310568c6c438",
+      "first_failure": "no_complete_frontend",
+      "executable_routes": []
+    }
+  ],
+  "report_sha256": "b2d873f7b6455031b877d815c37164d0408c7c508adeb7539cf0845b9d4981c9"
+}

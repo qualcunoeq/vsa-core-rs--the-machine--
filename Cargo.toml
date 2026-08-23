@@ -1155,6 +1155,10 @@ path = "src/bin/stage410_source_overlap_audit.rs"
 name = "stage411_finite_set_transfer"
 path = "src/bin/stage411_finite_set_transfer.rs"
 
+[[bin]]
+name = "stage412_external_curriculum_baseline"
+path = "src/bin/stage412_external_curriculum_baseline.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

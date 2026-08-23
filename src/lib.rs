@@ -224,6 +224,7 @@ pub mod source_set_frontend;
 pub mod source_set_pack;
 pub mod source_statistics_frontend;
 pub mod source_statistics_pack;
+pub mod source_frequency_table_frontend;
 pub mod source_progression_mean_frontend;
 pub mod source_progression_mean_pack;
 pub mod source_topology_frontend;

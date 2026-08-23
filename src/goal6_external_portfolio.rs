@@ -40,6 +40,7 @@ use crate::source_formula_frontend::formalize_formula_text;
 use crate::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, source_formula_records, FormulaStatus,
 };
+use crate::source_frequency_table_frontend::formalize_frequency_table_text;
 use crate::source_mean_update_frontend::{
     formalize_mean_update_text, replay_verified as mean_update_frontend_replay,
 };
@@ -76,6 +77,7 @@ pub const CATEGORY_SELECTION_DOMAIN: &str = crate::source_category_selection_pac
 #[serde(rename_all = "snake_case")]
 pub enum PortfolioRoute {
     FiniteListMean,
+    FrequencyTableMean,
     ArithmeticSequence,
     ArithmeticProgressionMean,
     NaturalCombination,
@@ -189,6 +191,42 @@ fn mean_route(text: &str) -> RouteObservation {
         frontend.request.as_ref(),
         crate::source_statistics_pack::DOMAIN,
         &statistics_records(),
+    )
+}
+
+fn frequency_table_mean_route(text: &str) -> RouteObservation {
+    let frontend = formalize_frequency_table_text(text);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = frontend.replay_verified();
+    let frontend_tamper = !frontend_tampered.replay_verified();
+    let Some(statistics) = frontend.statistics.as_ref() else {
+        return observation(
+            PortfolioRoute::FrequencyTableMean,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let mut execution_tampered = statistics.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (statistics.status == FormulaStatus::Complete)
+        .then(|| statistics.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
+        PortfolioRoute::FrequencyTableMean,
+        format!("{:?}", frontend.status),
+        format!("{:?}", statistics.status),
+        candidate,
+        frontend_replay,
+        statistics.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
     )
 }
 
@@ -651,6 +689,7 @@ fn finite_die_experiment_route(text: &str, case_id: &str) -> RouteObservation {
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
         mean_route(text),
+        frequency_table_mean_route(text),
         statistics_route(text),
         sequence_route(text, case_id),
         progression_mean_route(text),
@@ -682,7 +721,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 15);
+        assert_eq!(observations.len(), 16);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -737,6 +776,34 @@ mod tests {
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteStatistics);
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_frequency_table_selects_only_frequency_route() {
+        let observations = observe_all(
+            r#"Find the average.
+\begin{tabular}{|c|c|}
+\hline
+Score & Number of Students \\
+\hline
+100 & 1 \\
+80 & 2 \\
+60 & 1 \\
+\hline
+\end{tabular}"#,
+            "test-frequency-table",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::FrequencyTableMean);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::Rational(
+                crate::probability_pack::Rational::new(80, 1).unwrap()
+            ))
+        );
         assert!(executable[0].execution_replay_verified);
         assert!(executable[0].execution_tamper_rejected);
     }

@@ -1,0 +1,41 @@
+{
+  "schema": "stage396-external-mean-update-transfer-v1",
+  "base_commit": "fa3448e",
+  "producer_commit": "uncommitted-stage396-working-tree",
+  "partition_results": {
+    "development": {
+      "questions": 3000,
+      "route_invocations": 30000,
+      "unique_shadow_candidates": 15,
+      "correct_shadow_candidates": 15,
+      "candidate_replays": 15,
+      "route_ambiguities": 0,
+      "no_executable_route": 2985,
+      "false_authorizations": 0,
+      "plaintext_answers_read": 0,
+      "probe_report_sha256": "65930f63227e16a2a5ef129ea29622bdc4a19c7e1a8410813c1e993108da1ed9",
+      "score_report_sha256": "4dcb7c55362c1991eff0928db816b794e98d5a0d6a6d6eab3377234d1e23647b"
+    },
+    "sealed": {
+      "questions": 1000,
+      "route_invocations": 10000,
+      "unique_shadow_candidates": 1,
+      "correct_shadow_candidates": 1,
+      "candidate_replays": 1,
+      "route_ambiguities": 0,
+      "no_executable_route": 999,
+      "false_authorizations": 0,
+      "plaintext_answers_read": 0,
+      "answer_hashes_read": 1000,
+      "probe_report_sha256": "f350afaeda2104879fea93d81c7a871eb4b938220a8565415ed9f4b874ca7f0f",
+      "score_report_sha256": "7d4e1333a4f14dac2370269f4f7c55f6075e132830dbf60b52a2c2393784b290"
+    }
+  },
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_sha256": "6af1e7d943f1fef5a625b9399cae4165c669fcc82aa7b2c2d039961b78c8fa04",
+  "benchmark_sha256": "6420b0d94fdf05ec35fe044dafff980604b5cb5490d702bd141e88732f00afcd",
+  "manifest_unchanged": true,
+  "production_mutations": 0,
+  "answer_keys_read": 0,
+  "sealed_plaintext_answers_read": 0
+}

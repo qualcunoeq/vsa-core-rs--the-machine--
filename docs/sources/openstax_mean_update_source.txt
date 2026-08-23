@@ -1,0 +1,17 @@
+# Source-backed bounded finite-mean update relation.
+# The frontend must establish one explicit finite old list and one added value.
+
+BEGIN FORMULA mean_increase_after_addition
+ALIASES: finite mean increase after one added value | average increase after one observation
+EXPRESSION: (old_sum + added_value) / (old_count + 1) - old_sum / old_count
+INPUTS: old_sum, old_count, added_value
+ASSUMPTIONS: old_count is positive; the added value shares the old list scale; exactly one observation is added
+CONSTRAINTS: positive:old_count
+SOURCE_ID: openstax-introductory-statistics-2e:descriptive-statistics
+TITLE: Introductory Statistics 2e
+SECTION: Measures of Central Tendency and Variability
+URL: https://openstax.org/books/introductory-statistics-2e/pages/2-5-measures-of-the-center-of-the-data
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-23
+EVIDENCE: arithmetic mean definition applied before and after adding one observation
+END FORMULA

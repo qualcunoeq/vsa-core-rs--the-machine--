@@ -184,6 +184,8 @@ pub mod source_counting_frontend;
 pub mod source_counting_pack;
 pub mod source_combination_frontend;
 pub mod source_combination_pack;
+pub mod source_mean_update_frontend;
+pub mod source_mean_update_pack;
 pub mod source_formula_pack;
 pub mod source_formula_frontend;
 pub mod source_evidence_envelope;

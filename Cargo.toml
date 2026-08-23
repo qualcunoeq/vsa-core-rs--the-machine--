@@ -388,6 +388,10 @@ name = "stage395_external_combination_binding_bench"
 path = "src/bin/stage395_external_combination_binding_bench.rs"
 
 [[bin]]
+name = "stage396_external_mean_update_bench"
+path = "src/bin/stage396_external_mean_update_bench.rs"
+
+[[bin]]
 name = "source_statistics_shifted_bench"
 path = "src/bin/source_statistics_shifted_bench.rs"
 

@@ -17,6 +17,10 @@ use crate::source_formula_frontend::formalize_formula_text;
 use crate::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, source_formula_records, FormulaStatus,
 };
+use crate::source_mean_update_frontend::{
+    formalize_mean_update_text, replay_verified as mean_update_frontend_replay,
+};
+use crate::source_mean_update_pack::evaluate as evaluate_mean_update;
 use crate::source_progression_mean_frontend::formalize_progression_mean_text;
 use crate::source_progression_mean_pack::evaluate as evaluate_progression_mean;
 use crate::source_regression_pack::records as regression_records;
@@ -46,6 +50,7 @@ pub enum PortfolioRoute {
     ArithmeticSequence,
     ArithmeticProgressionMean,
     NaturalCombination,
+    MeanUpdate,
     BoundedCounting,
     UnitConversion,
     BoundedGeometry,
@@ -278,6 +283,43 @@ fn natural_combination_route(text: &str, case_id: &str) -> RouteObservation {
     )
 }
 
+fn mean_update_route(text: &str) -> RouteObservation {
+    let frontend = formalize_mean_update_text(text);
+    let mut tampered = frontend.clone();
+    tampered.replay_hash.push('x');
+    let frontend_replay = mean_update_frontend_replay(&frontend);
+    let frontend_tamper = !mean_update_frontend_replay(&tampered);
+    let Some(request) = frontend.frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::MeanUpdate,
+            format!("{:?}", frontend.frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = evaluate_mean_update(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == FormulaStatus::Complete)
+        .then(|| execution.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
+        PortfolioRoute::MeanUpdate,
+        format!("{:?}", frontend.frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        execution.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
+    )
+}
+
 fn counting_route(text: &str, case_id: &str) -> RouteObservation {
     let frontend = formalize_counting_text(text, case_id);
     let mut frontend_tampered = frontend.clone();
@@ -373,6 +415,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         sequence_route(text, case_id),
         progression_mean_route(text),
         natural_combination_route(text, case_id),
+        mean_update_route(text),
         counting_route(text, case_id),
         unit_route(text, case_id),
         geometry_route(text),
@@ -394,7 +437,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 9);
+        assert_eq!(observations.len(), 10);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);

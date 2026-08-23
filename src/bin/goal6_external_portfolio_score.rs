@@ -137,6 +137,12 @@ fn candidate_forms(candidate: &PortfolioCandidate) -> Vec<(&'static str, String)
                     format!("{}/{}", value.numerator, value.denominator)
                 },
             )];
+            if value.denominator != 1 {
+                forms.push((
+                    "latex_fraction",
+                    format!("\\frac{{{}}}{{{}}}", value.numerator, value.denominator),
+                ));
+            }
             if let Some(decimal) = terminating_decimal(value) {
                 forms.push(("terminating_decimal", decimal));
             }
@@ -146,8 +152,7 @@ fn candidate_forms(candidate: &PortfolioCandidate) -> Vec<(&'static str, String)
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let partition = env::var("GOAL6_PORTFOLIO_PARTITION")
-        .unwrap_or_else(|_| "development".into());
+    let partition = env::var("GOAL6_PORTFOLIO_PARTITION").unwrap_or_else(|_| "development".into());
     assert!(matches!(partition.as_str(), "development" | "sealed"));
     if partition == "sealed" {
         assert_eq!(
@@ -156,14 +161,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             "sealed scoring requires an explicit privileged-eval flag"
         );
     }
-    let probe_report_path = env::var("GOAL6_PORTFOLIO_PROBE_REPORT")
-        .unwrap_or_else(|_| PROBE_REPORT.into());
-    let report_json = env::var("GOAL6_PORTFOLIO_SCORE_JSON")
-        .unwrap_or_else(|_| REPORT_JSON.into());
-    let report_md = env::var("GOAL6_PORTFOLIO_SCORE_MD")
-        .unwrap_or_else(|_| REPORT_MD.into());
-    let probe: ProbeManifest =
-        serde_json::from_str(&fs::read_to_string(&probe_report_path)?)?;
+    let probe_report_path =
+        env::var("GOAL6_PORTFOLIO_PROBE_REPORT").unwrap_or_else(|_| PROBE_REPORT.into());
+    let report_json = env::var("GOAL6_PORTFOLIO_SCORE_JSON").unwrap_or_else(|_| REPORT_JSON.into());
+    let report_md = env::var("GOAL6_PORTFOLIO_SCORE_MD").unwrap_or_else(|_| REPORT_MD.into());
+    let probe: ProbeManifest = serde_json::from_str(&fs::read_to_string(&probe_report_path)?)?;
     let question_bytes = fs::read(format!("{RELEASE_DIR}/questions.jsonl"))?;
     let dataset_sha256 = digest_bytes(&question_bytes);
     let questions: Vec<Question> = String::from_utf8(question_bytes)?
@@ -179,16 +181,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .collect::<Result<Vec<_>, _>>()?
             .into_iter()
             .map(|record| (record.id.clone(), record))
-        .collect();
+            .collect();
     assert_eq!(probe.schema, "goal6-external-portfolio-probe-v1");
     assert_eq!(probe.partition, partition);
-    assert_eq!(probe.questions_read, if partition == "sealed" { 1000 } else { 3000 });
+    assert_eq!(
+        probe.questions_read,
+        if partition == "sealed" { 1000 } else { 3000 }
+    );
     assert_eq!(probe.dataset_sha256, dataset_sha256);
     let manifest_sha256_before = breadth_first_manifest().replay_hash();
     let mut candidates = Vec::new();
     let mut route_ambiguities = 0;
     let mut no_executable_route = 0;
-    for question in questions.iter().filter(|question| question.split == partition) {
+    for question in questions
+        .iter()
+        .filter(|question| question.split == partition)
+    {
         let observations = observe_all(&question.original_prompt, &question.id);
         let executable = executable_routes(&observations);
         if executable.len() != 1 {
@@ -265,12 +273,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut unsigned = serde_json::to_value(&report)?;
     unsigned["report_sha256"] = serde_json::Value::String(String::new());
     report.report_sha256 = digest(&unsigned);
-    assert_eq!(report.questions_read, if partition == "sealed" { 1000 } else { 3000 });
+    assert_eq!(
+        report.questions_read,
+        if partition == "sealed" { 1000 } else { 3000 }
+    );
     assert_eq!(report.answer_hashes_read, report.questions_read);
     assert_eq!(report.plaintext_answers_read, 0);
     assert_eq!(
         report.sealed_questions_read,
-        if partition == "sealed" { report.questions_read } else { 0 }
+        if partition == "sealed" {
+            report.questions_read
+        } else {
+            0
+        }
     );
     assert_eq!(report.production_authorizations, 0);
     assert_eq!(report.false_authorizations, 0);

@@ -89,6 +89,115 @@ fn parse_explicit_list(segment: &str) -> Option<Vec<Rational>> {
     (values.len() >= 2).then_some(values)
 }
 
+/// Parse a small, explicit count written either as an integer or a bounded
+/// cardinal word.  This is deliberately not a general number-word parser:
+/// the frontend only needs finite collection sizes for the source-backed
+/// arithmetic-mean relation.
+fn finite_count_token(token: &str) -> Option<Rational> {
+    let normalized = token
+        .trim_matches(|character: char| !character.is_ascii_alphanumeric() && character != '-')
+        .to_ascii_lowercase();
+    let value = match normalized.as_str() {
+        "one" => 1,
+        "two" => 2,
+        "three" => 3,
+        "four" => 4,
+        "five" => 5,
+        "six" => 6,
+        "seven" => 7,
+        "eight" => 8,
+        "nine" => 9,
+        "ten" => 10,
+        "eleven" => 11,
+        "twelve" => 12,
+        "thirteen" => 13,
+        "fourteen" => 14,
+        "fifteen" => 15,
+        "sixteen" => 16,
+        "seventeen" => 17,
+        "eighteen" => 18,
+        "nineteen" => 19,
+        "twenty" => 20,
+        _ => return rational_token(&normalized),
+    };
+    Rational::new(value, 1)
+}
+
+/// Parse a bounded written fraction used as an explicitly declared total.
+/// Unknown prose is rejected instead of being interpreted as a number.
+fn finite_total_token(token: &str) -> Option<Rational> {
+    let normalized = token
+        .trim_matches(|character: char| {
+            !character.is_ascii_alphanumeric() && character != '/' && character != '-'
+        })
+        .to_ascii_lowercase();
+    match normalized.as_str() {
+        "half" | "a-half" | "one-half" => Rational::new(1, 2),
+        "quarter" | "a-quarter" | "one-quarter" => Rational::new(1, 4),
+        "three-quarters" => Rational::new(3, 4),
+        "third" | "one-third" => Rational::new(1, 3),
+        _ => rational_token(&normalized),
+    }
+}
+
+/// Recognize only the explicit finite relation
+/// `the sum of N <items> is S ... mean`.  It supplies the same typed
+/// `sum`/`count` inputs as the source-declared arithmetic-mean record and does
+/// not infer individual observations, ranges, filters, or distributions.
+fn natural_sum_count_mean(text: &str) -> Option<(BTreeMap<String, Rational>, String)> {
+    let lower = text.to_ascii_lowercase();
+    if !(lower.contains("mean") || lower.contains("average")) {
+        return None;
+    }
+    let sum_start = lower.find("sum of")? + "sum of".len();
+    let sentence_end = text[sum_start..]
+        .find(|character: char| matches!(character, '.' | '?' | ';'))
+        .map(|offset| sum_start + offset)
+        .unwrap_or(text.len());
+    let clause = &text[sum_start..sentence_end];
+    let lower_clause = clause.to_ascii_lowercase();
+    let is_offset = lower_clause.find(" is ")?;
+    let left = clause[..is_offset].trim();
+    let right = clause[is_offset + " is ".len()..].trim();
+    let mut left_tokens = left.split_whitespace();
+    if left_tokens.clone().next() == Some("the") {
+        // `the` is a determiner, not part of the count.
+        left_tokens.next();
+    }
+    let count_token = left_tokens.next()?;
+    let count = finite_count_token(count_token)?;
+    if count.numerator <= 0 || count.denominator != 1 {
+        return None;
+    }
+    // Require a collection noun after the count.  This prevents a generic
+    // phrase such as `sum of x is ...` from becoming a finite mean request.
+    let collection = left_tokens
+        .next()?
+        .trim_matches(|character: char| !character.is_ascii_alphabetic());
+    const COLLECTIONS: &[&str] = &[
+        "number",
+        "numbers",
+        "value",
+        "values",
+        "term",
+        "terms",
+        "scores",
+        "observations",
+        "items",
+        "quantities",
+        "measurements",
+    ];
+    if !COLLECTIONS.contains(&collection.to_ascii_lowercase().as_str()) {
+        return None;
+    }
+    let total_token = right.split_whitespace().next()?;
+    let total = finite_total_token(total_token)?;
+    Some((
+        BTreeMap::from([(String::from("sum"), total), (String::from("count"), count)]),
+        format!("natural-sum-count-span:{}..{}", sum_start, sentence_end),
+    ))
+}
+
 /// Extract a finite numeric enumeration only when the surrounding clause is
 /// list-shaped. Arbitrary numbers in a word problem are never treated as
 /// observations by this helper.
@@ -378,6 +487,9 @@ pub fn formalize_finite_list_mean_text(text: &str) -> StatisticsFrontendResult {
     }
     if let Some((inputs, span)) = mean_equality_unknown(text) {
         return with_request("mean_equality_unknown", inputs, vec![span]);
+    }
+    if let Some((inputs, span)) = natural_sum_count_mean(text) {
+        return with_request("arithmetic_mean", inputs, vec![span]);
     }
     if let Some((values, span)) = natural_numeric_list_mean(text) {
         let sum = values.iter().fold(Rational::zero(), |acc, value| {
@@ -794,5 +906,39 @@ mod tests {
         );
         assert_ne!(ambiguous.status, FrontendStatus::Complete);
         assert!(ambiguous.replay_verified());
+    }
+
+    #[test]
+    fn natural_sum_and_count_mean_binds_declared_total_without_inventing_values() {
+        let complete = formalize_finite_list_mean_text(
+            "The sum of four numbers is one-half. What is the mean of the four numbers?",
+        );
+        assert_eq!(complete.status, FrontendStatus::Complete, "{complete:?}");
+        assert_eq!(complete.formula.as_deref(), Some("arithmetic_mean"));
+        let request = complete.request.as_ref().expect("sum/count request");
+        assert_eq!(request.inputs["sum"], Rational::new(1, 2).unwrap());
+        assert_eq!(request.inputs["count"], Rational::new(4, 1).unwrap());
+        assert!(complete.replay_verified());
+
+        let numeric =
+            formalize_finite_list_mean_text("The sum of 6 values is 30. Find their average.");
+        assert_eq!(numeric.status, FrontendStatus::Complete, "{numeric:?}");
+        assert_eq!(
+            numeric.request.unwrap().inputs["sum"],
+            Rational::new(30, 1).unwrap()
+        );
+    }
+
+    #[test]
+    fn natural_sum_count_mean_rejects_unstated_collection_or_total() {
+        for text in [
+            "The sum of x is 30. Find the mean.",
+            "The sum of four numbers is unknown. Find the mean.",
+            "The sum of four probabilities is one-half. Find the mean.",
+        ] {
+            let result = formalize_finite_list_mean_text(text);
+            assert_ne!(result.status, FrontendStatus::Complete, "{text}");
+            assert!(result.replay_verified());
+        }
     }
 }

@@ -1159,6 +1159,10 @@ path = "src/bin/stage411_finite_set_transfer.rs"
 name = "stage412_external_curriculum_baseline"
 path = "src/bin/stage412_external_curriculum_baseline.rs"
 
+[[bin]]
+name = "stage413_page_aware_external_reachability"
+path = "src/bin/stage413_page_aware_external_reachability.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

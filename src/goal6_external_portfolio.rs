@@ -30,6 +30,12 @@ use crate::source_counting_frontend::formalize_counting_text;
 use crate::source_counting_pack::{
     evaluate as evaluate_counting, CountingArtifact, CountingStatus,
 };
+use crate::source_finite_experiment_frontend::{
+    execute as execute_finite_experiment,
+    execution_replay_verified as finite_experiment_execution_replay,
+    formalize as formalize_finite_experiment, replay_verified as finite_experiment_frontend_replay,
+    FrontendStatus as FiniteExperimentStatus,
+};
 use crate::source_formula_frontend::formalize_formula_text;
 use crate::source_formula_pack::{
     evaluate_formula_records, extract_formula_records, source_formula_records, FormulaStatus,
@@ -83,6 +89,7 @@ pub enum PortfolioRoute {
     CategorySelection,
     ParameterLinearSystem,
     WordSystem,
+    FiniteDieExperiment,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -604,6 +611,42 @@ fn word_system_route(text: &str, case_id: &str) -> RouteObservation {
     )
 }
 
+fn finite_die_experiment_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_finite_experiment(text, case_id);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = finite_experiment_frontend_replay(&frontend);
+    let frontend_tamper = !finite_experiment_frontend_replay(&frontend_tampered);
+    let Some(execution) = execute_finite_experiment(&frontend) else {
+        return observation(
+            PortfolioRoute::FiniteDieExperiment,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == FiniteExperimentStatus::Complete)
+        .then(|| execution.value.clone())
+        .flatten()
+        .map(PortfolioCandidate::Rational);
+    observation(
+        PortfolioRoute::FiniteDieExperiment,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        finite_experiment_execution_replay(&execution),
+        frontend_tamper,
+        !finite_experiment_execution_replay(&execution_tampered),
+    )
+}
+
 /// Offer one prompt to every portfolio route, without a lexical pre-dispatch.
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
@@ -621,6 +664,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         category_selection_route(text, case_id),
         parameter_linear_system_route(text, case_id),
         word_system_route(text, case_id),
+        finite_die_experiment_route(text, case_id),
     ]
 }
 
@@ -638,7 +682,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 14);
+        assert_eq!(observations.len(), 15);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -786,6 +830,25 @@ mod tests {
             executable[0].candidate,
             Some(PortfolioCandidate::Text(
                 "{\"x\": \"8\", \"y\": \"12\"}".into()
+            ))
+        );
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_finite_die_experiment_selects_only_die_route() {
+        let observations = observe_all(
+            "Two fair six-sided dice are rolled. What is the probability that their sum is 7?",
+            "test-finite-die",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::FiniteDieExperiment);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::Rational(
+                crate::probability_pack::Rational::new(1, 6).unwrap()
             ))
         );
         assert!(executable[0].execution_replay_verified);

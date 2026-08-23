@@ -1,0 +1,20 @@
+{
+  "schema": "stage439-finite-experiment-frontend-v1",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "supported_values": 120,
+  "incorrect_values": 0,
+  "frontend_replays": 240,
+  "frontend_tamper_rejections": 240,
+  "execution_replays": 120,
+  "execution_tamper_rejections": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "provenance_complete": 240,
+  "source_sha256": "28265d447ee497d510196a5f9c8a2b5b9db06be136ec9261b85a1a512871d75e",
+  "corpus_sha256": "8dc2422312cdf7ea33d3cee0ada6f08525d5beb5d5d0d77b1665d5f4471d8bed",
+  "report_sha256": "7e8c9234c0d2b67daac47ecd181fc2b618cf0659d31567b8e2bfd21b920ac51c"
+}

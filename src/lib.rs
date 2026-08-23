@@ -142,6 +142,7 @@ pub mod polynomial_frontend;
 pub mod predictive;
 pub mod prerequisite_discovery;
 pub mod probability_frontend;
+pub mod uniform_die_frontend;
 pub mod probability_pack;
 pub mod proportional_model;
 pub mod proposition;

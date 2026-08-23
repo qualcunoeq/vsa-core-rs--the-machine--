@@ -1,0 +1,18 @@
+{
+  "schema": "stage426-uniform-die-frontend-bench-v1",
+  "cases": 240,
+  "supported_cases": 120,
+  "ambiguous_cases": 40,
+  "unsupported_cases": 80,
+  "exact_statuses": 240,
+  "supported_values": 120,
+  "incorrect_values": 0,
+  "frontend_replay_verified": 240,
+  "frontend_tamper_rejected": 240,
+  "execution_replay_verified": 120,
+  "execution_tamper_rejected": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "manifest_unchanged": true,
+  "corpus_sha256": "8f70ef9798dc6127a77ebb6f1f6ab62b6c38f9f2f8f772ebc0bb3fc8386f0582"
+}

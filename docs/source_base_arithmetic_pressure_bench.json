@@ -1,0 +1,14 @@
+{
+  "schema": "source-base-arithmetic-pressure-v1",
+  "cases": 240,
+  "supported": 120,
+  "ambiguous": 40,
+  "unsupported": 80,
+  "exact_decisions": 240,
+  "replay_verified": 240,
+  "tamper_rejected": 240,
+  "supported_values_correct": 120,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "corpus_sha256": "fa53961ef8b6cc931f7b935b3caca86b31b2035cb849da4e7cb254f3c233ff2a"
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "stage407-gap-selected-base-arithmetic-transfer-v1",
+  "partition": "sealed",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_path": "docs/sources/openstax_base_arithmetic_source.txt",
+  "source_sha256": "b0e39f9a84888c5d4b313b0cae88f5d2fa903ff41dfa9e1bfa5d5c1e4c9f2d60",
+  "source_id": "openstax-contemporary-mathematics:base-arithmetic",
+  "source_records": 2,
+  "gap_id": "gap::finite-positional-arithmetic",
+  "operation_scope": "finite positional binary arithmetic",
+  "candidate_sources": 3,
+  "selected_sources": 1,
+  "rejected_decoys": 2,
+  "gap_selection_replay": true,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "answer_keys_read": 1000,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "partition_report": {
+    "questions": 1000,
+    "baseline_executable": 4,
+    "baseline_ambiguities": 0,
+    "frontend_complete": 1,
+    "frontend_ambiguous": 0,
+    "frontend_missing": 865,
+    "frontend_unsupported": 134,
+    "execution_complete": 1,
+    "replay_verified": 1,
+    "tamper_rejected": 1,
+    "selected_unique_ids": 1,
+    "incremental_unique_ids": 1,
+    "answer_hashes_read": 1000,
+    "plaintext_answers_read": 0,
+    "correct_selected_candidates": 1,
+    "candidates": [
+      {
+        "id": "math-v1-sealed-0688",
+        "candidate_hash": "c179c1d1ab9b7d965f5bce4276e55117474578f7471694345c77e1aa8490737c",
+        "baseline_also_executable": false,
+        "reference_match": true,
+        "replay_verified": true
+      }
+    ]
+  },
+  "report_sha256": "93bc45a25e13b71bd71b0a6a19f1f64f0f4316b358d7870cf995c29a44e95500"
+}

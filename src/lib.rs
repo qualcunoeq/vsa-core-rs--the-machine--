@@ -179,6 +179,8 @@ pub mod simplicial_homology_bridge;
 pub mod simplicial_homology_frontend;
 pub mod source_complex_pack;
 pub mod source_base_conversion_pack;
+pub mod source_base_arithmetic_pack;
+pub mod source_base_arithmetic_frontend;
 pub mod source_base_conversion_frontend;
 pub mod source_category_selection_pack;
 pub mod source_category_selection_frontend;

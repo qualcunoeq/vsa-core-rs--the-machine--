@@ -1,0 +1,14 @@
+# Source-derived bounded positional arithmetic record.
+# Source basis: OpenStax Contemporary Mathematics, Chapter 4, Sections 4.4 and 4.5.
+# This record is a concise provenance envelope, not a replacement for the source.
+SOURCE_ID: openstax-contemporary-mathematics:base-arithmetic
+TITLE: Contemporary Mathematics
+SECTION: 4.4 Addition and Subtraction in Base Systems; 4.5 Multiplication and Division in Base Systems
+URL: https://openstax.org/books/contemporary-mathematics/pages/4-4-addition-and-subtraction-in-base-systems
+LICENSE: CC BY 4.0; OpenStax attribution required
+RETRIEVED: 2026-08-23
+EVIDENCE: addition and subtraction in a non-decimal positional base use the base-specific digit table and carry or borrow rules
+EVIDENCE: multiplication in a non-decimal positional base uses the corresponding base multiplication rules and positional carrying
+SCOPE: finite nonnegative integer numerals; one explicitly declared base; exact bases 2 through 12
+UNSUPPORTED: fractions, negative results, division, unknown or mixed bases, digit statistics, and multi-operand expressions
+RULE: decode two valid numerals in one declared base, apply one binary addition, subtraction, or multiplication, and emit an exact positional numeral

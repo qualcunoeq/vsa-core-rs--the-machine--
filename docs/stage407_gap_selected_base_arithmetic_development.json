@@ -1,0 +1,69 @@
+{
+  "schema": "stage407-gap-selected-base-arithmetic-transfer-v1",
+  "partition": "development",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "source_path": "docs/sources/openstax_base_arithmetic_source.txt",
+  "source_sha256": "b0e39f9a84888c5d4b313b0cae88f5d2fa903ff41dfa9e1bfa5d5c1e4c9f2d60",
+  "source_id": "openstax-contemporary-mathematics:base-arithmetic",
+  "source_records": 2,
+  "gap_id": "gap::finite-positional-arithmetic",
+  "operation_scope": "finite positional binary arithmetic",
+  "candidate_sources": 3,
+  "selected_sources": 1,
+  "rejected_decoys": 2,
+  "gap_selection_replay": true,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "answer_keys_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "partition_report": {
+    "questions": 3000,
+    "baseline_executable": 22,
+    "baseline_ambiguities": 0,
+    "frontend_complete": 4,
+    "frontend_ambiguous": 0,
+    "frontend_missing": 2596,
+    "frontend_unsupported": 400,
+    "execution_complete": 4,
+    "replay_verified": 4,
+    "tamper_rejected": 4,
+    "selected_unique_ids": 4,
+    "incremental_unique_ids": 4,
+    "answer_hashes_read": 0,
+    "plaintext_answers_read": 0,
+    "correct_selected_candidates": 0,
+    "candidates": [
+      {
+        "id": "math-v1-development-0165",
+        "candidate_hash": "f6746c6244d52ef8ab55b0502b1414a7898b1abdf26caf4becb266dc910e1f70",
+        "baseline_also_executable": false,
+        "reference_match": null,
+        "replay_verified": true
+      },
+      {
+        "id": "math-v1-development-0235",
+        "candidate_hash": "ea768f1a1fcee1a0b9c84c0bf8128740a7414c338865226099dbf8611e1ea287",
+        "baseline_also_executable": false,
+        "reference_match": null,
+        "replay_verified": true
+      },
+      {
+        "id": "math-v1-development-0375",
+        "candidate_hash": "fa1808235f8be05e9082578fefcd70005bb6a7b77757da5d941d618c73dd6804",
+        "baseline_also_executable": false,
+        "reference_match": null,
+        "replay_verified": true
+      },
+      {
+        "id": "math-v1-development-1389",
+        "candidate_hash": "5b7f3fbe9815e4bf3087807c8208ab2986fec3e9c3a08490e8857f6a1a5d9011",
+        "baseline_also_executable": false,
+        "reference_match": null,
+        "replay_verified": true
+      }
+    ]
+  },
+  "report_sha256": "6f517d8f2a0518d262f47ac7e455945d9629db73f637a8e01872e4e3fcfb7a16"
+}

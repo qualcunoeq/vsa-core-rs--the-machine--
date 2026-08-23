@@ -1,0 +1,177 @@
+{
+  "schema": "stage424-slope-family-audit-v1",
+  "corpus_path": "docs/stage389_page_aware_external_problem_dev.json",
+  "corpus_file_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "declared_corpus_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "source_records": 5566,
+  "quality_clean_records": 2105,
+  "quality_rejected_records": 3461,
+  "slope_family_records": 23,
+  "family_summaries": [
+    {
+      "family": "coordinate_pair_slope",
+      "candidates": 2,
+      "development": 1,
+      "validation": 1,
+      "distinct_sources": 1,
+      "records_with_explicit_target": 2,
+      "records_with_complete_numeric_context": 2,
+      "prompt_hashes": [
+        "06bf2789a2b7f151749426aab6a4162cb246f42333e19eeed5b9b145b5c1648d",
+        "ee7b9d576bc44d1571d0a5f74bc1b1e198091608a7b5a0b5b4951ed08cad690e"
+      ]
+    },
+    {
+      "family": "rise_run_application",
+      "candidates": 2,
+      "development": 2,
+      "validation": 0,
+      "distinct_sources": 2,
+      "records_with_explicit_target": 2,
+      "records_with_complete_numeric_context": 1,
+      "prompt_hashes": [
+        "2b2e8430f6553f07a451af4100b6b1b35d9b98eb528ff5ebdb382075ead0beb3",
+        "b95974f29eda492ae1d9bfcc6edb97086191e597bf3ff1105bf4ccb8953b8fc7"
+      ]
+    },
+    {
+      "family": "line_model_application",
+      "candidates": 8,
+      "development": 6,
+      "validation": 2,
+      "distinct_sources": 2,
+      "records_with_explicit_target": 3,
+      "records_with_complete_numeric_context": 0,
+      "prompt_hashes": [
+        "12741635d7df0a22081efd079562a3b4a268412fb65a9c2bd82c0a4239e87263",
+        "de0ffeeb1786f084ca954621683957d8e411700afa4b84b09176987337ad411d",
+        "0e35c06f599d4e86539e6ef412109dc1408ab6ded68f480b15172b5ac39f825d",
+        "7dbd12cd3a5bed9b8f8a38fa91883bf5c4a179e467d679df125f4112747576e8",
+        "ceebf127bb1671acc41ffc4dd1a95cead75920976f21b43ed6761147ee009bcb",
+        "2172f3b734af9e46f5c24d606b6c8c47e52faf514b2ce7bfc61bd7a10e737c92",
+        "5461330edcc602ed9194e60e4c55c2548fbd2c197c756a1c611bc918a73f123c",
+        "b09fd58b0f65faf9b8e4a7f114574dd51abfb00ed020ac0e1653b98f7ceeb2c7"
+      ]
+    },
+    {
+      "family": "regression_interpretation",
+      "candidates": 2,
+      "development": 2,
+      "validation": 0,
+      "distinct_sources": 1,
+      "records_with_explicit_target": 0,
+      "records_with_complete_numeric_context": 0,
+      "prompt_hashes": [
+        "5a7f58e637f71115b7853fe7b193da0e48c935e55214be028ef8a9f1c94d8bb8",
+        "35e99ac72d67f4363863622aef37e58fb6c3ea90aa41ead75ac1a910d0f89913"
+      ]
+    },
+    {
+      "family": "conceptual_slope",
+      "candidates": 4,
+      "development": 3,
+      "validation": 1,
+      "distinct_sources": 3,
+      "records_with_explicit_target": 0,
+      "records_with_complete_numeric_context": 0,
+      "prompt_hashes": [
+        "665e53a2711e215868dc2f8c0c1ee951015a2f0124fd785aa0fccf221bf91fba",
+        "7cbc72b99d48ee12f8b0783f7dc9f680921ad829734e20ae1fc6c9edce5403f0",
+        "504e5c413eddfae4a5bf54b99c679dde227786a843c4afde5dfd7adde2b90a28",
+        "9b2f3392945f0371dd482be2f1b41d229f6c668c8cfb12e4d5eb84569b82b4a2"
+      ]
+    },
+    {
+      "family": "tangent_curve_slope",
+      "candidates": 2,
+      "development": 2,
+      "validation": 0,
+      "distinct_sources": 2,
+      "records_with_explicit_target": 2,
+      "records_with_complete_numeric_context": 0,
+      "prompt_hashes": [
+        "4e21649317df017565cdadae841b4f9ad370aa0853ce725e48cad0ac4b217cfe",
+        "9fccd20af2374dda102be8a9bae1e7d15fade08597e43b270441f0de2480c869"
+      ]
+    },
+    {
+      "family": "line_equation_construction",
+      "candidates": 1,
+      "development": 1,
+      "validation": 0,
+      "distinct_sources": 1,
+      "records_with_explicit_target": 1,
+      "records_with_complete_numeric_context": 0,
+      "prompt_hashes": [
+        "8d10b59dd325c47614893fff158a9a31f2a2b9f7f2c0125c2e109e2b140a51ea"
+      ]
+    },
+    {
+      "family": "unresolved_or_incomplete",
+      "candidates": 2,
+      "development": 1,
+      "validation": 1,
+      "distinct_sources": 2,
+      "records_with_explicit_target": 2,
+      "records_with_complete_numeric_context": 0,
+      "prompt_hashes": [
+        "be83eec4dfb96356dd487fe6b5af6f005c2a2c9d7a4c714ac100bff0ab3a60e3",
+        "90b3c4aea885fe345e9e9a29ef71b99fd9d61f3e858647e507bdf6c716f86056"
+      ]
+    }
+  ],
+  "coordinate_pair_candidates": [
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:481:11:06bf2789a2b7f151:part1",
+      "split": "development",
+      "prompt_sha256": "06bf2789a2b7f151749426aab6a4162cb246f42333e19eeed5b9b145b5c1648d",
+      "point_count": 2,
+      "points": [
+        [
+          4,
+          -5
+        ],
+        [
+          1,
+          -2
+        ]
+      ],
+      "typed_target": "slope_between_two_cartesian_points",
+      "existing_backend": "none",
+      "reason_not_executable": "the existing regression frontend requires labeled covariance/variance inputs; the formula registry has no coordinate-pair text frontend"
+    },
+    {
+      "record_id": "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38:481:9:ee7b9d576bc44d15:part1",
+      "split": "validation",
+      "prompt_sha256": "ee7b9d576bc44d1571d0a5f74bc1b1e198091608a7b5a0b5b4951ed08cad690e",
+      "point_count": 2,
+      "points": [
+        [
+          -3,
+          3
+        ],
+        [
+          4,
+          -5
+        ]
+      ],
+      "typed_target": "slope_between_two_cartesian_points",
+      "existing_backend": "none",
+      "reason_not_executable": "the existing regression frontend requires labeled covariance/variance inputs; the formula registry has no coordinate-pair text frontend"
+    }
+  ],
+  "coherent_family_count": 0,
+  "capability_contracts_proposed": 0,
+  "answer_keys_read": 0,
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "sealed_manifest_path": "docs/holdouts/stage389_page_aware_external_problem_sealed_manifest.json",
+  "sealed_manifest_sha256": "ac4227bff20decad585210b8e0d4c60401f6056092b718e99157e4f208a1b8de",
+  "declared_sealed_manifest_sha256": "ac4227bff20decad585210b8e0d4c60401f6056092b718e99157e4f208a1b8de",
+  "sealed_manifest_records": 1091,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "report_sha256": "a9772306f482597d0b55b8dc78bad86406beb3a5e203fc34dfa49dd7617f3d60"
+}

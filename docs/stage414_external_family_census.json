@@ -1,0 +1,430 @@
+{
+  "schema": "stage414-external-family-census-v1",
+  "corpus_path": "docs/stage389_page_aware_external_problem_dev.json",
+  "corpus_file_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "declared_corpus_sha256": "92304d95521ac2ef4d49a08272f0b0cf79ac7225c9715d5ace9a667c822f6e03",
+  "source_records": 5566,
+  "quality_clean_records": 2105,
+  "quality_rejected_records": 3461,
+  "answer_keys_read": 0,
+  "plaintext_answers_read": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "sealed_manifest_path": "docs/holdouts/stage389_page_aware_external_problem_sealed_manifest.json",
+  "sealed_manifest_sha256": "ac4227bff20decad585210b8e0d4c60401f6056092b718e99157e4f208a1b8de",
+  "declared_sealed_manifest_sha256": "ac4227bff20decad585210b8e0d4c60401f6056092b718e99157e4f208a1b8de",
+  "sealed_manifest_records": 1091,
+  "family_summaries": [
+    {
+      "family": "unit_conversion",
+      "candidate_records": 23,
+      "development_records": 20,
+      "validation_records": 3,
+      "distinct_sources": 4,
+      "records_with_two_or_more_numeric_tokens": 13,
+      "records_with_target_verb": 21,
+      "source_hashes": [
+        "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb",
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "5ae4e3aca9c8da6f09f9e7b73e8bfd0c0a54a57dc9446791b305509bb2169bcc",
+        "91755104cbb3be1cf42a4d4b896a03d1cc5192d9a153dc7d080a0b9685057dbe",
+        "a46fd9f3c595736f52567421972c34c1bb090798062a9f0a88226dd40bab8159",
+        "02fe9a52d58025ee22a3ddd33b22b91478d912f42a5a2b1baaa6f7d6d17517d3",
+        "adeee27704b28f45425f052496a94ad1cb318fba432542be567a8617b9b0f4f9"
+      ]
+    },
+    {
+      "family": "fraction_percent",
+      "candidate_records": 4,
+      "development_records": 3,
+      "validation_records": 1,
+      "distinct_sources": 1,
+      "records_with_two_or_more_numeric_tokens": 0,
+      "records_with_target_verb": 4,
+      "source_hashes": [
+        "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "d6303dcc5e611414031e185f22847db3f5ea2b5cd2841f4cf9b5f24c0a2aca34",
+        "2de31cb2b478dd178319e816d81364a490e220c905f3d7e5ff7bc15d87375b7c",
+        "f01625ab15e16234909216397cd8e4cfb14a9a32bdf178478cae680b472b4ad1",
+        "a600ba832312ff163ff24ed09e4d8eb02856c8bd370d59dc92cb11d4309ad08a"
+      ]
+    },
+    {
+      "family": "mean_average",
+      "candidate_records": 48,
+      "development_records": 38,
+      "validation_records": 10,
+      "distinct_sources": 9,
+      "records_with_two_or_more_numeric_tokens": 33,
+      "records_with_target_verb": 39,
+      "source_hashes": [
+        "05749a9e925884c34716050b6478bb37d44a5a63d97bbbe1d59db6e36b8e63e2",
+        "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb",
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+        "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f",
+        "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990",
+        "a79a953b75e570030c74ea6f700b8bd70f41dc8c01bf4e9618e6a0adba3a382a"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf",
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/introductory-business-statistics-2e_-_WEB.pdf",
+        "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf",
+        "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "07ad2276f46a0076bf6eeffd2b54f994fc669276224021a24e860009ff27c704",
+        "893e70439572d157b1e9a577dc4ba7c1239c4d7c2c6db6d3f798c990aa7f9cdc",
+        "a0d57facd79720f6c6de274b293fb95c480745954de7cdeb0c217e5f755ec119",
+        "a181a7de1200b1887c1b0776c2f5250f0cef11452ec901fbbf7da7f0138717d2",
+        "423d9cff92a41d81544314859486649b805cadbf3430795f386e29e9dfa1f58f"
+      ]
+    },
+    {
+      "family": "linear_equations",
+      "candidate_records": 109,
+      "development_records": 84,
+      "validation_records": 25,
+      "distinct_sources": 7,
+      "records_with_two_or_more_numeric_tokens": 77,
+      "records_with_target_verb": 83,
+      "source_hashes": [
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+        "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0",
+        "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e",
+        "a79a953b75e570030c74ea6f700b8bd70f41dc8c01bf4e9618e6a0adba3a382a"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf",
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "a1f83218264729a53f048608c2d865a37ef0f8d6c00497ad7f7bc877cd3761c7",
+        "217187293d0fb0f35167ed1dc1ec904701adb5d3e42fb7496a528f9a08bccab2",
+        "1b546cb3688e9d77a0f246dbd8568f45b7276a29b6e7f93fd9dcf61d445a3795",
+        "930d96cab6ac8a0946d3410ac379090183151a58e60bb9b6a60b5b5c6ab8f318",
+        "ca5e0945b41cdfc702f9c4c2550eb9a40aa26be87b28b6e0620c81d4299d7ea5"
+      ]
+    },
+    {
+      "family": "quadratic",
+      "candidate_records": 31,
+      "development_records": 24,
+      "validation_records": 7,
+      "distinct_sources": 5,
+      "records_with_two_or_more_numeric_tokens": 6,
+      "records_with_target_verb": 25,
+      "source_hashes": [
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+        "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0",
+        "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf",
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "618b7f55ab932b29cca5354b731beca63b2b881c5fee2d382696e60697244c85",
+        "f5611a7da1ad6a49885e4578c7a982bdcffe0598cd6d05455933687f37bf9668",
+        "dc734b479d6370a3019710ac75fdbab66de40c27ab9dcac4b5bb19e1fbf1e32d",
+        "ec65c31640655c09a87a602957c05d7704f1dc36d92a50a1a2262a95a513375a",
+        "ddb8e704988fa036ca5e2c0ca0f35057fba410272d2744b876eb6f38a316a3e8"
+      ]
+    },
+    {
+      "family": "probability",
+      "candidate_records": 108,
+      "development_records": 82,
+      "validation_records": 26,
+      "distinct_sources": 5,
+      "records_with_two_or_more_numeric_tokens": 80,
+      "records_with_target_verb": 17,
+      "source_hashes": [
+        "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb",
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "a79a953b75e570030c74ea6f700b8bd70f41dc8c01bf4e9618e6a0adba3a382a"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf",
+        "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "196f0e368411499dfbf3f0057f0e3cf7b26d3e5e70ff05fba71c7651ed8d03d0",
+        "8cefc4a19ecae5d8c85901430640c801551b9855467bab08fabfe86c3eaa82af",
+        "7b8273e1ad205e9533bad1948ada4f7ff3bfde43c75f85afbb1e769ddd729b53",
+        "0c57e9c62ad4762b5aeea66d7fdead72798e50fea8ea8fe59c5d45f0c1d0a83b",
+        "b1c3706ecd855f4564cae5f31ba86a90a2fcb8b5980c7d24bf5f071b9e33238d"
+      ]
+    },
+    {
+      "family": "combinatorics",
+      "candidate_records": 35,
+      "development_records": 31,
+      "validation_records": 4,
+      "distinct_sources": 4,
+      "records_with_two_or_more_numeric_tokens": 29,
+      "records_with_target_verb": 7,
+      "source_hashes": [
+        "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb",
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf",
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "93d11be1e46183b66ac2a3a2d2541e30bbce5f3763336090fad36ce3880c9725",
+        "740db984a6d6712e5ab6b497ed45ab15d5ac436e6b5238277e4eb1f7d0af973c",
+        "7bd0ce14cdc06dfa867e2323e98e16655b0cece7849001b74ced7d1234bccc68",
+        "8547e9a5fadf9bb9a7297aca62918d2f8160ee56e25028c46fb792c61c3af501",
+        "46209c406ecda3ffc3eca5525eab5ac7b90b87c1c8fc75e98baecc234dc4efb8"
+      ]
+    },
+    {
+      "family": "calculus_derivative",
+      "candidate_records": 14,
+      "development_records": 11,
+      "validation_records": 3,
+      "distinct_sources": 2,
+      "records_with_two_or_more_numeric_tokens": 5,
+      "records_with_target_verb": 14,
+      "source_hashes": [
+        "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f",
+        "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf"
+      ],
+      "samples": [
+        "4e21649317df017565cdadae841b4f9ad370aa0853ce725e48cad0ac4b217cfe",
+        "2511d4b3151f9451b826fc5acac818ad1ea7c3760ce054a88e64708947b1e3de",
+        "38d794d820efe852c556ba263f27b7f1b0db227021e3ed437bdf8addf959d917",
+        "08db57344ad34807539b4b38c3502e1169f14e256735fe651ea4590e90576d10",
+        "32260c13b0f49aef32b7862377e0e8368e281c4a43745b35492a955762b7cf52"
+      ]
+    },
+    {
+      "family": "calculus_integral",
+      "candidate_records": 16,
+      "development_records": 13,
+      "validation_records": 3,
+      "distinct_sources": 3,
+      "records_with_two_or_more_numeric_tokens": 5,
+      "records_with_target_verb": 16,
+      "source_hashes": [
+        "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f",
+        "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990",
+        "f6ac06038088711766e5b664a8114c8fcb0b7b88cfb38e92bbaf56ba2df43f4a"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-2_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf"
+      ],
+      "samples": [
+        "5da7ff6e0a1ae92bc05a26eb328c43b92dc772427b4872925815cd0e1f6cda8a",
+        "29698fe5b4ced92760b8a482fac1464335adf5b5017fd875b2bc909481a4328a",
+        "f517611103ba2f079ed3b80273f5a54ee0ea238c7f203c397ccc066c1ee682f0",
+        "7f9d24f4148682544d7ba27c15a34fb6f06655f93666e29d9e1cb23979dec03a",
+        "e3276b452427705c7095b2ce4ae4e5abf1f6e69f0d139a783b1058af5868635d"
+      ]
+    },
+    {
+      "family": "matrix",
+      "candidate_records": 3,
+      "development_records": 3,
+      "validation_records": 0,
+      "distinct_sources": 3,
+      "records_with_two_or_more_numeric_tokens": 0,
+      "records_with_target_verb": 2,
+      "source_hashes": [
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "da2f0f752647f05cb3524c80290457255abe76e528169734aa98578efbb60f4c",
+        "e44da6f0d1967ec0ff9a776432b40b1d135e3ffeef4a75699f19153b40b0abf8",
+        "7b78aa160070d1c24baeda0f9d3b5a6554fbd0a2b242612e4de97ab5b27e82f9"
+      ]
+    },
+    {
+      "family": "recurrence_sequence",
+      "candidate_records": 36,
+      "development_records": 29,
+      "validation_records": 7,
+      "distinct_sources": 4,
+      "records_with_two_or_more_numeric_tokens": 22,
+      "records_with_target_verb": 22,
+      "source_hashes": [
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "32c26cdb6c04be587e3f080ab7b2ce623d23107c53dfb538c0931ec33a3b3ac9",
+        "49898066d17267738844257305329982e777fdd5e29b5969b67b971a97b08c01",
+        "08ae8a68196880d7faf92079ae634766ecac943505233b036a4e3b5af4d833a2",
+        "f347b502f577c717abf9249cd742914660e8b21850189437a781dd2e534e7ec8",
+        "5fc3b7397eadb826de156b17cb9aac930d2588b51f0daafed28dc2ef86953e13"
+      ]
+    },
+    {
+      "family": "geometry_measurement",
+      "candidate_records": 171,
+      "development_records": 126,
+      "validation_records": 45,
+      "distinct_sources": 10,
+      "records_with_two_or_more_numeric_tokens": 87,
+      "records_with_target_verb": 157,
+      "source_hashes": [
+        "1a58f63a28535d2a84659019103df32a0fb73db0bd14ce6e533a4dff307ca2cb",
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "4b7018778433d2c125229a35315cf70e0813cbaacb04118b7265baae625372b5",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+        "6feec9e9e64a286f880ae9b7444e2f262df6ab59bff4869e28322106d0c9018f",
+        "7108d242ef7f7ee286c1d0faf4f8477570e843c1b1cdd5e3b05e8c31797da9f0",
+        "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990",
+        "a250861ff5e945a63a0b90f8c8790a6ed73d9eb04675854824a3880073d0759e",
+        "f6ac06038088711766e5b664a8114c8fcb0b7b88cfb38e92bbaf56ba2df43f4a"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/algebra-and-trigonometry-2e_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-2_-_WEB.pdf",
+        "data/openstax_pdfs/calculus-volume-3_-_WEB.pdf",
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/elementary-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/prealgebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/precalculus-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "84939cf51f5633ee75b50af870451a9cdff41eda3b3c64b4b77221fdb53b9eef",
+        "fcf7204f2edf5ac74ec51945fa7b094261ffd5d658dae7c1446529bfd3d9ebd6",
+        "644e24c9aa5df206dcb66630b9ba7663e5d000a5743f0b990ac0ff2983ef35e9",
+        "45eb91d382261e496eba75a900393e4bd4bd73dcb03abfe2351a9a3a9569fd4e",
+        "5a32ab5365deda10cd86fe371ee48c9bfd1f51c3bd27cbf89f660d47090d426d"
+      ]
+    },
+    {
+      "family": "logarithm_exponential",
+      "candidate_records": 30,
+      "development_records": 23,
+      "validation_records": 7,
+      "distinct_sources": 3,
+      "records_with_two_or_more_numeric_tokens": 11,
+      "records_with_target_verb": 18,
+      "source_hashes": [
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+        "7303513c1927b9b6d04d150502e769cc1821638a24c774e2f6bba82bf9875990"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/calculus-volume-1_-_WEB.pdf",
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "523614b17edb31e175edbb531bdfeff7b72f108a140681847c873fe1fb477209",
+        "2e5622fb7e27de0de9bc1c6e226bbb43e6f0873346325e8ac2aa16707a35429e",
+        "e94f5aafe7982f462b627890ded31afb2f50f94f3667204f566995bb3613d971",
+        "7123bb778654e7afe57b911be4506f77c71a7144fcda4f54ca4459d2da215d15",
+        "cb20935aae01d58cc53fa4768fdb154a00a986fd0ee2252c84862fbecdf31263"
+      ]
+    },
+    {
+      "family": "statistics",
+      "candidate_records": 28,
+      "development_records": 19,
+      "validation_records": 9,
+      "distinct_sources": 4,
+      "records_with_two_or_more_numeric_tokens": 18,
+      "records_with_target_verb": 4,
+      "source_hashes": [
+        "300726c9820a8d0822c56e33582a44dffa47111147d64e9cb936b316c448ab38",
+        "381c7d1f2ce21d6786a9e4624d33cdedf3c3be468c011321b25c865786999802",
+        "54a4b28b2af8d2502ab1cf55dab33135c375ed8b5f3d24b504c68159e0851f55",
+        "a79a953b75e570030c74ea6f700b8bd70f41dc8c01bf4e9618e6a0adba3a382a"
+      ],
+      "source_paths": [
+        "data/openstax_pdfs/college-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/contemporary-mathematics_-_WEB.pdf",
+        "data/openstax_pdfs/intermediate-algebra-2e_-_WEB.pdf",
+        "data/openstax_pdfs/introductory-statistics-2e_-_WEB.pdf"
+      ],
+      "samples": [
+        "0f24ff4ac813ce71f32c2428f5d807e6cde177139bdd46fceeb958dbe05e8394",
+        "40828abc35407cdca1dd8cc3c3b975210993ab76e41f710dbdda4781016177a1",
+        "6479e61d23280af77bb6785ca8c29d549c5524d71b2180936c098c24e0e4bebf",
+        "20e8fb94d4cdf51d682f901737b1eb465f5f25b07ff71edb5f269631678b1d41",
+        "4a65206a04dd0facded1ae04a1ceee44afb2202b9268b572a9cf882e88e89de5"
+      ]
+    }
+  ],
+  "overlapping_family_records": 42,
+  "unclassified_records": 1491,
+  "manifest_sha256_before": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_sha256_after": "3da81612ddac024a10c4e4c60547ed3b745662c33d5e1331769d8713822b6844",
+  "manifest_unchanged": true,
+  "report_sha256": "0027e6717c85c93ee2698636dc3876c9eef2582f70de167d95a5383d942066b6"
+}

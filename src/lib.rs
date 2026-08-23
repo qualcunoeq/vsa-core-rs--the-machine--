@@ -131,6 +131,7 @@ pub mod ontology_extension;
 pub mod ontology_realization;
 pub mod ood_benchmark;
 pub mod open_set;
+pub mod parameter_linear_system_frontend;
 pub mod pdf_reader;
 pub mod percentage_quantity;
 pub mod percentage_quantity_proposal;

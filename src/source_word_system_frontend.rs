@@ -268,7 +268,11 @@ pub fn formalize_two_number_system(text: &str, case_id: &str) -> WordSystemResul
 /// Shadow-only V2 contract with independently validated wording variants.
 /// V1 remains frozen; this function accepts only explicit, orientation-safe
 /// synonyms and equality-only bounded multiples.
-pub fn formalize_two_number_system_v2(text: &str, case_id: &str) -> WordSystemResult {
+fn formalize_two_number_system_bounded(
+    text: &str,
+    case_id: &str,
+    max_multiplier: i128,
+) -> WordSystemResult {
     let lower = text.to_ascii_lowercase();
     let provenance = vec![format!("source-word-system-frontend-v2:{case_id}")];
     if !lower.contains("two number") {
@@ -359,12 +363,34 @@ pub fn formalize_two_number_system_v2(text: &str, case_id: &str) -> WordSystemRe
             Some((3, 0))
         } else if suffix.starts_with("four times the other") {
             Some((4, 0))
-        } else if suffix.starts_with("five times the other") {
+        } else if suffix.starts_with("five times the other") && max_multiplier >= 5 {
             Some((5, 0))
+        } else if suffix.starts_with("six times the other") && max_multiplier >= 6 {
+            Some((6, 0))
+        } else if suffix.starts_with("seven times the other") && max_multiplier >= 7 {
+            Some((7, 0))
+        } else if suffix.starts_with("eight times the other") && max_multiplier >= 8 {
+            Some((8, 0))
+        } else if suffix.starts_with("nine times the other") && max_multiplier >= 9 {
+            Some((9, 0))
         } else {
             leading_integer(suffix).and_then(|(offset, rest)| {
                 if rest.contains("less than three times the other") {
                     Some((3, -offset))
+                } else if rest.contains("less than four times the other") && max_multiplier >= 4 {
+                    Some((4, -offset))
+                } else if rest.contains("less than five times the other") && max_multiplier >= 5 {
+                    Some((5, -offset))
+                } else if rest.contains("less than six times the other") && max_multiplier >= 6 {
+                    Some((6, -offset))
+                } else if rest.contains("less than seven times the other") && max_multiplier >= 7 {
+                    Some((7, -offset))
+                } else if rest.contains("less than eight times the other") && max_multiplier >= 8 {
+                    Some((8, -offset))
+                } else if rest.contains("less than nine times the other") && max_multiplier >= 9 {
+                    Some((9, -offset))
+                } else if rest.contains("less than two times the other") {
+                    Some((2, -offset))
                 } else if rest.contains("less than twice the other") {
                     Some((2, -offset))
                 } else if rest.contains("less than the other")
@@ -376,7 +402,9 @@ pub fn formalize_two_number_system_v2(text: &str, case_id: &str) -> WordSystemRe
                 {
                     Some((1, offset))
                 } else if rest.contains("times the other") {
-                    (2..=5).contains(&offset).then_some((offset, 0))
+                    (2..=max_multiplier)
+                        .contains(&offset)
+                        .then_some((offset, 0))
                 } else {
                     None
                 }
@@ -412,6 +440,16 @@ pub fn formalize_two_number_system_v2(text: &str, case_id: &str) -> WordSystemRe
         provenance,
         replay_hash: String::new(),
     })
+}
+
+pub fn formalize_two_number_system_v2(text: &str, case_id: &str) -> WordSystemResult {
+    formalize_two_number_system_bounded(text, case_id, 5)
+}
+
+/// V3 keeps the V2 wording contract and expands only the independently
+/// bounded equality multiplier domain from 2–5 to 2–9.
+pub fn formalize_two_number_system_v3(text: &str, case_id: &str) -> WordSystemResult {
+    formalize_two_number_system_bounded(text, case_id, 9)
 }
 
 pub fn execute_word_system(result: &WordSystemResult) -> Option<LinearSystemExecutionReceipt> {
@@ -482,6 +520,21 @@ mod tests {
         assert_eq!(
             execute_word_system(&multiple).unwrap().result,
             r#"{"x": "-25", "y": "-5"}"#
+        );
+    }
+
+    #[test]
+    fn v2_refuses_beyond_bound_while_v3_accepts_seven() {
+        let text = "The sum of two numbers is −16. One number is seven times the other.";
+        assert_eq!(
+            formalize_two_number_system_v2(text, "v2-bound").status,
+            WordSystemStatus::Ambiguous
+        );
+        let v3 = formalize_two_number_system_v3(text, "v3-seven");
+        assert_eq!(v3.status, WordSystemStatus::Complete);
+        assert_eq!(
+            execute_word_system(&v3).unwrap().result,
+            r#"{"x": "-14", "y": "-2"}"#
         );
     }
 

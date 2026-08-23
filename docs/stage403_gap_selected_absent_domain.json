@@ -1,0 +1,23 @@
+{
+  "schema": "stage403-gap-selected-absent-domain-v1",
+  "gap_id": "gap::unimplemented-ratio-and-identity-domain",
+  "candidate_sources": 3,
+  "selected_sources": 2,
+  "rejected_decoys": 1,
+  "gap_selection_replay": true,
+  "discovered_modules": 2,
+  "source_records": 2,
+  "generated_supported": 60,
+  "generated_boundaries": 2,
+  "module_replays": 2,
+  "exercise_replays": 62,
+  "boundary_replays": 2,
+  "tamper_rejections": 62,
+  "acquisition_decision": "promotable_in_clone",
+  "acquisition_replay": true,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "live_registry_mutations": 0,
+  "curriculum_manifest_unchanged": true,
+  "answer_keys_read": 0
+}

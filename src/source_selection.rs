@@ -39,6 +39,49 @@ pub struct SourceSelectionReceipt {
     pub replay_hash: String,
 }
 
+/// An exact, answer-key-blind source request emitted by a typed capability
+/// gap.  The request contains only the operation scope required by the gap;
+/// it does not name a subject-specific source or evaluator.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SourceGapRequest {
+    pub gap_id: String,
+    pub required_operation_hints: Vec<String>,
+    pub minimum_lineages: usize,
+    pub replay_hash: String,
+}
+
+impl SourceGapRequest {
+    pub fn new(
+        gap_id: impl Into<String>,
+        required_operation_hints: Vec<String>,
+        minimum_lineages: usize,
+    ) -> Self {
+        let mut request = Self {
+            gap_id: gap_id.into(),
+            required_operation_hints: normalize(&required_operation_hints),
+            minimum_lineages,
+            replay_hash: String::new(),
+        };
+        request.replay_hash = digest(&(
+            &request.gap_id,
+            &request.required_operation_hints,
+            request.minimum_lineages,
+        ));
+        request
+    }
+}
+
+/// A source selection receipt produced directly from a typed capability gap.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct SourceGapSelectionReceipt {
+    pub gap_id: String,
+    pub required_operation_hints: Vec<String>,
+    pub minimum_lineages: usize,
+    pub selected_source_ids: Vec<String>,
+    pub candidates: Vec<SourceSelectionCandidate>,
+    pub replay_hash: String,
+}
+
 fn digest<T: Serialize>(value: &T) -> String {
     format!(
         "{:x}",
@@ -138,6 +181,91 @@ pub fn replay_verified(receipt: &SourceSelectionReceipt) -> bool {
             .all(|candidate| candidate.replay_verified)
 }
 
+fn gap_payload(receipt: &SourceGapSelectionReceipt) -> impl Serialize + '_ {
+    (
+        &receipt.gap_id,
+        &receipt.required_operation_hints,
+        receipt.minimum_lineages,
+        &receipt.selected_source_ids,
+        &receipt.candidates,
+    )
+}
+
+/// Select replay-valid source lineages by exact operation scope from a typed
+/// gap request.  Subject labels and lexical overlap are intentionally ignored.
+pub fn select_for_gap(
+    request: &SourceGapRequest,
+    candidates: &[SourceEvidenceEnvelope],
+) -> SourceGapSelectionReceipt {
+    let required_hints = normalize(&request.required_operation_hints);
+    let mut selected_source_ids = BTreeSet::new();
+    let mut receipts = Vec::new();
+    for candidate in candidates {
+        let replay = envelope_replay_verified(candidate);
+        let declared_signature = normalize(&candidate.operation_hints);
+        let decision = if replay && declared_signature == required_hints {
+            selected_source_ids.insert(candidate.source.source_id.clone());
+            SourceSelectionDecision::Selected
+        } else {
+            SourceSelectionDecision::Rejected
+        };
+        let reason = if !replay {
+            "candidate evidence failed replay".into()
+        } else if declared_signature != required_hints {
+            "declared operation scope differs from the typed capability gap".into()
+        } else {
+            "exact typed gap scope and source lineage match".into()
+        };
+        receipts.push(SourceSelectionCandidate {
+            path: candidate.path.clone(),
+            source_id: candidate.source.source_id.clone(),
+            declared_signature,
+            decision,
+            reason,
+            replay_verified: replay,
+        });
+    }
+    receipts.sort_by(|left, right| left.path.cmp(&right.path));
+    let mut output = SourceGapSelectionReceipt {
+        gap_id: request.gap_id.clone(),
+        required_operation_hints: required_hints,
+        minimum_lineages: request.minimum_lineages,
+        selected_source_ids: selected_source_ids.into_iter().collect(),
+        candidates: receipts,
+        replay_hash: String::new(),
+    };
+    let replay_hash = digest(&(
+        &output.gap_id,
+        &output.required_operation_hints,
+        output.minimum_lineages,
+        &output.selected_source_ids,
+        &output.candidates,
+    ));
+    output.replay_hash = replay_hash;
+    output
+}
+
+pub fn gap_replay_verified(
+    request: &SourceGapRequest,
+    receipt: &SourceGapSelectionReceipt,
+) -> bool {
+    request.replay_hash
+        == digest(&(
+            &request.gap_id,
+            &request.required_operation_hints,
+            request.minimum_lineages,
+        ))
+        && receipt.replay_hash == digest(&gap_payload(receipt))
+        && receipt.gap_id == request.gap_id
+        && receipt.required_operation_hints == normalize(&request.required_operation_hints)
+        && receipt.selected_source_ids.len() >= request.minimum_lineages
+        && receipt
+            .candidates
+            .iter()
+            .filter(|candidate| candidate.decision == SourceSelectionDecision::Selected)
+            .all(|candidate| candidate.replay_verified)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -189,5 +317,57 @@ mod tests {
         let receipt = select_sources(&cluster, &[tampered, observed[1].clone()]);
         assert_eq!(receipt.selected_source_ids, vec!["source:b"]);
         assert!(replay_verified(&receipt));
+    }
+
+    #[test]
+    fn typed_gap_selects_exact_scope_and_rejects_decoy() {
+        let observed = vec![
+            envelope(
+                "health",
+                "source:health",
+                "bounded exact rational expression",
+            ),
+            envelope(
+                "economics",
+                "source:economics",
+                "bounded exact rational expression",
+            ),
+        ];
+        let decoy = envelope("complex", "source:complex", "bounded complex arithmetic");
+        let request = SourceGapRequest::new(
+            "gap::bounded-rational-source-domain",
+            vec!["bounded exact rational expression".into()],
+            2,
+        );
+        let receipt = select_for_gap(&request, &[observed[0].clone(), observed[1].clone(), decoy]);
+        assert_eq!(receipt.selected_source_ids.len(), 2);
+        assert!(gap_replay_verified(&request, &receipt));
+        assert_eq!(
+            receipt
+                .candidates
+                .iter()
+                .filter(|candidate| candidate.decision == SourceSelectionDecision::Rejected)
+                .count(),
+            1
+        );
+    }
+
+    #[test]
+    fn typed_gap_preserves_replay_valid_refusal_when_scope_is_absent() {
+        let request = SourceGapRequest::new(
+            "gap::unavailable",
+            vec!["bounded theorem contract".into()],
+            2,
+        );
+        let receipt = select_for_gap(
+            &request,
+            &[envelope("a", "source:a", "different operation")],
+        );
+        assert!(receipt.selected_source_ids.is_empty());
+        assert!(!gap_replay_verified(&request, &receipt));
+        assert_eq!(
+            receipt.candidates[0].decision,
+            SourceSelectionDecision::Rejected
+        );
     }
 }

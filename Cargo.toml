@@ -1167,6 +1167,10 @@ path = "src/bin/stage413_page_aware_external_reachability.rs"
 name = "stage414_external_family_census"
 path = "src/bin/stage414_external_family_census.rs"
 
+[[bin]]
+name = "stage415_semantic_coherence_audit"
+path = "src/bin/stage415_semantic_coherence_audit.rs"
+
 [dependencies]
 tokio = { version = "1.35", features = ["full"] }
 reqwest = { version = "0.11", features = ["json", "rustls-tls"], default-features = false }

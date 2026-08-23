@@ -111,8 +111,9 @@ fn leading_integer(text: &str) -> Option<(i128, &str)> {
     }
     let first = &trimmed[..end];
     let first_normalized = first
+        .replace('−', "-")
         .trim_matches(|character: char| !character.is_ascii_alphanumeric() && character != '-')
-        .replace('−', "-");
+        .to_owned();
     if let Ok(value) = first_normalized.parse::<i128>() {
         return Some((value, trimmed[end..].trim_start()));
     }
@@ -300,6 +301,17 @@ mod tests {
         );
         assert_eq!(result.status, WordSystemStatus::Complete);
         assert!(execute_word_system(&result).is_some());
+    }
+
+    #[test]
+    fn preserves_unicode_negative_sum() {
+        let result = formalize_two_number_system(
+            "The sum of two numbers is −16. One number is 20 less than the other.",
+            "test-unicode-negative",
+        );
+        let receipt = execute_word_system(&result).expect("unique negative system");
+        assert_eq!(receipt.result, r#"{"x": "-18", "y": "2"}"#);
+        assert!(execution_replay_verified(&receipt));
     }
 
     #[test]

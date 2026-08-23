@@ -1,0 +1,22 @@
+{
+  "schema": "stage402-source-acquisition-exercise-gate-v1",
+  "source_ids": [
+    "openstax-introductory-statistics-2e:descriptive-statistics",
+    "openstax-precalculus-2e:sequences-series"
+  ],
+  "discovered_modules": 2,
+  "generated_supported_exercises": 300,
+  "generated_boundaries": 10,
+  "generated_replays": 300,
+  "boundary_replays": 10,
+  "source_selection_replay": true,
+  "selected_source_ids": [
+    "openstax-introductory-statistics-2e:descriptive-statistics",
+    "openstax-precalculus-2e:sequences-series"
+  ],
+  "acquisition_decision": "promotable_in_clone",
+  "acquisition_replay": true,
+  "false_authorizations": 0,
+  "live_registry_mutations": 0,
+  "manifest_unchanged": true
+}

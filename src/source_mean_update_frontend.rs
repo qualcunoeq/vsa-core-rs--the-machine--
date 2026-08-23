@@ -96,27 +96,50 @@ fn list_values(text: &str) -> Option<(Vec<Rational>, String)> {
     let lower = text.to_ascii_lowercase();
     let marker = [
         "scores were",
+        "scores of",
         "values were",
+        "values of",
         "observations were",
+        "observations of",
         "measurements were",
+        "measurements of",
     ]
     .iter()
     .filter_map(|marker| lower.find(marker).map(|start| (start, *marker)))
     .min_by_key(|(start, _)| *start)?;
     let start = marker.0 + marker.1.len();
-    let end = text[start..]
+    let punctuation_end = text[start..]
         .find(|character: char| matches!(character, '.' | '?' | ';'))
         .map_or(text.len(), |offset| start + offset);
+    let contextual_end = if marker.1.ends_with(" of") {
+        [" on ", " in ", " during ", " were ", " was "]
+            .iter()
+            .filter_map(|separator| lower[start..punctuation_end].find(separator))
+            .map(|offset| start + offset)
+            .min()
+            .unwrap_or(punctuation_end)
+    } else {
+        punctuation_end
+    };
+    let end = contextual_end;
     let values = parse_numeric_list(&text[start..end])?;
     Some((values, format!("old-list-span:{start}..{end}")))
 }
 
 fn added_value(text: &str) -> Option<(Rational, String)> {
     let lower = text.to_ascii_lowercase();
-    let marker = ["after a score of", "after a value of", "after one score of"]
-        .iter()
-        .filter_map(|marker| lower.find(marker).map(|start| (start, *marker)))
-        .min_by_key(|(start, _)| *start)?;
+    let marker = [
+        "after a score of",
+        "after a value of",
+        "after one score of",
+        "receives a score of",
+        "gets a score of",
+        "earns a score of",
+        "after receiving a score of",
+    ]
+    .iter()
+    .filter_map(|marker| lower.find(marker).map(|start| (start, *marker)))
+    .min_by_key(|(start, _)| *start)?;
     let mut start = marker.0 + marker.1.len();
     start += lower[start..]
         .find(|character: char| !character.is_ascii_whitespace())

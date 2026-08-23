@@ -1,0 +1,19 @@
+{
+  "schema": "stage435-goal6-portfolio-gap-analysis-v1",
+  "development_questions": 3000,
+  "route_invocations": 39000,
+  "unique_candidates": 23,
+  "route_ambiguities": 0,
+  "no_executable_route": 2977,
+  "first_gate_missing_frontend_fields": 2813,
+  "first_gate_ambiguous_frontend": 163,
+  "first_gate_execution_boundary": 1,
+  "source_documents_considered": 34,
+  "source_triage_candidates": 12,
+  "source_ingestions": 0,
+  "promotion_proposals": 0,
+  "production_mutations": 0,
+  "answer_keys_read": 0,
+  "manifest_unchanged": true,
+  "report_sha256": "d3b69669f2d058d4ce22d1c430461b2e058505259db65a585fcafba24bd3bfc1"
+}

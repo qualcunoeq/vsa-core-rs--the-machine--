@@ -7,6 +7,7 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::collections::{BTreeMap, BTreeSet};
+use std::env;
 use std::fs;
 use std::path::PathBuf;
 use the_machine::curriculum::breadth_first_manifest;
@@ -82,9 +83,32 @@ fn increment(map: &mut BTreeMap<String, usize>, key: impl Into<String>) {
 
 fn terms(text: &str) -> BTreeSet<String> {
     const STOP: &[&str] = &[
-        "and", "are", "can", "calculate", "compute", "find", "for", "from", "given", "how",
-        "if", "into", "is", "let", "of", "on", "or", "the", "then", "this", "to", "what",
-        "when", "which", "with", "would",
+        "and",
+        "are",
+        "can",
+        "calculate",
+        "compute",
+        "find",
+        "for",
+        "from",
+        "given",
+        "how",
+        "if",
+        "into",
+        "is",
+        "let",
+        "of",
+        "on",
+        "or",
+        "the",
+        "then",
+        "this",
+        "to",
+        "what",
+        "when",
+        "which",
+        "with",
+        "would",
     ];
     text.split(|character: char| !character.is_ascii_alphabetic())
         .filter(|word| word.len() >= 4)
@@ -107,6 +131,9 @@ fn provenance_present(text: &str) -> bool {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let report_json =
+        env::var("GOAL6_PORTFOLIO_GAP_REPORT_JSON").unwrap_or_else(|_| REPORT_JSON.into());
+    let report_md = env::var("GOAL6_PORTFOLIO_GAP_REPORT_MD").unwrap_or_else(|_| REPORT_MD.into());
     let question_bytes = fs::read(format!("{RELEASE_DIR}/questions.jsonl"))?;
     let dataset_sha256 = digest_bytes(&question_bytes);
     let questions: Vec<Question> = String::from_utf8(question_bytes)?
@@ -120,8 +147,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
     let route_count = observe_all("", "route-count").len();
 
-    let mut route_statuses: BTreeMap<String, (BTreeMap<String, usize>, BTreeMap<String, usize>, usize)> =
-        BTreeMap::new();
+    let mut route_statuses: BTreeMap<
+        String,
+        (BTreeMap<String, usize>, BTreeMap<String, usize>, usize),
+    > = BTreeMap::new();
     let mut first_gate_counts = BTreeMap::new();
     let mut residual_prompts = Vec::new();
     let mut unique_candidates = 0;
@@ -150,9 +179,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         let first_gate = if executable.len() > 1 {
             "multiple_replayable_routes"
-        } else if observations.iter().any(|item| {
-            item.frontend_status == "Complete" && item.execution_status != "Complete"
-        }) {
+        } else if observations
+            .iter()
+            .any(|item| item.frontend_status == "Complete" && item.execution_status != "Complete")
+        {
             "complete_frontend_execution_boundary"
         } else if observations
             .iter()
@@ -182,8 +212,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let text = String::from_utf8_lossy(&bytes).into_owned();
         source_documents.push((path, bytes, text));
     }
-    let residual_term_sets: Vec<BTreeSet<String>> =
-        residual_prompts.iter().map(|prompt| terms(prompt)).collect();
+    let residual_term_sets: Vec<BTreeSet<String>> = residual_prompts
+        .iter()
+        .map(|prompt| terms(prompt))
+        .collect();
     let mut source_triage_candidates = Vec::new();
     for (path, bytes, text) in &source_documents {
         let source_terms = terms(text);
@@ -199,8 +231,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if affected_residuals == 0 {
             continue;
         }
-        let lexical_score = overlap_terms as f64
-            / residual_term_sets.len().max(1) as f64;
+        let lexical_score = overlap_terms as f64 / residual_term_sets.len().max(1) as f64;
         source_triage_candidates.push(SourceTriage {
             source_path: path.to_string_lossy().to_string(),
             source_sha256: digest_bytes(bytes),
@@ -222,14 +253,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let route_gaps = route_statuses
         .into_iter()
-        .map(|(route, (frontend_status_counts, execution_status_counts, executable_cases))| {
-            RouteGap {
-                route,
-                frontend_status_counts,
-                execution_status_counts,
-                executable_cases,
-            }
-        })
+        .map(
+            |(route, (frontend_status_counts, execution_status_counts, executable_cases))| {
+                RouteGap {
+                    route,
+                    frontend_status_counts,
+                    execution_status_counts,
+                    executable_cases,
+                }
+            },
+        )
         .collect();
     let manifest_sha256_before = breadth_first_manifest().replay_hash();
     let manifest_sha256_after = breadth_first_manifest().replay_hash();
@@ -265,9 +298,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     assert_eq!(report.production_mutations, 0);
     assert!(report.manifest_unchanged);
     let serialized = serde_json::to_string_pretty(&report)?;
-    fs::write(REPORT_JSON, format!("{serialized}\n"))?;
+    fs::write(&report_json, format!("{serialized}\n"))?;
     fs::write(
-        REPORT_MD,
+        &report_md,
         format!(
             "# Goal 6 — route-blind portfolio gap analysis\n\n\
 - Development questions / route invocations: {} / {}\n\

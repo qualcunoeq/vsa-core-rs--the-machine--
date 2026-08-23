@@ -1,0 +1,19 @@
+{
+  "schema": "stage400-external-category-selection-transfer-v1",
+  "partition": "development",
+  "dataset_sha256": "3cf924116a0f8f6a0c84d0ce7949b0c1e16221e0d4b5fcb0c4322110e30714f2",
+  "questions_read": 3000,
+  "answer_keys_read": 0,
+  "route_invocations": 36000,
+  "category_frontend_status_counts": {
+    "Ambiguous": 80,
+    "Missing": 2694,
+    "Unsupported": 226
+  },
+  "category_executable_candidates": 0,
+  "category_candidates": [],
+  "multiple_route_ambiguities": 0,
+  "production_authorizations": 0,
+  "false_authorizations": 0,
+  "manifest_unchanged": true
+}

@@ -1,0 +1,10 @@
+SOURCE_ID: openstax-contemporary-mathematics:counting-principles
+TITLE: Contemporary Mathematics
+SECTION: 7.1 The Multiplication Rule for Counting; 7.3 Combinations
+URL: https://openstax.org/books/contemporary-mathematics/pages/7-3-combinations
+LICENSE: CC BY-NC-SA 4.0; OpenStax attribution required
+RETRIEVED_UTC: 2026-08-23
+EVIDENCE: The source defines multiplication across independent finite choices and unordered combinations of selected objects.
+DERIVED_RULE: For c equal-sized categories with q choices each, selecting r distinct categories and one item from each, with category order irrelevant, yields C(c,r) times q^r.
+SCOPE: finite equal-sized categories; exactly one item from each selected category; exact bounded integers.
+UNSUPPORTED: unequal category sizes; multiple items per category; replacement; ordered selections; at-least or at-most targets; unstated category cardinality.

@@ -180,6 +180,8 @@ pub mod simplicial_homology_frontend;
 pub mod source_complex_pack;
 pub mod source_base_conversion_pack;
 pub mod source_base_conversion_frontend;
+pub mod source_category_selection_pack;
+pub mod source_category_selection_frontend;
 pub mod source_catalog_ingestion;
 pub mod source_catalog_memory;
 pub mod source_counting_frontend;

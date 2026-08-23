@@ -11,6 +11,13 @@ use crate::source_base_conversion_frontend::{
 use crate::source_base_conversion_pack::{
     evaluate_base_conversion, replay_verified as base_conversion_replay, BaseConversionStatus,
 };
+use crate::source_category_selection_frontend::{
+    formalize_category_selection_text, replay_verified as category_selection_frontend_replay,
+};
+use crate::source_category_selection_pack::{
+    evaluate_category_selection, replay_verified as category_selection_replay,
+    CategorySelectionStatus,
+};
 use crate::source_combination_frontend::{
     formalize_combination_text, replay_verified as combination_frontend_replay,
 };
@@ -49,6 +56,7 @@ pub const GEOMETRY_DOMAIN: &str = "source_derived_bounded_geometry";
 pub const GEOMETRY_SOURCE: &str =
     include_str!("../docs/sources/openstax_bounded_geometry_source.txt");
 pub const BASE_CONVERSION_DOMAIN: &str = crate::source_base_conversion_pack::DOMAIN;
+pub const CATEGORY_SELECTION_DOMAIN: &str = crate::source_category_selection_pack::DOMAIN;
 
 #[derive(Debug, Clone, Copy, Serialize, PartialEq, Eq, PartialOrd, Ord)]
 #[serde(rename_all = "snake_case")]
@@ -64,6 +72,7 @@ pub enum PortfolioRoute {
     FiniteRegression,
     FiniteStatistics,
     BaseConversion,
+    CategorySelection,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -453,6 +462,43 @@ fn base_conversion_route(text: &str, case_id: &str) -> RouteObservation {
     )
 }
 
+fn category_selection_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_category_selection_text(text, case_id);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = category_selection_frontend_replay(&frontend);
+    let frontend_tamper = !category_selection_frontend_replay(&frontend_tampered);
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::CategorySelection,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let execution = evaluate_category_selection(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == CategorySelectionStatus::Complete)
+        .then_some(execution.count)
+        .flatten()
+        .map(PortfolioCandidate::ExactCount);
+    observation(
+        PortfolioRoute::CategorySelection,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        category_selection_replay(&execution),
+        frontend_tamper,
+        !category_selection_replay(&execution_tampered),
+    )
+}
+
 /// Offer one prompt to every portfolio route, without a lexical pre-dispatch.
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
@@ -467,6 +513,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         geometry_route(text),
         regression_route(text),
         base_conversion_route(text, case_id),
+        category_selection_route(text, case_id),
     ]
 }
 
@@ -484,7 +531,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 11);
+        assert_eq!(observations.len(), 12);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -578,6 +625,23 @@ mod tests {
         assert_eq!(
             executable[0].candidate,
             Some(PortfolioCandidate::Text("91".into()))
+        );
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_category_selection_selects_only_category_route() {
+        let observations = observe_all(
+            "Choose 3 categories from 4 categories, with 13 choices per category, one from each selected category; order does not matter.",
+            "test-category-selection",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::CategorySelection);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::ExactCount(8788))
         );
         assert!(executable[0].execution_replay_verified);
         assert!(executable[0].execution_tamper_rejected);

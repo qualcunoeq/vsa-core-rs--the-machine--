@@ -50,6 +50,10 @@ use crate::source_statistics_frontend::{
 use crate::source_statistics_pack::evaluate_statistics;
 use crate::source_statistics_pack::records as statistics_records;
 use crate::source_unit_frontend::{formalize_unit_text, replay_verified as unit_frontend_replay};
+use crate::source_word_system_frontend::{
+    execute_word_system, execution_replay_verified as word_system_execution_replay,
+    formalize_two_number_system_v3, replay_verified as word_system_frontend_replay,
+};
 use serde::Serialize;
 
 pub const SEQUENCE_DOMAIN: &str = "external-source-sequence-shadow";
@@ -78,6 +82,7 @@ pub enum PortfolioRoute {
     BaseConversion,
     CategorySelection,
     ParameterLinearSystem,
+    WordSystem,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
@@ -563,6 +568,42 @@ fn parameter_linear_system_route(text: &str, case_id: &str) -> RouteObservation 
     )
 }
 
+fn word_system_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_two_number_system_v3(text, case_id);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = word_system_frontend_replay(&frontend);
+    let frontend_tamper = !word_system_frontend_replay(&frontend_tampered);
+    let Some(execution) = execute_word_system(&frontend) else {
+        return observation(
+            PortfolioRoute::WordSystem,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    let mut execution_tampered = execution.clone();
+    execution_tampered.result.push('x');
+    let candidate = (frontend.status
+        == crate::source_word_system_frontend::WordSystemStatus::Complete)
+        .then(|| execution.result.clone())
+        .map(PortfolioCandidate::Text);
+    observation(
+        PortfolioRoute::WordSystem,
+        format!("{:?}", frontend.status),
+        "complete",
+        candidate,
+        frontend_replay,
+        word_system_execution_replay(&execution),
+        frontend_tamper,
+        !word_system_execution_replay(&execution_tampered),
+    )
+}
+
 /// Offer one prompt to every portfolio route, without a lexical pre-dispatch.
 pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
     vec![
@@ -579,6 +620,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         base_conversion_route(text, case_id),
         category_selection_route(text, case_id),
         parameter_linear_system_route(text, case_id),
+        word_system_route(text, case_id),
     ]
 }
 
@@ -596,7 +638,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 13);
+        assert_eq!(observations.len(), 14);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -725,6 +767,25 @@ mod tests {
             executable[0].candidate,
             Some(PortfolioCandidate::Rational(
                 crate::probability_pack::Rational::new(26, 3).unwrap()
+            ))
+        );
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_word_system_selects_only_word_system_route() {
+        let observations = observe_all(
+            "The sum of two numbers is twenty. One number is four less than the other. Find the numbers.",
+            "test-word-system",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(executable[0].route, PortfolioRoute::WordSystem);
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::Text(
+                "{\"x\": \"8\", \"y\": \"12\"}".into()
             ))
         );
         assert!(executable[0].execution_replay_verified);

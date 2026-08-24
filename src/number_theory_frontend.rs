@@ -175,6 +175,183 @@ fn explicit_remainder_pair(text: &str) -> Option<(i64, u64)> {
     Some((dividend, divisor))
 }
 
+/// Evaluate a deliberately small integer-expression grammar for a remainder
+/// request.  This is a separate operation from the literal remainder bridge:
+/// it accepts only bounded integer literals, `+`, `-`, `*`, `^`, and grouping.
+/// Variables, division, factorials, implicit multiplication, and oversized
+/// powers remain outside the contract.
+struct IntegerExpressionParser {
+    chars: Vec<char>,
+    position: usize,
+}
+
+impl IntegerExpressionParser {
+    fn new(text: &str) -> Self {
+        Self {
+            chars: text.chars().collect(),
+            position: 0,
+        }
+    }
+
+    fn skip_space(&mut self) {
+        while self
+            .chars
+            .get(self.position)
+            .is_some_and(|character| character.is_whitespace())
+        {
+            self.position += 1;
+        }
+    }
+
+    fn consume(&mut self, expected: char) -> bool {
+        self.skip_space();
+        if self.chars.get(self.position) == Some(&expected) {
+            self.position += 1;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn parse(&mut self) -> Option<i128> {
+        let value = self.parse_add_sub()?;
+        self.skip_space();
+        (self.position == self.chars.len()).then_some(value)
+    }
+
+    fn parse_add_sub(&mut self) -> Option<i128> {
+        let mut value = self.parse_mul()?;
+        loop {
+            if self.consume('+') {
+                value = value.checked_add(self.parse_mul()?)?;
+            } else if self.consume('-') {
+                value = value.checked_sub(self.parse_mul()?)?;
+            } else {
+                return Some(value);
+            }
+        }
+    }
+
+    fn parse_mul(&mut self) -> Option<i128> {
+        let mut value = self.parse_unary()?;
+        while self.consume('*') {
+            value = value.checked_mul(self.parse_unary()?)?;
+        }
+        Some(value)
+    }
+
+    fn parse_unary(&mut self) -> Option<i128> {
+        if self.consume('+') {
+            self.parse_unary()
+        } else if self.consume('-') {
+            self.parse_unary()?.checked_neg()
+        } else {
+            self.parse_power()
+        }
+    }
+
+    fn parse_power(&mut self) -> Option<i128> {
+        let base = self.parse_primary()?;
+        if !self.consume('^') {
+            return Some(base);
+        }
+        let exponent = self.parse_unary()?;
+        if !(0..=12).contains(&exponent) {
+            return None;
+        }
+        let mut value = 1_i128;
+        for _ in 0..exponent {
+            value = value.checked_mul(base)?;
+        }
+        Some(value)
+    }
+
+    fn parse_primary(&mut self) -> Option<i128> {
+        self.skip_space();
+        if self.consume('(') {
+            let value = self.parse_add_sub()?;
+            return self.consume(')').then_some(value);
+        }
+        let start = self.position;
+        while self
+            .chars
+            .get(self.position)
+            .is_some_and(|character| character.is_ascii_digit())
+        {
+            self.position += 1;
+        }
+        (start != self.position)
+            .then(|| self.chars[start..self.position].iter().collect::<String>())
+            .and_then(|digits| digits.parse::<i128>().ok())
+    }
+}
+
+/// Parse an arithmetic integer expression in a remainder request.  The
+/// expression is lowered to a typed `ArithmeticRemainder` request only after
+/// the restricted grammar accepts the complete span.
+fn explicit_arithmetic_remainder_pair(text: &str) -> Option<(i64, u64)> {
+    let lower = text.to_ascii_lowercase();
+    if [
+        "polynomial",
+        "quotient",
+        "sequence",
+        "variable",
+        "factorial",
+        "!",
+        "/",
+        "\\cdot",
+    ]
+    .iter()
+    .any(|term| lower.contains(term))
+    {
+        return None;
+    }
+    let start = lower
+        .find("remainder when")
+        .map(|index| index + "remainder when".len())
+        .or_else(|| {
+            lower
+                .find("remainder of")
+                .map(|index| index + "remainder of".len())
+        })?;
+    let suffix = &text[start..];
+    let suffix_lower = &lower[start..];
+    let marker = suffix_lower
+        .find(" is divided by ")
+        .map(|index| (index, " is divided by ".len()))
+        .or_else(|| {
+            suffix_lower
+                .find(" divided by ")
+                .map(|index| (index, " divided by ".len()))
+        })?;
+    let left = suffix[..marker.0].trim();
+    let left = left
+        .strip_prefix("the sum of")
+        .or_else(|| left.strip_prefix("the product of"))
+        .unwrap_or(left)
+        .trim();
+    let left = left
+        .trim_matches(|character: char| character.is_whitespace() || character == '$')
+        .trim();
+    if !left
+        .chars()
+        .any(|character| matches!(character, '+' | '-' | '*' | '^' | '(' | ')'))
+    {
+        return None;
+    }
+    let right = suffix[marker.0 + marker.1..].trim();
+    let right = right.trim_matches(|character: char| {
+        character.is_whitespace() || matches!(character, '.' | '?' | '$' | ',' | ')')
+    });
+    if right.is_empty() || right.chars().any(|character| !character.is_ascii_digit()) {
+        return None;
+    }
+    let divisor = right.parse::<u64>().ok()?;
+    let mut parser = IntegerExpressionParser::new(left);
+    let value = parser.parse()?.try_into().ok()?;
+    Some((value, divisor))
+}
+
 /// Parse a direct literal modular-inverse request without treating an
 /// expression, a supplied inverse, or an inverse of a symbolic product as a
 /// literal operand pair.
@@ -655,6 +832,7 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
     let missing = match operation {
         NumberTheoryOperation::GcdBezout => [a.is_none(), b.is_none()].iter().any(|v| *v),
         NumberTheoryOperation::Remainder => a.is_none() || modulus.is_none(),
+        NumberTheoryOperation::ArithmeticRemainder => a.is_none() || modulus.is_none(),
         NumberTheoryOperation::ModularInverse => a.is_none() || modulus.is_none(),
         NumberTheoryOperation::LinearCongruence => a.is_none() || b.is_none() || modulus.is_none(),
         NumberTheoryOperation::ChineseRemainder => {
@@ -684,6 +862,54 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
     finish(NumberTheoryFrontendResult {
         status: NumberTheoryFrontendStatus::Complete,
         request: Some(typed),
+        unresolved: Vec::new(),
+        provenance,
+        replay_hash: String::new(),
+    })
+}
+
+/// Shadow-only frontend for bounded literal arithmetic inside a remainder
+/// request.  It is intentionally separate from the frozen literal remainder
+/// contract so existing routes cannot silently widen their semantics.
+pub fn formalize_arithmetic_remainder_text(
+    text: &str,
+    case_id: &str,
+) -> NumberTheoryFrontendResult {
+    let lower = text.to_ascii_lowercase();
+    let provenance = vec![
+        format!("number-theory-arithmetic-frontend:{case_id}"),
+        "bounded-integer-expression-parser".into(),
+        format!("source-span:0..{}", text.len()),
+    ];
+    if lower.contains(" or ") || lower.contains("either") {
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Ambiguous,
+            request: None,
+            unresolved: vec!["more than one remainder expression is proposed".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+    let Some((value, divisor)) = explicit_arithmetic_remainder_pair(text) else {
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Unsupported,
+            request: None,
+            unresolved: vec!["expression is outside the bounded integer arithmetic grammar".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    };
+    finish(NumberTheoryFrontendResult {
+        status: NumberTheoryFrontendStatus::Complete,
+        request: Some(request(
+            NumberTheoryOperation::ArithmeticRemainder,
+            Some(value),
+            None,
+            None,
+            Some(divisor),
+            None,
+            provenance.clone(),
+        )),
         unresolved: Vec::new(),
         provenance,
         replay_hash: String::new(),
@@ -821,6 +1047,27 @@ mod tests {
             assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
             assert!(replay_verified(&result));
         }
+    }
+
+    #[test]
+    fn binds_bounded_arithmetic_remainder_separately() {
+        let result = formalize_arithmetic_remainder_text(
+            "What is the remainder when 1^2 + 2^2 + 3^2 is divided by 11?",
+            "arithmetic-remainder-natural",
+        );
+        assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+        assert_eq!(
+            result.request.as_ref().unwrap().operation,
+            NumberTheoryOperation::ArithmeticRemainder
+        );
+        assert!(replay_verified(&result));
+
+        let unsupported = formalize_arithmetic_remainder_text(
+            "What is the remainder when x^2 + 1 is divided by 11?",
+            "arithmetic-remainder-boundary",
+        );
+        assert_eq!(unsupported.status, NumberTheoryFrontendStatus::Unsupported);
+        assert!(replay_verified(&unsupported));
     }
 
     #[test]

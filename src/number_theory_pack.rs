@@ -14,6 +14,7 @@ const MAX_INPUT: u64 = 100_000;
 pub enum NumberTheoryOperation {
     GcdBezout,
     Remainder,
+    ArithmeticRemainder,
     ModularInverse,
     LinearCongruence,
     ChineseRemainder,
@@ -190,7 +191,7 @@ pub fn evaluate_number_theory(request: &NumberTheoryRequest) -> NumberTheoryResu
         "inputs bounded by 100000 where applicable".into(),
     ];
     match request.operation {
-        NumberTheoryOperation::Remainder => {
+        NumberTheoryOperation::Remainder | NumberTheoryOperation::ArithmeticRemainder => {
             let (Some(value), Some(modulus)) = (request.a, request.modulus) else {
                 return result(
                     request,
@@ -212,7 +213,9 @@ pub fn evaluate_number_theory(request: &NumberTheoryRequest) -> NumberTheoryResu
             result(
                 request,
                 NumberTheoryStatus::Complete,
-                Some(NumberTheoryArtifact::Scalar(value.rem_euclid(modulus as i64) as u64)),
+                Some(NumberTheoryArtifact::Scalar(
+                    value.rem_euclid(modulus as i64) as u64,
+                )),
                 assumptions,
                 Vec::new(),
             )
@@ -508,5 +511,13 @@ mod tests {
         let mut tampered = result.clone();
         tampered.replay_hash.push('x');
         assert!(!tampered.replay_verified());
+    }
+
+    #[test]
+    fn arithmetic_remainder_replays_as_a_distinct_operation() {
+        let result = evaluate_number_theory(&request(NumberTheoryOperation::ArithmeticRemainder));
+        assert_eq!(result.artifact, Some(NumberTheoryArtifact::Scalar(3)));
+        assert_eq!(result.operation, NumberTheoryOperation::ArithmeticRemainder);
+        assert!(result.replay_verified());
     }
 }

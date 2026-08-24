@@ -324,6 +324,76 @@ fn explicit_totient_modulus(text: &str) -> Option<u64> {
     (upper.checked_add(1) == Some(modulus)).then_some(modulus)
 }
 
+/// Parse one literal linear congruence only when the requested answer is a
+/// canonical representative.  Systems of congruences, symbolic
+/// coefficients, and requests for a non-canonical negative representative are
+/// intentionally left outside this bridge.
+fn explicit_linear_congruence(text: &str) -> Option<(i64, i64, u64)> {
+    let lower = text.to_ascii_lowercase();
+    let unicode_count = lower.matches('≡').count();
+    let latex_count = lower.matches("\\equiv").count();
+    if unicode_count + latex_count != 1
+        || lower.contains("congruences")
+        || lower.contains(" or ")
+        || !(lower.contains("smallest positive")
+            || lower.contains("least nonnegative")
+            || lower.contains("least positive")
+            || lower.contains("0\\le"))
+    {
+        return None;
+    }
+    let (congruence, marker_len) = if unicode_count == 1 {
+        (lower.find('≡')?, '≡'.len_utf8())
+    } else {
+        (lower.find("\\equiv")?, "\\equiv".len())
+    };
+    // Keep only the final math fragment when prose contains a preceding
+    // range/definition (for example `0 <= n < 101 and $100n ...`).
+    let left = text[..congruence]
+        .trim()
+        .rsplit('$')
+        .next()
+        .unwrap_or(text[..congruence].trim())
+        .trim();
+    let variable_position = left
+        .char_indices()
+        .rev()
+        .find(|(_, character)| *character == 'x' || *character == 'n')
+        .map(|(index, _)| index)?;
+    let variable = left[variable_position..].chars().next()?;
+    if !matches!(variable, 'x' | 'n')
+        || !left[variable_position + variable.len_utf8()..]
+            .trim()
+            .is_empty()
+    {
+        return None;
+    }
+    let coefficient = left[..variable_position]
+        .trim_matches(|character: char| character.is_whitespace() || character == '$')
+        .parse::<i64>()
+        .ok()?;
+    let right_and_modulus = &text[congruence + marker_len..];
+    let right = right_and_modulus
+        .trim_start()
+        .chars()
+        .take_while(|character| character.is_ascii_digit() || *character == '-')
+        .collect::<String>()
+        .parse::<i64>()
+        .ok()?;
+    let lower_tail = lower[congruence + marker_len..].to_string();
+    let modulus_marker = lower_tail
+        .find("\\pmod{")
+        .map(|index| (index, "\\pmod{".len()))
+        .or_else(|| lower_tail.find("(mod ").map(|index| (index, "(mod ".len())))?;
+    let modulus = right_and_modulus[modulus_marker.0 + modulus_marker.1..]
+        .chars()
+        .take_while(|character| character.is_ascii_digit())
+        .collect::<String>()
+        .parse::<u64>()
+        .ok()?;
+    Some((coefficient, right, modulus))
+}
+
 fn request(
     operation: NumberTheoryOperation,
     a: Option<i64>,
@@ -509,6 +579,25 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
             NumberTheoryOperation::EulerTotient,
             None,
             None,
+            None,
+            Some(modulus),
+            None,
+            provenance.clone(),
+        );
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Complete,
+            request: Some(request),
+            unresolved: Vec::new(),
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+
+    if let Some((coefficient, right, modulus)) = explicit_linear_congruence(text) {
+        let request = request(
+            NumberTheoryOperation::LinearCongruence,
+            Some(coefficient),
+            Some(right),
             None,
             Some(modulus),
             None,
@@ -759,5 +848,33 @@ mod tests {
         );
         assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
         assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn binds_canonical_linear_congruence_forms() {
+        for text in [
+            r"What is the smallest positive integer satisfying the congruence $4x \equiv 13 \pmod{27}$?",
+            r"What integer n satisfies $0\le n<101$ and $100n\equiv72\pmod{101}$?",
+        ] {
+            let result = formalize_number_theory_text(text, "linear-congruence-natural");
+            assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert_eq!(
+                result.request.as_ref().unwrap().operation,
+                NumberTheoryOperation::LinearCongruence
+            );
+            assert!(replay_verified(&result));
+        }
+    }
+
+    #[test]
+    fn refuses_noncanonical_linear_congruence_targets() {
+        for text in [
+            r"Find the largest negative integer x satisfying $34x+6\equiv2\pmod{20}$.",
+            r"Solve the simultaneous congruences $x\equiv2\pmod{3}$ and $x\equiv3\pmod{5}$.",
+        ] {
+            let result = formalize_number_theory_text(text, "linear-congruence-boundary");
+            assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert!(replay_verified(&result));
+        }
     }
 }

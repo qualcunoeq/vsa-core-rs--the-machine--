@@ -10,6 +10,10 @@ use sha2::{Digest, Sha256};
 
 pub const DOMAIN: &str = "source_derived_bounded_counting";
 pub const SOURCE_ID: &str = "openstax-contemporary-mathematics:counting-principles";
+/// Maximum `n` accepted by the separately governed extended-combination
+/// evaluator.  The ordinary counting evaluator intentionally retains its
+/// original `n <= 20` scope for compatibility with its frozen corpus.
+pub const EXTENDED_COMBINATION_MAX_N: u64 = 100_000;
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
@@ -112,6 +116,113 @@ pub fn replay_verified(result: &CountingResult) -> bool {
 }
 fn factorial(value: u64) -> Option<u128> {
     (1..=value).try_fold(1_u128, |acc, item| acc.checked_mul(item as u128))
+}
+
+fn gcd_u128(mut left: u128, mut right: u128) -> u128 {
+    while right != 0 {
+        let remainder = left % right;
+        left = right;
+        right = remainder;
+    }
+    left
+}
+
+/// Compute a binomial coefficient without factorial overflow.
+///
+/// Numerator and denominator factors are cancelled before multiplication, so
+/// a result is accepted whenever the exact value fits in `u128`, even when
+/// `n` itself is much larger than the ordinary factorial scope.
+fn checked_combination(n: u64, r: u64) -> Option<u128> {
+    let terms = r.min(n - r);
+    let mut value = 1_u128;
+    for index in 1..=terms {
+        let mut numerator = (n - terms + index) as u128;
+        let mut denominator = index as u128;
+        let common = gcd_u128(numerator, denominator);
+        numerator /= common;
+        denominator /= common;
+        let common = gcd_u128(value, denominator);
+        value /= common;
+        denominator /= common;
+        if denominator != 1 {
+            return None;
+        }
+        value = value.checked_mul(numerator)?;
+    }
+    Some(value)
+}
+
+/// Evaluate only the extended exact-combination scope.
+///
+/// This is deliberately separate from [`evaluate`].  The original evaluator
+/// and its frozen pressure corpus retain the `n <= 20` contract; callers must
+/// explicitly choose this extension and preserve its distinct receipt.
+pub fn evaluate_extended_combination(request: &CountingRequest) -> CountingResult {
+    let assumptions = vec![
+        "finite exact counting model".into(),
+        format!(
+            "extended combinations require 0 <= r <= n <= {} and an exact u128 result",
+            EXTENDED_COMBINATION_MAX_N
+        ),
+    ];
+    let finish_with = |status, artifact, reasons: Vec<String>| {
+        finish(CountingResult {
+            status,
+            artifact,
+            operation: request.operation,
+            assumptions: assumptions.clone(),
+            reasons,
+            source: source(),
+            provenance: request.provenance.clone(),
+            replay_hash: String::new(),
+        })
+    };
+    if request.provenance.is_empty() {
+        return finish_with(
+            CountingStatus::Missing,
+            None,
+            vec!["provenance is required".into()],
+        );
+    }
+    if request.operation != CountingOperation::Combination {
+        return finish_with(
+            CountingStatus::Unsupported,
+            None,
+            vec!["the extended evaluator accepts combinations only".into()],
+        );
+    }
+    if let Some(reason) = &request.ambiguity {
+        return finish_with(CountingStatus::Ambiguous, None, vec![reason.clone()]);
+    }
+    let (Some(n), Some(r)) = (request.n, request.r) else {
+        return finish_with(
+            CountingStatus::Missing,
+            None,
+            vec!["combination requires n and r".into()],
+        );
+    };
+    if n > EXTENDED_COMBINATION_MAX_N || r > n {
+        return finish_with(
+            CountingStatus::InvalidRange,
+            None,
+            vec![format!(
+                "extended combination requires 0 <= r <= n <= {}",
+                EXTENDED_COMBINATION_MAX_N
+            )],
+        );
+    }
+    match checked_combination(n, r) {
+        Some(value) => finish_with(
+            CountingStatus::Complete,
+            Some(CountingArtifact::ExactCount(value)),
+            Vec::new(),
+        ),
+        None => finish_with(
+            CountingStatus::Overflow,
+            None,
+            vec!["exact extended combination overflowed u128".into()],
+        ),
+    }
 }
 
 pub fn evaluate(request: &CountingRequest) -> CountingResult {
@@ -233,5 +344,37 @@ mod tests {
             provenance: vec!["test".into()],
         };
         assert!(replay_verified(&evaluate(&request)));
+    }
+
+    #[test]
+    fn extended_combination_handles_large_edge_values() {
+        let request = CountingRequest {
+            operation: CountingOperation::Combination,
+            n: Some(1293),
+            r: Some(1),
+            factors: Vec::new(),
+            ambiguity: None,
+            provenance: vec!["test-extended".into()],
+        };
+        let result = evaluate_extended_combination(&request);
+        assert_eq!(result.status, CountingStatus::Complete);
+        assert_eq!(result.artifact, Some(CountingArtifact::ExactCount(1293)));
+        assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn extended_combination_rejects_overflow_without_authorizing() {
+        let request = CountingRequest {
+            operation: CountingOperation::Combination,
+            n: Some(100_000),
+            r: Some(50_000),
+            factors: Vec::new(),
+            ambiguity: None,
+            provenance: vec!["test-overflow".into()],
+        };
+        let result = evaluate_extended_combination(&request);
+        assert_eq!(result.status, CountingStatus::Overflow);
+        assert!(result.artifact.is_none());
+        assert!(replay_verified(&result));
     }
 }

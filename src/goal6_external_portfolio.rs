@@ -32,7 +32,8 @@ use crate::source_complex_pack::source_complex_frontend::formalize_complex_text;
 use crate::source_complex_pack::{evaluate_complex, ComplexArtifact, ComplexStatus};
 use crate::source_counting_frontend::formalize_counting_text;
 use crate::source_counting_pack::{
-    evaluate as evaluate_counting, CountingArtifact, CountingStatus,
+    evaluate as evaluate_counting, evaluate_extended_combination, CountingArtifact,
+    CountingOperation, CountingStatus,
 };
 use crate::source_finite_experiment_frontend::{
     execute as execute_finite_experiment,
@@ -612,7 +613,19 @@ fn counting_route(text: &str, case_id: &str) -> RouteObservation {
             false,
         );
     };
-    let execution = evaluate_counting(request);
+    // The original counting pack retains its frozen `n <= 20` contract.  A
+    // complete explicit binomial that reaches only that range boundary may
+    // opt into the separately governed exact-combination extension; all
+    // other counting operations keep the original evaluator and refusal
+    // semantics.
+    let base_execution = evaluate_counting(request);
+    let execution = if base_execution.status == CountingStatus::InvalidRange
+        && request.operation == CountingOperation::Combination
+    {
+        evaluate_extended_combination(request)
+    } else {
+        base_execution
+    };
     let mut execution_tampered = execution.clone();
     execution_tampered.replay_hash.push('x');
     let candidate = (execution.status == CountingStatus::Complete)

@@ -72,10 +72,7 @@ fn marker_count(text: &str, marker: &str) -> usize {
 fn explicit_gcd_pair(text: &str) -> Option<(i64, i64)> {
     let lower = text.to_ascii_lowercase();
     let (suffix, natural_phrase) = if let Some(start) = lower.find("greatest common divisor of") {
-        (
-            &text[start + "greatest common divisor of".len()..],
-            true,
-        )
+        (&text[start + "greatest common divisor of".len()..], true)
     } else if let Some(start) = lower.find("gcd(") {
         (&text[start + "gcd(".len()..], false)
     } else {
@@ -113,7 +110,10 @@ fn explicit_gcd_pair(text: &str) -> Option<(i64, i64)> {
         remainder.strip_prefix(',')?.trim_start()
     };
     let (second, trailing) = integer_prefix(remainder)?;
-    if trailing.chars().any(|character| matches!(character, '!' | '/' | '^' | '+' | '*')) {
+    if trailing
+        .chars()
+        .any(|character| matches!(character, '!' | '/' | '^' | '+' | '*'))
+    {
         return None;
     }
     Some((first, second))
@@ -124,22 +124,37 @@ fn explicit_gcd_pair(text: &str) -> Option<(i64, i64)> {
 /// integer; powers, sums, polynomials, variables, and sequences do not pass.
 fn explicit_remainder_pair(text: &str) -> Option<(i64, u64)> {
     let lower = text.to_ascii_lowercase();
-    if ["power", "polynomial", "sequence", "sum", "product", "integer n"]
-        .iter()
-        .any(|term| lower.contains(term))
+    if [
+        "power",
+        "polynomial",
+        "sequence",
+        "sum",
+        "product",
+        "integer n",
+    ]
+    .iter()
+    .any(|term| lower.contains(term))
     {
         return None;
     }
     let start = lower
         .find("remainder when")
         .map(|index| index + "remainder when".len())
-        .or_else(|| lower.find("remainder of").map(|index| index + "remainder of".len()))?;
+        .or_else(|| {
+            lower
+                .find("remainder of")
+                .map(|index| index + "remainder of".len())
+        })?;
     let suffix = &text[start..];
     let suffix_lower = lower[start..].to_string();
     let marker = suffix_lower
         .find(" is divided by ")
         .map(|index| (index, " is divided by ".len()))
-        .or_else(|| suffix_lower.find(" divided by ").map(|index| (index, " divided by ".len())))?;
+        .or_else(|| {
+            suffix_lower
+                .find(" divided by ")
+                .map(|index| (index, " divided by ".len()))
+        })?;
     let left = suffix[..marker.0].trim();
     let right = suffix[marker.0 + marker.1..].trim();
     let parse_literal = |value: &str| -> Option<i64> {
@@ -158,6 +173,111 @@ fn explicit_remainder_pair(text: &str) -> Option<(i64, u64)> {
     let dividend = parse_literal(left)?;
     let divisor = u64::try_from(parse_literal(right)?).ok()?;
     Some((dividend, divisor))
+}
+
+/// Parse a direct literal modular-inverse request without treating an
+/// expression, a supplied inverse, or an inverse of a symbolic product as a
+/// literal operand pair.
+fn explicit_modular_inverse_pair(text: &str) -> Option<(i64, u64)> {
+    let lower = text.to_ascii_lowercase();
+    if [
+        "given",
+        "provided",
+        "product",
+        "ab",
+        "expression",
+        "variable",
+    ]
+    .iter()
+    .any(|term| lower.contains(term))
+    {
+        return None;
+    }
+    let parse_literal = |value: &str| -> Option<i64> {
+        let value = value.trim();
+        if value.is_empty()
+            || value.chars().any(|character| {
+                !character.is_ascii_digit() && character != '-' && character != '−'
+            })
+        {
+            return None;
+        }
+        value.replace('−', "-").parse().ok()
+    };
+    let parse_modulus = |value: &str| -> Option<u64> {
+        let value = value.trim_start();
+        let end = value
+            .char_indices()
+            .find(|(_, character)| !character.is_ascii_digit() && *character != '-')
+            .map(|(index, _)| index)
+            .unwrap_or(value.len());
+        let modulus = parse_literal(&value[..end])?;
+        u64::try_from(modulus).ok()
+    };
+    for marker in ["modular inverse of", "multiplicative inverse to"] {
+        let Some(marker_start) = lower.find(marker) else {
+            continue;
+        };
+        let start = marker_start + marker.len();
+        let suffix = &text[start..];
+        let suffix_lower = lower[start..].to_string();
+        let Some(modulus_marker) = suffix_lower
+            .find(" modulo ")
+            .map(|index| (index, " modulo ".len()))
+            .or_else(|| {
+                suffix_lower
+                    .find(" mod ")
+                    .map(|index| (index, " mod ".len()))
+            })
+        else {
+            continue;
+        };
+        let value = parse_literal(suffix[..modulus_marker.0].trim())?;
+        let modulus = parse_modulus(&suffix[modulus_marker.0 + modulus_marker.1..])?;
+        return Some((value, modulus));
+    }
+    let inverse_marker = lower.find("^{-1}")?;
+    let before = &text[..inverse_marker];
+    let digits_start = before
+        .char_indices()
+        .rev()
+        .find(|(_, character)| !character.is_ascii_digit())
+        .map(|(index, _)| index + 1)
+        .unwrap_or(0);
+    if before[..digits_start]
+        .trim_end()
+        .chars()
+        .last()
+        .is_some_and(|character| matches!(character, '(' | '+' | '-' | '*' | '/' | '=' | ','))
+    {
+        return None;
+    }
+    let value = parse_literal(&before[digits_start..])?;
+    let suffix = &text[inverse_marker + "^{-1}".len()..];
+    let suffix_lower = lower[inverse_marker + "^{-1}".len()..].to_string();
+    let modulus_marker = suffix_lower
+        .find("\\pmod{")
+        .map(|index| (index, "\\pmod{".len()))
+        .or_else(|| {
+            suffix_lower
+                .find(" modulo ")
+                .map(|index| (index, " modulo ".len()))
+        })?;
+    let modulus_text = if suffix_marker_is_braced(&suffix_lower, modulus_marker.0) {
+        suffix[modulus_marker.0 + modulus_marker.1..]
+            .split('}')
+            .next()
+            .unwrap_or("")
+            .to_string()
+    } else {
+        suffix[modulus_marker.0 + modulus_marker.1..].to_string()
+    };
+    let modulus = parse_modulus(&modulus_text)?;
+    Some((value, modulus))
+}
+
+fn suffix_marker_is_braced(suffix: &str, marker: usize) -> bool {
+    suffix[marker..].starts_with("\\pmod{")
 }
 
 fn request(
@@ -321,6 +441,25 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
         });
     }
 
+    if let Some((value, modulus)) = explicit_modular_inverse_pair(text) {
+        let request = request(
+            NumberTheoryOperation::ModularInverse,
+            Some(value),
+            None,
+            None,
+            Some(modulus),
+            None,
+            provenance.clone(),
+        );
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Complete,
+            request: Some(request),
+            unresolved: Vec::new(),
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+
     let operation = if lower.contains("bezout")
         || lower.contains("bézout")
         || (lower.contains("gcd") && lower.contains("greatest common divisor"))
@@ -402,6 +541,7 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::number_theory_pack::evaluate_number_theory;
 
     #[test]
     fn shifted_inverse_and_unicode_congruence_bind() {
@@ -492,5 +632,42 @@ mod tests {
         );
         assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
         assert!(replay_verified(&result));
+    }
+
+    #[test]
+    fn binds_literal_modular_inverse_forms() {
+        for (text, expected) in [
+            ("Find the modular inverse of 4 modulo 35.", 9),
+            ("Find the multiplicative inverse to 450 modulo 3599.", 8),
+            (r"Find $4^{-1} \pmod{35}$.", 9),
+        ] {
+            let result = formalize_number_theory_text(text, "inverse-natural");
+            assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert_eq!(
+                result.request.as_ref().unwrap().operation,
+                NumberTheoryOperation::ModularInverse
+            );
+            assert_eq!(
+                evaluate_number_theory(result.request.as_ref().unwrap()).artifact,
+                Some(crate::number_theory_pack::NumberTheoryArtifact::Scalar(
+                    expected
+                ))
+            );
+            assert!(replay_verified(&result));
+        }
+    }
+
+    #[test]
+    fn refuses_symbolic_or_supplied_inverse_forms() {
+        for text in [
+            "Given that 13 inverse is 29 modulo 47, find another inverse.",
+            "Find the inverse of AB modulo 1000000.",
+            r"Find x^{-1} \pmod{35}.",
+            r"Let a \equiv (3^{-1}+5^{-1})^{-1} \pmod{11}.",
+        ] {
+            let result = formalize_number_theory_text(text, "inverse-boundary");
+            assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert!(replay_verified(&result));
+        }
     }
 }

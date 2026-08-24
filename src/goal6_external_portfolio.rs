@@ -5,6 +5,12 @@
 //! their receipts replay. This module does not read answer keys, select by
 //! lexical hints, authorize production, or mutate a registry.
 
+use crate::number_theory_frontend::{
+    formalize_number_theory_text, replay_verified as number_theory_frontend_replay,
+};
+use crate::number_theory_pack::{
+    evaluate_number_theory, NumberTheoryArtifact, NumberTheoryOperation, NumberTheoryStatus,
+};
 use crate::parameter_linear_system_frontend::{
     execute as execute_parameter_system, execution_replay_verified as parameter_execution_replay,
     formalize as formalize_parameter_system, replay_verified as parameter_frontend_replay,
@@ -15,7 +21,9 @@ use crate::source_base_conversion_frontend::{
 use crate::source_base_conversion_pack::{
     evaluate_base_conversion, replay_verified as base_conversion_replay, BaseConversionStatus,
 };
-use crate::source_bayes_frontend::{formalize_bayes_text, replay_verified as bayes_frontend_replay};
+use crate::source_bayes_frontend::{
+    formalize_bayes_text, replay_verified as bayes_frontend_replay,
+};
 use crate::source_bayes_pack::evaluate as evaluate_bayes;
 use crate::source_category_selection_frontend::{
     formalize_category_selection_text, replay_verified as category_selection_frontend_replay,
@@ -50,12 +58,6 @@ use crate::source_mean_update_frontend::{
     formalize_mean_update_text, replay_verified as mean_update_frontend_replay,
 };
 use crate::source_mean_update_pack::evaluate as evaluate_mean_update;
-use crate::number_theory_frontend::{
-    formalize_number_theory_text, replay_verified as number_theory_frontend_replay,
-};
-use crate::number_theory_pack::{
-    evaluate_number_theory, NumberTheoryArtifact, NumberTheoryOperation, NumberTheoryStatus,
-};
 use crate::source_progression_mean_frontend::formalize_progression_mean_text;
 use crate::source_progression_mean_pack::evaluate as evaluate_progression_mean;
 use crate::source_regression_pack::source_regression_frontend::formalize_regression_text;
@@ -93,6 +95,7 @@ pub enum PortfolioRoute {
     BayesPosterior,
     NumberTheoryGcd,
     NumberTheoryRemainder,
+    NumberTheoryModularInverse,
     ArithmeticSequence,
     ArithmeticProgressionMean,
     NaturalCombination,
@@ -422,6 +425,59 @@ fn number_theory_remainder_route(text: &str, case_id: &str) -> RouteObservation 
         .map(PortfolioCandidate::ExactCount);
     observation(
         PortfolioRoute::NumberTheoryRemainder,
+        format!("{:?}", frontend.status),
+        format!("{:?}", execution.status),
+        candidate,
+        frontend_replay,
+        execution.replay_verified(),
+        frontend_tamper,
+        !execution_tampered.replay_verified(),
+    )
+}
+
+fn number_theory_modular_inverse_route(text: &str, case_id: &str) -> RouteObservation {
+    let frontend = formalize_number_theory_text(text, case_id);
+    let mut frontend_tampered = frontend.clone();
+    frontend_tampered.replay_hash.push('x');
+    let frontend_replay = number_theory_frontend_replay(&frontend);
+    let frontend_tamper = !number_theory_frontend_replay(&frontend_tampered);
+    let Some(request) = frontend.request.as_ref() else {
+        return observation(
+            PortfolioRoute::NumberTheoryModularInverse,
+            format!("{:?}", frontend.status),
+            "not_run",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    };
+    if request.operation != NumberTheoryOperation::ModularInverse {
+        return observation(
+            PortfolioRoute::NumberTheoryModularInverse,
+            format!("{:?}", frontend.status),
+            "unsupported_route_operation",
+            None,
+            frontend_replay,
+            false,
+            frontend_tamper,
+            false,
+        );
+    }
+    let execution = evaluate_number_theory(request);
+    let mut execution_tampered = execution.clone();
+    execution_tampered.replay_hash.push('x');
+    let candidate = (execution.status == NumberTheoryStatus::Complete)
+        .then(|| execution.artifact.clone())
+        .flatten()
+        .and_then(|artifact| match artifact {
+            NumberTheoryArtifact::Scalar(value) => Some(value as u128),
+            _ => None,
+        })
+        .map(PortfolioCandidate::ExactCount);
+    observation(
+        PortfolioRoute::NumberTheoryModularInverse,
         format!("{:?}", frontend.status),
         format!("{:?}", execution.status),
         candidate,
@@ -908,6 +964,7 @@ pub fn observe_all(text: &str, case_id: &str) -> Vec<RouteObservation> {
         bayes_posterior_route(text, case_id),
         number_theory_gcd_route(text, case_id),
         number_theory_remainder_route(text, case_id),
+        number_theory_modular_inverse_route(text, case_id),
         statistics_route(text),
         sequence_route(text, case_id),
         progression_mean_route(text),
@@ -939,7 +996,7 @@ mod tests {
     #[test]
     fn route_blind_mean_selects_only_mean() {
         let observations = observe_all("Find the arithmetic mean of {2, 4, 8}.", "test-mean");
-        assert_eq!(observations.len(), 20);
+        assert_eq!(observations.len(), 21);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::FiniteListMean);
@@ -1052,7 +1109,7 @@ Score & Number of Students \\
             "Use Bayes theorem with prior=3/100, likelihood=3/4, evidence=1/5 to find the posterior.",
             "test-bayes",
         );
-        assert_eq!(observations.len(), 20);
+        assert_eq!(observations.len(), 21);
         let executable = executable_routes(&observations);
         assert_eq!(executable.len(), 1);
         assert_eq!(executable[0].route, PortfolioRoute::BayesPosterior);
@@ -1099,6 +1156,28 @@ Score & Number of Students \\
         assert_eq!(
             executable[0].candidate,
             Some(PortfolioCandidate::ExactCount(8))
+        );
+        assert!(executable[0].frontend_replay_verified);
+        assert!(executable[0].execution_replay_verified);
+        assert!(executable[0].frontend_tamper_rejected);
+        assert!(executable[0].execution_tamper_rejected);
+    }
+
+    #[test]
+    fn route_blind_literal_modular_inverse_selects_only_inverse_route() {
+        let observations = observe_all(
+            "Find the modular inverse of 4 modulo 35.",
+            "test-modular-inverse",
+        );
+        let executable = executable_routes(&observations);
+        assert_eq!(executable.len(), 1);
+        assert_eq!(
+            executable[0].route,
+            PortfolioRoute::NumberTheoryModularInverse
+        );
+        assert_eq!(
+            executable[0].candidate,
+            Some(PortfolioCandidate::ExactCount(9))
         );
         assert!(executable[0].frontend_replay_verified);
         assert!(executable[0].execution_replay_verified);

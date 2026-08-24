@@ -280,6 +280,50 @@ fn suffix_marker_is_braced(suffix: &str, marker: usize) -> bool {
     suffix[marker..].starts_with("\\pmod{")
 }
 
+/// Parse a literal Euler-totient or complete-unit-count request.  The unit
+/// phrasing is accepted only for the canonical range `0..n-1` modulo `n`, so
+/// a general coprimality count cannot silently become a totient query.
+fn explicit_totient_modulus(text: &str) -> Option<u64> {
+    let lower = text.to_ascii_lowercase();
+    if lower.contains(" or ") || lower.contains("either") {
+        return None;
+    }
+    for marker in ["euler's totient of", "euler totient of", "totient("] {
+        let Some(start) = lower.find(marker) else {
+            continue;
+        };
+        let suffix = &text[start + marker.len()..];
+        let digits = suffix
+            .trim_start_matches(|character: char| character == '{' || character.is_whitespace())
+            .chars()
+            .take_while(|character| character.is_ascii_digit())
+            .collect::<String>();
+        if let Ok(modulus) = digits.parse::<u64>() {
+            return Some(modulus);
+        }
+    }
+    let Some(range_start) = lower.find("between 0 and ") else {
+        return None;
+    };
+    let range_suffix = &text[range_start + "between 0 and ".len()..];
+    let upper_text = range_suffix
+        .trim_start()
+        .chars()
+        .take_while(|character| character.is_ascii_digit())
+        .collect::<String>();
+    let upper = upper_text.parse::<u64>().ok()?;
+    let modulus_start = lower[range_start..].find("inverse modulo ")? + range_start;
+    let modulus_text = &text[modulus_start + "inverse modulo ".len()..];
+    let modulus = modulus_text
+        .trim_start()
+        .chars()
+        .take_while(|character| character.is_ascii_digit())
+        .collect::<String>()
+        .parse::<u64>()
+        .ok()?;
+    (upper.checked_add(1) == Some(modulus)).then_some(modulus)
+}
+
 fn request(
     operation: NumberTheoryOperation,
     a: Option<i64>,
@@ -445,6 +489,25 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
         let request = request(
             NumberTheoryOperation::ModularInverse,
             Some(value),
+            None,
+            None,
+            Some(modulus),
+            None,
+            provenance.clone(),
+        );
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Complete,
+            request: Some(request),
+            unresolved: Vec::new(),
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+
+    if let Some(modulus) = explicit_totient_modulus(text) {
+        let request = request(
+            NumberTheoryOperation::EulerTotient,
+            None,
             None,
             None,
             Some(modulus),
@@ -669,5 +732,32 @@ mod tests {
             assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
             assert!(replay_verified(&result));
         }
+    }
+
+    #[test]
+    fn binds_canonical_totient_and_unit_count_forms() {
+        for text in [
+            "Compute Euler's totient of 9.",
+            "How many integers between 0 and 8 inclusive have an inverse modulo 9?",
+            "Compute totient(15).",
+        ] {
+            let result = formalize_number_theory_text(text, "totient-natural");
+            assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert_eq!(
+                result.request.as_ref().unwrap().operation,
+                NumberTheoryOperation::EulerTotient
+            );
+            assert!(replay_verified(&result));
+        }
+    }
+
+    #[test]
+    fn refuses_noncanonical_totient_ranges() {
+        let result = formalize_number_theory_text(
+            "How many integers between 1 and 15 are relatively prime to 15?",
+            "totient-boundary",
+        );
+        assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
+        assert!(replay_verified(&result));
     }
 }

@@ -121,7 +121,10 @@ pub struct SemanticValidationReceipt {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("semantic IR serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("semantic IR serializes"))
+    )
 }
 
 fn candidate_payload(candidate: &CandidateSemanticParse) -> impl Serialize + '_ {
@@ -247,8 +250,18 @@ pub fn validate_candidate(
     if candidate
         .evidence_spans
         .iter()
-        .chain(candidate.symbols.iter().flat_map(|s| s.evidence_spans.iter()))
-        .chain(candidate.equations.iter().flat_map(|r| r.evidence_spans.iter()))
+        .chain(
+            candidate
+                .symbols
+                .iter()
+                .flat_map(|s| s.evidence_spans.iter()),
+        )
+        .chain(
+            candidate
+                .equations
+                .iter()
+                .flat_map(|r| r.evidence_spans.iter()),
+        )
         .any(|span| !span.valid_for(input))
     {
         diagnostics.push("invalid_evidence_span".into());
@@ -276,7 +289,9 @@ pub fn validate_candidate(
     }
 
     if !candidate.unresolved_ambiguities.is_empty()
-        || diagnostics.iter().any(|d| d.starts_with("multiple_symbol_scopes"))
+        || diagnostics
+            .iter()
+            .any(|d| d.starts_with("multiple_symbol_scopes"))
     {
         return receipt(
             ValidationDecision::PreserveAmbiguity,

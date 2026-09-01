@@ -97,7 +97,10 @@ impl RawSemanticReceipt {
 }
 
 fn digest<T: Serialize>(value: &T) -> String {
-    format!("{:x}", Sha256::digest(serde_json::to_vec(value).expect("worker value serializes")))
+    format!(
+        "{:x}",
+        Sha256::digest(serde_json::to_vec(value).expect("worker value serializes"))
+    )
 }
 
 fn receipt_hash(receipt: &RawSemanticReceipt) -> String {
@@ -164,8 +167,8 @@ impl SemanticWorker {
         if !status.is_success() {
             return Err(format!("semantic worker HTTP {status}: {body}"));
         }
-        let value: serde_json::Value =
-            serde_json::from_str(&body).map_err(|error| format!("worker JSON envelope: {error}"))?;
+        let value: serde_json::Value = serde_json::from_str(&body)
+            .map_err(|error| format!("worker JSON envelope: {error}"))?;
         let raw_output = value
             .get("choices")
             .and_then(|choices| choices.get(0))
@@ -210,10 +213,7 @@ impl SemanticWorker {
             .trim();
         let value: serde_json::Value = serde_json::from_str(json_text)
             .map_err(|error| format!("candidate JSON rejected: {error}"))?;
-        let candidates = value
-            .get("candidates")
-            .cloned()
-            .unwrap_or(value);
+        let candidates = value.get("candidates").cloned().unwrap_or(value);
         let mut parsed: Vec<CandidateSemanticParse> = serde_json::from_value(candidates)
             .map_err(|error| format!("candidate schema rejected: {error}"))?;
         for candidate in &mut parsed {
@@ -361,7 +361,9 @@ mod tests {
             replay_hash: String::new(),
         };
         receipt.replay_hash = receipt_hash(&receipt);
-        let decoded = worker.decode_candidates(&receipt).expect("decode candidate");
+        let decoded = worker
+            .decode_candidates(&receipt)
+            .expect("decode candidate");
         assert_eq!(decoded.len(), 1);
         assert!(decoded[0].replay_verified());
         let validation = validate_candidate(input, &decoded[0]);
@@ -398,7 +400,9 @@ mod tests {
             receipt.replay_hash = receipt_hash(&receipt);
             receipt
         };
-        assert!(worker.decode_candidates(&make_receipt("not json".into())).is_err());
+        assert!(worker
+            .decode_candidates(&make_receipt("not json".into()))
+            .is_err());
         let empty_candidates = serde_json::to_string(&vec![
             serde_json::json!({}),
             serde_json::json!({}),
@@ -406,6 +410,8 @@ mod tests {
             serde_json::json!({}),
         ])
         .expect("over-budget JSON");
-        assert!(worker.decode_candidates(&make_receipt(empty_candidates)).is_err());
+        assert!(worker
+            .decode_candidates(&make_receipt(empty_candidates))
+            .is_err());
     }
 }

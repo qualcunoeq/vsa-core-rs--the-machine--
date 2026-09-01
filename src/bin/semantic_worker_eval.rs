@@ -1,6 +1,6 @@
 //! Answer-key-blind evaluator for stored semantic-worker outputs.
 //!
-//! Input JSONL records have `{id,input,raw_output}`. The evaluator performs
+//! Input JSONL records have `{id,...RawSemanticReceipt fields...}`. The evaluator performs
 //! decoding, deterministic candidate-ensemble validation, and replay checks;
 //! it never reads answer keys or invokes a downstream solver.
 
@@ -9,13 +9,15 @@ use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
 use the_machine::semantic_ir::{validate_candidate_ensemble, ValidationDecision};
-use the_machine::semantic_worker::{SemanticWorker, SemanticWorkerConfig, WorkerTier};
+use the_machine::semantic_worker::{
+    RawSemanticReceipt, SemanticWorker, SemanticWorkerConfig, WorkerTier,
+};
 
 #[derive(Debug, Deserialize)]
 struct InputRecord {
     id: String,
-    input: String,
-    raw_output: String,
+    #[serde(flatten)]
+    receipt: RawSemanticReceipt,
 }
 
 #[derive(Debug, Serialize)]
@@ -87,21 +89,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 continue;
             }
         };
-        match worker.decode_raw_output(&record.input, record.raw_output) {
-            Ok((receipt, candidates)) => {
-                let ensemble = validate_candidate_ensemble(&record.input, &candidates);
+        match worker.decode_candidates(&record.receipt) {
+            Ok(candidates) => {
+                let ensemble = validate_candidate_ensemble(&record.receipt.input, &candidates);
                 match ensemble.decision {
                     ValidationDecision::AcceptCandidate => accepted += 1,
                     ValidationDecision::PreserveAmbiguity => ambiguous += 1,
                     ValidationDecision::RejectCandidate => rejected += 1,
                 }
-                if receipt.replay_verified() && ensemble.replay_verified() {
+                if record.receipt.replay_verified() && ensemble.replay_verified() {
                     replay_verified += 1;
                 }
                 output.push_str(&serde_json::to_string(&OutputRecord {
                     id: record.id,
                     candidate_count: candidates.len(),
-                    receipt_replay_verified: receipt.replay_verified(),
+                    receipt_replay_verified: record.receipt.replay_verified(),
                     candidate_replays: candidates
                         .iter()
                         .filter(|candidate| candidate.replay_verified())

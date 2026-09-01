@@ -27,5 +27,8 @@ SEMANTIC_EVAL_OUTPUT=/tmp/semantic_eval.jsonl \
 cargo run --quiet --bin semantic_worker_eval
 ```
 
-Each input line contains `id`, `input`, and `raw_output`. The evaluator applies
-the same decoder, ensemble gate, and replay checks, and reads no answer keys.
+Each input line contains `id` plus the flattened `RawSemanticReceipt` fields
+produced by the worker probe. The evaluator applies the same decoder, ensemble
+gate, and replay checks, and reads no answer keys. Full receipts preserve the
+original model/configuration/prompt metadata instead of substituting evaluator
+defaults.

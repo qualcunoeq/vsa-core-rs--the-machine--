@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
+use std::path::Path;
 use the_machine::semantic_ir::{validate_candidate_ensemble, ValidationDecision};
 use the_machine::semantic_worker::{
     RawSemanticReceipt, SemanticWorker, SemanticWorkerConfig, WorkerTier,
@@ -33,6 +34,21 @@ struct OutputRecord {
     error: Option<String>,
 }
 
+#[derive(Debug, Serialize)]
+struct EvalReport {
+    schema: &'static str,
+    input_sha256: String,
+    output_sha256: String,
+    records: usize,
+    accepted: usize,
+    ambiguous: usize,
+    rejected: usize,
+    decode_errors: usize,
+    replay_verified: usize,
+    downstream_authorizations: usize,
+    answer_keys_read: usize,
+}
+
 fn digest<T: Serialize>(value: &T) -> String {
     format!(
         "{:x}",
@@ -45,6 +61,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map_err(|_| "SEMANTIC_EVAL_INPUT must point to worker-output JSONL")?;
     let output_path = env::var("SEMANTIC_EVAL_OUTPUT")
         .unwrap_or_else(|_| "/tmp/semantic_worker_eval.jsonl".into());
+    let report_path =
+        env::var("SEMANTIC_EVAL_REPORT").unwrap_or_else(|_| format!("{output_path}.report.json"));
     let model = env::var("SEMANTIC_WORKER_MODEL").unwrap_or_else(|_| "stored-worker".into());
     let worker = SemanticWorker::new(SemanticWorkerConfig {
         tier: WorkerTier::Fast5070,
@@ -59,6 +77,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         timeout_ms: 1,
     })?;
 
+    let input_bytes = fs::read(&input_path)?;
     let mut output = String::new();
     let mut records = 0usize;
     let mut decode_errors = 0usize;
@@ -135,9 +154,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
     fs::write(&output_path, output)?;
+    let output_bytes = fs::read(&output_path)?;
+    let report = EvalReport {
+        schema: "semantic-worker-eval-v1",
+        input_sha256: digest(&input_bytes),
+        output_sha256: digest(&output_bytes),
+        records,
+        accepted,
+        ambiguous,
+        rejected,
+        decode_errors,
+        replay_verified,
+        downstream_authorizations: 0,
+        answer_keys_read: 0,
+    };
+    if let Some(parent) = Path::new(&report_path).parent() {
+        if !parent.as_os_str().is_empty() {
+            fs::create_dir_all(parent)?;
+        }
+    }
+    fs::write(
+        &report_path,
+        format!("{}\n", serde_json::to_string_pretty(&report)?),
+    )?;
     eprintln!(
-        "records={records} accepted={accepted} ambiguous={ambiguous} rejected={rejected} decode_errors={decode_errors} replay_verified={replay_verified} output_sha256={}",
-        digest(&fs::read(&output_path)?)
+        "records={records} accepted={accepted} ambiguous={ambiguous} rejected={rejected} decode_errors={decode_errors} replay_verified={replay_verified} output_sha256={} report={report_path}",
+        digest(&output_bytes)
     );
     Ok(())
 }

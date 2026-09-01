@@ -24,6 +24,7 @@ Stored outputs can be evaluated later without a live model:
 ```text
 SEMANTIC_EVAL_INPUT=worker_outputs.jsonl \
 SEMANTIC_EVAL_OUTPUT=/tmp/semantic_eval.jsonl \
+SEMANTIC_EVAL_REPORT=/tmp/semantic_eval.report.json \
 cargo run --quiet --bin semantic_worker_eval
 ```
 
@@ -32,3 +33,6 @@ produced by the worker probe. The evaluator applies the same decoder, ensemble
 gate, and replay checks, and reads no answer keys. Full receipts preserve the
 original model/configuration/prompt metadata instead of substituting evaluator
 defaults.
+The evaluator also writes a versioned report manifest with input/output hashes,
+decision counts, replay coverage, and explicit `answer_keys_read: 0` and
+`downstream_authorizations: 0` fields.

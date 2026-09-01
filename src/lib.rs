@@ -170,6 +170,7 @@ pub mod reuse_ablation_benchmark;
 pub mod router;
 pub mod science_law_pack;
 pub mod self_model;
+pub mod semantic_ir;
 pub mod sensory;
 pub mod shifted_ingest;
 pub mod simulator;

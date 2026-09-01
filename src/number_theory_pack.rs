@@ -15,6 +15,7 @@ pub enum NumberTheoryOperation {
     GcdBezout,
     Remainder,
     ArithmeticRemainder,
+    ResidueCount,
     ModularInverse,
     LinearCongruence,
     ChineseRemainder,
@@ -216,6 +217,47 @@ pub fn evaluate_number_theory(request: &NumberTheoryRequest) -> NumberTheoryResu
                 Some(NumberTheoryArtifact::Scalar(
                     value.rem_euclid(modulus as i64) as u64,
                 )),
+                assumptions,
+                Vec::new(),
+            )
+        }
+        NumberTheoryOperation::ResidueCount => {
+            let (Some(lower), Some(upper), Some(residue), Some(modulus)) =
+                (request.a, request.b, request.c, request.modulus)
+            else {
+                return result(
+                    request,
+                    NumberTheoryStatus::Missing,
+                    None,
+                    assumptions,
+                    vec!["inclusive bounds, residue, and modulus are required".into()],
+                );
+            };
+            if lower > upper
+                || lower < -(MAX_INPUT as i64)
+                || upper > MAX_INPUT as i64
+                || modulus < 2
+                || modulus > MAX_INPUT
+            {
+                return result(
+                    request,
+                    NumberTheoryStatus::InvalidDomain,
+                    None,
+                    assumptions,
+                    vec!["range or modulus is outside the bounded residue-count domain".into()],
+                );
+            }
+            let first =
+                lower + (residue - lower.rem_euclid(modulus as i64)).rem_euclid(modulus as i64);
+            let count = if first > upper {
+                0
+            } else {
+                ((upper - first) / modulus as i64 + 1) as u64
+            };
+            result(
+                request,
+                NumberTheoryStatus::Complete,
+                Some(NumberTheoryArtifact::Scalar(count)),
                 assumptions,
                 Vec::new(),
             )
@@ -518,6 +560,18 @@ mod tests {
         let result = evaluate_number_theory(&request(NumberTheoryOperation::ArithmeticRemainder));
         assert_eq!(result.artifact, Some(NumberTheoryArtifact::Scalar(3)));
         assert_eq!(result.operation, NumberTheoryOperation::ArithmeticRemainder);
+        assert!(result.replay_verified());
+    }
+
+    #[test]
+    fn residue_count_replays_with_inclusive_bounds() {
+        let mut request = request(NumberTheoryOperation::ResidueCount);
+        request.a = Some(1);
+        request.b = Some(20);
+        request.c = Some(3);
+        request.modulus = Some(5);
+        let result = evaluate_number_theory(&request);
+        assert_eq!(result.artifact, Some(NumberTheoryArtifact::Scalar(4)));
         assert!(result.replay_verified());
     }
 }

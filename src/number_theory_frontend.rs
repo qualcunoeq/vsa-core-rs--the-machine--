@@ -833,6 +833,9 @@ pub fn formalize_number_theory_text(text: &str, case_id: &str) -> NumberTheoryFr
         NumberTheoryOperation::GcdBezout => [a.is_none(), b.is_none()].iter().any(|v| *v),
         NumberTheoryOperation::Remainder => a.is_none() || modulus.is_none(),
         NumberTheoryOperation::ArithmeticRemainder => a.is_none() || modulus.is_none(),
+        NumberTheoryOperation::ResidueCount => {
+            a.is_none() || b.is_none() || c.is_none() || modulus.is_none()
+        }
         NumberTheoryOperation::ModularInverse => a.is_none() || modulus.is_none(),
         NumberTheoryOperation::LinearCongruence => a.is_none() || b.is_none() || modulus.is_none(),
         NumberTheoryOperation::ChineseRemainder => {
@@ -916,10 +919,155 @@ pub fn formalize_arithmetic_remainder_text(
     })
 }
 
+fn signed_literal(text: &str) -> Option<(i64, usize)> {
+    let text = text.trim_start();
+    let sign_len = if text.starts_with('−') {
+        '−'.len_utf8()
+    } else if text.starts_with('-') {
+        1
+    } else {
+        0
+    };
+    let mut end = sign_len;
+    while text[end..]
+        .chars()
+        .next()
+        .is_some_and(|character| character.is_ascii_digit())
+    {
+        end += text[end..].chars().next().unwrap().len_utf8();
+    }
+    if end == sign_len {
+        return None;
+    }
+    let value = text[..end].replace('−', "-").parse().ok()?;
+    Some((value, end))
+}
+
+/// Parse a finite inclusive residue-count question.  The range and residue
+/// condition must be explicit; digit restrictions, divisor counts, and
+/// multiple constraints are intentionally not inferred.
+fn explicit_residue_count(text: &str) -> Option<(i64, i64, i64, u64)> {
+    let lower = text.to_ascii_lowercase();
+    if !lower.contains("how many")
+        || lower.contains(" or ")
+        || lower.contains("either")
+        || (lower.contains("digit") && !lower.contains("two-digit"))
+        || lower.contains("divisor")
+        || lower.contains("distinct")
+        || lower.contains("each")
+    {
+        return None;
+    }
+
+    let (range_lower, range_upper) = if let Some(start) = lower.find("between ") {
+        let first_start = start + "between ".len();
+        let (first, first_len) = signed_literal(&text[first_start..])?;
+        let and_start = first_start + first_len;
+        let and_offset = lower[and_start..].find(" and ")?;
+        let second_start = and_start + and_offset + " and ".len();
+        let (second, _) = signed_literal(&text[second_start..])?;
+        (first, second)
+    } else if let Some(start) = lower.find("from ") {
+        let first_start = start + "from ".len();
+        let (first, first_len) = signed_literal(&text[first_start..])?;
+        let to_start = first_start + first_len;
+        let to_offset = lower[to_start..].find(" to ")?;
+        let second_start = to_start + to_offset + " to ".len();
+        let (second, _) = signed_literal(&text[second_start..])?;
+        (first, second)
+    } else if lower.contains("two-digit") {
+        (10, 99)
+    } else if let Some(start) = lower.find("less than ") {
+        let bound_start = start + "less than ".len();
+        let (bound, _) = signed_literal(&text[bound_start..])?;
+        let lower_bound = if lower[..start].contains("positive") {
+            1
+        } else if lower[..start].contains("nonnegative") {
+            0
+        } else {
+            return None;
+        };
+        (lower_bound, bound.checked_sub(1)?)
+    } else {
+        return None;
+    };
+    if range_lower > range_upper || range_lower < -100_000 || range_upper > 100_000 {
+        return None;
+    }
+
+    let (residue, modulus) = if let Some(start) = lower.find("congruent to ") {
+        let residue_start = start + "congruent to ".len();
+        let (residue, residue_len) = signed_literal(&text[residue_start..])?;
+        let modulus_start = residue_start + residue_len;
+        let modulus_offset = lower[modulus_start..].find("mod")?;
+        let (modulus, _) = signed_literal(&text[modulus_start + modulus_offset + "mod".len()..])?;
+        (residue, u64::try_from(modulus).ok()?)
+    } else if let Some(start) = lower.find("remainder of ") {
+        let residue_start = start + "remainder of ".len();
+        let (residue, residue_len) = signed_literal(&text[residue_start..])?;
+        let divided_start = residue_start + residue_len;
+        let divided_offset = lower[divided_start..].find("divided by ")?;
+        let (modulus, _) =
+            signed_literal(&text[divided_start + divided_offset + "divided by ".len()..])?;
+        (residue, u64::try_from(modulus).ok()?)
+    } else if let Some(start) = lower.find("divisible by ") {
+        let modulus_start = start + "divisible by ".len();
+        let (modulus, _) = signed_literal(&text[modulus_start..])?;
+        (0, u64::try_from(modulus).ok()?)
+    } else {
+        return None;
+    };
+    (modulus >= 2 && modulus <= 100_000).then_some((range_lower, range_upper, residue, modulus))
+}
+
+/// Shadow-only frontend for finite residue counting.  It is independent of
+/// the existing literal remainder and congruence routes.
+pub fn formalize_residue_count_text(text: &str, case_id: &str) -> NumberTheoryFrontendResult {
+    let lower = text.to_ascii_lowercase();
+    let provenance = vec![
+        format!("number-theory-residue-count-frontend:{case_id}"),
+        "explicit-inclusive-range-parser".into(),
+        format!("source-span:0..{}", text.len()),
+    ];
+    if lower.contains(" or ") || lower.contains("either") {
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Ambiguous,
+            request: None,
+            unresolved: vec!["multiple residue conditions are proposed".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    }
+    let Some((lower_bound, upper_bound, residue, modulus)) = explicit_residue_count(text) else {
+        return finish(NumberTheoryFrontendResult {
+            status: NumberTheoryFrontendStatus::Unsupported,
+            request: None,
+            unresolved: vec!["range or residue condition is not uniquely explicit".into()],
+            provenance,
+            replay_hash: String::new(),
+        });
+    };
+    finish(NumberTheoryFrontendResult {
+        status: NumberTheoryFrontendStatus::Complete,
+        request: Some(request(
+            NumberTheoryOperation::ResidueCount,
+            Some(lower_bound),
+            Some(upper_bound),
+            Some(residue),
+            Some(modulus),
+            None,
+            provenance.clone(),
+        )),
+        unresolved: Vec::new(),
+        provenance,
+        replay_hash: String::new(),
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::number_theory_pack::evaluate_number_theory;
+    use crate::number_theory_pack::{evaluate_number_theory, NumberTheoryArtifact};
 
     #[test]
     fn shifted_inverse_and_unicode_congruence_bind() {
@@ -1120,6 +1268,49 @@ mod tests {
             r"Solve the simultaneous congruences $x\equiv2\pmod{3}$ and $x\equiv3\pmod{5}$.",
         ] {
             let result = formalize_number_theory_text(text, "linear-congruence-boundary");
+            assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert!(replay_verified(&result));
+        }
+    }
+
+    #[test]
+    fn binds_explicit_residue_count_forms() {
+        for (text, expected) in [
+            (
+                "How many positive integers less than 1000 are congruent to 6 (mod 11)?",
+                91,
+            ),
+            (
+                "How many natural numbers between 150 and 300 are divisible by 9?",
+                17,
+            ),
+            (
+                "How many positive two-digit integers leave a remainder of 2 when divided by 8?",
+                12,
+            ),
+            (
+                "How many integers from -100 to 100 are congruent to 3 (mod 11)?",
+                18,
+            ),
+        ] {
+            let result = formalize_residue_count_text(text, "residue-count-natural");
+            assert_eq!(result.status, NumberTheoryFrontendStatus::Complete);
+            assert_eq!(
+                evaluate_number_theory(result.request.as_ref().unwrap()).artifact,
+                Some(NumberTheoryArtifact::Scalar(expected))
+            );
+            assert!(replay_verified(&result));
+        }
+    }
+
+    #[test]
+    fn refuses_residue_count_scope_ambiguity() {
+        for text in [
+            "How many integers between 15 and 85 are divisible by 20 or 21?",
+            "How many positive three-digit integers with each digit greater than 4 are divisible by 6?",
+            "How many positive divisors of 150 are not divisible by 5?",
+        ] {
+            let result = formalize_residue_count_text(text, "residue-count-boundary");
             assert_ne!(result.status, NumberTheoryFrontendStatus::Complete);
             assert!(replay_verified(&result));
         }

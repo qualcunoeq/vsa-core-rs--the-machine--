@@ -50,6 +50,9 @@ pub struct SemanticWorkerConfig {
     pub model: String,
     pub prompt_version: String,
     pub grammar_version: String,
+    /// Optional llama.cpp grammar text. `None` keeps the request compatible
+    /// with workers that enforce structure through their own server policy.
+    pub grammar: Option<String>,
     pub max_candidates: u8,
     pub temperature: f32,
     pub timeout_ms: u64,
@@ -63,6 +66,7 @@ impl SemanticWorkerConfig {
             &self.model,
             &self.prompt_version,
             &self.grammar_version,
+            &self.grammar,
             self.max_candidates,
             self.temperature.to_bits(),
             self.timeout_ms,
@@ -146,6 +150,7 @@ impl SemanticWorker {
             "model": self.config.model,
             "temperature": self.config.temperature,
             "n": 1,
+            "grammar": &self.config.grammar,
             "messages": [
                 {"role": "system", "content": "You are a semantic proposal engine. Output JSON only."},
                 {"role": "user", "content": prompt}
@@ -248,6 +253,7 @@ mod tests {
             model: "test-model".into(),
             prompt_version: "semantic-prompt-v1".into(),
             grammar_version: "candidate-json-v1".into(),
+            grammar: Some("root ::= \"[]\"".into()),
             max_candidates: 3,
             temperature: 0.0,
             timeout_ms: 100,

@@ -4,22 +4,14 @@
 //! decoding, deterministic candidate-ensemble validation, and replay checks;
 //! it never reads answer keys or invokes a downstream solver.
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
 use std::path::Path;
+use the_machine::semantic_eval::StoredSemanticOutput;
 use the_machine::semantic_ir::{validate_candidate_ensemble, ValidationDecision};
-use the_machine::semantic_worker::{
-    RawSemanticReceipt, SemanticWorker, SemanticWorkerConfig, WorkerTier,
-};
-
-#[derive(Debug, Deserialize)]
-struct InputRecord {
-    id: String,
-    #[serde(flatten)]
-    receipt: RawSemanticReceipt,
-}
+use the_machine::semantic_worker::{SemanticWorker, SemanticWorkerConfig, WorkerTier};
 
 #[derive(Debug, Serialize)]
 struct OutputRecord {
@@ -90,7 +82,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|line| !line.trim().is_empty())
     {
         records += 1;
-        let record = match serde_json::from_str::<InputRecord>(line) {
+        let record = match serde_json::from_str::<StoredSemanticOutput>(line) {
             Ok(record) => record,
             Err(error) => {
                 decode_errors += 1;

@@ -54,6 +54,7 @@ pub struct SemanticWorkerConfig {
     /// with workers that enforce structure through their own server policy.
     pub grammar: Option<String>,
     pub max_candidates: u8,
+    pub max_output_tokens: u32,
     pub temperature: f32,
     pub timeout_ms: u64,
 }
@@ -68,6 +69,7 @@ impl SemanticWorkerConfig {
             &self.grammar_version,
             &self.grammar,
             self.max_candidates,
+            self.max_output_tokens,
             self.temperature.to_bits(),
             self.timeout_ms,
         ))
@@ -126,6 +128,22 @@ pub fn semantic_prompt(input: &str, max_candidates: u8) -> String {
     )
 }
 
+/// Prompt a bounded critic to repair only the diagnostics emitted by the
+/// deterministic validator. The critic is forbidden from solving or adding
+/// assumptions, and the caller must revalidate its output.
+pub fn semantic_repair_prompt(
+    input: &str,
+    candidate_json: &str,
+    diagnostics: &[String],
+    iteration: u8,
+    max_candidates: u8,
+) -> String {
+    let diagnostics = diagnostics.join("\n- ");
+    format!(
+        "Repair iteration {iteration} of 3. Return at most {max_candidates} JSON candidate semantic parses using schema {SEMANTIC_IR_SCHEMA}. Address only these deterministic diagnostics:\n- {diagnostics}\nDo not solve the problem, add unstated assumptions, authorize an answer, or mutate state. Preserve unresolved alternatives.\n\nORIGINAL PROBLEM:\n{input}\n\nREJECTED CANDIDATE:\n{candidate_json}"
+    )
+}
+
 #[derive(Debug, Clone)]
 pub struct SemanticWorker {
     client: Client,
@@ -146,10 +164,41 @@ impl SemanticWorker {
     /// remains auditable rather than being silently repaired here.
     pub async fn propose_raw(&self, input: &str) -> Result<RawSemanticReceipt, String> {
         let prompt = semantic_prompt(input, self.config.max_candidates);
+        self.request_raw(input, prompt).await
+    }
+
+    /// Ask the same worker for a bounded repair after deterministic rejection.
+    /// Three iterations is the hard ceiling; every response must cross the
+    /// normal decoder and validator again.
+    pub async fn repair_raw(
+        &self,
+        input: &str,
+        candidate_json: &str,
+        diagnostics: &[String],
+        iteration: u8,
+    ) -> Result<RawSemanticReceipt, String> {
+        if iteration == 0 || iteration > 3 {
+            return Err("semantic repair iteration must be in 1..=3".into());
+        }
+        if candidate_json.len() > 256 * 1024 || diagnostics.len() > 32 {
+            return Err("semantic repair input exceeds bounded budget".into());
+        }
+        let prompt = semantic_repair_prompt(
+            input,
+            candidate_json,
+            diagnostics,
+            iteration,
+            self.config.max_candidates,
+        );
+        self.request_raw(input, prompt).await
+    }
+
+    async fn request_raw(&self, input: &str, prompt: String) -> Result<RawSemanticReceipt, String> {
         let payload = serde_json::json!({
             "model": self.config.model,
             "temperature": self.config.temperature,
             "n": 1,
+            "max_tokens": self.config.max_output_tokens,
             "grammar": &self.config.grammar,
             "messages": [
                 {"role": "system", "content": "You are a semantic proposal engine. Output JSON only."},
@@ -282,6 +331,7 @@ mod tests {
             grammar_version: "candidate-json-v1".into(),
             grammar: Some("root ::= \"[]\"".into()),
             max_candidates: 3,
+            max_output_tokens: 2048,
             temperature: 0.0,
             timeout_ms: 100,
         }
@@ -317,6 +367,20 @@ mod tests {
         assert!(prompt.contains(SEMANTIC_IR_SCHEMA));
         assert!(prompt.contains("Do not solve"));
         assert!(!prompt.contains("answer:"));
+    }
+
+    #[test]
+    fn repair_prompt_is_bounded_and_diagnostic_only() {
+        let prompt = semantic_repair_prompt(
+            "find x",
+            "{\"target\":\"x\"}",
+            &["missing_scope".into()],
+            2,
+            3,
+        );
+        assert!(prompt.contains("Repair iteration 2 of 3"));
+        assert!(prompt.contains("missing_scope"));
+        assert!(prompt.contains("Do not solve"));
     }
 
     #[test]

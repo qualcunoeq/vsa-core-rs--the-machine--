@@ -18,6 +18,13 @@ Scheduling is explicit and lexical/domain blind:
 The worker configuration can carry llama.cpp grammar text. When present, it is
 sent as a constrained-decoding request and included in the configuration hash;
 when absent, the endpoint remains compatible with a server-side grammar policy.
+Output tokens and candidate count are also bounded and included in the same
+hash, preventing an untracked generation-budget change from altering replay
+semantics.
+
+The worker exposes a critic/repair prompt for deterministic diagnostics. Repair
+requests are limited to iterations 1–3 and a bounded candidate/diagnostic size;
+each response must pass the normal decoder and validator again.
 
 The boundary distinguishes semantic replay (replaying a stored proposal and
 validator decision) from generation replay (asking a model to regenerate the

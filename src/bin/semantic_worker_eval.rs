@@ -54,6 +54,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         grammar_version: "candidate-json-v1".into(),
         grammar: env::var("SEMANTIC_WORKER_GRAMMAR").ok(),
         max_candidates: 3,
+        max_output_tokens: 2048,
         temperature: 0.0,
         timeout_ms: 1,
     })?;

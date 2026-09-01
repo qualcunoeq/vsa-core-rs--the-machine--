@@ -120,6 +120,16 @@ pub struct SemanticValidationReceipt {
     pub downstream_authorized: bool,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct CandidateEnsembleReceipt {
+    pub decision: ValidationDecision,
+    pub selected_index: Option<usize>,
+    pub member_receipts: Vec<SemanticValidationReceipt>,
+    pub diagnostics: Vec<String>,
+    pub replay_hash: String,
+    pub downstream_authorized: bool,
+}
+
 fn digest<T: Serialize>(value: &T) -> String {
     format!(
         "{:x}",
@@ -206,6 +216,31 @@ impl SemanticValidationReceipt {
         !self.downstream_authorized
             && self.replay_hash == digest(&receipt_payload(self))
             && self.candidate_hash.len() == 64
+    }
+}
+
+fn ensemble_hash(ensemble: &CandidateEnsembleReceipt) -> String {
+    digest(&(
+        ensemble.decision,
+        ensemble.selected_index,
+        &ensemble.member_receipts,
+        &ensemble.diagnostics,
+        ensemble.downstream_authorized,
+    ))
+}
+
+impl CandidateEnsembleReceipt {
+    pub fn replay_verified(&self) -> bool {
+        !self.downstream_authorized
+            && self.replay_hash == ensemble_hash(self)
+            && self
+                .member_receipts
+                .iter()
+                .all(SemanticValidationReceipt::replay_verified)
+            && self
+                .selected_index
+                .map(|index| index < self.member_receipts.len())
+                .unwrap_or(true)
     }
 }
 
@@ -312,6 +347,52 @@ pub fn validate_candidate(
             candidate.candidate_hash(),
         )
     }
+}
+
+/// Validate an ensemble and select a proposal only when exactly one member is
+/// complete and every other member is rejected. Any second complete or
+/// ambiguous member keeps the ensemble ambiguous.
+pub fn validate_candidate_ensemble(
+    input: &str,
+    candidates: &[CandidateSemanticParse],
+) -> CandidateEnsembleReceipt {
+    let member_receipts: Vec<_> = candidates
+        .iter()
+        .map(|candidate| validate_candidate(input, candidate))
+        .collect();
+    let accepted: Vec<usize> = member_receipts
+        .iter()
+        .enumerate()
+        .filter_map(|(index, receipt)| {
+            (receipt.decision == ValidationDecision::AcceptCandidate).then_some(index)
+        })
+        .collect();
+    let has_ambiguity = member_receipts
+        .iter()
+        .any(|receipt| receipt.decision == ValidationDecision::PreserveAmbiguity);
+    let (decision, selected_index) = if accepted.len() == 1 && !has_ambiguity {
+        (
+            ValidationDecision::AcceptCandidate,
+            accepted.first().copied(),
+        )
+    } else if has_ambiguity || accepted.len() > 1 {
+        (ValidationDecision::PreserveAmbiguity, None)
+    } else {
+        (ValidationDecision::RejectCandidate, None)
+    };
+    let mut result = CandidateEnsembleReceipt {
+        decision,
+        selected_index,
+        diagnostics: member_receipts
+            .iter()
+            .flat_map(|receipt| receipt.diagnostics.iter().cloned())
+            .collect(),
+        member_receipts,
+        replay_hash: String::new(),
+        downstream_authorized: false,
+    };
+    result.replay_hash = ensemble_hash(&result);
+    result
 }
 
 #[cfg(test)]
@@ -421,5 +502,30 @@ mod tests {
         let receipt = validate_candidate(input, &proposal);
         assert_eq!(receipt.decision, ValidationDecision::PreserveAmbiguity);
         assert!(receipt.replay_verified());
+    }
+
+    #[test]
+    fn ensemble_selects_the_single_surviving_candidate() {
+        let input = "solve x";
+        let valid = candidate(input);
+        let mut rejected = candidate(input);
+        rejected.evidence_spans[0].text = "not present".into();
+        rejected.replay_hash = rejected.candidate_hash();
+        let ensemble = validate_candidate_ensemble(input, &[valid, rejected]);
+        assert_eq!(ensemble.decision, ValidationDecision::AcceptCandidate);
+        assert_eq!(ensemble.selected_index, Some(0));
+        assert!(ensemble.replay_verified());
+    }
+
+    #[test]
+    fn ensemble_preserves_multiple_surviving_candidates() {
+        let input = "solve x";
+        let mut second = candidate(input);
+        second.confidence = 0.2;
+        second.replay_hash = second.candidate_hash();
+        let ensemble = validate_candidate_ensemble(input, &[candidate(input), second]);
+        assert_eq!(ensemble.decision, ValidationDecision::PreserveAmbiguity);
+        assert_eq!(ensemble.selected_index, None);
+        assert!(ensemble.replay_verified());
     }
 }

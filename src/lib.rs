@@ -171,6 +171,7 @@ pub mod router;
 pub mod science_law_pack;
 pub mod self_model;
 pub mod semantic_ir;
+pub mod semantic_handoff;
 pub mod semantic_worker;
 pub mod sensory;
 pub mod shifted_ingest;

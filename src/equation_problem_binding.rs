@@ -133,6 +133,13 @@ pub struct EquationProblemBinding {
 }
 
 impl EquationProblemBinding {
+    /// Finalize the deterministic replay hash for a binding assembled by a
+    /// trusted handoff. This does not authorize a solver or answer.
+    pub fn with_replay_hash(mut self) -> Self {
+        self.replay_hash = replay_hash(&self);
+        self
+    }
+
     pub fn replay_verified(&self) -> bool {
         self.replay_hash == replay_hash(self)
             && !self.input.is_empty()

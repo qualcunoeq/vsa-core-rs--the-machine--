@@ -182,6 +182,19 @@ impl SemanticWorker {
             .and_then(serde_json::Value::as_str)
             .ok_or_else(|| "worker response missing choices[0].message.content".to_string())?
             .to_string();
+        Ok(self.raw_receipt(input, raw_output, endpoint, prompt))
+    }
+
+    /// Build the same immutable receipt used by `propose_raw` from a stored
+    /// worker output. This supports answer-key-blind replay evaluation without
+    /// contacting a model endpoint.
+    pub fn raw_receipt(
+        &self,
+        input: &str,
+        raw_output: String,
+        endpoint: String,
+        prompt: String,
+    ) -> RawSemanticReceipt {
         let mut receipt = RawSemanticReceipt {
             input: input.to_string(),
             input_hash: digest(&input),
@@ -192,12 +205,26 @@ impl SemanticWorker {
             prompt: prompt.clone(),
             prompt_hash: digest(&prompt),
             grammar_version: self.config.grammar_version.clone(),
-            raw_output: raw_output.clone(),
             raw_output_hash: digest(&raw_output),
+            raw_output,
             replay_hash: String::new(),
         };
         receipt.replay_hash = receipt_hash(&receipt);
-        Ok(receipt)
+        receipt
+    }
+
+    /// Decode a stored raw output using the same metadata and schema path as a
+    /// live worker response.
+    pub fn decode_raw_output(
+        &self,
+        input: &str,
+        raw_output: String,
+    ) -> Result<(RawSemanticReceipt, Vec<CandidateSemanticParse>), String> {
+        let prompt = semantic_prompt(input, self.config.max_candidates);
+        let endpoint = self.config.endpoint.trim_end_matches('/').to_string();
+        let receipt = self.raw_receipt(input, raw_output, endpoint, prompt);
+        let candidates = self.decode_candidates(&receipt)?;
+        Ok((receipt, candidates))
     }
 
     /// Decode only structurally valid JSON candidate arrays.  Worker metadata

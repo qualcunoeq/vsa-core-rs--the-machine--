@@ -24,5 +24,7 @@ validator decision) from generation replay (asking a model to regenerate the
 same bytes). Only semantic replay is required for authorization.
 
 Focused tests cover tier routing, prompt safety, configuration/receipt hashing,
-and tamper detection. No model endpoint is contacted by the tests, and no
-registry, solver, or production route is changed.
+candidate decoding, and tamper detection. An OpenAI-compatible HTTP smoke test
+is included for integration environments but is ignored in this sandbox because
+local socket binding is prohibited. No registry, solver, or production route is
+changed.

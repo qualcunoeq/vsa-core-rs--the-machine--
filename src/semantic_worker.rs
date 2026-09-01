@@ -420,4 +420,49 @@ mod tests {
             .decode_candidates(&make_receipt(empty_candidates))
             .is_err());
     }
+
+    #[tokio::test]
+    #[ignore = "sandbox forbids binding a local TCP socket; run in an integration environment"]
+    async fn openai_compatible_response_becomes_a_replayable_raw_receipt() {
+        use tokio::io::{AsyncReadExt, AsyncWriteExt};
+        use tokio::net::TcpListener;
+
+        let listener = TcpListener::bind(("127.0.0.1", 0))
+            .await
+            .expect("bind mock worker");
+        let address = listener.local_addr().expect("mock address");
+        let server = tokio::spawn(async move {
+            let (mut socket, _) = listener.accept().await.expect("accept worker");
+            let mut request = vec![0_u8; 16 * 1024];
+            let size = socket
+                .read(&mut request)
+                .await
+                .expect("read worker request");
+            let request = String::from_utf8_lossy(&request[..size]);
+            assert!(request.contains("POST /v1/chat/completions"));
+            assert!(request.contains("test-model"));
+            assert!(request.contains("candidate-json-v1"));
+            let body = r#"{"choices":[{"message":{"content":"[]"}}]}"#;
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+                body.len(),
+                body
+            );
+            socket
+                .write_all(response.as_bytes())
+                .await
+                .expect("write worker response");
+        });
+
+        let mut cfg = config();
+        cfg.endpoint = format!("http://{address}");
+        let worker = SemanticWorker::new(cfg).expect("worker config");
+        let receipt = worker
+            .propose_raw("extract the target x")
+            .await
+            .expect("mock worker response");
+        assert!(receipt.replay_verified());
+        assert_eq!(receipt.raw_output, "[]");
+        server.await.expect("mock worker task");
+    }
 }

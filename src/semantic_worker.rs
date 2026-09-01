@@ -383,6 +383,23 @@ mod tests {
         assert!(prompt.contains("Do not solve"));
     }
 
+    #[tokio::test]
+    async fn repair_budget_rejects_invalid_iterations_before_network() {
+        let worker = SemanticWorker::new(config()).expect("worker config");
+        assert!(worker
+            .repair_raw("find x", "{}", &["missing_target".into()], 0)
+            .await
+            .is_err());
+        assert!(worker
+            .repair_raw("find x", "{}", &["missing_target".into()], 4)
+            .await
+            .is_err());
+        assert!(worker
+            .repair_raw("find x", &"x".repeat(256 * 1024 + 1), &[], 1)
+            .await
+            .is_err());
+    }
+
     #[test]
     fn config_and_raw_receipt_hashes_are_stable() {
         let cfg = config();

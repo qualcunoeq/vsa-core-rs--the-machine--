@@ -1,0 +1,17 @@
+{
+  "schema": "stage486-semantic-boundary-bench-v1",
+  "corpus_sha256": "e61436facd01ab14d32d776b9422a2b4af4c45e81ef20637fa7b2555b5a9b623",
+  "cases": 240,
+  "expected_complete": 80,
+  "expected_ambiguous": 80,
+  "expected_unsupported": 80,
+  "exact_decisions": 240,
+  "ensemble_replays": 240,
+  "candidate_replay_eligible": 200,
+  "candidate_replays": 200,
+  "validation_receipt_replays": 240,
+  "tamper_rejections": 240,
+  "false_authorizations": 0,
+  "false_denials": 0,
+  "report_sha256": "aae105244be2ebc734b2413fd48041eabac3bb3923bdf567e8e78d31c69cd0ca"
+}

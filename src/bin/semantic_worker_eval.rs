@@ -67,6 +67,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         max_output_tokens: 2048,
         temperature: 0.0,
         timeout_ms: 1,
+        reasoning_format: env::var("SEMANTIC_WORKER_REASONING_FORMAT").ok(),
+        enable_thinking: env::var("SEMANTIC_WORKER_ENABLE_THINKING")
+            .ok()
+            .and_then(|value| match value.as_str() {
+                "1" | "true" => Some(true),
+                "0" | "false" => Some(false),
+                _ => None,
+            }),
     })?;
 
     let input_bytes = fs::read(&input_path)?;

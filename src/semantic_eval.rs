@@ -40,6 +40,8 @@ mod tests {
             max_output_tokens: 128,
             temperature: 0.0,
             timeout_ms: 1,
+            reasoning_format: None,
+            enable_thinking: None,
         })
         .expect("worker config");
         let receipt = worker.raw_receipt(

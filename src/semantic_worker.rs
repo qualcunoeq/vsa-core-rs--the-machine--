@@ -57,6 +57,14 @@ pub struct SemanticWorkerConfig {
     pub max_output_tokens: u32,
     pub temperature: f32,
     pub timeout_ms: u64,
+    /// Optional llama.cpp reasoning mode.  This is request metadata only; it
+    /// never changes the deterministic semantic gate.
+    #[serde(default)]
+    pub reasoning_format: Option<String>,
+    /// Optional chat-template switch used by workers that expose a thinking
+    /// toggle (for example `enable_thinking=false`).
+    #[serde(default)]
+    pub enable_thinking: Option<bool>,
 }
 
 impl SemanticWorkerConfig {
@@ -72,6 +80,8 @@ impl SemanticWorkerConfig {
             self.max_output_tokens,
             self.temperature.to_bits(),
             self.timeout_ms,
+            &self.reasoning_format,
+            self.enable_thinking,
         ))
     }
 }
@@ -194,7 +204,7 @@ impl SemanticWorker {
     }
 
     async fn request_raw(&self, input: &str, prompt: String) -> Result<RawSemanticReceipt, String> {
-        let payload = serde_json::json!({
+        let mut payload = serde_json::json!({
             "model": self.config.model,
             "temperature": self.config.temperature,
             "n": 1,
@@ -205,6 +215,14 @@ impl SemanticWorker {
                 {"role": "user", "content": prompt}
             ]
         });
+        if let Some(reasoning_format) = &self.config.reasoning_format {
+            payload["reasoning_format"] = serde_json::Value::String(reasoning_format.clone());
+        }
+        if let Some(enable_thinking) = self.config.enable_thinking {
+            payload["chat_template_kwargs"] = serde_json::json!({
+                "enable_thinking": enable_thinking
+            });
+        }
         let endpoint = self.config.endpoint.trim_end_matches('/').to_string();
         let response = self
             .client
@@ -285,13 +303,7 @@ impl SemanticWorker {
         if !receipt.replay_verified() {
             return Err("raw worker receipt failed replay verification".into());
         }
-        let json_text = receipt
-            .raw_output
-            .trim()
-            .trim_start_matches("```json")
-            .trim_start_matches("```")
-            .trim_end_matches("```")
-            .trim();
+        let json_text = candidate_json_text(&receipt.raw_output);
         let value: serde_json::Value = serde_json::from_str(json_text)
             .map_err(|error| format!("candidate JSON rejected: {error}"))?;
         let candidates = value.get("candidates").cloned().unwrap_or(value);
@@ -316,6 +328,28 @@ impl SemanticWorker {
     }
 }
 
+/// Remove only transport-level wrappers that are known not to be semantic
+/// content.  In particular, a model's private `<think>` section is discarded
+/// only when a closed tag is present; arbitrary prose is never searched for a
+/// JSON-looking substring.  This keeps malformed or contaminated output
+/// fail-closed while accommodating chat templates that emit reasoning tags.
+fn candidate_json_text(raw_output: &str) -> &str {
+    let trimmed = raw_output.trim();
+    let without_thinking = if let Some(rest) = trimmed.strip_prefix("<think>") {
+        rest.find("</think>")
+            .map(|end| &rest[end + "</think>".len()..])
+            .unwrap_or(trimmed)
+    } else {
+        trimmed
+    };
+    without_thinking
+        .trim()
+        .strip_prefix("```json")
+        .or_else(|| without_thinking.trim().strip_prefix("```"))
+        .map(|body| body.trim().strip_suffix("```").unwrap_or(body).trim())
+        .unwrap_or_else(|| without_thinking.trim())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -334,6 +368,8 @@ mod tests {
             max_output_tokens: 2048,
             temperature: 0.0,
             timeout_ms: 100,
+            reasoning_format: None,
+            enable_thinking: None,
         }
     }
 
@@ -423,6 +459,18 @@ mod tests {
         assert!(receipt.replay_verified());
         receipt.raw_output.push('x');
         assert!(!receipt.replay_verified());
+    }
+
+    #[test]
+    fn model_transport_options_are_hashed_and_thinking_wrappers_are_stripped() {
+        let mut cfg = config();
+        let baseline = cfg.config_hash();
+        cfg.reasoning_format = Some("none".into());
+        cfg.enable_thinking = Some(false);
+        assert_ne!(baseline, cfg.config_hash());
+        assert_eq!(candidate_json_text("<think>internal</think>\n[{}]"), "[{}]");
+        assert_eq!(candidate_json_text("```json\n[]\n```"), "[]");
+        assert_eq!(candidate_json_text("not json"), "not json");
     }
 
     #[test]

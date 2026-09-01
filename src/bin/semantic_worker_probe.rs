@@ -33,7 +33,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         max_candidates: 3,
         max_output_tokens: 2048,
         temperature: 0.0,
-        timeout_ms: 30_000,
+        timeout_ms: env::var("SEMANTIC_WORKER_TIMEOUT_MS")
+            .ok()
+            .and_then(|value| value.parse().ok())
+            .unwrap_or(30_000),
+        reasoning_format: env::var("SEMANTIC_WORKER_REASONING_FORMAT").ok(),
+        enable_thinking: env::var("SEMANTIC_WORKER_ENABLE_THINKING")
+            .ok()
+            .and_then(|value| match value.as_str() {
+                "1" | "true" => Some(true),
+                "0" | "false" => Some(false),
+                _ => None,
+            }),
     })?;
     let raw = worker.propose_raw(&input).await?;
     let candidates = worker.decode_candidates(&raw)?;

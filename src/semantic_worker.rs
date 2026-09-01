@@ -238,6 +238,8 @@ impl SemanticWorker {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::semantic_ir::{validate_candidate, EvidenceSpan, TargetKind};
+    use std::collections::BTreeMap;
 
     fn config() -> SemanticWorkerConfig {
         SemanticWorkerConfig {
@@ -307,5 +309,103 @@ mod tests {
         assert!(receipt.replay_verified());
         receipt.raw_output.push('x');
         assert!(!receipt.replay_verified());
+    }
+
+    #[test]
+    fn decoded_candidate_crosses_only_the_deterministic_validator() {
+        let cfg = config();
+        let worker = SemanticWorker::new(cfg.clone()).expect("worker config");
+        let input = "solve x";
+        let mut proposal = CandidateSemanticParse {
+            schema: SEMANTIC_IR_SCHEMA.into(),
+            input_hash: String::new(),
+            model_id: "model-supplied-value".into(),
+            model_config_hash: String::new(),
+            prompt_hash: String::new(),
+            grammar_version: String::new(),
+            target: "x".into(),
+            target_kind: TargetKind::Scalar,
+            operation: "solve".into(),
+            symbols: Vec::new(),
+            symbol_scopes: BTreeMap::new(),
+            equations: Vec::new(),
+            assumptions: Vec::new(),
+            domains: Vec::new(),
+            candidate_pack: None,
+            unresolved_ambiguities: Vec::new(),
+            evidence_spans: vec![EvidenceSpan {
+                start: 6,
+                end: 7,
+                text: "x".into(),
+                role: "target".into(),
+            }],
+            confidence: 0.99,
+            raw_output_hash: String::new(),
+            replay_hash: String::new(),
+        };
+        proposal = proposal.with_replay_hash();
+        let raw_output = serde_json::to_string(&vec![proposal]).expect("candidate JSON");
+        let prompt = semantic_prompt(input, cfg.max_candidates);
+        let mut receipt = RawSemanticReceipt {
+            input: input.into(),
+            input_hash: digest(&input),
+            tier: cfg.tier,
+            endpoint: cfg.endpoint.clone(),
+            model: cfg.model.clone(),
+            model_config_hash: cfg.config_hash(),
+            prompt: prompt.clone(),
+            prompt_hash: digest(&prompt),
+            grammar_version: cfg.grammar_version,
+            raw_output: raw_output.clone(),
+            raw_output_hash: digest(&raw_output),
+            replay_hash: String::new(),
+        };
+        receipt.replay_hash = receipt_hash(&receipt);
+        let decoded = worker.decode_candidates(&receipt).expect("decode candidate");
+        assert_eq!(decoded.len(), 1);
+        assert!(decoded[0].replay_verified());
+        let validation = validate_candidate(input, &decoded[0]);
+        assert_eq!(
+            validation.decision,
+            crate::semantic_ir::ValidationDecision::AcceptCandidate,
+            "diagnostics: {:?}",
+            validation.diagnostics
+        );
+        assert!(!validation.downstream_authorized);
+    }
+
+    #[test]
+    fn malformed_or_over_budget_model_output_is_rejected() {
+        let cfg = config();
+        let worker = SemanticWorker::new(cfg.clone()).expect("worker config");
+        let input = "solve x";
+        let prompt = semantic_prompt(input, cfg.max_candidates);
+        let make_receipt = |raw_output: String| {
+            let mut receipt = RawSemanticReceipt {
+                input: input.into(),
+                input_hash: digest(&input),
+                tier: cfg.tier,
+                endpoint: cfg.endpoint.clone(),
+                model: cfg.model.clone(),
+                model_config_hash: cfg.config_hash(),
+                prompt: prompt.clone(),
+                prompt_hash: digest(&prompt),
+                grammar_version: cfg.grammar_version.clone(),
+                raw_output_hash: digest(&raw_output),
+                raw_output,
+                replay_hash: String::new(),
+            };
+            receipt.replay_hash = receipt_hash(&receipt);
+            receipt
+        };
+        assert!(worker.decode_candidates(&make_receipt("not json".into())).is_err());
+        let empty_candidates = serde_json::to_string(&vec![
+            serde_json::json!({}),
+            serde_json::json!({}),
+            serde_json::json!({}),
+            serde_json::json!({}),
+        ])
+        .expect("over-budget JSON");
+        assert!(worker.decode_candidates(&make_receipt(empty_candidates)).is_err());
     }
 }

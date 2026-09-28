@@ -4,7 +4,7 @@ Version 1.0
 
 This Contributor License Agreement ("Agreement") governs any contribution you submit to The Machine. It lets the author distribute your contribution under the project's research license and, separately, under commercial licenses, while you keep ownership of your contribution.
 
-By submitting a contribution to the project, including by opening a pull request, you accept this Agreement.
+Contributions are accepted only if you accept this Agreement and that acceptance is recorded as described in Section 7.
 
 ## 1. Definitions
 

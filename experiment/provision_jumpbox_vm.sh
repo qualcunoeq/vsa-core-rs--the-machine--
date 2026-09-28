@@ -101,7 +101,7 @@ echo "[4/4] Installing jump-box systemd service"
 cat > /etc/systemd/system/jumpbox.service <<SERVICEEOF
 [Unit]
 Description=The Machine — Jump-box execution server
-Documentation=https://github.com/qualcunoeq/the-machine
+Documentation=https://github.com/qualcunoeq/vsa-core-rs--the-machine--
 After=network.target
 
 [Service]
@@ -151,8 +151,8 @@ echo "    sudo systemctl daemon-reload"
 echo "    sudo systemctl enable --now jumpbox"
 echo ""
 echo "  Option B — Build directly on jump-box (if Rust is installed):"
-echo "    git clone https://github.com/qualcunoeq/the-machine.git"
-echo "    cd the-machine && cargo build --release --bin jump_box"
+echo "    git clone https://github.com/qualcunoeq/vsa-core-rs--the-machine--.git"
+echo "    cd vsa-core-rs--the-machine-- && cargo build --release --bin jump_box"
 echo "    sudo cp target/release/jump_box /usr/local/bin/jump_box"
 echo ""
 echo "  Verify:"

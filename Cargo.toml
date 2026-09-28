@@ -6,6 +6,9 @@ resolver = "2"
 name = "the_machine"
 version = "0.1.0"
 edition = "2021"
+license-file = "LICENSE"
+repository = "https://github.com/qualcunoeq/vsa-core-rs--the-machine--"
+publish = false
 
 [[bin]]
 name = "the_machine"

@@ -10,7 +10,7 @@ By submitting a contribution to the project, including by opening a pull request
 
 **Author** means Giuseppe Lira Curcio, the copyright holder and licensor of The Machine.
 
-**Project** means The Machine and the repository at <https://github.com/qualcunoeq/the-machine>.
+**Project** means The Machine and the repository at <https://github.com/qualcunoeq/vsa-core-rs--the-machine-->.
 
 **Contribution** means any work of authorship you submit to the Project, in any form, including source code, documentation, tests, data, and modifications to existing material, and any work you submit in response to a request for changes.
 
@@ -59,11 +59,18 @@ The Author is not obligated to use, merge, or maintain any Contribution. You are
 
 ## 7. Acceptance
 
-You accept this Agreement by submitting a Contribution to the Project. If the Author adopts a sign-off requirement, your sign-off line confirms your acceptance:
+You accept this Agreement by submitting a Contribution to the Project. Acceptance must be recorded before your Contribution is merged. The Author may require one or more of the following records:
+
+1. an explicit acceptance statement in the pull request, issue, or accompanying message;
+2. a sign-off in each commit, in the form:
 
 ```
 Signed-off-by: Your Name <your.email@example.com>
 ```
+
+3. acceptance through a CLA workflow or bot configured for the Project, which records the contributor identity, the Agreement version, and the date of acceptance.
+
+Submitting a pull request does not by itself record acceptance. If no record of acceptance is present, the Author may decline the Contribution. The Author may ask you to repeat the acceptance step if the record is incomplete or cannot be verified.
 
 ## 8. Severability
 

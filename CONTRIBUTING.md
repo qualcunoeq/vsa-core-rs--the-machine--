@@ -4,7 +4,13 @@ The Machine is released under [The Machine Research Source License 1.0](LICENSE)
 
 ## Before you contribute
 
-1. Read [CLA.md](CLA.md). By opening a pull request, or by otherwise submitting a contribution, you agree to it. If you do not agree, do not submit a contribution.
+1. Read [CLA.md](CLA.md) and accept it. Acceptance must be recorded before your contribution is merged. Sign off each commit, in the form:
+
+```
+Signed-off-by: Your Name <your.email@example.com>
+```
+
+or state your acceptance explicitly in the pull request. If you do not agree to the CLA, do not submit a contribution.
 2. Keep the contribution your own work, or make sure you have the right to submit it.
 3. Do not submit code copied from another project unless its license permits the contribution and you disclose the source and license.
 

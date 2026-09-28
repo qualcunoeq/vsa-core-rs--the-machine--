@@ -1,12 +1,14 @@
 # THE MACHINE RESEARCH SOURCE LICENSE 1.0
 
-Version 1.0.0
+Version 1.0.1
 
 Copyright (c) 2026 Giuseppe Lira Curcio (qualcunoeq). All rights reserved.
 
 Required Notice: Copyright (c) 2026 Giuseppe Lira Curcio (qualcunoeq). All rights reserved.
 
-Source: <https://github.com/qualcunoeq/the-machine>
+Public Source: <https://github.com/qualcunoeq/vsa-core-rs--the-machine-->
+
+The Licensor may maintain a separate canonical development repository. References to the software use the Public Source above unless the Licensor states otherwise.
 
 This license is source-available. It is not an open source license, because it does not permit use for any purpose, including commercial purposes. See `COMMERCIAL.md` for commercial licensing.
 
@@ -30,6 +32,16 @@ You must ensure that anyone who gets a copy of any part of the software from you
 
 You must not remove, obscure, or alter any copyright notice, license notice, attribution notice, or disclaimer in the software or in any modified version.
 
+## Third-Party Materials
+
+The software may contain or include third-party software, datasets, benchmark material, documents, or other content ("Third-Party Materials").
+
+Third-Party Materials are not licensed under these terms, except to the extent that the Licensor separately owns copyright in modifications, annotations, arrangement, or other original material contributed by the Licensor.
+
+Third-Party Materials remain subject to their own licenses, copyright notices, attribution requirements, and other terms. Those terms govern your use of the Third-Party Materials and prevail over these terms for that material.
+
+Where identified, the applicable terms are described in `THIRD_PARTY_NOTICES.md`, in file-level notices, in source manifests, or in accompanying metadata. Nothing in these terms grants you rights in Third-Party Materials beyond those granted by their own terms, and nothing in these terms imposes the restrictions of this license on Third-Party Materials that the Licensor does not own.
+
 ## Changes and New Works License
 
 The licensor grants you an additional copyright license to make changes and new works based on the software for any permitted purpose.
@@ -49,6 +61,8 @@ This section does not apply to Independent Interoperating Software, as defined b
 ## Patent License
 
 The licensor grants you a patent license for the software that covers patent claims the licensor can license, or becomes able to license, that you would infringe by using the software.
+
+The patent license granted by this section applies solely to Permitted Purposes under this license. No patent rights are granted for any Commercial Use.
 
 ## Permitted Purposes
 
@@ -77,10 +91,9 @@ You make a Commercial Use if you, your company, or anyone on your behalf does an
 5. make it available as a hosted or network service, including software-as-a-service or an API, whether paid or free, where it supports or forms part of a commercial offering;
 6. use it to provide consulting, professional, or managed services to another party;
 7. use it to create revenue, cost savings, efficiency gains, or any other commercial advantage, whether direct or indirect;
-8. use it in a commercial research program, or in research funded by a party that obtains a commercial advantage from the results;
-9. use it in competition with the software, or to develop a product or service that competes with the software or with the licensor's products or services.
+8. use it in a commercial research program, or in research funded by a party that obtains a commercial advantage from the results.
 
-This list is illustrative and not exhaustive. Any use that directly or indirectly benefits a business, for-profit entity, investment activity, paid service, revenue-generating operation, product development, consulting engagement, or competitive business activity is a Commercial Use.
+This list is illustrative and not exhaustive. Any use that directly or indirectly benefits a business, for-profit entity, investment activity, paid service, revenue-generating operation, product development, or consulting engagement is a Commercial Use.
 
 ## Prohibited Uses
 
@@ -101,9 +114,15 @@ You may not use the software, in whole or in part, including its source code, do
 
 You may not scrape, ingest, or extract the software or its contents for those purposes.
 
+## Reservation of Text and Data Mining Rights
+
+The Licensor reserves all rights to prohibit text and data mining of the software, to the fullest extent permitted by applicable law, including Article 4(3) of Directive (EU) 2019/790 and equivalent provisions in other jurisdictions. No permission to mine the software or its contents is granted by these terms except as expressly stated.
+
 ## Attribution
 
-Any research, publication, thesis, report, or work that uses, derives from, or is based on the software or its underlying concepts must provide clear and visible attribution to the author, Giuseppe Lira Curcio, and must identify this project as the source. Failure to provide attribution is a violation of these terms.
+Any publication, thesis, report, or other work that uses the software, a modified version, or material copied or derived from the software must provide clear and visible attribution to the author, Giuseppe Lira Curcio, and identify this project as the source. This obligation applies to the extent the work uses or is derived from the software or such material.
+
+Academic citation of the project is requested when discussing or building upon ideas first presented in the project, even where no code or other material from the software is copied.
 
 ## Commercial Licensing
 
@@ -153,13 +172,15 @@ The **licensor** is the individual or entity offering these terms. The author an
 
 The **software** is the software the licensor makes available under these terms.
 
-**The Machine** means the software in the repository identified above, including its source code, documentation, mathematical specifications, algorithms, proofs, models, and associated materials, together with any modified version.
+**The Machine** means the software in the repository identified above, including its source code, documentation, mathematical specifications, algorithms, proofs, models, and associated materials, together with any modified version. It does not include Third-Party Materials, except for modifications, annotations, arrangement, and other original material contributed by the Licensor.
 
 A **modified version** is any work based on the software, including any derivative, adaptation, translation, or work that incorporates the software in whole or in part. Independent Interoperating Software is not a modified version.
 
 **Independent Interoperating Software** means separate software that you develop independently and that interacts with The Machine only through its documented public interfaces, such as its HTTP API, its command-line interface, or its documented file formats, and that does not copy, incorporate, adapt, or derive from the source code, internal data structures, or non-public interfaces of The Machine. Independent Interoperating Software is not a modified version for the purposes of these terms.
 
-**Corresponding Source** means the preferred form of a work for making modifications to it, including all source code for all modules it contains, any associated build scripts and scripts used to install or run it, and any interface definition files, together with the changes you made and their dates.
+**Corresponding Source** means the preferred form of the work for making modifications to it, including the source code of the modules it contains that are covered by this license or derived from the software, the associated build scripts and scripts used to install or run it, the interface definition files, and the changes you made and their dates.
+
+Corresponding Source does not include: standard system libraries and system components; independent interoperating software; unmodified third-party dependencies and third-party materials; and general-purpose tools and utilities that are not part of, and are not derived from, the software. Corresponding Source is limited to what is needed to build, install, and run the version you distribute or make available, together with your changes.
 
 **Commercial Use** is defined in the Commercial Use section above.
 

@@ -51,6 +51,21 @@ To keep commercial licensing possible for the whole project, contributions are a
 
 Because the license does not permit use for any purpose, including commercial purposes, it is not an open source license under the Open Source Initiative definition. Describe The Machine as source-available or research-source, not as open source.
 
+The license is not on the SPDX license list. GitHub will show the repository license as "Other" or "NOASSERTION". That is expected for a custom license and does not affect its terms.
+
+## Third-party material
+
+Some files under `data/` and `docs/sources/` are third-party datasets and source texts, including GSM8K, the MATH dataset, OpenStax books, MIT OpenCourseWare texts, and Topology Without Tears. They are not licensed to you under the research license. Their own terms apply. They are catalogued in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md), and the license excludes them in its Third-Party Materials section.
+
+## AI training, platform terms, and text and data mining
+
+The research license prohibits training, fine-tuning, or distilling AI or machine-learning models on the software without authorization. Two limits are worth understanding.
+
+1. Hosting the repository is also governed by the host's terms. The current GitHub Terms of Service grant GitHub and its affiliates rights to use uploaded content to develop and improve AI and machine-learning models. That permission comes from the platform terms accepted by the account holder, and the repository license does not remove it. The license restriction continues to apply to everyone else, including anyone who obtains the code from GitHub or elsewhere.
+2. The license reserves text and data mining rights under Article 4(3) of Directive (EU) 2019/790. Where that reservation is relied on, it should also be expressed in a machine-readable form where the medium supports one.
+
+If preventing training is a priority, the effective steps are separate from the license: choose hosts whose terms do not grant training rights, or accept that the host's terms apply, and state the machine-readable reservation in the channels you control.
+
 ## Drafting note
 
 This license is a custom license. Its structure follows the PolyForm Noncommercial 1.0.0 architecture, with a broadened commercial-use definition added, and it adopts source-availability and network-deployment concepts in the spirit of the GNU Affero General Public License. It is not the PolyForm Noncommercial License and not the GNU AGPL, and it is not a combination of them.

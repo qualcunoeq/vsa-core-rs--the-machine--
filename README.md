@@ -4,8 +4,7 @@ A cognitive architecture built on hyperdimensional computing (HDC/VSA). State is
 
 **Version:** v3.4
 **Last updated:** 2026-09-28
-**Repository:** `github.com/qualcunoeq/the-machine`
-**Public mirror:** `github.com/qualcunoeq/vsa-core-rs--the-machine--`
+**Public source:** `github.com/qualcunoeq/vsa-core-rs--the-machine--`
 **Formal specification:** [`MATH.md`](MATH.md) (3,452 lines)
 **Library:** 260 modules, 572 binary targets
 **Library tests:** 2,567 collected (2,511 passing, 41 known pre-existing failures, 15 ignored); see [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) section 6
@@ -196,6 +195,7 @@ The Machine is source-available under [The Machine Research Source License 1.0](
 | [`COMMERCIAL.md`](COMMERCIAL.md) | What counts as commercial use, and how to obtain a commercial license |
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to contribute |
 | [`CLA.md`](CLA.md) | Contributor License Agreement |
+| [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) | Third-party datasets and source texts, with their licenses |
 
 Contact for commercial licensing: <gliracurcio@gmail.com>.
 

@@ -32,6 +32,14 @@ The crate exposes:
 
 ## Verification Commands
 
+Everyday operation goes through the Phase 11 operator command:
+
+```bash
+cargo run --release --bin machine -- setup   # once
+cargo run --release --bin machine -- start   # daily use
+cargo run --release --bin machine -- doctor  # health + dependency status
+```
+
 ### Fast Library Tests
 ```bash
 cargo test --lib              # All default tests (~1980 #[test] items)

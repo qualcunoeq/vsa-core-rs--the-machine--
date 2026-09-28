@@ -1,0 +1,273 @@
+{
+  "schema": "phase11-capability-inventory-v1",
+  "release": "v3.4",
+  "capabilities": [
+    {
+      "id": "conversation-runtime",
+      "title": "Conversational runtime",
+      "status": "stable",
+      "since": "Phase 1",
+      "claim": null,
+      "evidence": [
+        "docs/DEVELOPMENT.md"
+      ],
+      "command": "machine start",
+      "surfaces": [
+        "library",
+        "http"
+      ]
+    },
+    {
+      "id": "local-web-interface",
+      "title": "Local web interface (Ask / Teach / Inspect)",
+      "status": "stable",
+      "since": "Phase 2",
+      "claim": null,
+      "evidence": [
+        "docs/DEVELOPMENT.md"
+      ],
+      "command": "machine start --open",
+      "surfaces": [
+        "http"
+      ]
+    },
+    {
+      "id": "durable-state",
+      "title": "Durable SQLite state with migrations",
+      "status": "stable",
+      "since": "Phase 3",
+      "claim": "C-018",
+      "evidence": [
+        "docs/phase7_reliability_v1.report.json"
+      ],
+      "command": "machine doctor",
+      "surfaces": [
+        "library"
+      ]
+    },
+    {
+      "id": "backup-restore",
+      "title": "Backup and restore",
+      "status": "stable",
+      "since": "Phase 3",
+      "claim": null,
+      "evidence": [
+        "docs/DEVELOPMENT.md"
+      ],
+      "command": "machine backup <file> / machine restore <file>",
+      "surfaces": [
+        "cli"
+      ]
+    },
+    {
+      "id": "follow-up-conversation",
+      "title": "Follow-up conversation and reference resolution",
+      "status": "stable",
+      "since": "Phase 4",
+      "claim": null,
+      "evidence": [
+        "integration-tests/conversation_runtime/scenarios/phase4.json"
+      ],
+      "command": "machine start",
+      "surfaces": [
+        "http"
+      ]
+    },
+    {
+      "id": "connected-capabilities",
+      "title": "Connected typed math and unit capabilities",
+      "status": "stable",
+      "since": "Phase 5",
+      "claim": null,
+      "evidence": [
+        "docs/DEVELOPMENT.md"
+      ],
+      "command": "machine start",
+      "surfaces": [
+        "http"
+      ]
+    },
+    {
+      "id": "semantic-fidelity",
+      "title": "Semantic fidelity measurement",
+      "status": "shadow",
+      "since": "Phase 6",
+      "claim": null,
+      "evidence": [
+        "docs/semantic_fidelity_eval_v1.report.json"
+      ],
+      "command": "semantic_fidelity_eval",
+      "surfaces": [
+        "library"
+      ]
+    },
+    {
+      "id": "semantic-worker-shadow",
+      "title": "Semantic worker in shadow mode",
+      "status": "shadow",
+      "since": "Phase 6",
+      "claim": null,
+      "evidence": [
+        "docs/semantic_worker_probe.md"
+      ],
+      "command": "machine start --semantic-worker",
+      "surfaces": [
+        "http",
+        "config"
+      ]
+    },
+    {
+      "id": "reliability-contracts",
+      "title": "Enforced memory budgets and replay taxonomy",
+      "status": "active",
+      "since": "Phase 7",
+      "claim": "C-018",
+      "evidence": [
+        "docs/phase7_reliability_v1.report.json"
+      ],
+      "command": "reliability_report",
+      "surfaces": [
+        "library"
+      ]
+    },
+    {
+      "id": "document-learning",
+      "title": "Inspectable, reversible document learning",
+      "status": "active",
+      "since": "Phase 8",
+      "claim": "C-020",
+      "evidence": [
+        "docs/DEVELOPMENT.md"
+      ],
+      "command": "machine_docs demo",
+      "surfaces": [
+        "library",
+        "http",
+        "cli"
+      ]
+    },
+    {
+      "id": "scanned-documents",
+      "title": "Scanned / visual document interpretation",
+      "status": "deferred",
+      "since": "Phase 8",
+      "claim": null,
+      "evidence": [],
+      "command": "(deferred)",
+      "surfaces": []
+    },
+    {
+      "id": "conversation-evaluation",
+      "title": "Versioned conversation evaluation and ablation gate",
+      "status": "stable",
+      "since": "Phase 9",
+      "claim": "C-021",
+      "evidence": [
+        "docs/phase9_conversation_eval_v1.report.json"
+      ],
+      "command": "machine_eval",
+      "surfaces": [
+        "cli",
+        "library"
+      ]
+    },
+    {
+      "id": "controlled-autonomy",
+      "title": "Bounded background tasks with scope and budget",
+      "status": "experimental",
+      "since": "Phase 10",
+      "claim": "C-022",
+      "evidence": [
+        "docs/phase10_autonomy_v1.report.json"
+      ],
+      "command": "machine_eval task",
+      "surfaces": [
+        "library"
+      ]
+    },
+    {
+      "id": "operator-cli",
+      "title": "Single operator command",
+      "status": "stable",
+      "since": "Phase 11",
+      "claim": "C-023",
+      "evidence": [
+        "docs/phase11_release_notes_v1.md"
+      ],
+      "command": "cargo run --release --bin machine -- start",
+      "surfaces": [
+        "cli"
+      ]
+    },
+    {
+      "id": "configuration-validation",
+      "title": "Configuration validation with remedies",
+      "status": "stable",
+      "since": "Phase 11",
+      "claim": "C-023",
+      "evidence": [
+        "docs/phase11_doctor_v1.json"
+      ],
+      "command": "machine config check",
+      "surfaces": [
+        "cli"
+      ]
+    },
+    {
+      "id": "health-doctor",
+      "title": "Health and dependency status",
+      "status": "stable",
+      "since": "Phase 11",
+      "claim": "C-023",
+      "evidence": [
+        "docs/phase11_doctor_v1.json"
+      ],
+      "command": "machine doctor",
+      "surfaces": [
+        "cli"
+      ]
+    },
+    {
+      "id": "upgrade-recovery",
+      "title": "Backup-first upgrade and recovery",
+      "status": "stable",
+      "since": "Phase 11",
+      "claim": "C-023",
+      "evidence": [
+        "docs/phase11_doctor_v1.json"
+      ],
+      "command": "machine upgrade / machine recover",
+      "surfaces": [
+        "cli"
+      ]
+    },
+    {
+      "id": "release-notes",
+      "title": "Release notes tied to evaluation results",
+      "status": "stable",
+      "since": "Phase 11",
+      "claim": "C-023",
+      "evidence": [
+        "docs/phase11_release_notes_v1.md"
+      ],
+      "command": "machine release notes",
+      "surfaces": [
+        "cli"
+      ]
+    },
+    {
+      "id": "gpu-projection",
+      "title": "Optional CUDA projection backend",
+      "status": "deferred",
+      "since": "Phase 11",
+      "claim": null,
+      "evidence": [
+        "docs/DEVELOPMENT.md"
+      ],
+      "command": "cargo build --features cuda",
+      "surfaces": [
+        "build"
+      ]
+    }
+  ]
+}

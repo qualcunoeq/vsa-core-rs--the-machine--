@@ -4454,6 +4454,58 @@ impl QaEngine {
             .collect()
     }
 
+    /// Remove every stored fact matching the exact normalized SVO.
+    ///
+    /// Also removes the mirrored curated-evidence records (`fact-{tick}`) so
+    /// the factual-evidence gate cannot answer from a fact that is no longer
+    /// stored. Returns the number of facts removed.
+    pub fn remove_facts_matching(&mut self, subject: &str, verb: &str, object: &str) -> usize {
+        let mut removed_ticks = Vec::new();
+        let before = self.facts.len();
+        self.facts.retain(|fact| {
+            let matches = Self::fact_text_matches(fact, subject, verb, object);
+            if matches {
+                removed_ticks.push(fact.tick);
+            }
+            !matches
+        });
+        let removed = before - self.facts.len();
+        if removed > 0 {
+            self.rebuild_fact_index();
+            for tick in removed_ticks {
+                self.factual_evidence.remove(&format!("fact-{tick}"));
+            }
+        }
+        removed
+    }
+
+    /// Remove every stored causal rule matching the exact antecedent and
+    /// consequent. Returns the number of rules removed.
+    pub fn remove_rules_matching(
+        &mut self,
+        ante_subject: &str,
+        ante_verb: &str,
+        ante_object: &str,
+        cons_subject: &str,
+        cons_verb: &str,
+        cons_object: &str,
+    ) -> usize {
+        let before = self.rules.len();
+        self.rules.retain(|rule| {
+            !(rule.antecedent_subject == ante_subject
+                && rule.antecedent_verb == ante_verb
+                && rule.antecedent_object == ante_object
+                && rule.consequent_subject == cons_subject
+                && rule.consequent_verb == cons_verb
+                && rule.consequent_object == cons_object)
+        });
+        let removed = before - self.rules.len();
+        if removed > 0 {
+            self.rebuild_rule_index();
+        }
+        removed
+    }
+
     // ═════════════════════════════════════════════════════════════════
     // PERSISTENCE
     // ═════════════════════════════════════════════════════════════════

@@ -112,6 +112,21 @@ impl CuratedKnowledgeStore {
             .and_then(|index| self.records.get(*index))
     }
 
+    /// Remove the record with the given id. Returns true when a record was
+    /// removed. Duplicate ids are resolved like `insert` resolves them: the
+    /// most recently inserted occurrence goes first.
+    pub fn remove(&mut self, id: &str) -> bool {
+        let Some(index) = self.by_id.remove(id) else {
+            return false;
+        };
+        self.records.remove(index);
+        self.by_id.clear();
+        for (position, record) in self.records.iter().enumerate() {
+            self.by_id.insert(record.id.clone(), position);
+        }
+        true
+    }
+
     /// Retrieve a source passage that is independently answerable under the
     /// store's quality and applicability rules.  A lexical/semantic hit is
     /// only candidate generation; Candidate records never cross this gate.

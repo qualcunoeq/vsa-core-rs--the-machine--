@@ -647,13 +647,25 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
                 None,
             )
         } else if let Some(rest) = lower.strip_prefix("solve ") {
-            let (expr, var) = rest.rsplit_once(" for ")?;
-            (
-                Some(AlgebraOperation::SolveLinearEquation),
-                expr.trim(),
-                Some(var.trim()),
-                None,
-            )
+            match rest.rsplit_once(" for ") {
+                Some((expr, var)) => (
+                    Some(AlgebraOperation::SolveLinearEquation),
+                    expr.trim(),
+                    Some(var.trim()),
+                    None,
+                ),
+                // `Solve <equation>` without an explicit target is accepted
+                // when the equation itself names exactly one variable; the
+                // target is then inferred from the equation.  Equations with
+                // zero or several variables still abstain because the target
+                // would be ambiguous.
+                None => (
+                    Some(AlgebraOperation::SolveLinearEquation),
+                    rest.trim(),
+                    None,
+                    None,
+                ),
+            }
         } else if let Some(rest) = lower.strip_prefix("substitute ") {
             let (binding, expr) = rest.split_once(" into ")?;
             let (var, value) = binding.split_once('=')?;
@@ -688,10 +700,17 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
             (None, "", None, None)
         };
     let operation = operation?;
+    let explicit_variable = variable.is_some();
     let variable = variable
         .map(str::trim)
         .filter(|v| v.len() == 1 && v.chars().all(|c| c.is_ascii_alphabetic()));
-    if matches!(operation, AlgebraOperation::SolveLinearEquation) && variable.is_none() {
+    // An explicitly requested target must be a single named variable.  A
+    // missing target is only allowed for the inference path above, which
+    // resolves it from the equation inside the solve arm.
+    if matches!(operation, AlgebraOperation::SolveLinearEquation)
+        && explicit_variable
+        && variable.is_none()
+    {
         return None;
     }
     if body.matches('=').count() > 1 {
@@ -718,7 +737,18 @@ pub fn parse_problem(question: &str) -> Option<AlgebraProblem> {
         }
         AlgebraOperation::SolveLinearEquation => {
             let (lhs, rhs) = parse_equation(body)?;
-            let var = variable?.to_string();
+            let var = match variable {
+                Some(var) => var.to_string(),
+                None => {
+                    let mut variables = BTreeSet::new();
+                    collect_system_variables(&lhs, &mut variables);
+                    collect_system_variables(&rhs, &mut variables);
+                    if variables.len() != 1 {
+                        return None;
+                    }
+                    variables.into_iter().next()?
+                }
+            };
             let degree = polynomial_degree(&lhs, &var).max(polynomial_degree(&rhs, &var));
             if degree > 2 {
                 return None;

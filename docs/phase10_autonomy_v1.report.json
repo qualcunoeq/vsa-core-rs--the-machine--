@@ -1,0 +1,159 @@
+{
+  "schema": "phase10-autonomy-task-v1",
+  "scenarios": 6,
+  "completed": 5,
+  "refused": 1,
+  "paused_and_resumed": 1,
+  "all_within_authority": true,
+  "all_within_budget": true,
+  "all_contracts_satisfied": true,
+  "outcomes": [
+    {
+      "id": "analyze",
+      "kind": "analyze_document",
+      "expected_refused": false,
+      "state": "completed",
+      "completed": true,
+      "refused": false,
+      "paused": false,
+      "resumed": false,
+      "steps": 2,
+      "within_budget": true,
+      "within_authority": true,
+      "result_explained": true,
+      "stop_reason": null,
+      "result": {
+        "document_analysis": {
+          "title": "Observatory notes",
+          "sha256": "3953cac9ece8c7f473aa2cdcee4559eaad58fef43219a1e881e8e5e7c2fdaaf8",
+          "proposed": 2,
+          "rejected": 0,
+          "instructions_refused": 0,
+          "facts": 2,
+          "definitions": 0,
+          "rules": 0
+        }
+      }
+    },
+    {
+      "id": "analyze-paused",
+      "kind": "analyze_document",
+      "expected_refused": false,
+      "state": "completed",
+      "completed": true,
+      "refused": false,
+      "paused": true,
+      "resumed": true,
+      "steps": 2,
+      "within_budget": true,
+      "within_authority": true,
+      "result_explained": true,
+      "stop_reason": null,
+      "result": {
+        "document_analysis": {
+          "title": "Station log",
+          "sha256": "ff90ccdf495864be0fe997f7f8160b1d8ff62c244b6af925464ff32937017acd",
+          "proposed": 2,
+          "rejected": 0,
+          "instructions_refused": 0,
+          "facts": 2,
+          "definitions": 0,
+          "rules": 0
+        }
+      }
+    },
+    {
+      "id": "investigate",
+      "kind": "investigate",
+      "expected_refused": false,
+      "state": "completed",
+      "completed": true,
+      "refused": false,
+      "paused": false,
+      "resumed": false,
+      "steps": 1,
+      "within_budget": true,
+      "within_authority": true,
+      "result_explained": true,
+      "stop_reason": null,
+      "result": {
+        "investigation": {
+          "case_id": "tree-criterion-000",
+          "conclusion": "supported",
+          "steps": 23,
+          "counterexamples": 0,
+          "replans": 0,
+          "replay_verified": true
+        }
+      }
+    },
+    {
+      "id": "experiment",
+      "kind": "run_experiment",
+      "expected_refused": false,
+      "state": "completed",
+      "completed": true,
+      "refused": false,
+      "paused": false,
+      "resumed": false,
+      "steps": 1,
+      "within_budget": true,
+      "within_authority": true,
+      "result_explained": true,
+      "stop_reason": null,
+      "result": {
+        "experiment_selection": {
+          "candidates": 5,
+          "selected": 2,
+          "experiment_budget": 2
+        }
+      }
+    },
+    {
+      "id": "consolidate",
+      "kind": "consolidate_memory",
+      "expected_refused": false,
+      "state": "completed",
+      "completed": true,
+      "refused": false,
+      "paused": false,
+      "resumed": false,
+      "steps": 1,
+      "within_budget": true,
+      "within_authority": true,
+      "result_explained": true,
+      "stop_reason": null,
+      "result": {
+        "memory_consolidation": {
+          "cluster_count": 0,
+          "entry_count": 0,
+          "conversation_sessions": 1,
+          "conversation_turns": 2,
+          "total_bytes": 640,
+          "budget_bytes": 2147483648,
+          "within_budget": true
+        }
+      }
+    },
+    {
+      "id": "starved",
+      "kind": "analyze_document",
+      "expected_refused": true,
+      "state": {
+        "refused": {
+          "reason": "step budget exhausted before completion"
+        }
+      },
+      "completed": false,
+      "refused": true,
+      "paused": false,
+      "resumed": false,
+      "steps": 1,
+      "within_budget": true,
+      "within_authority": true,
+      "result_explained": false,
+      "stop_reason": "step budget exhausted before completion",
+      "result": null
+    }
+  ]
+}

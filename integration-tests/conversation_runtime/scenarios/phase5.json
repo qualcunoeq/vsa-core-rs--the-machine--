@@ -1,0 +1,144 @@
+{
+  "scenarios": [
+    {
+      "name": "supported_capabilities",
+      "steps": [
+        {
+          "input": "Evaluate 2+3.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:expression_evaluation",
+            "answer_contains": ["5"],
+            "evidence": true,
+            "verification_state": "verified",
+            "verification_method": "expression_replay"
+          }
+        },
+        {
+          "input": "Solve 2*x + 3 = 11 for x.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:linear_equation_solve",
+            "answer_contains": ["x = 4"],
+            "verification_state": "verified",
+            "verification_method": "linear_equation_replay"
+          }
+        },
+        {
+          "input": "Solve x^2 - 5*x + 6 = 0 for x.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:quadratic_equation_solve",
+            "answer_contains": ["x = 2", "x = 3"],
+            "verification_state": "verified",
+            "verification_method": "quadratic_equation_replay"
+          }
+        },
+        {
+          "input": "Solve system: x + y = 5; x - y = 1 for x,y",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:linear_system_solve",
+            "answer_contains": ["x = 3", "y = 2"],
+            "verification_state": "verified",
+            "verification_method": "linear_system_replay"
+          }
+        },
+        {
+          "input": "Convert 3 meters to centimeters using 100 centimeters per meter.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:unit_conversion",
+            "answer_contains": ["300"],
+            "verification_state": "verified",
+            "verification_method": "unit_quantity_algebra_replay"
+          }
+        }
+      ]
+    },
+    {
+      "name": "paraphrases",
+      "steps": [
+        {
+          "input": "Evaluate 2*x+3 at x=4.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:expression_evaluation",
+            "answer_contains": ["11"]
+          }
+        },
+        {
+          "input": "Add 2 meters and 30 centimeters; express the total in centimeters.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:unit_conversion",
+            "answer_contains": ["230"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "missing_information",
+      "steps": [
+        {
+          "session": "binding",
+          "input": "Evaluate 2*x+3.",
+          "expect": {
+            "outcome": "clarification_needed",
+            "capability": "structured_solver:expression_evaluation",
+            "answer_contains": ["value for x"]
+          }
+        },
+        {
+          "session": "factor",
+          "input": "Convert 3 meters to centimeters.",
+          "expect": {
+            "outcome": "clarification_needed",
+            "capability": "structured_solver:unit_conversion"
+          }
+        }
+      ]
+    },
+    {
+      "name": "unsupported_operations",
+      "steps": [
+        {
+          "input": "Solve system: x + y = 2; 2*x + 2*y = 4 for x,y",
+          "expect": {
+            "outcome": "unsupported",
+            "capability": "structured_solver:linear_system_solve",
+            "answer_contains": ["infinitely many"]
+          }
+        },
+        {
+          "input": "Solve x^2 + 1 = 0 for x.",
+          "expect": {
+            "outcome": "unsupported",
+            "capability": "structured_solver:quadratic_equation_solve",
+            "answer_contains": ["no real solution"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "malformed_and_foreign",
+      "steps": [
+        {
+          "session": "malformed",
+          "input": "Solve for x: 2*x + = 11",
+          "expect": {
+            "outcome": "clarification_needed",
+            "answer_not_contains": ["x ="]
+          }
+        },
+        {
+          "session": "foreign",
+          "input": "Who manages the observatory?",
+          "expect": {
+            "outcome": "unsupported"
+          }
+        }
+      ]
+    }
+  ]
+}

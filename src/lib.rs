@@ -15,6 +15,7 @@ pub mod algebra_benchmark;
 pub mod algebra_island;
 pub mod analogy;
 pub mod autonomy;
+pub mod autonomy_task;
 pub mod battery_realization;
 pub mod bounded_arithmetic_functions_pack;
 pub mod bounded_arithmetic_functions_frontend;
@@ -27,6 +28,7 @@ pub mod calculus_pack;
 pub mod capabilities;
 pub mod capability_planner;
 pub mod capability_proposer;
+pub mod chat_server;
 pub mod chess_eval;
 pub mod chess_learner;
 pub mod classical_mechanics_pack;
@@ -42,6 +44,8 @@ pub mod constant_rate_model;
 pub mod context;
 pub mod context_lowering;
 pub mod continuous_education;
+pub mod conversation;
+pub mod conversation_eval;
 pub mod cross_ontology;
 pub mod cross_vertical_benchmark;
 pub mod curriculum;
@@ -52,6 +56,7 @@ pub mod defense;
 pub mod development;
 pub mod diagnostic;
 pub mod dirichlet_character_pack;
+pub mod document_learning;
 pub mod dirichlet_character_frontend;
 pub mod discrete_dynamics;
 pub mod drift;
@@ -131,11 +136,13 @@ pub mod ontology_extension;
 pub mod ontology_realization;
 pub mod ood_benchmark;
 pub mod open_set;
+pub mod operator;
 pub mod parameter_linear_system_frontend;
 pub mod pdf_reader;
 pub mod percentage_quantity;
 pub mod percentage_quantity_proposal;
 pub mod perception;
+pub mod persistence;
 pub mod physics;
 pub mod planning;
 pub mod polynomial_pack;
@@ -162,6 +169,7 @@ pub mod raw_decomposition_benchmark;
 pub mod real_analysis_pack;
 pub mod reason;
 pub mod recurrence;
+pub mod reliability;
 pub mod recurrence_benchmark;
 pub mod release_campaign;
 pub mod resonator;
@@ -173,6 +181,8 @@ pub mod self_model;
 pub mod semantic_ir;
 pub mod semantic_handoff;
 pub mod semantic_eval;
+pub mod semantic_fidelity;
+pub mod semantic_shadow;
 pub mod semantic_worker;
 pub mod sensory;
 pub mod shifted_ingest;
@@ -1540,6 +1550,21 @@ impl MemoryCluster {
     /// Returns the `GateAction` so the caller can manage cluster
     /// proliferation appropriately.
     pub fn novelty_gate(&mut self, tau: &Hypervector, episode_desirability: f64) -> GateAction {
+        self.novelty_gate_with_budget(tau, episode_desirability, MAX_ENTRIES_PER_CLUSTER)
+    }
+
+    /// ██ Phase 7: budget-aware novelty gate. ██
+    ///
+    /// Identical to [`MemoryCluster::novelty_gate`] except the per-cluster
+    /// entry cap comes from the caller's declared [`crate::reliability::MemoryBudget`]
+    /// rather than the compile-time constant, so the enforcement matches the
+    /// configuration the system reports.
+    pub fn novelty_gate_with_budget(
+        &mut self,
+        tau: &Hypervector,
+        episode_desirability: f64,
+        max_entries: usize,
+    ) -> GateAction {
         if episode_desirability <= 0.6 {
             return GateAction::Discard;
         }
@@ -1557,8 +1582,9 @@ impl MemoryCluster {
                 None,
             );
             self.entries.push(entry);
-            if self.entries.len() > MAX_ENTRIES_PER_CLUSTER {
-                let drain = MAX_ENTRIES_PER_CLUSTER / 4;
+            let drain =
+                crate::reliability::MemoryBudget::entries_to_drain(self.entries.len(), max_entries);
+            if drain > 0 {
                 self.entries.drain(0..drain);
             }
             self.absorb_entry(tau);
@@ -1716,6 +1742,11 @@ pub struct VSABrain {
     /// and call `budget.spend()` after execution.
     pub autonomy_budget: crate::cognition::AutonomyBudget,
 
+    /// ██ Phase 7: Declared memory capacities enforced at insertion time ██
+    /// The novelty gate, transient ingestion, and cluster spawn paths consult
+    /// this budget and evict rather than grow past the declared cap.
+    pub memory_budget: crate::reliability::MemoryBudget,
+
     /// ██ UPGRADE v5.0: Decision Journal (Layer 5) ██
     /// Append-only log of autonomous decisions with full replay context:
     /// intent, action, result, budget state, and reasoning.
@@ -1858,6 +1889,7 @@ impl VSABrain {
             tool_event_store: crate::cognition::ToolEventStore::new(),
             tool_reliability: crate::cognition::ToolReliabilityTracker::new(),
             autonomy_budget: crate::cognition::AutonomyBudget::new(1000, 3600000, 100, 0.80),
+            memory_budget: crate::reliability::MemoryBudget::default(),
             decision_journal: crate::cognition::DecisionJournal::new(),
             confidence_calibration: crate::cognition::ConfidenceCalibration::new(),
             lightning_indexer: Some(crate::indexer::LightningIndexer::with_default_top_k()),
@@ -2187,12 +2219,17 @@ impl VSABrain {
                 cluster.ensure_anchor();
 
                 // ██ Delta-encode against the IMMUTABLE anchor ██
+                let max_entries = self.memory_budget.max_entries_per_cluster;
                 let entry =
                     DejavuEntry::new(vector, label.to_string(), metadata, Some(&cluster.anchor));
                 let tau = entry.reconstruct(&cluster.anchor);
                 cluster.entries.push(entry);
-                if cluster.entries.len() > MAX_ENTRIES_PER_CLUSTER {
-                    let drain = MAX_ENTRIES_PER_CLUSTER / 4;
+                // ██ Phase 7: honor the declared per-cluster entry budget. ██
+                let drain = crate::reliability::MemoryBudget::entries_to_drain(
+                    cluster.entries.len(),
+                    max_entries,
+                );
+                if drain > 0 {
                     cluster.entries.drain(0..drain);
                 }
 
@@ -2206,6 +2243,39 @@ impl VSABrain {
                 self.record_activation(idx);
 
                 return;
+            }
+        }
+
+        // ██ Phase 7: bound the number of live clusters.  At capacity, evict
+        // the coldest cluster (by last access) instead of appending a new one
+        // without limit.  This is the enforcement half of Theorem III.1: the
+        // memory bound is only real if the spawn path observes it. ██
+        if self
+            .memory_budget
+            .clusters_at_capacity(self.dejavu_clusters.len())
+        {
+            if let Some(victim) = self
+                .dejavu_clusters
+                .iter()
+                .enumerate()
+                .min_by_key(|(_, cluster)| cluster.last_access_tick)
+                .map(|(idx, _)| idx)
+            {
+                let last = self.dejavu_clusters.len() - 1;
+                // Cold storage is keyed by cluster index.  Drop the victim's
+                // blob, then move the last cluster's blob into the evicted
+                // slot so it keeps pointing at the right cluster.
+                self.cold_storage.remove(victim);
+                if victim != last {
+                    if let Some(blob) = self.cold_storage.take(last) {
+                        self.cold_storage.store(victim, blob);
+                    }
+                }
+                self.dejavu_clusters.swap_remove(victim);
+                // Drop any association entry that referred to the evicted
+                // cluster; stale indices would otherwise read the wrong
+                // cluster after the swap.
+                self.drop_associations_for(victim);
             }
         }
 
@@ -2233,6 +2303,29 @@ impl VSABrain {
 
         // ██ UPGRADE v3.0: Record new cluster activation for association learning ██
         self.record_activation(new_idx);
+    }
+
+    /// ██ Phase 7: Full resident-memory accounting for this brain. ██
+    ///
+    /// Counts entries, metadata, accumulators, centroids/anchors,
+    /// associations, experiences, and the live indexer, and reports the
+    /// declared budget alongside the measured total.  Conversation state is
+    /// added separately via
+    /// [`crate::reliability::account_conversation`].
+    pub fn memory_report(&self) -> crate::reliability::MemoryReport {
+        let index_entries = self
+            .lightning_indexer
+            .as_ref()
+            .map(|indexer| indexer.len())
+            .unwrap_or(0);
+        crate::reliability::account_brain(
+            &self.dejavu_clusters,
+            &self.transient_clusters,
+            &self.experiences,
+            &self.cross_cluster_associations,
+            index_entries,
+            self.memory_budget,
+        )
     }
 
     /// ██ Theorem XXIII.4: Update drift magnitude EWMA ██
@@ -2617,6 +2710,9 @@ impl VSABrain {
         if clusters.len() < 2 {
             return;
         }
+        // ██ Phase 7: the samples below come from this path; record which one
+        // so the reported guarantee matches the active configuration. ██
+        self.contraction_telemetry.projection_path = crate::reliability::projection_path();
         let tau = self.soft_projection_tau;
 
         for _ in 0..n_pairs {
@@ -3337,6 +3433,8 @@ impl VSABrain {
             }
         }
 
+        let max_entries = self.memory_budget.max_entries_per_transient_cluster;
+
         if let Some(idx) = best_idx {
             if best_sim >= cluster_threshold {
                 // ██ FIX v2.6: Thaw frozen cluster and update access tick ██
@@ -3344,12 +3442,45 @@ impl VSABrain {
                 cluster.frozen = false;
                 cluster.last_access_tick = self.tick_counter as u64;
                 cluster.entries.push(entry);
+                // ██ Phase 7: enforce the transient entry budget in the real
+                // insertion path instead of relying on freeze to catch it. ██
+                let drain =
+                    crate::reliability::MemoryBudget::entries_to_drain(cluster.entries.len(), max_entries);
+                if drain > 0 {
+                    cluster.entries.drain(0..drain);
+                }
                 cluster.last_reinforced_tick = self.tick_counter;
                 cluster.reverberation += best_sim;
                 let refs: Vec<&Hypervector> = cluster.entries.iter().map(|e| &e.vector).collect();
                 cluster.centroid = Hypervector::bundle(&refs);
                 return;
             }
+        }
+
+        // ██ Phase 7: bound the number of live transient clusters.  At
+        // capacity, evict the coldest unfrozen cluster (or the oldest overall
+        // if all are frozen) before appending the new one. ██
+        if self
+            .memory_budget
+            .transients_at_capacity(self.transient_clusters.len())
+        {
+            let mut victim = 0usize;
+            let mut best = u64::MAX;
+            for (idx, cluster) in self.transient_clusters.iter().enumerate() {
+                let score = if cluster.frozen {
+                    cluster.last_access_tick
+                } else {
+                    // Prefer evicting frozen clusters; unfrozen ones get a
+                    // high penalty so they survive while a frozen candidate
+                    // exists.
+                    cluster.last_access_tick.saturating_add(1 << 40)
+                };
+                if score < best {
+                    best = score;
+                    victim = idx;
+                }
+            }
+            self.transient_clusters.swap_remove(victim);
         }
 
         self.transient_clusters.push(TransientCluster {
@@ -4229,6 +4360,24 @@ impl VSABrain {
         self.cross_cluster_associations.retain(|_, v| !v.is_empty());
     }
 
+    /// ██ Phase 7: remove every association that refers to `evicted`, which
+    /// is expected to have been removed with `Vec::swap_remove`.  The cluster
+    /// formerly at the last index now lives at `evicted`'s old slot, so
+    /// references to `last` are remapped to `evicted` rather than dropped.
+    fn drop_associations_for(&mut self, evicted: usize) {
+        let last = self.dejavu_clusters.len();
+        self.cross_cluster_associations.remove(&evicted);
+        for assocs in self.cross_cluster_associations.values_mut() {
+            assocs.retain(|(to, _, _, _)| *to != evicted);
+            for (to, _, _, _) in assocs.iter_mut() {
+                if *to == last {
+                    *to = evicted;
+                }
+            }
+        }
+        self.cross_cluster_associations.retain(|_, v| !v.is_empty());
+    }
+
     /// ██ UPGRADE v3.0: Get all associations for a cluster (for debugging / HUD).
     pub fn get_associations(&self, cluster_idx: usize) -> Vec<(usize, f64)> {
         self.cross_cluster_associations
@@ -4474,6 +4623,12 @@ pub struct ContractionTelemetry {
     pub max_samples: usize,      // rolling window size
     pub tripwire_threshold: f64, // default 0.995
     pub critical_threshold: f64, // default 1.001
+
+    /// ██ Phase 7: the projection implementation these samples describe. ██
+    /// Telemetry must name the path it characterizes; on a CPU build this is
+    /// `CpuSoftProjection`, so a κ_P reading is never mistaken for a GPU
+    /// measurement.  See [`crate::reliability::projection_path`].
+    pub projection_path: crate::reliability::ProjectionPath,
 }
 
 impl ContractionTelemetry {
@@ -4492,6 +4647,7 @@ impl ContractionTelemetry {
             max_samples: 1000,
             tripwire_threshold: 0.995,
             critical_threshold: 1.001,
+            projection_path: crate::reliability::projection_path(),
         }
     }
 
@@ -4571,7 +4727,8 @@ impl ContractionTelemetry {
     /// Generate a summary report string.
     pub fn report(&self) -> String {
         format!(
-            "κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}, κ_max={:.6}",
+            "path={} κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}, κ_max={:.6}",
+            self.projection_path.label(),
             self.kappa_p_mean,
             self.kappa_p_count,
             self.kappa_f_mean,

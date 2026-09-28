@@ -105,6 +105,92 @@ The Rust-side carrier for this schema is `cognition::ExperimentResult`.  New
 benchmarks should prefer emitting that structure as JSON over printing
 human-only tables.
 
+## Conversation Evaluation (Phase 9)
+
+The conversation layer is evaluated as a whole, including its failures, with a
+versioned corpus and paired ablations:
+
+```bash
+cargo run --bin machine_eval            # score + gate (default)
+cargo run --bin machine_eval capture    # (re)write the frozen traces
+cargo run --bin machine_eval replay     # diff the build against the frozen trace
+```
+
+The corpora live in `data/conversation_eval_v1.json` (frozen regression set) and
+`data/conversation_eval_holdout_v1.json` (untouched evaluation set). Each step
+carries gold labels; the harness scores **oracle correctness** (delivered
+answers judged against gold) separately from **system self-rejection** (the
+system's own abstentions and clarifications), so the two are never summed.
+
+Tracked per run: answer correctness, coverage, unsupported assertions,
+clarification success, context accuracy, correction propagation, latency, and
+memory. The report also runs every mechanism ablation as a *paired* run on the
+same corpus (VSA retrieval vs a lexical baseline, context retrieval, typed
+capabilities, reuse, semantic worker, consolidation), reporting both sides and
+the delta. The report is written to
+`docs/phase9_conversation_eval_v1.report.json` with a human summary at
+`docs/phase9_conversation_eval_v1.md`; the binary exits non-zero on regression
+drift, an unsupported assertion beyond the declared limit, or an ablation that
+fails to preserve safety. The holdout set is reported but never gated.
+
+## Controlled Autonomy (Phase 10)
+
+Background tasks are evaluated as a bounded suite. Each task declares an
+authority scope and a resource budget up front; the suite proves that a task
+runs, stops, resumes, and explains its result without exceeding either:
+
+```bash
+cargo run --bin machine_eval task
+```
+
+The canonical suite covers all five task kinds (analyze a document,
+investigate, run a selected experiment, consolidate memory, produce a report),
+plus a paused-and-resumed analysis and a deliberately budget-starved refusal.
+The report at `docs/phase10_autonomy_v1.report.json` (summary `.md`) records,
+per scenario: state, steps, whether it completed or was refused, whether it
+stayed within authority and budget, and its result or stop reason. The binary
+exits non-zero if any task exceeded its declaration or failed to explain its
+result.
+
+Two contracts are held:
+
+* **A refusal is a controlled stop, not a completion.** A task that would
+  exceed its scope or budget is stopped before the capability runs, so
+  "within authority" stays true; it is never reported as `Completed`.
+* **No task kind expresses shell, network, or simulation authority.** The
+  `Capability` allowlist has no such variant, and the `TaskHost` adapters reach
+  only read-only and planning-only infrastructure.
+
+The reliability registry records both properties as enforced guarantees
+(`G-TASK-AUTHORITY`, `G-TASK-OBSERVABLE`) and they are checked by
+`cargo test --lib autonomy_task`.
+
+## Dependable Release (Phase 11)
+
+Packaging is evaluated as an acceptance test and a set of operator surfaces:
+
+```bash
+cargo test --lib operator
+cargo run --bin machine -- doctor
+cargo run --bin machine -- release write
+```
+
+`release_packaging_validates_health_inventory_and_upgrade_recovery` checks the
+default configuration validates and that a non-loopback bind without opt-in and
+a token is rejected with remedies; that the capability inventory is versioned and
+the release notes reference the committed evaluation artifacts; that setup
+migrates a fresh database and the doctor is healthy; that an upgrade takes a
+backup before migrating and `recover` restores it; and that a forged
+newer-than-build database is refused without being modified. The generated
+artifacts are `docs/phase11_capability_inventory_v1.json`,
+`docs/phase11_release_notes_v1.md`, and `docs/phase11_doctor_v1.json`; the release
+notes quote the measured numbers from the reliability, conversation-evaluation,
+semantic-fidelity, and autonomy reports rather than restating them by hand.
+
+The upgrade-safety property is the enforced guarantee `G-RELEASE-SCHEMA`:
+"a database is never opened for migration without a pre-upgrade backup, and a
+database newer than the running build is refused rather than misread."
+
 ## Cognition Benchmark Runner
 
 The future rented-machine benchmark campaign should use:

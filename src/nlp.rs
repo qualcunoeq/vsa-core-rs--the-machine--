@@ -81,6 +81,8 @@ pub fn verb_lemma(word: &str) -> String {
         "uses" | "used" | "using" => "use".to_string(),
         // raise
         "raises" | "raised" | "raising" => "raise".to_string(),
+        // manage
+        "manages" | "managed" | "managing" => "manage".to_string(),
         // cause
         "causes" | "caused" | "causing" => "cause".to_string(),
         // show
@@ -320,6 +322,11 @@ fn is_verb_form(word: &str) -> bool {
         "raises",
         "raised",
         "raising",
+        // manage
+        "manage",
+        "manages",
+        "managed",
+        "managing",
         // cause
         "cause",
         "causes",

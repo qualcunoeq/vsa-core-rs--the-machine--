@@ -1,0 +1,8 @@
+# Opt-in locally optimized build (non-portable).
+# Use: cargo build --release --config .cargo/config.native.toml
+#
+# Enables whatever SIMD the host CPU supports (AVX2/AVX-VNNI on the current
+# Intel i7-1365U). Never use this file to produce artifacts that run on other
+# machines.
+[build]
+rustflags = ["-C", "target-cpu=native"]

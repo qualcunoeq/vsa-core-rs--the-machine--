@@ -1,3 +1,7 @@
+[workspace]
+members = ["integration-tests/conversation_runtime"]
+resolver = "2"
+
 [package]
 name = "the_machine"
 version = "0.1.0"
@@ -1254,7 +1258,7 @@ uuid = { version = "1.6", features = ["v4"] }
 url = "2.4"
 syn = { version = "2.0", features = ["full", "visit", "extra-traits"] }
 quote = "1.0"
-rusqlite = { version = "0.31", features = ["bundled"] }
+rusqlite = { version = "0.31", features = ["bundled", "backup"] }
 libloading = "0.8"
 log = "0.4"
 env_logger = "0.10"
@@ -1263,6 +1267,8 @@ regex = "1"
 # dependency free of GPU/ML runtimes: object labels are learned from supplied
 # examples, while the descriptor is deterministic and inspectable.
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "gif", "webp", "bmp", "tiff"] }
+axum = "0.8"
+futures-util = "0.3"
 
 [features]
 default = []

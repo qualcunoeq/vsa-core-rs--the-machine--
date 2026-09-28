@@ -135,18 +135,46 @@ A5 (Feedback Reliability) ─┬── A22 (Identifiability)
 
 ### 0.4 Empirical Validation Status of Assumptions
 
-| # | Assumption | Status | Evidence |
-|---|-----------|--------|----------|
-| A1 | Bounded Drift | **EMPIRICALLY CONSISTENT** | `test_drift_magnitude_ewma` confirms $r \leq 0.001$ for bond market data |
-| A2 | Centroid Separation | **EMPIRICALLY CONSISTENT** | Compactor invariant $[0.30, 0.70]$ holds across all 423 tests |
-| A3 | Quantitative Rotation Decorrelation | **EXECUTABLE ADMISSION CONTRACT** | `enforce_a3q_manifold()` checks/repairs direct and rotated distance bands when a manifold is admitted for the theorem; `test_a3q_*` verifies rejection/repair. `test_rho_admissible_does_not_imply_decorrelation` proves exact checks alone are insufficient |
-| A4 | Cleanup Oracle | **EMPIRICALLY CONSISTENT** | $> 0.56$ threshold verified across 44 QA tests; max false-positive rate $< 10^{-4}$ |
-| A5 | Feedback Reliability | **EMPIRICALLY CONSISTENT** | `test_a5_adversarial_reward_noise`: p=0.7 centroid similarity > p=0.3 centroid similarity (634 tests) |
-| A6 | Piecewise-Stationary World | **DOMAIN-SPECIFIC** | Bond market regime changes on monthly/daily scale; $T_{\min} \approx 10^4$ ticks |
-| A7 | Burst-Limited Adversary | **EMPIRICALLY CONSISTENT** | `test_a7_burst_adversarial_inputs`: 25 adversarial inputs in a burst, $L_F \leq 1.0$, centroid recovers (634 tests) |
-| A21 | Abstraction Preservation | **CONDITIONALLY CONSISTENT** | Structural SVO centroids classify **3/3** zero-overlap texts; the historical trigram representation scored 0/3 |
-| A30 | Structural Analogy Soundness | **CONDITIONALLY CONSISTENT** | Structural parser and SVO centroid path agree on 3/3 intervention cases; this does not establish universal semantic transfer |
-| A31 | Trace Faithfulness | **IMPLEMENTED** | `resolve_term_trace` returns `ResolveTrace`; `test_resolve_term_*` verifies exact, raw, and association paths |
+The `Enforcement` column was added in Phase 7 to answer a question the earlier
+`Status` column left ambiguous: for each assumption, is the system merely
+*assuming* it, *checking* it, or *enforcing* it at the point of use?
+
+* **assumed** — stated but not checked anywhere at runtime.
+* **checked** — a test or runtime monitor detects violations, but the system
+  does not act on them.
+* **enforced** — the system refuses the operation or evicts to stay inside the
+  contract.  The witness names the enforcement point.
+
+The machine-readable version of the reliability guarantees is
+`reliability::guarantee_registry()`, emitted by `cargo run --bin
+reliability_report` to `docs/phase7_reliability_v1.report.json`.
+
+| # | Assumption | Status | Enforcement | Evidence / enforcement point |
+|---|-----------|--------|-------------|----------|
+| A1 | Bounded Drift | **EMPIRICALLY CONSISTENT** | checked | `test_drift_magnitude_ewma` confirms $r \leq 0.001$ for bond market data |
+| A2 | Centroid Separation | **EMPIRICALLY CONSISTENT** | checked | Compactor invariant $[0.30, 0.70]$ holds across all 423 tests; enforced indirectly by the cluster cap `G-CLUSTER-CAP` |
+| A3 | Quantitative Rotation Decorrelation | **EXECUTABLE ADMISSION CONTRACT** | enforced | `enforce_a3q_manifold()` checks/repairs direct and rotated distance bands when a manifold is admitted for the theorem; `test_a3q_*` verifies rejection/repair. `test_rho_admissible_does_not_imply_decorrelation` proves exact checks alone are insufficient |
+| A4 | Cleanup Oracle | **EMPIRICALLY CONSISTENT** | assumed | $> 0.56$ threshold verified across 44 QA tests; max false-positive rate $< 10^{-4}$. No runtime gate refuses a low-confidence cleanup |
+| A5 | Feedback Reliability | **EMPIRICALLY CONSISTENT** | assumed | `test_a5_adversarial_reward_noise`: p=0.7 centroid similarity > p=0.3 centroid similarity (634 tests) |
+| A6 | Piecewise-Stationary World | **DOMAIN-SPECIFIC** | assumed | Bond market regime changes on monthly/daily scale; $T_{\min} \approx 10^4$ ticks |
+| A7 | Burst-Limited Adversary | **EMPIRICALLY CONSISTENT** | checked | `test_a7_burst_adversarial_inputs`: 25 adversarial inputs in a burst, $L_F \leq 1.0$, centroid recovers (634 tests) |
+| A9 | Bounded Novelty Rate | **ASSUMED** | enforced | Phase 7 enforces the *consequence* rather than the rate: cluster creation is hard-capped by `G-CLUSTER-CAP`, so even an adversarial novelty stream cannot grow memory without bound |
+| A12 | Sparse Collision | **ASSUMED** | assumed | LSH collisions are not measured at runtime |
+| A15 | Accumulator Weight Cap | **ENFORCED** | enforced | `MemoryCluster::absorb_entry` / `hebbian_refine` rescale at `MAX_CLUSTER_WEIGHT` ($W_{\max} = 500$) |
+| A16 | Cluster Quality | **ASSUMED** | assumed | Internal dispersion is not gated before a cluster is used |
+| A21 | Abstraction Preservation | **CONDITIONALLY CONSISTENT** | checked | Structural SVO centroids classify **3/3** zero-overlap texts; the historical trigram representation scored 0/3 |
+| A28 | Telemetry Honesty | **PARTIAL** | checked | Phase 7 makes the projection telemetry name its measured path (`CpuSoftProjection` here); a path that is not measured cannot be reported |
+| A30 | Structural Analogy Soundness | **CONDITIONALLY CONSISTENT** | checked | Structural parser and SVO centroid path agree on 3/3 intervention cases; this does not establish universal semantic transfer |
+| A31 | Trace Faithfulness | **IMPLEMENTED** | checked | `resolve_term_trace` returns `ResolveTrace`; `test_resolve_term_*` verifies exact, raw, and association paths |
+
+Phase 7 additionally turns the memory-boundedness theorems into runtime
+contracts rather than asymptotic statements:
+
+| Theorem | Claim | Phase 7 enforcement |
+|---|---|---|
+| III.1 | Total vector storage is $O(1)$ in time | `MemoryBudget` caps clusters, entries/cluster, and transient clusters; the spawn/absorb paths evict instead of growing (`G-CLUSTER-CAP`, `G-ENTRY-CAP`, `G-TRANSIENT-CLUSTER-CAP`) |
+| II.2 | Entry count per cluster is bounded | `MemoryBudget::entries_to_drain` is applied in `add_to_dejavu_db`, `novelty_gate_with_budget`, and `add_transient_fact` |
+| — | Reported memory reflects reality | `reliability::account_brain` / `account_conversation` count entries, metadata, accumulators, centroids, associations, experiences, indexes, and conversation state (`G-MEMORY-ACCOUNTING`) |
 
 ### 0.5 Critical Finding: A21 (Abstraction Preservation) — RESOLVED v3.2
 

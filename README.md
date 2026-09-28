@@ -19,6 +19,7 @@ No neural networks. No gradients. No LLM inference. Just XOR, popcount, and a Ba
 - [What Makes It Mathematically Verified?](#what-makes-it-mathematically-verified)
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
+- [Everyday operation](#everyday-operation-phase-11)
 - [Key Results](#key-results)
 - [Roadmap](#roadmap)
 - [Citation](#citation)
@@ -196,15 +197,131 @@ The margin between the proven bound ($\kappa = 0.950$ at worst case) and the tri
 ## Getting Started
 
 ### Prerequisites
-- Rust 2021 edition
-- Python 3 (for verification scripts)
+- Rust 1.97.1 (pinned in `rust-toolchain.toml`), 2021 edition
+- Python 3 (for verification scripts; `sympy` for CAS paths)
+- Full environment inventory, portable/native build modes, and the recorded
+  test baseline: `docs/DEVELOPMENT.md`
 
 ### Run the test suite
 ```bash
-cargo test --lib                    # All default tests (~1980 items)
+cargo test --lib                    # Library tests only (do not use bare `cargo test`)
 cargo test --lib qa::tests          # QA engine tests
 cargo test --lib reason::tests      # Reasoning engine tests
+cargo test -p conversation_runtime_integration --locked   # Conversational runtime acceptance
 ```
+
+### Run the chat interface
+The single operator command (Phase 11) is:
+```bash
+cargo run --release --bin machine -- start
+```
+Run `machine setup` once, then `machine start` for daily use. `machine doctor`
+reports health and dependency status, `machine upgrade` migrates with a backup
+taken first, and `machine recover` rolls back. See
+[Everyday operation](#everyday-operation-phase-11) for the full command set and
+the optional GPU / semantic-worker profiles. `machine_chat` remains available
+for research-only flag parity.
+The command opens a local web interface (default `http://127.0.0.1:8787`) for the
+conversational runtime: conversations, Ask/Teach/Inspect memory controls,
+streamed progress, cancellation, expandable evidence and execution details,
+a memory inspector with provenance and correct/retract/forget actions, and
+conversation export. Follow-up questions work: pronouns resolve to the
+entities under discussion ("What do you know about her?"), corrections
+supersede the active fact ("Actually, Bob manages it now."), earlier values
+stay queryable ("Who managed it before?"), and solver sequences continue
+("What if the right-hand side is 15?", "Explain the substitution.").
+Ambiguous references ask which referent is meant instead of guessing.
+Supported math reaches the verified capabilities directly: expression
+evaluation, linear and quadratic equations, small linear systems, and explicit
+unit conversion each run through their own replay checker, and the answer
+reports which capability served it and whether the result verified. Missing
+information (an unbound variable, a conversion without a factor) asks for it;
+a recognized-but-unsupported operation and a failed verification are reported
+distinctly instead of being guessed.
+A semantic-worker path sits alongside this, in shadow mode. It asks whether an
+interpretation faithfully represents the source, separately from whether it is
+structurally valid, and measures that against a frozen gold set covering
+reversed relationships, wrong signs and quantities, missing conditions,
+invented equations with valid spans, multiple plausible readings, and
+unsupported domains. It connects stored proposals to the same typed consumers
+without ever authorizing an answer, labels stored-output replay separately from
+model regeneration, and asks a short clarification ("Do you mean that ...?")
+for ambiguous readings. Interpretations that are not faithful are clarified or
+rejected, never answered: the explicit wrong-answer limit is zero. Run
+`cargo run --bin semantic_fidelity_eval` to regenerate the committed report.
+See `docs/DEVELOPMENT.md` §11 for the measured coverage lift and counts.
+Persistent use is bounded by enforced contracts, not just declarations. Cluster,
+entry, and transient memory are capped at insertion time and the reported
+footprint accounts for entries, metadata, accumulators, centroids, indexes, and
+conversation state; a sustained-ingestion run and `cargo run --bin
+reliability_report` show the caps holding. Replay checks are classified by
+strength (hash consistency, recomputation, independent verification) so a
+"verified" result cannot be overstated, and MATH.md §0.4 labels each assumption
+as assumed, checked, or enforced. The HTTP service binds `127.0.0.1` by
+default, refuses a non-loopback bind unless `--allow-remote` and a bearer token
+(`--token` / `MACHINE_CHAT_TOKEN`) are set, and bounds request size, concurrent
+turns, and turn execution time. See `docs/DEVELOPMENT.md` §12.
+Documents can be learned through an inspectable process. Import plain text or a
+text-based PDF, and the Machine extracts facts, definitions, and rules with
+their source locations while recording what it rejected and why. Imported text
+is source material: instructions inside a document are never executed, and
+nothing is committed until it is explicitly accepted. Committed knowledge cites
+its document, and removing the document retracts exactly the knowledge derived
+from it while leaving taught knowledge untouched. Use `cargo run --bin
+machine_docs -- demo`, or the `/api/documents` endpoints. Scanned documents and
+visual interpretation are deferred. See `docs/DEVELOPMENT.md` §13.
+Conversations are part of the evaluation system. A versioned corpus of
+representative traces is replayed as regression cases alongside an untouched
+holdout set, and each run reports answer correctness, coverage, unsupported
+assertions, clarification success, context accuracy, correction propagation,
+latency, and memory. Oracle scoring (answers judged against gold) is reported
+separately from the system's own self-rejection, and every mechanism — VSA
+retrieval versus a lexical baseline, context retrieval, typed capabilities,
+reuse, the semantic worker, and consolidation — is measured as a paired
+enabled/disabled run. Run `cargo run --bin machine_eval` to score and gate, or
+`machine_eval replay` to check a build against the frozen trace. See
+`docs/DEVELOPMENT.md` §14.
+Conversation can initiate bounded background work. Each task — analyze a
+document, investigate a question, run a selected experiment, consolidate
+memory, or produce a report — declares its authority and budget up front, runs
+one observable step at a time, can stop and resume, and explains its result. A
+task that would exceed its declared scope or budget is refused before the
+capability runs, and no task kind can reach a shell, a network, or the full
+simulation loop. Run `cargo run --bin machine_eval task` for the suite and gate.
+See `docs/DEVELOPMENT.md` §15.
+Durable state lives in SQLite (`data/conversation/machine.db`); legacy
+`qa_memory.json` and `sessions.json` snapshots are imported once on first
+run. Back up and restore with `--backup <file>` / `--restore <file>`. See
+`docs/DEVELOPMENT.md` for endpoints, the storage model, follow-up semantics,
+and options.
+
+### Everyday operation (Phase 11)
+
+Everyday use goes through one command, so installation, daily use, upgrades, and
+recovery no longer require remembering research-specific binaries:
+
+| Task | Command |
+|---|---|
+| First-run setup (create directories, open the database once) | `cargo run --release --bin machine -- setup` |
+| Start the chat interface (daily use) | `cargo run --release --bin machine -- start` |
+| Health and dependency status | `machine doctor` |
+| Validate / show the effective configuration | `machine config check` / `machine config show` |
+| Release, crate, schema, and profile | `machine version` |
+| Versioned capability inventory | `machine capabilities` |
+| Release notes tied to evaluation results | `machine release notes` |
+| Regenerate inventory, notes, and doctor artifacts | `machine release write` |
+| Back up / restore the database | `machine backup <file>` / `machine restore <file>` |
+| Upgrade (backs up first) / roll back | `machine upgrade` / `machine recover` |
+
+Configuration comes from `MACHINE_*` environment variables or flags
+(`--data-dir`, `--db`, `--host`, `--port`, `--token`, ...); every problem is
+reported with a remedy by `machine config check`. Profiles are documented
+configurations, not separate builds — `minimal`, `standard` (default), `gpu`
+(needs `cargo build --features cuda`), and `semantic_worker` (the worker stays
+shadow-only). `machine doctor` reports whether the running binary actually
+matches the requested profile. `docs/DEVELOPMENT.md` §16 is the full operator
+reference; `docs/phase11_capability_inventory_v1.json` lists what each capability
+is, since when, and which evaluation artifact backs it.
 
 ### Run a multi-agent simulation
 ```bash

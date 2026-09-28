@@ -355,6 +355,54 @@ impl HierarchicalContextMemory {
         None
     }
 
+    /// Every tracked entry whose similarity to `query` reaches
+    /// `min_similarity`, best first.
+    ///
+    /// This is the read-only companion to [`query`](Self::query): callers that
+    /// must compare several candidates (and refuse to guess when the best two
+    /// are too close) get the full ranked list instead of a single winner.
+    /// Exact labels are returned unchanged, so an approximate retrieval can
+    /// still be resolved back to an exact identifier.
+    pub fn candidates(&self, query: &Hypervector, min_similarity: f64) -> Vec<ContextQueryResult> {
+        let mut results = Vec::new();
+
+        for entry in &self.recent {
+            let sim = 1.0 - query.normalized_hamming_distance(&entry.hv);
+            if sim >= min_similarity {
+                results.push(ContextQueryResult {
+                    hv: entry.hv.clone(),
+                    similarity: sim,
+                    tier: ContextTier::Recent,
+                    label: entry.label.clone(),
+                    tick: entry.tick,
+                });
+            }
+        }
+
+        for chunk in &self.folded {
+            let sim = 1.0 - query.normalized_hamming_distance(&chunk.bundle);
+            if sim >= min_similarity {
+                results.push(ContextQueryResult {
+                    hv: chunk.bundle.clone(),
+                    similarity: sim,
+                    tier: ContextTier::Folded,
+                    label: format!(
+                        "fold_[{}-{}]_n{}",
+                        chunk.tick_start, chunk.tick_end, chunk.count
+                    ),
+                    tick: (chunk.tick_start + chunk.tick_end) / 2,
+                });
+            }
+        }
+
+        results.sort_by(|a, b| {
+            b.similarity
+                .partial_cmp(&a.similarity)
+                .unwrap_or(std::cmp::Ordering::Equal)
+        });
+        results
+    }
+
     /// Recall the most recent entry with a label containing `substring`.
     /// This is a convenience method for labeled retrieval.
     pub fn recall_by_label(&self, substring: &str) -> Option<&RecentEntry> {
@@ -625,6 +673,30 @@ mod tests {
         assert_eq!(mem.pending_len(), 0);
         assert_eq!(mem.folded_len(), 1);
         assert_eq!(mem.folded[0].count, 4);
+    }
+
+    #[test]
+    fn test_candidates_rank_and_filter() {
+        let mut mem = HierarchicalContextMemory::with_capacities(10, 64);
+        let target = Hypervector::new_random();
+        mem.push(target.clone(), "target");
+        mem.tick();
+        for i in 0..3 {
+            mem.push(Hypervector::new_random(), &format!("distractor_{i}"));
+            mem.tick();
+        }
+
+        let ranked = mem.candidates(&target, 0.9);
+        assert!(!ranked.is_empty(), "exact match should be a candidate");
+        assert_eq!(ranked[0].label, "target");
+        assert!(ranked[0].similarity > 0.99);
+        // Ranked best-first.
+        for pair in ranked.windows(2) {
+            assert!(pair[0].similarity >= pair[1].similarity);
+        }
+        // A high threshold excludes everything random.
+        let strict = mem.candidates(&Hypervector::new_random(), 0.9);
+        assert!(strict.is_empty(), "random vectors must not pass 0.9");
     }
 
     #[test]

@@ -1,5 +1,17 @@
-# Enable native CPU features (AVX-512, AVX2, etc.) for Hypervector ops.
-# This machine runs on x86_64 with avx512f, avx512bw, avx512vl, avx512dq.
-# Binary becomes non-portable — run only on same or superset CPU.
+# Default builds are portable: no CPU-specific codegen flags are applied.
+# This is the configuration used for CI, distribution, and benchmark
+# comparisons across machines.
+#
+# Local performance builds (non-portable) opt in explicitly:
+#
+#   cargo build --release --config .cargo/config.native.toml
+#
+# or equivalently:
+#
+#   RUSTFLAGS="-C target-cpu=native" cargo build --release
+#
+# Notes for the current dev machine (Intel i7-1365U, Raptor Lake-U):
+# it exposes AVX2 and AVX-VNNI but NOT AVX-512. `target-cpu=native` is
+# appropriate for local iteration only; do not redistribute those binaries.
 [build]
-rustflags = ["-C", "target-cpu=native"]
+rustflags = []

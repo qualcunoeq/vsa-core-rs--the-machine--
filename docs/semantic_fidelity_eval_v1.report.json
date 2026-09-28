@@ -1,0 +1,19 @@
+{
+  "schema": "semantic-shadow-report-v1",
+  "records": 8,
+  "structurally_accepted": 8,
+  "interpretations_correct": 1,
+  "infidelities": 7,
+  "structurally_unusable": 0,
+  "clarifications_offered": 2,
+  "verdicts_proceeded": 1,
+  "verdicts_clarified": 2,
+  "verdicts_rejected": 5,
+  "solver_routes_scored": 1,
+  "solver_routes_correct": 1,
+  "silent_wrong_answers": 0,
+  "wrong_answer_limit": 0,
+  "downstream_authorizations": 0,
+  "replay_mode": "stored_output_replay",
+  "report_hash": "7a2fdfe4919e8c58a30c93f70a885d9d9e46b8b6f3fb119d88393f095795a01d"
+}

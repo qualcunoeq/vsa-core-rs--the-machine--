@@ -1,0 +1,61 @@
+{
+  "schema": "phase11-doctor-v1",
+  "release": "v3.4",
+  "profile": "standard",
+  "checks": [
+    {
+      "name": "release",
+      "status": "ok",
+      "detail": "v3.4 (crate 0.1.0, schema 2, phase11-operator-v1)",
+      "remedy": null
+    },
+    {
+      "name": "profile",
+      "status": "ok",
+      "detail": "standard — core runtime plus the local web interface (default)",
+      "remedy": null
+    },
+    {
+      "name": "projection",
+      "status": "ok",
+      "detail": "active path: cpu_soft_projection",
+      "remedy": null
+    },
+    {
+      "name": "sqlite",
+      "status": "ok",
+      "detail": "bundled SQLite via rusqlite (no system library required)",
+      "remedy": null
+    },
+    {
+      "name": "pdf-backend",
+      "status": "ok",
+      "detail": "pdf-extract compiled in (text extraction; scanned/visual deferred)",
+      "remedy": null
+    },
+    {
+      "name": "data_dir",
+      "status": "ok",
+      "detail": "data/conversation is writable",
+      "remedy": null
+    },
+    {
+      "name": "database",
+      "status": "warn",
+      "detail": "data/conversation/machine.db has schema 1; it will migrate to 2",
+      "remedy": "run `machine upgrade` to migrate with a backup taken first"
+    },
+    {
+      "name": "legacy-import",
+      "status": "ok",
+      "detail": "2 legacy snapshot(s) available for one-time import",
+      "remedy": null
+    },
+    {
+      "name": "port",
+      "status": "ok",
+      "detail": "127.0.0.1:8787 is available to bind",
+      "remedy": null
+    }
+  ]
+}

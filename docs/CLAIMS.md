@@ -483,6 +483,230 @@ evaluation question requires larger graphs; the six-concept, 3×3×3, and
 4-way five-stage probes already record visited nodes, pruned candidates,
 deterministic frontier membership, and nested-budget behavior.
 
+### C-018: Persistent Use Respects Declared Budgets
+
+Status: `supported`
+
+Statement: Sustained ingestion cannot grow cluster, entry, transient,
+index, or conversation memory past the declared budget, and the reported
+memory accounting includes every resident component rather than a single
+favourable term.
+
+Owner modules: `src/reliability.rs`, `src/lib.rs`, `src/chat_server.rs`.
+
+Evidence: `MemoryBudget` is enforced in the real insertion paths
+(`add_to_dejavu_db`, `novelty_gate_with_budget`, `add_transient_fact`) by
+evicting rather than appending past the cap. `MemoryReport` /
+`account_brain` / `account_conversation` count entries, metadata,
+accumulators, centroids/anchors, associations, experiences, indexes, and
+conversation state. A 20,000-observation sustained-ingestion run reports caps
+respected and the accounted total within budget
+(`docs/phase7_reliability_v1.md`). Unit tests drive thousands of insertions
+against tight budgets and assert the caps hold.
+
+Baseline: cluster count and transient entries grew without a budget; the only
+runtime accountant counted cluster/entry counts plus a dense-accumulator
+approximation and hard-coded several fields to zero.
+
+Failure condition: under a stationary or slowly drifting stream, cluster
+count, transient entries, or accounted bytes exceed the declared budget, or
+the reported total omits a resident component.
+
+Next check: extend the sustained-ingestion run to cover the conversational
+ingestion path and to attribute index bytes per index family.
+
+### C-019: Reported Guarantees Match The Active Configuration
+
+Status: `supported`
+
+Statement: Every reliability guarantee the system reports names its
+enforcement status (checked / enforced / assumed) and the configuration under
+which it holds, so a claim can never be read as stronger than the active
+build supports.
+
+Owner modules: `src/reliability.rs`, `src/chat_server.rs`,
+`src/bin/machine_chat.rs`, `MATH.md`.
+
+Evidence: `reliability::guarantee_registry()` records witness and
+configuration per guarantee and is emitted to
+`docs/phase7_reliability_v1.report.json`. Replay checks are classified as
+hash consistency, recomputation, or independent verification
+(`replay_catalogue`), and the projection telemetry names its measured path
+(`CpuSoftProjection` in this build). The HTTP server enforces bounded request
+bodies, a bounded in-flight turn count, turn execution timeouts, and a
+loopback-default bind with bearer-token auth required before any non-loopback
+exposure.
+
+Baseline: replay was described by one word regardless of strength; projection
+telemetry did not name its path; the server accepted an unauthenticated
+non-loopback bind and had no request or execution bounds.
+
+Failure condition: a guarantee is reported as enforced but no enforcement
+point exists; a hash-consistency check is presented as independent
+verification; or a non-loopback bind succeeds without authentication.
+
+Next check: add a runtime endpoint that serves the current guarantee registry
+so an operator can compare the deployed configuration against the report.
+
+### C-020: Document-Derived Knowledge Is Inspectable And Reversible
+
+Status: `supported`
+
+Statement: Imported documents contribute knowledge only through an inspectable
+propose-then-accept process; every extracted item (and every rejection) is
+visible with its source location, committed knowledge cites its document, and
+removing a document invalidates exactly the knowledge derived from it while
+leaving independently taught knowledge untouched. Imported text is treated as
+data: instruction-like sentences are never executed and can never be committed.
+
+Owner modules: `src/document_learning.rs`, `src/persistence/documents.rs`,
+`src/conversation/service.rs`, `src/chat_server.rs`, `src/bin/machine_docs.rs`.
+
+Evidence: `document_learning::extract_*` records a byte span and page per item;
+`classify_instruction` marks instruction-like text with `REASON_INSTRUCTION`;
+`ConversationService::{import_*, inspect_document, accept_document_item,
+commit_document, learn_document, remove_document}` persist and review proposals;
+`persistence::documents::committed_assertion_ids` links each committed item to
+its assertion so removal retracts exactly those. Acceptance tests in
+`conversation_runtime_integration` import a document, ask before (abstains) and
+after (answered, citable) commit, and remove it (abstains again), including
+across a reload.
+
+Baseline: documents could not be imported into the application at all; there was
+no per-document provenance linking committed knowledge to its source and no way
+to withdraw a document's influence.
+
+Failure condition: an item reaches memory without explicit acceptance; an
+instruction inside a document is executed or committed; removing a document
+leaves its derived knowledge answerable or removes unrelated knowledge.
+
+Next check: extend extraction to scanned documents with OCR, preserving the same
+span-and-page provenance and the same propose-then-accept workflow.
+
+### C-021: The Complete Application Is Assessed Automatically
+
+Status: `supported`
+
+Statement: A release is assessed automatically against representative
+conversations, resource limits, and frozen evaluation cases. Reproducible
+conversation traces are versioned regression cases; an untouched holdout set is
+reported separately; and each mechanism (VSA retrieval vs a lexical baseline,
+context retrieval, typed capabilities, reuse, the semantic worker, and
+consolidation) is measured as a paired enabled/disabled run. Oracle correctness
+of delivered answers is reported separately from the system's own self-rejection
+(abstentions and clarifications), so neither is ever presented as the other.
+
+Owner modules: `src/conversation_eval.rs`, `src/bin/machine_eval.rs`,
+`src/conversation/service.rs` (`EvalConfig`), `data/conversation_eval_v1.json`,
+`data/conversation_eval_holdout_v1.json`.
+
+Evidence: `machine_eval` runs the corpora, captures and diffs traces
+(`detect_drift`, normalized for volatile ids and latency), computes the metrics
+(correctness, coverage, unsupported assertions, clarification success, context
+accuracy, correction propagation, latency, memory), runs `run_ablations`, and
+writes `docs/phase9_conversation_eval_v1.report.json` / `.md`. The committed run
+scores regression 18/18 oracle-correct with 0 unsupported assertions and 0
+drift, holdout 10/10, and six paired ablations that all preserve safety.
+
+Baseline: conversations were exercised only by hand-written acceptance tests;
+there was no corpus with gold labels, no trace replay, no aggregate metrics, and
+no paired ablations — so a release could not be assessed automatically against
+the complete application.
+
+Failure condition: a delivered answer is counted as correct because the system
+abstained; an unsupported assertion is delivered; a mechanism ablation changes
+the corpus between its two sides or bypasses the safety contract; or the
+holdout set is used to tune the system.
+
+Next check: add adversarial and long-horizon conversations to the regression
+corpus, and track per-capability coverage so a regression names the capability
+that decayed.
+
+### C-022: Background Work Is Bounded By A Declared Authority And Budget
+
+Status: `supported`
+
+Statement: The conversation can initiate useful background work, and that work
+cannot exceed its declared authority or budget. Every task declares an
+`AuthorityScope` (an allowlist of capabilities with no shell, network, or
+simulation variant) and a `TaskBudget` (reusing `cognition::AutonomyBudget`, plus
+a step cap) up front. The scope is enforced before each capability runs, so a
+breach is a refusal rather than an overrun. Every task is observable (one
+`TaskProgress` record per step), stoppable and resumable (`pause`/`resume`
+continue from the next step), and can explain its result, its stop reason, and
+whether it stayed within its declaration.
+
+Owner modules: `src/autonomy_task.rs`, `src/bin/machine_eval.rs` (`task` mode),
+`src/reliability.rs` (`G-TASK-AUTHORITY`, `G-TASK-OBSERVABLE`).
+
+Evidence: `run_task_suite` / `run_task_scenarios` run the canonical suite
+(analyze a document, investigate, run a selected experiment, consolidate
+memory, produce a report, plus a paused-and-resumed analysis and a
+budget-starved refusal) and report `TaskSuiteReport`; `machine_eval task` writes
+`docs/phase10_autonomy_v1.report.json` / `.md` and exits non-zero if a task
+exceeded its declaration or failed to explain its result. Unit tests cover
+planning refusal, step-time budget refusal, pause/resume continuation,
+cancellation, and the report. The integration test
+`controlled_autonomy_tasks_run_stop_resume_and_explain` drives the same paths
+against the live conversation, including a conversation-backed consolidation.
+
+Baseline: conversation could not initiate any background work. There was no
+task, scope, budget, progress, cancellation, or resume abstraction anywhere in
+the runtime; `AutonomyBudget` existed but only bounded simulator actions, and
+was unreachable from chat.
+
+Failure condition: a capability runs outside the task's declared scope; a step
+runs after the declared budget is exhausted; a task reports `Completed` without
+a result, or reports a refusal as a completion; a resumed task repeats an
+already-taken step; or a task kind can express shell, network, or simulation
+authority.
+
+Next check: allow a task to request a scope extension that a human must approve
+before the blocked capability runs, and add long-running tasks whose progress is
+persisted so a resume survives a process restart.
+
+### C-023: Everyday Operation Uses One Command And Upgrades Are Recoverable
+
+Status: `supported`
+
+Statement: Installation, daily use, upgrades, and recovery no longer require
+remembering research-specific commands. A single operator command (`machine`)
+provides first-run setup, startup, configuration validation with a remedy per
+problem, health and dependency status, a versioned capability inventory, release
+notes tied to the committed evaluation artifacts, backup/restore, an upgrade that
+takes a backup before migrating, and a recovery that restores the latest backup.
+A database newer than the running build is refused rather than misread.
+
+Owner modules: `src/operator.rs`, `src/bin/machine.rs`, `src/reliability.rs`
+(`G-RELEASE-SCHEMA`), `src/persistence/db.rs` (newer-schema refusal),
+`integration-tests/conversation_runtime/src/lib.rs`.
+
+Evidence: `OperatorConfig::validate` returns `ConfigIssue`s (severity, field,
+message, remedy); `doctor` returns a `DoctorReport` of ordered checks;
+`CAPABILITIES` is the versioned inventory; `release_notes` reads the committed
+`docs/phase7_reliability_v1.report.json`, `docs/phase9_conversation_eval_v1.report.json`,
+`docs/semantic_fidelity_eval_v1.report.json`, and `docs/phase10_autonomy_v1.report.json`
+and reports their measured numbers. `run_upgrade` refuses an incompatible
+database before writing, backs up with SQLite's online backup API, then migrates
+and verifies; `recover` restores the most recent backup. Unit tests cover
+validation, profiles, inventory, setup, doctor, upgrade, refusal, backup/restore,
+recover, and artifact writing; the integration test
+`release_packaging_validates_health_inventory_and_upgrade_recovery` exercises the
+same paths, including refusing a forged newer database without modifying it.
+
+Baseline: operating the runtime meant remembering per-phase binaries
+(`machine_chat`, `machine_docs`, `machine_eval`, `reliability_report`, ...), and
+an upgrade had no documented pre-migration backup or rollback path.
+
+Failure condition: a newer-than-build database is opened and migrated; an upgrade
+migrates before taking a backup; `doctor` reports healthy while an enforced
+guarantee or check fails; the capability inventory or release notes claim an
+evaluation result not present in the committed artifacts; or recovery silently
+proceeds without a backup.
+
+Next check: package a signed release archive with checksums, and extend the
+doctor to verify an installed binary against the inventory's declared artifacts.
+
 ## Retired Or Negative Claims
 
 Negative results are useful research output.  Do not delete them just because

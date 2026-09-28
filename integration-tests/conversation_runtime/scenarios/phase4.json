@@ -1,0 +1,181 @@
+{
+  "scenarios": [
+    {
+      "name": "observatory_correction",
+      "steps": [
+        {
+          "input": "Alice manages the observatory.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "factual_qa",
+            "answer_contains": ["Alice"]
+          }
+        },
+        {
+          "input": "Who manages the observatory?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice"],
+            "answer_not_contains": ["Bob"],
+            "evidence": true
+          }
+        },
+        {
+          "input": "What do you know about her?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice", "observatory"],
+            "follow_up_kind": "about",
+            "follow_up_source": "unique_entity"
+          }
+        },
+        {
+          "input": "Actually, Bob manages it now.",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Bob", "Corrected"],
+            "stale_at_least": 2,
+            "follow_up_kind": "correction"
+          },
+          "restart_after": true
+        },
+        {
+          "input": "Who manages the observatory?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Bob"],
+            "answer_not_contains": ["Alice"]
+          }
+        },
+        {
+          "input": "Who managed it before?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice"],
+            "follow_up_kind": "before"
+          }
+        }
+      ]
+    },
+    {
+      "name": "solver_follow_up",
+      "steps": [
+        {
+          "input": "Solve 2x + 3 = 11.",
+          "expect": {
+            "outcome": "answered",
+            "capability": "structured_solver:linear_equation_solve",
+            "answer_contains": ["4"]
+          },
+          "restart_after": true
+        },
+        {
+          "input": "What if the right-hand side is 15?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["6"],
+            "follow_up_kind": "resolve_equation"
+          }
+        },
+        {
+          "input": "Explain the substitution.",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Substituting", "6"],
+            "follow_up_kind": "explain"
+          }
+        }
+      ]
+    },
+    {
+      "name": "topic_change_ambiguity",
+      "steps": [
+        {
+          "input": "Alice manages the observatory.",
+          "expect": { "outcome": "answered" }
+        },
+        {
+          "input": "The Fed raises rates.",
+          "expect": { "outcome": "answered" }
+        },
+        {
+          "input": "Who manages it?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice"],
+            "follow_up_source": "context_similarity"
+          }
+        },
+        {
+          "input": "What about it?",
+          "expect": {
+            "outcome": "clarification_needed",
+            "answer_contains": ["the observatory", "rates"],
+            "follow_up_kind": "reference"
+          }
+        },
+        {
+          "input": "the observatory",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice", "observatory"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "ambiguous_persons",
+      "steps": [
+        {
+          "input": "Alice manages the observatory; Bob manages the telescope.",
+          "expect": { "outcome": "answered" }
+        },
+        {
+          "input": "What do you know about her?",
+          "expect": {
+            "outcome": "clarification_needed",
+            "answer_contains": ["Alice", "Bob"]
+          }
+        },
+        {
+          "input": "Alice",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice", "observatory"]
+          }
+        }
+      ]
+    },
+    {
+      "name": "session_isolation",
+      "steps": [
+        {
+          "session": "a",
+          "input": "Alice manages the observatory.",
+          "expect": { "outcome": "answered" }
+        },
+        {
+          "session": "b",
+          "input": "What do you know about her?",
+          "expect": {
+            "outcome": "clarification_needed",
+            "answer_not_contains": ["Alice"]
+          }
+        },
+        {
+          "session": "b",
+          "input": "What if the right-hand side is 15?",
+          "expect": { "outcome": "clarification_needed" }
+        },
+        {
+          "session": "b",
+          "input": "Who manages the observatory?",
+          "expect": {
+            "outcome": "answered",
+            "answer_contains": ["Alice"]
+          }
+        }
+      ]
+    }
+  ]
+}

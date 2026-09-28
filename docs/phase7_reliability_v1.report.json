@@ -1,0 +1,164 @@
+{
+  "schema": "phase7-reliability-v1",
+  "sustained_inserts": 20000,
+  "memory_budget": {
+    "max_clusters": 512,
+    "max_entries_per_cluster": 64,
+    "max_transient_clusters": 256,
+    "max_entries_per_transient_cluster": 32,
+    "max_total_bytes": 67108864
+  },
+  "memory_report": {
+    "cluster_count": 24,
+    "entry_count": 1184,
+    "transient_cluster_count": 1,
+    "transient_entry_count": 32,
+    "conversation_sessions": 3,
+    "conversation_turns": 120,
+    "entry_bytes": 1556480,
+    "metadata_bytes": 110974,
+    "accumulator_bytes": 983040,
+    "centroid_bytes": 62720,
+    "association_bytes": 0,
+    "experience_bytes": 0,
+    "index_bytes": 1152,
+    "conversation_bytes": 62080,
+    "total_bytes": 2776446,
+    "budget_bytes": 67108864
+  },
+  "memory_within_budget": true,
+  "cluster_cap_respected": true,
+  "entry_cap_respected": true,
+  "transient_cap_respected": true,
+  "projection_path": "cpu_soft_projection",
+  "replay_classes": {
+    "recomputation": 9,
+    "hash_consistency": 4,
+    "independent_verification": 5
+  },
+  "guarantees": [
+    {
+      "id": "G-ENTRY-CAP",
+      "statement": "Entries per MemoryCluster never exceed the declared budget.",
+      "status": "enforced",
+      "witness": "lib.rs::add_to_dejavu_db / MemoryCluster::novelty_gate drain via MemoryBudget::entries_to_drain",
+      "configuration": ""
+    },
+    {
+      "id": "G-TRANSIENT-ENTRY-CAP",
+      "statement": "Entries per transient cluster never exceed the declared budget.",
+      "status": "enforced",
+      "witness": "lib.rs::add_transient_fact drains via MemoryBudget::entries_to_drain",
+      "configuration": ""
+    },
+    {
+      "id": "G-CLUSTER-CAP",
+      "statement": "Live MemoryCluster count never exceeds the declared budget.",
+      "status": "enforced",
+      "witness": "lib.rs::add_to_dejavu_db evicts the coldest cluster at capacity",
+      "configuration": ""
+    },
+    {
+      "id": "G-TRANSIENT-CLUSTER-CAP",
+      "statement": "Live transient cluster count never exceeds the declared budget.",
+      "status": "enforced",
+      "witness": "lib.rs::add_transient_fact freezes/evicts the coldest transient at capacity",
+      "configuration": ""
+    },
+    {
+      "id": "G-MEMORY-ACCOUNTING",
+      "statement": "Resident memory accounting includes entries, metadata, accumulators, indexes, and conversation state.",
+      "status": "enforced",
+      "witness": "reliability::account_brain / account_conversation; enforced budget via MemoryReport::within_budget",
+      "configuration": ""
+    },
+    {
+      "id": "G-REPLAY-TAXONOMY",
+      "statement": "Every replay check is classified as hash consistency, recomputation, or independent verification.",
+      "status": "enforced",
+      "witness": "reliability::replay_catalogue / ReplayClass",
+      "configuration": ""
+    },
+    {
+      "id": "G-REQUEST-SIZE",
+      "statement": "HTTP request bodies and turn text are bounded.",
+      "status": "enforced",
+      "witness": "chat_server::router DefaultBodyLimit + TurnRequest length check",
+      "configuration": ""
+    },
+    {
+      "id": "G-TURN-TIMEOUT",
+      "statement": "A turn has a bounded execution time; exceeding it yields an explicit timeout outcome.",
+      "status": "enforced",
+      "witness": "chat_server::submit_turn spawn_blocking + tokio::time::timeout",
+      "configuration": ""
+    },
+    {
+      "id": "G-BOUNDED-QUEUE",
+      "statement": "Concurrent in-flight turns are bounded by admission control.",
+      "status": "enforced",
+      "witness": "chat_server::ChatServerState turn semaphore",
+      "configuration": ""
+    },
+    {
+      "id": "G-CANCEL-PROPAGATION",
+      "statement": "Cancellation is observed between processing stages and reported truthfully.",
+      "status": "checked",
+      "witness": "conversation::service TurnOptions::cancel; chat_server CancelGuard",
+      "configuration": "cooperative; a single long solver call is not preemptible"
+    },
+    {
+      "id": "G-TASK-AUTHORITY",
+      "statement": "A background task executes a capability only if it is inside the task's declared authority scope, and only while inside its declared resource budget; otherwise the task is stopped (refused) before the capability runs.",
+      "status": "enforced",
+      "witness": "autonomy_task::TaskRunner::step checks scope and budget before invoking the host adapter; a breach yields TaskState::Refused",
+      "configuration": "applies to the five bounded task kinds; no kind can declare shell, network, or simulation authority"
+    },
+    {
+      "id": "G-TASK-OBSERVABLE",
+      "statement": "Every task step is recorded as an ordered progress entry, and every task can explain its result, its stop reason, and whether it stayed within its declaration.",
+      "status": "enforced",
+      "witness": "autonomy_task::TaskRunner::step appends TaskProgress; TaskReport::from_task renders the explanation",
+      "configuration": ""
+    },
+    {
+      "id": "G-LIVENESS-NONBLOCKING",
+      "statement": "The health endpoint answers without waiting indefinitely behind a CPU-heavy turn.",
+      "status": "enforced",
+      "witness": "chat_server::health polls try_lock with a 200 ms budget and falls back to cached counts",
+      "configuration": ""
+    },
+    {
+      "id": "G-LOCALHOST-DEFAULT",
+      "statement": "The HTTP service binds loopback by default and refuses non-loopback binds without explicit opt-in.",
+      "status": "enforced",
+      "witness": "bin/machine_chat.rs bind guard (--allow-remote)",
+      "configuration": ""
+    },
+    {
+      "id": "G-AUTH-REMOTE",
+      "statement": "A non-loopback bind requires a bearer token.",
+      "status": "enforced",
+      "witness": "chat_server::auth_middleware; bin/machine_chat.rs --token / MACHINE_CHAT_TOKEN",
+      "configuration": "applies when binding a non-loopback address"
+    },
+    {
+      "id": "G-PROJECTION-TELEMETRY",
+      "statement": "Projection telemetry measures the configured runtime path, not a hardcoded backend.",
+      "status": "checked",
+      "witness": "reliability::projection_path; lib.rs::measure_kappa_p records the active ProjectionPath",
+      "configuration": "CUDA backend unavailable in this build; path reports cpu_soft_projection"
+    },
+    {
+      "id": "G-RELEASE-SCHEMA",
+      "statement": "A database is never opened for migration without a pre-upgrade backup, and a database newer than the running build is refused rather than misread.",
+      "status": "enforced",
+      "witness": "operator::run_upgrade backs up before opening the service; persistence::db::Database::open refuses a newer PRAGMA user_version; operator::plan_upgrade reports incompatible before any write",
+      "configuration": "applies to the operator upgrade path and to any service open"
+    }
+  ],
+  "guarantee_counts": {
+    "checked": 2,
+    "enforced": 15
+  }
+}

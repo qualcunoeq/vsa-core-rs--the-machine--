@@ -137,6 +137,13 @@ fn digest<T: Serialize>(value: &T) -> String {
     )
 }
 
+/// Input hash in exactly the form `validate_candidate` expects.  Exposed so
+/// sibling modules (fidelity, handoff shadows) can build test fixtures without
+/// duplicating the digest scheme.
+pub fn input_hash(input: &str) -> String {
+    digest(&input)
+}
+
 fn candidate_payload(candidate: &CandidateSemanticParse) -> impl Serialize + '_ {
     #[derive(Serialize)]
     struct Payload<'a> {

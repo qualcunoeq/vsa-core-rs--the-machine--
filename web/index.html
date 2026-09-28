@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Machine</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h1>The Machine</h1>
+        <button id="new-conversation" class="button primary">New conversation</button>
+      </div>
+      <nav id="conversation-list" class="conversation-list" aria-label="Conversations"></nav>
+      <div class="sidebar-foot">
+        <button id="memory-toggle" class="button" aria-expanded="false">Memory inspector</button>
+        <section id="memory-panel" class="memory-panel" hidden>
+          <div class="memory-search">
+            <input id="memory-query" type="search" placeholder="Search shared knowledge…" autocomplete="off">
+          </div>
+          <p id="memory-counts" class="muted">No memory loaded.</p>
+          <div id="memory-results" class="memory-results"></div>
+        </section>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="topbar-title">
+          <h2 id="session-title">No conversation</h2>
+          <p id="session-meta" class="muted"></p>
+        </div>
+        <div class="topbar-actions">
+          <a id="export-link" class="button" href="#" download hidden>Export</a>
+        </div>
+      </header>
+
+      <section id="messages" class="messages" aria-live="polite">
+        <div id="empty-state" class="empty-state">
+          <h3>Ask, teach, or inspect</h3>
+          <p>
+            Teach the Machine a fact like <em>“The Fed raises rates”</em>, then ask
+            <em>“Who raised rates?”</em>. Teach a rule with
+            <em>“If The Fed raises rates then treasury yields rise across the curve”</em>
+            and ask <em>“What happened after The Fed raised rates?”</em> for a
+            proof-checked chain. Answers show the evidence, verification, and memory
+            changes behind them — and the Machine says so when it does not know.
+          </p>
+        </div>
+      </section>
+
+      <footer class="composer">
+        <div id="status" class="status" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="status-text">Working…</span>
+        </div>
+        <div class="composer-row">
+          <div class="modes" role="radiogroup" aria-label="Interaction mode">
+            <button class="mode selected" data-mode="ask" role="radio" aria-checked="true">Ask</button>
+            <button class="mode" data-mode="teach" role="radio" aria-checked="false">Teach</button>
+            <button class="mode" data-mode="inspect" role="radio" aria-checked="false">Inspect memory</button>
+          </div>
+          <textarea id="composer-input" rows="2" placeholder="Ask a question…" aria-label="Message"></textarea>
+          <div class="composer-actions">
+            <button id="cancel-button" class="button danger" hidden>Cancel</button>
+            <button id="send-button" class="button primary">Send</button>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>

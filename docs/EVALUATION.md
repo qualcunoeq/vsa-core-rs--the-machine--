@@ -1,9 +1,10 @@
 # Evaluation Matrix
 
-**Last Updated:** 2026-07-22
-**Current Test Count:** ~1,980 `#[test]` items across 90 modules
-**Default Suite:** `cargo test --lib` (deterministic, seeded RNG)
-**Ignored Benchmarks:** `cargo test --lib -- --ignored` (research/calibration)
+**Version:** v3.4
+**Last updated:** 2026-09-28
+**Library tests:** 2,567 collected (2,511 passing, 41 known pre-existing failures, 15 ignored)
+**Default suite:** `cargo test --lib --locked -j 3` (deterministic, seeded RNG)
+**Ignored benchmarks:** `cargo test --lib -- --ignored` (research and calibration)
 
 This file defines how to measure progress without narrowing the project.  The
 architecture can stay broad, but each capability should have a local check, a
@@ -460,7 +461,7 @@ counterfactual false-accepts every tampered receipt. No unsafe executor or
 registry path is introduced; the bypass is a diagnostic calculation only.
 
 The runner appends a `governed_suite_runtime` result rather than hiding
-performance in console output. Release 500/500 runs measured about 1.0–1.1 s
+performance in console output. Release 500/500 runs measured about 1.0 to 1.1 s
 on the development host (seed 42, seven tiers); this is a recorded baseline,
 not an asserted universal SLO.
 
@@ -507,7 +508,7 @@ adversarial algebra tier intentionally reports zero execution/replay attempts;
 its exact-solution accuracy remains 1.000 because safe abstention is scored as
 the correct outcome.
 
-## Latest Results Summary (v3.4, July 2026)
+## Latest Results Summary (v3.4)
 
 | Vertical | Cases | Positive Execution | Replay Rate | False Auth | False Denial |
 |----------|-------|-------------------|-------------|------------|--------------|
@@ -517,7 +518,7 @@ the correct outcome.
 | Strategic route | 500 | 500/500 (1.000) | 1.000 | 0 | 0 |
 | Recurrence | 500 | 251/251 (1.000) | 1.000 | 0 | 0 |
 | Proposition kernel | 500 | 324/324 (1.000) | 1.000 | 0 | 0 |
-| Adversarial (all) | 21+ | 0 executed (safe abstention) | — | 0 | 0 |
+| Adversarial (all) | 21+ | 0 executed (safe abstention) | n/a | 0 | 0 |
 
 **Verification control:** 32/32 valid receipts accepted, 32/32 tampered receipts rejected.
-**Unified suite runtime:** ~1.0–1.1 s (release, seed 42, 500/500, 7 tiers).
+**Unified suite runtime:** about 1.0 to 1.1 s (release, seed 42, 500/500, 7 tiers).

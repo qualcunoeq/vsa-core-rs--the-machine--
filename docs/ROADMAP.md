@@ -1,8 +1,7 @@
 # Research Roadmap
 
-**Last Updated:** 2026-07-22
-**Current Version:** v3.4 (July 2026)
-**Previous Version:** v3.3 (memory compression, DRIFT port)
+**Version:** v3.4
+**Last updated:** 2026-09-28
 
 This project is intentionally broad: the long-term target is a bitwise cognitive
 architecture that can perceive, reason, answer, adapt, improve, use tools, and
@@ -52,8 +51,8 @@ Implemented surface:
 
 Near-term work:
 
-- Keep deterministic tests for projection and accumulator invariants. ✅
-- Move long calibration sweeps behind `#[ignore]` with stable output schemas. ✅
+- Keep deterministic tests for projection and accumulator invariants.
+- Move long calibration sweeps behind `#[ignore]` with stable output schemas.
 - Reduce warning noise in this layer first. (In progress)
 
 ## Layer 1: Memory And Concept Formation
@@ -80,17 +79,17 @@ Implemented surface:
 
 Implemented:
 
-- `ConceptEvent` / `ConceptJournal` in `cognition.rs` — structured lifecycle log with
+- `ConceptEvent` / `ConceptJournal` in `cognition.rs`: structured lifecycle log with
   push, query, and JSON persistence. Wired into abstractor cycle (creation, reinforcement,
   dissolution, decay) and cluster compactor (merge).
-- `ConceptQualityScore` in `cognition.rs` — composite score from coherence, component
+- `ConceptQualityScore` in `cognition.rs`: composite score from coherence, component
   count, freshness, and internal similarity. No manual inspection needed.
-- `test_abstraction_ablation_benchmark` (ignored) — compares concept count and prediction
+- `test_abstraction_ablation_benchmark` (ignored): compares concept count and prediction
   error with abstraction on vs off, emits `ExperimentResult` JSON.
 
 Near-term work:
 
-- Wire `ConceptJournal` into `freeze_cold_clusters` (cold storage events). (Pending — ConceptJournal wired into abstractor/sleep, not yet into freeze_cold_clusters)
+- Wire `ConceptJournal` into `freeze_cold_clusters` (cold storage events). (Pending: ConceptJournal is wired into abstractor/sleep, not yet into freeze_cold_clusters)
 
 ## Layer 2: Reasoning And Explanation
 
@@ -186,14 +185,14 @@ Research questions:
 
 Implemented surface:
 
-- `ToolEvent` / `ToolEventStore` — append-only audit log with JSON persistence,
+- `ToolEvent` / `ToolEventStore`: append-only audit log with JSON persistence,
   query by action type, success rate aggregation.  `ToolEventStore` stored on
   `VSABrain.tool_event_store` and wired into `run_attack_loop` via
   `record_tool_event()`.
 - `SimulationMode` enum (`Real` / `Simulated`) added to `ActionRequest` as a
   first-class type-level field.  `ActionRequest::new()` defaults to `Simulated`;
   all helper methods (`.scan_port()`, `.check_service()`, etc.) use `.real()`.
-- `ToolReliabilityTracker` — per-action-type EWMA success/failure tracking,
+- `ToolReliabilityTracker`: per-action-type EWMA success/failure tracking,
   stored on `VSABrain.tool_reliability`.  Updated alongside every tool event.
   Supports `success_rate()`, `reliability()` (EWMA), `overall_reliability()`.
   Case-insensitive action type lookup.
@@ -215,6 +214,8 @@ Current anchors:
 
 - `src/bin/autonomy_experiment.rs`: simulated autonomy tasks.
 - `src/bin/validate_autonomy.rs`: validation experiments.
+- `src/autonomy_task.rs`: bounded background tasks with a declared authority scope and budget (Phase 10).
+- `src/operator.rs`: operator command for setup, health, backup, upgrade, and recovery (Phase 11).
 - `src/monitor.rs`: monitoring state.
 - `src/defense.rs`: threat detection and defensive reactions.
 - `src/workspace.rs`: attention and workspace control.
@@ -227,22 +228,22 @@ Research questions:
 
 Implemented surface:
 
-- `AutonomyBudget` on `VSABrain.autonomy_budget` — enforced in `run_attack_loop`
+- `AutonomyBudget` on `VSABrain.autonomy_budget`: enforced in `run_attack_loop`
   via `budgeted_execute()` which checks `can_spend()` before execution, calls
   `spend()` after, and records a `DecisionRecord` with full pre/post budget
   snapshots, reasoning, and link to ToolEvent.  Budget defaults: 1000 actions,
   1 hour, 100 external writes, 0.80 max risk.
-- `DecisionRecord` / `DecisionJournal` on `VSABrain.decision_journal` — captures
+- `DecisionRecord` / `DecisionJournal` on `VSABrain.decision_journal`: captures
   tick, intent, action request, result, budget before/after, reasoning, budget
   status, and ToolEvent link.  Persisted via JSON save/load.  Supports querying
   blocked records and successful records.
 
 Wired into:
-- `solve_autonomously_with_learner()` in `meta_reasoning.rs` — plan steps use
+- `solve_autonomously_with_learner()` in `meta_reasoning.rs`: plan steps use
   `budgeted_execute()` instead of raw `send_request()`.
-- `resolve_uncertain()` and `resolve_stuck()` in `meta_reasoning.rs` — hypothesis
+- `resolve_uncertain()` and `resolve_stuck()` in `meta_reasoning.rs`: hypothesis
   testing and documentation acquisition gated by budget.
-- `main.rs` corrective plan execution — budget check before `execute_action()`
+- `main.rs` corrective plan execution: budget check before `execute_action()`
   with full `DecisionRecord` creation, spending, and logging.
 
 Implemented persistence:
@@ -320,20 +321,8 @@ Current evidence (current formalization and governed benchmark slices):
   exposes 32/32 false accepts. The unsafe counterfactual is diagnostic only.
 - Operational baseline: the release unified runner records a
   `governed_suite_runtime` receipt; the current seed-42 500/500 run measured
-  about 1.0–1.1 s on the development host (updated v3.4). Runtime is measured as evidence, with no
+  about 1.0 to 1.1 s on the development host (updated v3.4). Runtime is measured as evidence, with no
   unvalidated performance target inferred from one machine.
-- Formalization audit: complete fact provenance now gates typed direct
-  instantiation; the constrained prose grammar now covers bounded equations,
-  rates, inequalities, systems, quantifiers, units, entity relations, typed
-  verification targets, explicit affine recurrence definitions, and exact
-  domain/side-condition and assumption annotations. The 60-case seed reports
-  authorization correctness 60/60, zero false authorizations, zero false
-  denials, complete failure-taxonomy coverage, structural target completeness
-  60/60 (executable target completeness 47/60), definitions 21/21, facts
-  69/69, entities 21/21, assumptions 3/3, constraints 9/9, and obligations
-  35/35. Recurrence targets remain non-executable through the generic
-  direct-audit path. Structural completeness is reported separately from executor/verifier
-  availability.
 - Formalization audit: complete fact provenance now gates typed direct
   instantiation; the constrained prose grammar now covers bounded equations,
   rates, inequalities, systems, quantifiers, units, entity relations, typed

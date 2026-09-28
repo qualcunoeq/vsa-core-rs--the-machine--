@@ -1,4 +1,8 @@
-# Memory Allocation Updates — v2.6 Layer 0–3 Compression
+# Memory Allocation Updates: Layer 0 to 3 Compression
+
+**Version:** v2.6 (historical)
+**Last updated:** 2026-09-28
+**Scope:** Memory-handling changes merged from `the-machine-enhanced-memory-handling`.
 
 This document describes the memory-handling enhancements merged from
 `the-machine-enhanced-memory-handling` into the main VSA core.  These
@@ -10,10 +14,10 @@ of The Machine.
 ## Table of Contents
 
 1. [Architecture Overview](#1-architecture-overview)
-2. [Layer 0 — Online Caches (Forager)](#2-layer-0--online-caches-forager)
-3. [Layer 1 — Sparse Accumulator](#3-layer-1--sparse-accumulator)
-4. [Layer 2 — Entry Merging](#4-layer-2--entry-merging)
-5. [Layer 3 — Cold Storage Serialization](#5-layer-3--cold-storage-serialization)
+2. [Layer 0: Online Caches (Forager)](#2-layer-0-online-caches-forager)
+3. [Layer 1: Sparse Accumulator](#3-layer-1-sparse-accumulator)
+4. [Layer 2: Entry Merging](#4-layer-2-entry-merging)
+5. [Layer 3: Cold Storage Serialization](#5-layer-3-cold-storage-serialization)
 6. [Transient Cluster Freeze/Thaw](#6-transient-cluster-freezethaw)
 7. [Memory Profiler](#7-memory-profiler)
 8. [Configuration Reference](#8-configuration-reference)
@@ -49,13 +53,13 @@ of The Machine.
 
 ---
 
-## 2. Layer 0 — Online Caches (Forager)
+## 2. Layer 0: Online Caches (Forager)
 
-### 2.1 `visited` — Counting Bloom Filter
+### 2.1 `visited`: Counting Bloom Filter
 
 **File:** `src/compression.rs` → `CountingBloomFilter`
 
-**Before:** `HashSet<String>` — grows linearly with every URL visited.  After crawling 1M pages, the set alone uses ~100 MB.
+**Before:** `HashSet<String>`, grows linearly with every URL visited.  After crawling 1M pages, the set alone uses ~100 MB.
 
 **After:** A **Counting Bloom filter** with 32 million bits (~4 MB) and 6 hash functions.  Memory is **fixed** regardless of how many URLs are visited.
 
@@ -67,15 +71,15 @@ maybe_contains("...")   → checks 6 bits (false positives < 0.1% at 1M items)
 clear()                 → zeroes all bits (reuses allocation)
 ```
 
-**False positive rate:** ~1% for up to 10M URLs, ~0.1% for 1M URLs.  A false positive means we *skip* a page we haven't actually visited — harmless for a web crawler.
+**False positive rate:** ~1% for up to 10M URLs, ~0.1% for 1M URLs.  A false positive means we *skip* a page we haven't actually visited, harmless for a web crawler.
 
 **Persistence:** The Bloom filter is cleared when the forager resets its crawl history.  It's always rebuilt from scratch on restart, which matches the original `HashSet` behaviour.
 
-### 2.2 `seed_urls` — Capped VecDeque
+### 2.2 `seed_urls`: Capped VecDeque
 
 **File:** `src/compression.rs` → `CappedVecDeque<T>`
 
-**Before:** `Vec<String>` — grows unbounded as curiosity targets generate search URLs.
+**Before:** `Vec<String>`, grows unbounded as curiosity targets generate search URLs.
 
 **After:** A `CappedVecDeque<String>` with a hard cap of **50,000 entries** (~4 MB worst case).  When full, the oldest entry is evicted on each `push_back()`.
 
@@ -85,13 +89,13 @@ queue.push_back("https://...");  // evicts oldest if at capacity
 queue.pop_front();               // removes oldest
 ```
 
-### 2.3 `doc_frequency` — Exponential Decay
+### 2.3 `doc_frequency`: Exponential Decay
 
 **File:** `src/forager.rs` → `VSAForager::step()`
 
-**Before:** `HashMap<String, usize>` grows monotonically — every new word in every page adds an entry.  Over a long crawl this reaches millions of entries.
+**Before:** `HashMap<String, usize>` grows monotonically, every new word in every page adds an entry.  Over a long crawl this reaches millions of entries.
 
-**After:** Every 200 documents, all entries are multiplied by a decay factor (0.85) and entries below a retain threshold (2) are evicted.  This bounds the HashMap size to approximately the unique vocabulary of the *most recent* 200–400 pages.
+**After:** Every 200 documents, all entries are multiplied by a decay factor (0.85) and entries below a retain threshold (2) are evicted.  This bounds the HashMap size to approximately the unique vocabulary of the *most recent* 200 to 400 pages.
 
 ```rust
 if total_documents % 200 == 0 {
@@ -104,11 +108,11 @@ if total_documents % 200 == 0 {
 
 ---
 
-## 3. Layer 1 — Sparse Accumulator
+## 3. Layer 1: Sparse Accumulator
 
 **File:** `src/compression.rs` → `SparseAccumulator`
 
-**Target:** `MemoryCluster.accumulator` — a `Vec<u32>` with 10,240 entries (40,960 bytes per hot cluster).
+**Target:** `MemoryCluster.accumulator`, a `Vec<u32>` with 10,240 entries (40,960 bytes per hot cluster).
 
 **Problem:** With 100 hot clusters, accumulators consume ~4 MB.  Most entries are 0 (bits never observed) or close to their default value.
 
@@ -136,7 +140,7 @@ let val = sa.get(42);    // O(log K)
 sa.decay(0.975);         // prunes entries that decay to zero
 
 // Reconstruct for centroid recomputation
-let dense = sa.to_dense();  // O(D) — called only during merge/decay
+let dense = sa.to_dense();  // O(D), called only during merge/decay
 ```
 
 ### Integration in MemoryCluster
@@ -145,11 +149,11 @@ The `SparseAccumulator` is defined as a new type in `compression.rs` but the den
 
 ---
 
-## 4. Layer 2 — Entry Merging
+## 4. Layer 2: Entry Merging
 
 **File:** `src/compression.rs` → `merge_entries()`, `vsa_bisect()`, `bundle_and_threshold()`
 
-**Target:** `MemoryCluster.entries` — grows unbounded as observations accumulate.
+**Target:** `MemoryCluster.entries`, grows unbounded as observations accumulate.
 
 **Problem:** Entries accumulate from every novelty-gate pass.  Without merging, a cluster that absorbs 100K observations holds 100K `DejavuEntry` objects (~200 MB).
 
@@ -161,7 +165,7 @@ The `SparseAccumulator` is defined as a new type in `compression.rs` but the den
 merge_entries(cluster, config, current_tick):
   1. Partition entries into three age cohorts:
      - Young  (age <  50 ticks)  → preserved verbatim
-     - Middle (age 50–500 ticks) → coherence guard
+     - Middle (age 50 to 500 ticks) → coherence guard
      - Old    (age > 500 ticks)  → merge unconditionally
 
   2. OLD cohort → merge into ONE summary entry via majority-rule bundling
@@ -205,7 +209,7 @@ for entry in &cluster.entries {
 ### Integration in Agent Loop
 
 ```rust
-// In main.rs agent subconscious loop — every 50 ticks:
+// In main.rs agent subconscious loop, every 50 ticks:
 if ticker % 50 == 0 {
     let config = MergeConfig::default();
     for cluster in &mut brain.dejavu_clusters {
@@ -217,7 +221,7 @@ if ticker % 50 == 0 {
 
 ---
 
-## 5. Layer 3 — Cold Storage Serialization
+## 5. Layer 3: Cold Storage Serialization
 
 **File:** `src/compression.rs` → `ColdStorageManager`, `serialize_cold_cluster()`, `deserialize_cold_cluster()`, `encode_entry()`, `decode_entry()`
 
@@ -409,7 +413,7 @@ seeds: 12 | doc_freq: 3,401 | experiences: 129
 
 ---
 
-# DRIFT Cognitive Architecture Port — 10 Subsystems
+# DRIFT Cognitive Architecture Port: 10 Subsystems
 
 This section documents the port of 10 cognitive subsystems from the **DRIFT**
 (formerly infj-bot) project by **timeless-hayoka**
@@ -420,7 +424,7 @@ All subsystems are in `src/drift.rs`.
 
 ---
 
-## 1. DMU Scoring — Decision Making Utility
+## 1. DMU Scoring: Decision Making Utility
 
 **Source:** `core/unified_memory.py`, `memory/dmu.py`
 
@@ -444,7 +448,7 @@ R     = 1 + α × log(1 + β × salience × reps)
 
 ---
 
-## 2. CognitiveMode — 3-Bit Continuity Vector
+## 2. CognitiveMode: 3-Bit Continuity Vector
 
 **Source:** `core/continuity_vector.py`
 
@@ -466,7 +470,7 @@ Each mode has a deterministic hypervector via `to_hypervector()` / `from_hyperve
 
 ---
 
-## 3. DCP Consensus — Distributed Cognition Protocol
+## 3. DCP Consensus: Distributed Cognition Protocol
 
 **Source:** `hive_mind/`
 
@@ -485,7 +489,7 @@ Resolution uses weighted-majority bundling across all votes.
 
 ---
 
-## 4. Homeostasis — 7-Need Cybernetic Regulation
+## 4. Homeostasis: 7-Need Cybernetic Regulation
 
 **Source:** `core/homeostasis.py`
 
@@ -512,7 +516,7 @@ detection, and regulation strategies.
 
 ---
 
-## 5. PSC Predictor — Predictive State Characterization
+## 5. PSC Predictor: Predictive State Characterization
 
 **Source:** `core/psc_scaled.py`
 
@@ -535,7 +539,7 @@ resonator network for adaptive prediction.
 
 ---
 
-## 6. Global Workspace — Competitive Salience Ranking
+## 6. Global Workspace: Competitive Salience Ranking
 
 **Source:** `core/global_workspace.py`
 
@@ -548,11 +552,11 @@ A Global Workspace Theory (GWT) attention mechanism using HD similarity:
    **preconscious** (remaining above threshold), **archived** (below threshold)
 
 This replaces the DRIFT original's SQLite-backed salience tracking with
-pure HD vector operations — no database needed.
+pure HD vector operations, no database needed.
 
 ---
 
-## 7. Emotional Field — Emotion⊗Stance → Mood Binding
+## 7. Emotional Field: Emotion⊗Stance → Mood Binding
 
 **Source:** `core/emotional_field.py`
 
@@ -570,7 +574,7 @@ with a proper HD associative memory that supports approximate matching.
 
 ---
 
-## 8. Context Engine — Fork/Merge Superposition
+## 8. Context Engine: Fork/Merge Superposition
 
 **Source:** `core/context_engine.py`
 
@@ -588,7 +592,7 @@ pattern, implemented as pure hypervector operations.
 
 ---
 
-## 9. Implicit Intuition — Pattern Recognition via Bundled HVs
+## 9. Implicit Intuition: Pattern Recognition via Bundled HVs
 
 **Source:** `core/intuition.py`
 
@@ -607,7 +611,7 @@ with an HD associative memory.
 
 ---
 
-## 10. Shadow / Enantiodromia — Bipolar Archetype Oscillation
+## 10. Shadow / Enantiodromia: Bipolar Archetype Oscillation
 
 **Source:** `core/shadow.py`
 
@@ -631,7 +635,7 @@ be encoded into a bundle for binding into the cognitive state.
 
 | Enhancement | Source | Author |
 |------------|--------|--------|
-| Memory compression (L0–L3) | `the-machine-enhanced-memory-handling` | **qualcunoeq** |
+| Memory compression (L0 to L3) | `the-machine-enhanced-memory-handling` | **qualcunoeq** |
 | DMU scoring, CognitiveMode, DCP, Homeostasis | `infj-bot` / `DRIFT` | **timeless-hayoka** |
 | PSC Predictor, Global Workspace, Emotional Field | `infj-bot` / `DRIFT` | **timeless-hayoka** |
 | Context Engine, Implicit Intuition, Shadow | `infj-bot` / `DRIFT` | **timeless-hayoka** |

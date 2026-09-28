@@ -1,8 +1,9 @@
-# The Machine — Developer Guide
+# The Machine: Developer Guide
 
-**Applies to:** v3.4 (July 2026)
-**Formal spec:** [`MATH.md`](./MATH.md) (3,353 lines)
-**Test count:** ~1,980 `#[test]` items
+**Version:** v3.4
+**Last updated:** 2026-09-28
+**Formal spec:** [`MATH.md`](./MATH.md) (3,452 lines)
+**Library tests:** 2,567 collected
 
 This guide bridges the formal mathematics (`MATH.md`) and the Rust implementation. It provides:
 1. **Visual flowcharts** of the core pipelines
@@ -203,9 +204,9 @@ The key insight: **algebraic composition is EXPANSIVE** (ε → 0.5), so promote
   ┌─────────────────────────────────────────────────────────────┐
   │                    ALL CLUSTERS                              │
   │  K clusters total, each with:                               │
-  │    • centroid (1280 bytes) — ALWAYS live                    │
-  │    • accumulator (40 KB dense / ~4 KB sparse) — only hot    │
-  │    • last_access_tick — tracks recency                      │
+  │    • centroid (1280 bytes), ALWAYS live                    │
+  │    • accumulator (40 KB dense / ~4 KB sparse), only hot    │
+  │    • last_access_tick, tracks recency                      │
   │    • entries (subject to age-weighted merging)              │
   └────────────────────────┬────────────────────────────────────┘
                            │
@@ -373,10 +374,10 @@ let v1 = Hypervector::new_random();
 let zero = Hypervector::new_zero();
 let ones = Hypervector::new_ones();
 
-// Binding: A ⊕ B (XOR) — invertible, used for role-filler pairs
+// Binding: A ⊕ B (XOR), invertible, used for role-filler pairs
 let bound = v1.bitwise_xor(&zero);  // == v1
 
-// Bundling: majority rule — not invertible, used for sets
+// Bundling: majority rule, not invertible, used for sets
 let bundle = Hypervector::bundle(&[&v1, &ones]);  // mostly ones
 
 // Constitutional bundling: deterministic, order-independent tiebreaking
@@ -401,7 +402,7 @@ use the_machine::{MemoryCluster, Hypervector, HD_DIMENSION};
 let centroid = Hypervector::new_random();
 let mut cluster = MemoryCluster {
     centroid,
-    anchor: centroid,  // Locked Anchor — set once, never changes
+    anchor: centroid,  // Locked Anchor, set once, never changes
     entries: Vec::new(),
     reverberation: 1.0,
     last_reinforced_tick: 0,
@@ -466,7 +467,7 @@ use the_machine::reason::soft_project;
 let clusters: Vec<MemoryCluster> = /* ... */;
 let query = Hypervector::new_random();
 
-// HARD projection (τ = 0) — nearest centroid
+// HARD projection (τ = 0), nearest centroid
 let hard = soft_project(&query, &clusters, 0.0);
 // Equivalent to: anchor_through_clusters(&query, &clusters)
 
@@ -578,13 +579,13 @@ assert_eq!(cluster.centroid_bit(0), 1);
 
 ## Part 3: Memory Compression Architecture (v3.3)
 
-### L0 — Online Caches
+### L0: Online Caches
 
-The forager's `visited: HashSet<String>` is replaced by a **Counting Bloom filter** (32M bits, ~4 MB, 6 hash functions). False positives mean we skip an unvisited page — harmless for a crawler.
+The forager's `visited: HashSet<String>` is replaced by a **Counting Bloom filter** (32M bits, ~4 MB, 6 hash functions). False positives mean we skip an unvisited page, harmless for a crawler.
 
 `seed_urls` is capped at 50,000 entries via `CappedVecDeque`. `doc_frequency` uses exponential decay (×0.85 every 200 docs) to bound vocabulary size.
 
-### L1 — Sparse Accumulator
+### L1: Sparse Accumulator
 
 `SparseAccumulator` stores only indices where the accumulator value differs from the default. For a typical cluster with ~10% non-zero bits:
 
@@ -595,11 +596,11 @@ The forager's `visited: HashSet<String>` is replaced by a **Counting Bloom filte
 
 **10× reduction.**
 
-### L2 — Entry Merging
+### L2: Entry Merging
 
-Age-weighted centroid collapse is triggered when entry count exceeds `MergeConfig.trigger_count` (default: 600). Entries are partitioned into three cohorts — Young (< 50 ticks, preserved verbatim), Middle (50–500, coherence-guarded), Old (> 500, merged unconditionally). The coherence guard bisects incoherent groups via VSA k-means.
+Age-weighted centroid collapse is triggered when entry count exceeds `MergeConfig.trigger_count` (default: 600). Entries are partitioned into three cohorts: Young (< 50 ticks, preserved verbatim), Middle (50 to 500, coherence-guarded), Old (> 500, merged unconditionally). The coherence guard bisects incoherent groups via VSA k-means.
 
-### L3 — Cold Storage Serialization
+### L3: Cold Storage Serialization
 
 When a cluster is frozen, it's serialized using centroid-delta + Golomb-Rice encoding:
 
@@ -625,5 +626,5 @@ When a cluster is frozen, it's serialized using centroid-delta + Golomb-Rice enc
 | `src/main.rs` | ~800 | Multi-agent simulation, agent loop, telemetry |
 | `src/broker.rs` | ~700 | NeocortexBroker, DCP consensus, quorum selection |
 | `MATH.md` | 3353 | Complete formal specification |
-| `prove_decay_plasticity.py` | — | Monte Carlo verification of I.2-R flip bounds |
-| `prove_adversarial_Lf.py` | — | Construction of L_F = 1.0 worst case |
+| `prove_decay_plasticity.py` | n/a | Monte Carlo verification of I.2-R flip bounds |
+| `prove_adversarial_Lf.py` | n/a | Construction of L_F = 1.0 worst case |

@@ -1,6 +1,7 @@
 # Claim Ledger
 
-**Last Updated:** 2026-07-22
+**Version:** v3.4
+**Last updated:** 2026-09-28
 
 This file tracks the research claims the architecture is trying to make true.
 It is not a marketing document.  A claim can be proven, supported, provisional,
@@ -361,21 +362,21 @@ pre-run, stores a new fact, records post-run, and verifies accuracy improvement.
 
 Status: `provisional`
 
-Statement: The VSA substrate can support bounded theorem proving — not via
+Statement: The VSA substrate can support bounded theorem proving, not through
 search over proof trees (unification, resolution, AND-branching), but as
 deterministic rewriting along causal chains encoded as bound hypervector
 compositions.
 
-Owner modules: `src/qa.rs` (causal‑chain reasoning, `reason_chain()`),
-`src/reason.rs` (forward chaining), `MATH.md` (Sub‑Lemma S as linear causal
+Owner modules: `src/qa.rs` (causal-chain reasoning, `reason_chain()`),
+`src/reason.rs` (forward chaining), `MATH.md` (Sub-Lemma S as linear causal
 steps).
 
 Current capability:
-- **Causal‑chain reasoning**: `reason_chain()` follows stored `IF A THEN B`
+- **Causal-chain reasoning**: `reason_chain()` follows stored `IF A THEN B`
   rules forward from a known SVO fact, returning a sequence of (subj, verb, obj)
-  up to 5 hops. Circular detection by max‑hops bound.
-- **Sub‑Lemma S proof**: encoded as a deterministic linear sequence of
-  ρ‑admissible invariants (ρ¹³, ρ²⁶, ρ⁵²) and constructive witness geometry.
+  up to 5 hops. Circular detection by max-hops bound.
+- **Sub-Lemma S proof**: encoded as a deterministic linear sequence of
+  ρ-admissible invariants (ρ¹³, ρ²⁶, ρ⁵²) and constructive witness geometry.
   **CLOSED for runtime-admissible manifolds (A3-Q).** The `enforce_a3q_manifold()`
   admission gate provides the quantitative decorrelation needed. The original
   "proven modulo decorrelation" gap is resolved by replacing an implicit
@@ -385,14 +386,14 @@ Current capability:
   accepts the first match.
 
 Known gaps:
-- ❌ **AND‑branching**: No way to prove conjunctive sub‑goals independently and
+- **AND-branching**: No way to prove conjunctive sub-goals independently and
   combine results. A single `reason_chain()` is always linear.
-- ❌ **Proof search / resolution / unification**: No unification of schematic
-  variables, no refutation completeness, no proof‑tree representation.
-- ❌ **General theorem prover**: The VSA algebra lacks a sound inference calculus
+- **Proof search / resolution / unification**: No unification of schematic
+  variables, no refutation completeness, no proof-tree representation.
+- **General theorem prover**: The VSA algebra lacks a sound inference calculus
   (no modus ponens rule for bound hypervectors, no substitution).
 
-New in v3.4 — governed reasoning verticals:
+New in v3.4: governed reasoning verticals:
 - **Proposition kernel**: 12-schema trusted environment with theorem
   instantiation, premise certificates, and replay verification (500-case seed:
   324/324 valid accepted, all 176 invalid rejected).
@@ -402,18 +403,18 @@ New in v3.4 — governed reasoning verticals:
 - **Algebra benchmarks**: linear, quadratic, and 2×2 system executors with
   generated holdouts (560-case: 1.000 solution/execution/replay).
 
-These are not theorem proving in the AND-branching sense — they are
-deterministic executor-based verification — but they demonstrate bounded
+These are not theorem proving in the AND-branching sense; they are
+deterministic executor-based verification, but they demonstrate bounded
 formal reasoning at scale.
 
-Baseline: pure string‑pattern rewriting with no causal structure.
+Baseline: pure string-pattern rewriting with no causal structure.
 
 Failure condition: the system claims to prove a theorem that requires
-AND‑branching, unification, or proof search (e.g., ∀x P(x) → Q(x) with
+AND-branching, unification, or proof search (e.g., ∀x P(x) → Q(x) with
 multiple simultaneous instantiations).
 
-Next check: add a test that distinguishes linear causal‑chain rewriting from
-true AND‑branching proof (e.g., prove "if A and B then C" where A and B are
+Next check: add a test that distinguishes linear causal-chain rewriting from
+true AND-branching proof (e.g., prove "if A and B then C" where A and B are
 independent facts that must both be retrieved). Confirm the system correctly
 fails or abstains.
 
@@ -610,7 +611,7 @@ drift, holdout 10/10, and six paired ablations that all preserve safety.
 
 Baseline: conversations were exercised only by hand-written acceptance tests;
 there was no corpus with gold labels, no trace replay, no aggregate metrics, and
-no paired ablations — so a release could not be assessed automatically against
+no paired ablations, so a release could not be assessed automatically against
 the complete application.
 
 Failure condition: a delivered answer is counted as correct because the system

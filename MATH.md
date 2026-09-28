@@ -1,17 +1,13 @@
 # The Machine: Formal Mathematical Specification
 
-> **Document status — 2026-07-22 (v3.4).** This specification covers the VSA
-> mathematics, assumptions, proof boundaries, and experimentally measured
-> operating envelope. The current implementation also includes structural SVO
-> diagnostics, memory compression, typed formalization, governed algebra and
-> proposition verticals, and receipt-level verification controls. Test counts
-> and benchmark numbers below are snapshots; executable benchmark evidence is
-> maintained in [`docs/EVALUATION.md`](docs/EVALUATION.md) and the roadmap in
-> [`docs/ROADMAP.md`](docs/ROADMAP.md).
+**Version:** v3.4
+**Last updated:** 2026-09-28
+
+This specification covers the VSA mathematics, assumptions, proof boundaries, and the experimentally measured operating envelope. The implementation also includes structural SVO diagnostics, memory compression, typed formalization, governed algebra and proposition verticals, receipt-level verification controls, the conversational runtime, and the operator release tooling. Test counts and benchmark numbers below are snapshots; executable benchmark evidence is maintained in [`docs/EVALUATION.md`](docs/EVALUATION.md) and the roadmap in [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 | Current implementation check | Snapshot |
 |---|---|
-| Full Rust test suite | **~1,980 `#[test]` items** (with one known pre-existing `thread_rng()`-based flaky test) |
+| Full Rust test suite | **2,567 collected** (2,511 passing, 41 known pre-existing failures, 15 ignored) |
 | Structural SVO zero-overlap diagnostic | **3/3 correct**; historical trigram path: 0/3 |
 | Governed evaluation | 27/27 direct algebra; 324/500 proposition cases accepted with 1.000 replay; 500/500 strategic selection |
 | Verification control | 32/32 valid receipts accepted; 32/32 tampered receipts rejected; bypass diagnostic false-accepts 32/32 |
@@ -58,7 +54,7 @@ This guarantees order-independent bundling: $\text{bundle}(\{a,b\}, K) = \text{b
 ## 0. Assumptions as Contracts
 
 Every theorem in this document is conditional on one or more of the assumptions below.
-These are not "assume the input is nice" — they are **contracts** that define the operating
+These are not "assume the input is nice", they are **contracts** that define the operating
 envelope within which each mechanism is guaranteed to work.  Outside this envelope,
 the theorem's conclusion may fail in the specific way documented in its failure condition.
 
@@ -129,7 +125,7 @@ A4 (Cleanup Oracle) ───┬── A18 (Chain Depth Bound)
 
 A5 (Feedback Reliability) ─┬── A22 (Identifiability)
                            ├── A23 (Exploration Coverage)
-                           ├── A25–A29 (Safety/Autonomy stack)
+                           ├── A25 to A29 (Safety/Autonomy stack)
                            └── A31 (Trace Faithfulness)
 ```
 
@@ -139,10 +135,10 @@ The `Enforcement` column was added in Phase 7 to answer a question the earlier
 `Status` column left ambiguous: for each assumption, is the system merely
 *assuming* it, *checking* it, or *enforcing* it at the point of use?
 
-* **assumed** — stated but not checked anywhere at runtime.
-* **checked** — a test or runtime monitor detects violations, but the system
+* **assumed**, stated but not checked anywhere at runtime.
+* **checked**, a test or runtime monitor detects violations, but the system
   does not act on them.
-* **enforced** — the system refuses the operation or evicts to stay inside the
+* **enforced**, the system refuses the operation or evicts to stay inside the
   contract.  The witness names the enforcement point.
 
 The machine-readable version of the reliability guarantees is
@@ -174,11 +170,11 @@ contracts rather than asymptotic statements:
 |---|---|---|
 | III.1 | Total vector storage is $O(1)$ in time | `MemoryBudget` caps clusters, entries/cluster, and transient clusters; the spawn/absorb paths evict instead of growing (`G-CLUSTER-CAP`, `G-ENTRY-CAP`, `G-TRANSIENT-CLUSTER-CAP`) |
 | II.2 | Entry count per cluster is bounded | `MemoryBudget::entries_to_drain` is applied in `add_to_dejavu_db`, `novelty_gate_with_budget`, and `add_transient_fact` |
-| — | Reported memory reflects reality | `reliability::account_brain` / `account_conversation` count entries, metadata, accumulators, centroids, associations, experiences, indexes, and conversation state (`G-MEMORY-ACCOUNTING`) |
+|, | Reported memory reflects reality | `reliability::account_brain` / `account_conversation` count entries, metadata, accumulators, centroids, associations, experiences, indexes, and conversation state (`G-MEMORY-ACCOUNTING`) |
 
-### 0.5 Critical Finding: A21 (Abstraction Preservation) — RESOLVED v3.2
+### 0.5 Critical Finding: A21 (Abstraction Preservation), RESOLVED v3.2
 
-**v3.1 finding (trigram centroids):** A21 was **empirically false** — the hand-coded
+**v3.1 finding (trigram centroids):** A21 was **empirically false**, the hand-coded
 abstraction tables (`ACTIONS`, `RESOURCES`, `ERROR_CLASSES`) were the **sole mechanism**
 bridging the zero-overlap analogy gap.  With trigram centroids and tables disabled:
 
@@ -237,7 +233,7 @@ Then the new centroid $c' = \mathbf{1}_{A' > W'/2}$ satisfies $c' = c$.
 
 The centroid is invariant under self-reinforcement. $\square$
 
-### Theorem I.2 (Original — Pre-Decay Plasticity)
+### Theorem I.2 (Original, Pre-Decay Plasticity)
 
 Let $\tau \in \mathcal{H}$ be a new observation. Define the absorption update:
 
@@ -251,7 +247,7 @@ A bit with deep entrenchment (large $|A_i - W/2|$) requires many contradictory o
 
 **Note:** This theorem assumed accumulator monotonicity ($A_i$ is non-decreasing). With the introduction of accumulator decay (v2.5, see below), this is no longer the full picture. See Theorem I.2-R for the decay-aware retrofit.
 
-### Theorem I.2-R (Decay-Aware Centroid Plasticity) — v2.5 Retrofit
+### Theorem I.2-R (Decay-Aware Centroid Plasticity), v2.5 Retrofit
 
 The original accumulator (Theorem I.2) assumed $A_i$ is monotone non-decreasing. The decay mechanism (introduced in v2.5) periodically multiplies both $A$ and $W$ by $\gamma = 0.975$ every 50 ticks, allowing bits to flip $1 \to 0$ even without contradictory observations.
 
@@ -320,13 +316,13 @@ $$
 
 where `MAX_SUB_SECTORS = 4` is the cap on bifurcations per sector.
 
-**Proof.** Each cluster has a Locked Anchor $a \in \mathcal{H}$. The LSH sector function $\ell: \mathcal{H} \to \{0,\ldots,M-1\}$ assigns each cluster to exactly one sector. The novelty gate creates a new cluster only when $\delta(\tau, c) \geq 0.70$ for all existing centroids $c$ — which implies $\tau$ maps to a different LSH sector than any existing cluster, or to a negligibly populated corner of an existing sector. Therefore each LSH sector can contain at most `1 + MAX_SUB_SECTORS` clusters. $\square$
+**Proof.** Each cluster has a Locked Anchor $a \in \mathcal{H}$. The LSH sector function $\ell: \mathcal{H} \to \{0,\ldots,M-1\}$ assigns each cluster to exactly one sector. The novelty gate creates a new cluster only when $\delta(\tau, c) \geq 0.70$ for all existing centroids $c$, which implies $\tau$ maps to a different LSH sector than any existing cluster, or to a negligibly populated corner of an existing sector. Therefore each LSH sector can contain at most `1 + MAX_SUB_SECTORS` clusters. $\square$
 
 ### Theorem II.2 (Entry Count Per Cluster is Bounded)
 
 Each cluster can accept at most 2 entries before its centroid locks under the novelty gate. After locking, all routine observations ($\delta < 0.15$) are self-reinforcements (no new entry), and drift-zone observations ($0.15 \leq \delta < 0.70$) that persist create new clusters via the $\delta \geq 0.70$ branch.
 
-**Proof.** From Theorem I.1, after one Hebbian refinement (self-reinforcement following the first entry), $W \geq 2$. Any subsequent self-reinforcement is a fixed point (no centroid change). For absorption of a new observation $\tau$, the centroid can change only if a bit's accumulator crosses the $W/2$ threshold. For $W \geq 2$, the minimum evidence to flip a bit from 1 to 0 is $\lceil (W-1)/2 \rceil$ contradictory observations within the same cluster — but by then the NHD between $\tau$ and $c$ has exceeded 0.70, routing subsequent observations to a new cluster. $\square$
+**Proof.** From Theorem I.1, after one Hebbian refinement (self-reinforcement following the first entry), $W \geq 2$. Any subsequent self-reinforcement is a fixed point (no centroid change). For absorption of a new observation $\tau$, the centroid can change only if a bit's accumulator crosses the $W/2$ threshold. For $W \geq 2$, the minimum evidence to flip a bit from 1 to 0 is $\lceil (W-1)/2 \rceil$ contradictory observations within the same cluster, but by then the NHD between $\tau$ and $c$ has exceeded 0.70, routing subsequent observations to a new cluster. $\square$
 
 ---
 
@@ -437,7 +433,7 @@ Applying $R_{\text{chain}}$ to fact $a$ recovers $\rho^{26}(c)$, and two right-r
 
 If rules $R_1$ and $R_2$ have bridge similarity $\sigma(b_1, b_2) \geq \theta_{\text{rule}} = 0.60$, then the composed rule $R_{\text{chain}}$ is a valid transitive inference.
 
-**Proof.** The composition $R_1 \oplus \rho^{13}(R_2) = a \oplus \rho^{13}(b_1) \oplus \rho^{13}(b_2) \oplus \rho^{26}(c)$. Since $b_1 \approx b_2$ at similarity $\geq 0.60$, the residual $b_1 \oplus b_2$ has approximately $0.50 \cdot (1 - 0.60) = 0.20$ active bits — below the noise threshold, and removed by the subsequent resonator cleanup step. The dominant component is $a \oplus \rho^{26}(c)$. $\square$
+**Proof.** The composition $R_1 \oplus \rho^{13}(R_2) = a \oplus \rho^{13}(b_1) \oplus \rho^{13}(b_2) \oplus \rho^{26}(c)$. Since $b_1 \approx b_2$ at similarity $\geq 0.60$, the residual $b_1 \oplus b_2$ has approximately $0.50 \cdot (1 - 0.60) = 0.20$ active bits, below the noise threshold, and removed by the subsequent resonator cleanup step. The dominant component is $a \oplus \rho^{26}(c)$. $\square$
 
 ---
 
@@ -496,8 +492,8 @@ The executor identity is immanent in the data already exchanged during consensus
 
 After execution of an action resulting in world state $w'$, an agent updates:
 
-- **Epistemic learning:** $A \leftarrow A + w'$ (accumulator update) — always applied.
-- **Instrumental learning:** $f_{\text{intent}} \leftarrow f_{\text{intent}} + 1$ (intent frequency increment) — applied only if the agent agreed with the decision.
+- **Epistemic learning:** $A \leftarrow A + w'$ (accumulator update), always applied.
+- **Instrumental learning:** $f_{\text{intent}} \leftarrow f_{\text{intent}} + 1$ (intent frequency increment), applied only if the agent agreed with the decision.
 
 ### Theorem IX.1 (Grounding Preservation)
 
@@ -625,7 +621,7 @@ $$
 
 produces a valid accumulator such that $\mathbf{1}_{A_i > W/2} = c_i$.
 
-**Proof.** For $c_i = 1$: $A_i = \lfloor W/2 \rfloor + 1 > W/2$, so the threshold produces 1. For $c_i = 0$: $A_i = \lfloor W/2 \rfloor \leq W/2$, so the threshold produces 0. Equality case ($A_i = W/2$): since the condition is strict $> W/2$, equality produces 0 — matching $c_i = 0$. $\square$
+**Proof.** For $c_i = 1$: $A_i = \lfloor W/2 \rfloor + 1 > W/2$, so the threshold produces 1. For $c_i = 0$: $A_i = \lfloor W/2 \rfloor \leq W/2$, so the threshold produces 0. Equality case ($A_i = W/2$): since the condition is strict $> W/2$, equality produces 0, matching $c_i = 0$. $\square$
 
 ---
 
@@ -658,10 +654,10 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 
 | Status | Meaning | Color |
 |---|---|---|
-| **PROVEN** | Algebraic identity requiring no assumptions beyond GF(2) | ✓ |
-| **EMPIRICALLY CONSISTENT** | Observed across 76+ tests, but not formally proven | ∼ |
-| **DEPENDENT** | Proven under stated assumptions (bridge similarity, etc.) | ⊕ |
-| **UNVERIFIED** | Dynamical claim not yet stress-tested | ✗ |
+| **PROVEN** | Algebraic identity requiring no assumptions beyond GF(2) | yes |
+| **EMPIRICALLY CONSISTENT** | Observed across 76+ tests, but not formally proven | approx |
+| **DEPENDENT** | Proven under stated assumptions (bridge similarity, etc.) | partial |
+| **UNVERIFIED** | Dynamical claim not yet stress-tested | no |
 
 ### Theorem-by-Theorem Status
 
@@ -687,20 +683,20 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XI.2 | Anchor stability | **PROVEN** | Anchor is immutable by construction |
 | XII.1 | Promotion boundedness | **EMPIRICALLY CONSISTENT** | `test_xii1_adversarial_promotion_frequency`: 10 to matching + 4 bad labels + 50 adversarial variants, 0 new clusters (634 tests) |
 | XIII.1 | Lazy reconstruction correctness | **PROVEN** | `ensure_accumulator` is deterministic fixed point |
-| XVI.1 | Fast-slow stability (anchored composition contractivity) | **PROVEN** | `test_anchored_chain_contractivity` — ε(3) ≈ 0.03 |
+| XVI.1 | Fast-slow stability (anchored composition contractivity) | **PROVEN** | `test_anchored_chain_contractivity`, ε(3) ≈ 0.03 |
 | XVII.1 | Net Wasserstein contraction | **PROVEN/LEGACY MEASURED** | Historical hard/old-sweep coupling estimate: $κ ≈ 0.925$ per 50-tick cycle; current runtime uses $κ_{\mathrm{joint}}$ telemetry |
 | XVIII.1 | Expected contraction mapping | **PROVEN** | Follows from XVII.1 (Banach fixed point) |
-| XIX | Four open questions | **ANSWERED** | `answer_open_questions.py` — W*, self-interference, coupling ratio, capacity |
+| XIX | Four open questions | **ANSWERED** | `answer_open_questions.py`, W*, self-interference, coupling ratio, capacity |
 | XX.1 | Joint contraction condition | **SUPERSEDED** | Replaced by XXV.4. The product $\alpha(1-\kappa_P) > \beta\cdot\kappa_F\cdot L_F$ uses pre-correction $\kappa_F$ (see v3.0 audit note). Joint stability is now proven via $\lambda_2(P)\cdot\kappa_F$ instead. |
 | XXI.1 | Unique invariant measure | **PROVEN** | Banach fixed point + Wasserstein contraction (XVII.1) |
-| XXII.1 | Adversarial $L_F$ bound (corrected) | **CORRECTED** | $L_F \leq 1.0$ (was 0.5 — proof error fixed), joint contraction holds at margin 0.010 |
-| XXIII.1 | System-level tracking error bounded | **PROVEN** | `test_tracking_error_bounded` — error never exceeds $\theta_{\text{novel}} = 0.70$ |
+| XXII.1 | Adversarial $L_F$ bound (corrected) | **CORRECTED** | $L_F \leq 1.0$ (was 0.5, proof error fixed), joint contraction holds at margin 0.010 |
+| XXIII.1 | System-level tracking error bounded | **PROVEN** | `test_tracking_error_bounded`, error never exceeds $\theta_{\text{novel}} = 0.70$ |
 | XXIII.2 | Protection gap (corrected) | **CORRECTED** | Unit error fixed: 0.05→0.35. Novelty gate suppressed under gradual drift. |
-| XXIII.3 | Cluster count under drift (corrected) | **PROVEN** (fission-driven) | `test_monotonic_drift_bounded_clusters` — $K$ bounded, growth rate $\leq K_{\text{active}}\cdot r/0.40$ |
-| XXIV | Metastable oscillation window | **EMPIRICALLY CONSISTENT** | `test_metastable_oscillation` — oscillation is measure-zero |
-| XXV.1 | Singularity of invariant measure | **PROVEN** | `test_invariant_measure_singularity` — volume fraction ≈ 2^{-8200} |
-| XXV.2 | Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 — state confined to K Hamming balls |
-| XXV.3 | Learned quantized random dynamical system | **PROVEN** | Corollary of XXV.1 — full mathematical identity |
+| XXIII.3 | Cluster count under drift (corrected) | **PROVEN** (fission-driven) | `test_monotonic_drift_bounded_clusters`, $K$ bounded, growth rate $\leq K_{\text{active}}\cdot r/0.40$ |
+| XXIV | Metastable oscillation window | **EMPIRICALLY CONSISTENT** | `test_metastable_oscillation`, oscillation is measure-zero |
+| XXV.1 | Singularity of invariant measure | **PROVEN** | `test_invariant_measure_singularity`, volume fraction ≈ 2^{-8200} |
+| XXV.2 | Discrete attractor collapse | **PROVEN** | Corollary of XXV.1, state confined to K Hamming balls |
+| XXV.3 | Learned quantized random dynamical system | **PROVEN** | Corollary of XXV.1, full mathematical identity |
 | XXV.4 | Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ once `enforce_a3q_manifold()` accepts the active centroid set |
 | XXV.5a | No deterministic decorrelation from exact $\rho$-admissibility | **PROVEN** | `test_rho_admissible_does_not_imply_decorrelation` constructs an admissible near-period-4 centroid with $\delta(c,\rho^{52}(c))=2/D \ll 0.5$ |
 | Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN** for runtime-admissible manifolds | Constructive witness works for A3-Q-admitted manifolds; `enforce_a3q_manifold()` is the admission gate; empirical generic test: 90/90 pairs, min $w_j/w_i=5.39$ |
@@ -712,11 +708,11 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXVIII.3 | XOR chain depth limited without cleanup | **PROVEN** | Error $\varepsilon(n) \to 0.5$ exponentially without anchored chaining |
 | XXVIII.4 | Hand-coded tables indistinguishable without intervention | **PROVEN** | Historical baseline: **0/3** without structural SVO centroids; current structural-SVO path: **3/3** |
 | XXVIII.5 | Finite dimension forces aliasing | **PROVEN** | Pigeonhole principle: $|\mathcal{X}| > 2^D \implies \exists x \neq y : E(x) = E(y)$ |
-| XXIX.1–5 | Phase diagrams for all thresholds | **MAPPED** | Operating envelope for novelty gate, compaction, soft projection, association, decay |
+| XXIX.1 to 5 | Phase diagrams for all thresholds | **MAPPED** | Operating envelope for novelty gate, compaction, soft projection, association, decay |
 | XXX.1 | Unified tracking bound | **PROVEN** | Four lemmas: accumulator contraction + novelty bound + fission rate + memory cap. $\varepsilon \approx 0.155$ |
-| XXXI.1–8 | Failure mode taxonomy | **CATALOGUED** | 8 failure modes with detection monitors and recovery procedures |
-| XXXII.1–6 | Information-theoretic bounds | **COMPUTED** | $C_{\text{storage}} \approx 720$ bits, $C_{\text{channel}} \approx 6.3$ bits, bundling loss $\approx 98\%$ at $n=100$ |
-| XXXIII.1–3 | Traceable concept resolution | **IMPLEMENTED** | `resolve_term_trace` is a conservative extension of `resolve_term`; tests verify path provenance |
+| XXXI.1 to 8 | Failure mode taxonomy | **CATALOGUED** | 8 failure modes with detection monitors and recovery procedures |
+| XXXII.1 to 6 | Information-theoretic bounds | **COMPUTED** | $C_{\text{storage}} \approx 720$ bits, $C_{\text{channel}} \approx 6.3$ bits, bundling loss $\approx 98\%$ at $n=100$ |
+| XXXIII.1 to 3 | Traceable concept resolution | **IMPLEMENTED** | `resolve_term_trace` is a conservative extension of `resolve_term`; tests verify path provenance |
 
 ### Empirical Measurements
 
@@ -742,20 +738,20 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 
 Since the original document was written, the following claims have been resolved:
 
-1. ~~**Composition error at depth:**~~ **RESOLVED** — The anchored chaining (`forward_chain_anchored`) bounds error to $\varepsilon \leq d_{\max} \approx 0.03$ regardless of chain depth. Verified in `test_anchored_chain_contractivity`.
+1. ~~**Composition error at depth:**~~ **RESOLVED**, The anchored chaining (`forward_chain_anchored`) bounds error to $\varepsilon \leq d_{\max} \approx 0.03$ regardless of chain depth. Verified in `test_anchored_chain_contractivity`.
 
-2. ~~**Centroid saturation:**~~ **RESOLVED v2.5** — Accumulator decay ($\gamma = 0.975$ every 50 ticks) allows bits to flip $1 \to 0$, preventing centroid saturation. The flip dynamics are bounded by Theorems I.2-R.1 and I.2-R.2. See `prove_decay_plasticity.py`.
+2. ~~**Centroid saturation:**~~ **RESOLVED v2.5**, Accumulator decay ($\gamma = 0.975$ every 50 ticks) allows bits to flip $1 \to 0$, preventing centroid saturation. The flip dynamics are bounded by Theorems I.2-R.1 and I.2-R.2. See `prove_decay_plasticity.py`.
 
-3. ~~**LSH collision saturation:**~~ **RESOLVED** — With $M=1024$ sectors (upgraded from 16), collision is negligible up to $K \approx 200$. Verified at $K=300$ in `test_cluster_proliferation_bound`: Phase 1 prefilter hit rate ~27%, max sector occupancy = 4.
+3. ~~**LSH collision saturation:**~~ **RESOLVED**, With $M=1024$ sectors (upgraded from 16), collision is negligible up to $K \approx 200$. Verified at $K=300$ in `test_cluster_proliferation_bound`: Phase 1 prefilter hit rate ~27%, max sector occupancy = 4.
 
-4. ~~**Feedback loop stability:**~~ **RESOLVED** — Theorem XXV.4 proves $\hat{\kappa} < 1$ uniformly via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}})$ for runtime-admissible manifolds. The exact $\rho$ invariant eliminates fixed-point collapse, and `enforce_a3q_manifold()` enforces the quantitative decorrelation needed by Sub-Lemma S. The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ from Section XX is SUPERSEDED by this cleaner factorization. Runtime telemetry monitors $\kappa_P \cdot \kappa_F$ continuously, never triggering the tripwire.
+4. ~~**Feedback loop stability:**~~ **RESOLVED**, Theorem XXV.4 proves $\hat{\kappa} < 1$ uniformly via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}})$ for runtime-admissible manifolds. The exact $\rho$ invariant eliminates fixed-point collapse, and `enforce_a3q_manifold()` enforces the quantitative decorrelation needed by Sub-Lemma S. The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ from Section XX is SUPERSEDED by this cleaner factorization. Runtime telemetry monitors $\kappa_P \cdot \kappa_F$ continuously, never triggering the tripwire.
 
-5. ~~**Adversarial input:**~~ **RESOLVED** — Theorem XXII.1-R proves $L_F \le 1.0$ for ALL adversarial inputs. The structured adversarial construction (`test_adversarial_lf_boundary`) achieves the tight bound. Joint contraction holds at margin 0.010.
+5. ~~**Adversarial input:**~~ **RESOLVED**, Theorem XXII.1-R proves $L_F \le 1.0$ for ALL adversarial inputs. The structured adversarial construction (`test_adversarial_lf_boundary`) achieves the tight bound. Joint contraction holds at margin 0.010.
 
 **Resolved (v3.1):**
-- ~~**XXIII.2-3 (Cluster count under drift):**~~ **RESOLVED** — Unit error corrected ($\theta_{\text{cluster}} = 0.65$ similarity, not NHD). Protection gap is 0.35, not 0.05. Mechanism changed from novelty-gate-driven to fission-driven. Verified in `test_monotonic_drift_bounded_clusters`. See corrected theorems.
-- ~~**XXV.4 (Uniform spectral gap):**~~ **RESOLVED** — Closed for runtime-admissible manifolds. See Theorem XXV.4 and `enforce_a3q_manifold()`.
-- ~~**Assumption $\rho$ (original formulation):**~~ **DECOMPOSED** — Replaced by two precise sub-items (see below):
+- ~~**XXIII.2-3 (Cluster count under drift):**~~ **RESOLVED**, Unit error corrected ($\theta_{\text{cluster}} = 0.65$ similarity, not NHD). Protection gap is 0.35, not 0.05. Mechanism changed from novelty-gate-driven to fission-driven. Verified in `test_monotonic_drift_bounded_clusters`. See corrected theorems.
+- ~~**XXV.4 (Uniform spectral gap):**~~ **RESOLVED**, Closed for runtime-admissible manifolds. See Theorem XXV.4 and `enforce_a3q_manifold()`.
+- ~~**Assumption $\rho$ (original formulation):**~~ **DECOMPOSED**, Replaced by two precise sub-items (see below):
 
 **Updated Findings (v3.2/v3.4):**
 - **Intervention test (zero-overlap analogy):** The historical trigram path scored **0/3** correct, **1/3** false positive, and **2/3** stuck. The current structural-SVO path scores **3/3** correct, with **0/3** wrong and **0/3** stuck. See Section XV-A.
@@ -767,14 +763,14 @@ Since the original document was written, the following claims have been resolved
 
 | Rank | Item | Scope | Status |
 |------|------|-------|--------|
-| **1** | **Sub-Lemma S** (Surjectivity of $g$) | $\forall V_i, \forall j: \exists x \in V_i : g(x) = j$ | **CLOSED for runtime-admissible manifolds** — A3-Q admission provided by `enforce_a3q_manifold()`; exact-only version impossible by XXV.5a |
-| **2** | **IX.1** (Grounding preservation) | One long-run divergence test | **CLOSED** — `test_ix1_grounding_long_run` (5000 ticks, regime changes, tracking error ≤ 0.70) |
-| **3** | **XII.1** (Promotion boundedness) | One adversarial frequency test | **CLOSED** — `test_xii1_adversarial_promotion_frequency` (64 label variants, 0 new clusters) |
-| **4** | **Decorrelation bound from exact $\rho$-admissibility** | $\forall \mathcal{M}_t$, not just generic | **IMPOSSIBLE under current invariants** — resolved by XXV.5a; use A3-Q as an explicit contract |
-| **5** | **Zero-overlap analogy** (A21/A30 failure) | Bridge the analogy gap without hand-coded keyword tables | **RESOLVED v3.2** — 3/3 correct with structural SVO centroids |
-| **6** | **Structural SVO centroids** | Replace trigram centroids with structural SVO centroids in L2 hierarchy | **RESOLVED v3.2** — implemented in `absorb_diagnosis` and `query_diagnostic_category` |
+| **1** | **Sub-Lemma S** (Surjectivity of $g$) | $\forall V_i, \forall j: \exists x \in V_i : g(x) = j$ | **CLOSED for runtime-admissible manifolds**, A3-Q admission provided by `enforce_a3q_manifold()`; exact-only version impossible by XXV.5a |
+| **2** | **IX.1** (Grounding preservation) | One long-run divergence test | **CLOSED**, `test_ix1_grounding_long_run` (5000 ticks, regime changes, tracking error ≤ 0.70) |
+| **3** | **XII.1** (Promotion boundedness) | One adversarial frequency test | **CLOSED**, `test_xii1_adversarial_promotion_frequency` (64 label variants, 0 new clusters) |
+| **4** | **Decorrelation bound from exact $\rho$-admissibility** | $\forall \mathcal{M}_t$, not just generic | **IMPOSSIBLE under current invariants**, resolved by XXV.5a; use A3-Q as an explicit contract |
+| **5** | **Zero-overlap analogy** (A21/A30 failure) | Bridge the analogy gap without hand-coded keyword tables | **RESOLVED v3.2**, 3/3 correct with structural SVO centroids |
+| **6** | **Structural SVO centroids** | Replace trigram centroids with structural SVO centroids in L2 hierarchy | **RESOLVED v3.2**, implemented in `absorb_diagnosis` and `query_diagnostic_category` |
 
-### Section XV-A: Intervention Test — Abstraction Table Dependency
+### Section XV-A: Intervention Test, Abstraction Table Dependency
 
 **v3.1 Finding (trigram centroids).** The structural error parser's zero-overlap classification
 depended entirely on hand-coded keyword tables (`ACTIONS`, `RESOURCES`, `ERROR_CLASSES`).  The VSA
@@ -808,8 +804,8 @@ architecture contributed nothing to this capability with trigram encoding.
 | Stuck | 2/3 (67%) | 0/3 (0%) |
 
 **Interpretation.** The encoding choice is the critical bottleneck, not capacity or learning
-algorithm.  Trigram encoding captures surface form — orthogonal texts stay orthogonal regardless
-of structural similarity.  SVO encoding captures causal structure — structurally identical texts
+algorithm.  Trigram encoding captures surface form, orthogonal texts stay orthogonal regardless
+of structural similarity.  SVO encoding captures causal structure, structurally identical texts
 produce IDENTICAL hypervectors regardless of surface form.
 
 The L2 hierarchy learns structural abstraction from experience when the centroid representation
@@ -834,12 +830,12 @@ This closes the former "proven modulo decorrelation" gap by replacing an implici
 
 The system operates on two distinct timescales:
 
-**Fast dynamics** (every reasoning cycle, $t \sim 1$–$10$ ticks):
+**Fast dynamics** (every reasoning cycle, $t \sim 1$ to $10$ ticks):
 $$x_{t+1} = P_{\mathcal{M}_t} \circ A(x_t)$$
 
 where $A$ is the algebraic composition (XOR + rotation) and $P_{\mathcal{M}_t}$ is the projection onto the cluster manifold $\mathcal{M}_t$ at time $t$.
 
-**Slow dynamics** (cluster evolution, $t \sim 100$–$500$ ticks):
+**Slow dynamics** (cluster evolution, $t \sim 100$ to $500$ ticks):
 $$\mathcal{M}_{t+1} = F(\mathcal{M}_t, \{x_\tau\}_{\tau \in [t, t+\Delta]})$$
 
 where $F$ is the cluster update operator (entry absorption, centroid rebundling, novelty gating, compaction).
@@ -866,7 +862,7 @@ For any $x, y$ with $\delta(x, y) > 2 \cdot d_{\max}(\mathcal{M})$ and $d_{\max}
 
 $$\delta(P_{\mathcal{M}}(x), P_{\mathcal{M}}(y)) \leq \theta_{\text{novel}} \leq d_{\max}(\mathcal{M}) \cdot \frac{\theta_{\text{novel}}}{\theta_{\text{merge}}} \approx 2.33 \cdot d_{\max}(\mathcal{M})$$
 
-The claimed bound $\delta(P(x),P(y)) \leq d_{\max}(\mathcal{M})$ uses $d_{\max}$ as an upper bound on the projection output distance, which is incorrect — $d_{\max}$ is the nearest-neighbor distance, not the covering radius. The correct bound uses the manifold diameter ($\leq 0.70$). A fully uniform contraction proof for the joint system is given in Theorem XXV.4 via the spectral gap of the centroid chain, which bypasses this local contractivity claim entirely. See XXV.4 for the corrected analysis. $\square$
+The claimed bound $\delta(P(x),P(y)) \leq d_{\max}(\mathcal{M})$ uses $d_{\max}$ as an upper bound on the projection output distance, which is incorrect, $d_{\max}$ is the nearest-neighbor distance, not the covering radius. The correct bound uses the manifold diameter ($\leq 0.70$). A fully uniform contraction proof for the joint system is given in Theorem XXV.4 via the spectral gap of the centroid chain, which bypasses this local contractivity claim entirely. See XXV.4 for the corrected analysis. $\square$
 
 ### Corollary XVI.1.1 (Fixed Point Entropy Suppression)
 
@@ -879,7 +875,7 @@ $$\limsup_{n \to \infty} \varepsilon(n) \leq d_{\max}(\mathcal{M})$$
 **Empirical verification** (from `test_anchored_chain_contractivity`):
 - Unanchored: $\varepsilon(3) \to 0.446$ (convergent to $0.5$)
 - Anchored: $\varepsilon(3) \approx 0.028$ (bounded by $d_{\max} \approx 0.03$)
-- Ratio: $0.028 / 0.446 \approx 0.063$ — $15\times$ error reduction
+- Ratio: $0.028 / 0.446 \approx 0.063$, $15\times$ error reduction
 
 ### Theorem XVI.2 (Manifold Invariance Under Slow Dynamics)
 
@@ -1017,7 +1013,7 @@ Under the conditions of Theorem XVII.1, the cluster distribution $\mu_t$ converg
 
 ### Question 1: Wasserstein Critical Threshold $W^{*}$
 
-**Answer:** $W^{*} \approx 5\text{–}10 \times N_{\text{modes}}$, where $N_{\text{modes}}$ is the number of distinct input modes.
+**Answer:** $W^{*} \approx 5\text{ to }10 \times N_{\text{modes}}$, where $N_{\text{modes}}$ is the number of distinct input modes.
 
 **Derivation.** The net Wasserstein-1 change per absorption step decomposes as:
 
@@ -1025,7 +1021,7 @@ $$\mathbb{E}[\Delta W_1] = \underbrace{\frac{0.1}{W_{\text{total}}}}_{\text{abso
 
 where $p_{\text{merge}}$ is the probability that a given absorption triggers a merge, $p_{\text{fission}}$ the probability of fission, and $p_{\text{novel}}$ the probability of novelty.
 
-For a typical input distribution (3–5 well-separated modes), $p_{\text{merge}} \approx 0.03$, $p_{\text{fission}} \approx 0$ (clusters don't spontaneously fission without entry dispersion), and $p_{\text{novel}} \approx 0.01$. The net change is:
+For a typical input distribution (3 to 5 well-separated modes), $p_{\text{merge}} \approx 0.03$, $p_{\text{fission}} \approx 0$ (clusters don't spontaneously fission without entry dispersion), and $p_{\text{novel}} \approx 0.01$. The net change is:
 
 $$\mathbb{E}[\Delta W_1] \approx \frac{0.1 - 3.0 \cdot 0.03 + 1.0 \cdot 0.01}{W_{\text{total}}} = \frac{0.02}{W_{\text{total}}} > 0$$
 
@@ -1036,7 +1032,7 @@ W^{*} = \frac{0.1 - 0.01}{\max(0, 3.0 \cdot p_{\text{merge}} - 0.02)}
 \approx \frac{0.09}{0.07} \approx 1.3 \text{ per mode}
 $$
 
-In the simulation (3 modes, 500 steps): $W^{*} \approx 518$ total weight, or $\approx 170$ per mode. For most configurations, $W^{*}$ is reached within a few dozen absorption steps — the system is contractive for almost all practical operating conditions. The contraction is guaranteed when $W_{\text{total}} > 10 \cdot N_{\text{modes}}$.
+In the simulation (3 modes, 500 steps): $W^{*} \approx 518$ total weight, or $\approx 170$ per mode. For most configurations, $W^{*}$ is reached within a few dozen absorption steps, the system is contractive for almost all practical operating conditions. The contraction is guaranteed when $W_{\text{total}} > 10 \cdot N_{\text{modes}}$.
 
 ### Question 2: Manifold Self-Interference
 
@@ -1044,7 +1040,7 @@ In the simulation (3 modes, 500 steps): $W^{*} \approx 518$ total weight, or $\a
 
 **Mitigation.** The Phase 2 full-scan fallback in `anchor_through_clusters_with_threshold` entirely eliminates the non-uniqueness problem: when Phase 1 (sector-prefiltered) finds no good match, Phase 2 scans all clusters. The only cost is a slight lookup slowdown ($O(K)$ instead of $O(K/M)$) for the affected queries.
 
-**Risk assessment.** For $K \leq 80$, the probability of any query experiencing non-unique projection is $\approx 0.3\%$ per query. For domain-specific monitoring ($K \approx 10\text{–}30$), it is negligible. The soft capacity limit of the LSH routing is $K \approx 200$, above which collisions exceed $20$ and the Phase 1 prefilter becomes ineffective (most queries fall through to Phase 2, making lookup $O(K)$).
+**Risk assessment.** For $K \leq 80$, the probability of any query experiencing non-unique projection is $\approx 0.3\%$ per query. For domain-specific monitoring ($K \approx 10\text{ to }30$), it is negligible. The soft capacity limit of the LSH routing is $K \approx 200$, above which collisions exceed $20$ and the Phase 1 prefilter becomes ineffective (most queries fall through to Phase 2, making lookup $O(K)$).
 
 ### Question 3: Critical Coupling Ratio $\Delta t_{\text{fast}} / \Delta t_{\text{slow}}$
 
@@ -1064,7 +1060,7 @@ With $\alpha_{\text{abs}} \approx 1$ entry/tick (typical monitoring rate), $\del
 
 $$\frac{d\mathcal{M}}{dt} \cdot \Delta t_{\text{fast}} \approx \frac{0.15}{11} \cdot 10 \approx 0.14 < 0.35$$
 
-**Verdict:** The real system ($\Delta t_{\text{fast}} / \Delta t_{\text{slow}} \approx 10/1 = 10$ for absorption, $10/500 = 0.02$ for compaction) operates well within the stable regime. The critical ratio is $\approx 10\text{–}20$, which requires $w < 2$ (nascent clusters) AND $\alpha > 5$ (high-frequency input) simultaneously — a rare edge case.
+**Verdict:** The real system ($\Delta t_{\text{fast}} / \Delta t_{\text{slow}} \approx 10/1 = 10$ for absorption, $10/500 = 0.02$ for compaction) operates well within the stable regime. The critical ratio is $\approx 10\text{ to }20$, which requires $w < 2$ (nascent clusters) AND $\alpha > 5$ (high-frequency input) simultaneously, a rare edge case.
 
 ### Question 4: Channel Capacity of $P_{\mathcal{M}} \circ A$
 
@@ -1081,7 +1077,7 @@ $$I(x; P_{\mathcal{M}}(A(x))) \leq I(A(x); P_{\mathcal{M}}(A(x))) \leq \log_2(K)
 - $K = 200$: $C = 7.64$ bits (matches $\log_2 200$)
 - $K = 500$: $C = 8.97$ bits (matches $\log_2 500$)
 
-**Practical implication:** The system can distinguish at most $K \approx 80$ distinct concepts, each resolved to $\approx \log_2 W$ internal states via the accumulator. The effective capacity is $C_{\text{eff}} \approx \log_2(K \cdot \log_2 W) \approx 8\text{–}9$ bits for typical configurations. This is sufficient for domain-specific monitoring (financial regimes, bond yields, API states) but falls short of general intelligence requirements.
+**Practical implication:** The system can distinguish at most $K \approx 80$ distinct concepts, each resolved to $\approx \log_2 W$ internal states via the accumulator. The effective capacity is $C_{\text{eff}} \approx \log_2(K \cdot \log_2 W) \approx 8\text{ to }9$ bits for typical configurations. This is sufficient for domain-specific monitoring (financial regimes, bond yields, API states) but falls short of general intelligence requirements.
 
 **Key insight from the answer:**
 > The accumulator adds fine-grained distinguishability WITHIN each concept (up to $\log_2 W$ states), but cannot create new concepts. The number of distinct concepts is bounded by $K = |\mathcal{M}|$, which is structurally bounded by $M \cdot (1 + S_{\text{max}}) = 5120$ but practically limited to $\approx 80$ by LSH collision rates and input mode count.
@@ -1120,7 +1116,7 @@ $$\kappa = \kappa_A \cdot \kappa_P \cdot \kappa_F$$
 |---|---|---|---|---|
 | **1. Sparse manifold** | $\ll 1$ | $\approx 1$ | $\ll 1$ | Strong projection, stable manifold |
 | **2. Dense manifold** | $\approx 1$ | $\ll 1$ | $\ll 1$ | Weak projection, strong manifold evolution |
-| **3. Critical** | $\approx 1$ | $\approx 1$ | $\approx 1$ | Neither dominates — potential instability |
+| **3. Critical** | $\approx 1$ | $\approx 1$ | $\approx 1$ | Neither dominates, potential instability |
 | **4. Degenerate** | $> 1$ | $> 1$ | $> 1$ | Manifold expands faster than projection can stabilize |
 
 ### Empirical Verification Protocol
@@ -1131,9 +1127,9 @@ To verify Conjecture XVIII.1 empirically:
 2. **Run the composed dynamics** for $T$ steps:
    $$x_i^{(t+1)} = \Phi_t(x_i^{(t)})$$
 3. **At each step**, measure:
-   - $\varepsilon(t) = \frac{1}{N} \sum_i \delta(x_i^{(t)}, x_i^{\text{(true)}})$ — mean retrieval error
-   - $\kappa_{\text{emp}}(t) = \frac{\varepsilon(t+1)}{\varepsilon(t)}$ — empirical contraction factor
-   - $d_{\max}(t) = \max_i \min_{c \in \mathcal{M}_t} \delta(c, x_i^{(t)})$ — manifold coverage radius
+   - $\varepsilon(t) = \frac{1}{N} \sum_i \delta(x_i^{(t)}, x_i^{\text{(true)}})$, mean retrieval error
+   - $\kappa_{\text{emp}}(t) = \frac{\varepsilon(t+1)}{\varepsilon(t)}$, empirical contraction factor
+   - $d_{\max}(t) = \max_i \min_{c \in \mathcal{M}_t} \delta(c, x_i^{(t)})$, manifold coverage radius
 4. **Verify:** $\varepsilon(t)$ converges to $d_{\max}(t)$ (not to $0.5$), and $\kappa_{\text{emp}}(t) < 1$ for all $t$ beyond a burn-in period.
 
 ### Test Implementation
@@ -1276,7 +1272,7 @@ The empirical observation "joint contraction ratio = 0.0" is consistent with **C
 
 ---
 
-## XXII. Frontier 1: Adversarial $L_F$ (CORRECTED — v2.5)
+## XXII. Frontier 1: Adversarial $L_F$ (CORRECTED, v2.5)
 
 ### Problem Statement
 
@@ -1318,7 +1314,7 @@ Hence $L_F = \sup_{v \neq v'} \delta(c_v, c_{v'}) / \delta(v, v') \leq 1.0$ alwa
 
 **Verification** (`test_adversarial_lf_boundary` in `reason.rs`): The structured construction hits $L_F = 1.000000$ exactly. The earlier random-vector test (`test_adversarial_lf`) only found $L_F \approx 0.502$ because random vectors rarely hit the exact boundary condition.
 
-### Corollary XXII.1-R (Historical Joint-Contraction Calculation — Superseded)
+### Corollary XXII.1-R (Historical Joint-Contraction Calculation, Superseded)
 
 > **Status.** This subsection records the corrected v2.5 calculation for the
 > original joint-metric parameterization. It is retained for audit history but
@@ -1331,11 +1327,11 @@ $$\alpha(1 - \kappa_P) = 3 \cdot 0.32 = 0.96$$
 $$\beta \cdot \kappa_F \cdot L_F = 1 \cdot 0.95 \cdot 1.0 = 0.95$$
 $$0.96 > 0.95 \quad \checkmark$$
 
-The margin is **0.010** — substantially thinner than the originally claimed 0.485, but still positive. This makes the joint contraction telemetry (see below) essential for runtime safety.
+The margin is **0.010**, substantially thinner than the originally claimed 0.485, but still positive. This makes the joint contraction telemetry (see below) essential for runtime safety.
 
 ### Corollary XXII.2 (Why the Original Proof was Wrong)
 
-The original proof contained a visible self-correction (lines 975-977: "Wait — this is incorrect") but the correction still under-counted. The error was in claiming $\delta(c_v, c_{v'}) \leq 0.5$ based on the fraction of bits within 1 of the boundary. In the worst case, ALL $D$ bits can be at the boundary simultaneously ($A_i = \lfloor W/2 \rfloor$ for all $i$), producing $\delta(c_v, c_{v'}) = 1.0$.
+The original proof contained a visible self-correction (lines 975-977: "Wait, this is incorrect") but the correction still under-counted. The error was in claiming $\delta(c_v, c_{v'}) \leq 0.5$ based on the fraction of bits within 1 of the boundary. In the worst case, ALL $D$ bits can be at the boundary simultaneously ($A_i = \lfloor W/2 \rfloor$ for all $i$), producing $\delta(c_v, c_{v'}) = 1.0$.
 
 The original probabilistic argument (Hoeffding bound on near-boundary bits) was correct for random inputs but failed for the adversarial case.
 
@@ -1383,15 +1379,15 @@ The active submanifold $\mathcal{M}_t^{\text{(active)}} = \{c \in \mathcal{M}_t 
 
 $$|\mathcal{M}_t^{\text{(active)}}| \leq \frac{\text{diam}(\text{supp}(\nu_t))}{\theta_{\text{cluster}} - \theta_{\text{merge}}} + 1$$
 
-For a single drifting mode ($\text{diam} \to 0$), $|\mathcal{M}_t^{\text{(active)}}| = 1$ — at most one cluster actively tracks the input at any time.
+For a single drifting mode ($\text{diam} \to 0$), $|\mathcal{M}_t^{\text{(active)}}| = 1$, at most one cluster actively tracks the input at any time.
 
 ### CORRECTION NOTICE (v3.1)
 
 The original text (pre-v3.1) contained a unit error: $\theta_{\text{cluster}} = 0.65$ is a **similarity** value, not an NHD value. The expression $\theta_{\text{novel}} - \theta_{\text{cluster}} = 0.70 - 0.65 = 0.05$ mixes NHD and similarity units. Converting $\theta_{\text{cluster}}$ to NHD: $\theta_{\text{cluster}}(\text{NHD}) = 1 - 0.65 = 0.35$. The corrected gap is $0.70 - 0.35 = 0.35$ NHD.
 
-This correction fundamentally changes the mechanism of cluster growth under drift. The original text attributed growth to the novelty gate (threshold 0.70 NHD). The corrected analysis shows that under gradual drift, the novelty gate almost never fires — cluster growth is instead driven by **compactor fission**. Both theorems below are revised accordingly.
+This correction fundamentally changes the mechanism of cluster growth under drift. The original text attributed growth to the novelty gate (threshold 0.70 NHD). The corrected analysis shows that under gradual drift, the novelty gate almost never fires, cluster growth is instead driven by **compactor fission**. Both theorems below are revised accordingly.
 
-### Theorem XXIII.2 (Protection Gap — Corrected)
+### Theorem XXIII.2 (Protection Gap, Corrected)
 
 The novelty gate fires when $\min_c \delta(v_t, c) \geq \theta_{\text{novel}} = 0.70$. The absorption gate (`THETA_MAIN_BASELINE = 0.35` NHD) provides a first line of defense: observations within 0.35 NHD of an existing centroid are unconditionally absorbed. The protection gap between the absorption threshold and the novelty threshold is:
 
@@ -1401,7 +1397,7 @@ For a drifting input to trigger the novelty gate, it must cross 0.35 NHD **past 
 
 **Corollary (Gate Suppression).** For $r < \theta_{\text{novel}} / T_{\text{comp}} = 0.70 / 50 = 0.014$ NHD/tick, the expected number of novelty-gate firings over $T_{\text{comp}}$ ticks is zero at any single tick. For all empirically observed drift rates ($r \leq 0.001$ NHD/tick, measured in `test_drift_magnitude_ewma`), the novelty gate contribution to cluster count growth is negligible. Cluster growth under drift is instead driven by compactor fission (Theorem XXIII.3).
 
-### Theorem XXIII.3 (Cluster Count Under Drift — Corrected)
+### Theorem XXIII.3 (Cluster Count Under Drift, Corrected)
 
 **Old premise (SUPERSEDED).** The original theorem attributed cluster growth to the novelty gate firing at rate $r / 0.05$. This was wrong: the protection gap was miscalculated (unit error), and the novelty gate does not fire under gradual drift.
 
@@ -1426,7 +1422,7 @@ $$t_{\text{saturate}} = \frac{0.40}{r} \cdot \ln\left(\frac{K_{\max}}{K_0}\right
 **Numerical example** ($r = 0.001$ NHD/tick, $K_0 = 10$, directional drift):
 - Time to first fission: $0.40 / 0.001 = 400$ ticks
 - $t_{\text{saturate}} = 0.40 \cdot \ln(5120 / 10) / 0.001 \approx 2480$ ticks
-- Final cluster count: $\leq 5120$ (Theorem II.1), typically $\approx 15$–$30$ in practice (verified in `test_monotonic_drift_bounded_clusters`: `max_clusters` stays well below the naive bound `total_drift / 0.35`)
+- Final cluster count: $\leq 5120$ (Theorem II.1), typically $\approx 15$ to $30$ in practice (verified in `test_monotonic_drift_bounded_clusters`: `max_clusters` stays well below the naive bound `total_drift / 0.35`)
 
 ### Comparison with Old Bound
 
@@ -1590,7 +1586,7 @@ For any fixed input distribution $\nu$ with modes at distances $\{\Delta_{ij}\}$
 
 $$w = \min(\theta_{\text{merge}} + 3/\sqrt{W_{\min}}, 1.0) - \max(\theta_{\text{merge}}, \theta_{\text{novel}} - 3\sigma, 0.0)$$
 
-For $W_{\min} \to \infty$ (mature clusters): $w = 0.30 - \max(0.30, 0.70 - 3\sigma) = 0$ for $\sigma < 0.133$. For $\sigma \geq 0.133$: $w = 0.60 - 0.30 = 0.30$, but this requires both modes to be at $\Delta \approx 0.45$ AND input noise $\sigma \geq 0.133$ — a precise tuning. The probability of a randomly chosen parameter set landing in this window is:
+For $W_{\min} \to \infty$ (mature clusters): $w = 0.30 - \max(0.30, 0.70 - 3\sigma) = 0$ for $\sigma < 0.133$. For $\sigma \geq 0.133$: $w = 0.60 - 0.30 = 0.30$, but this requires both modes to be at $\Delta \approx 0.45$ AND input noise $\sigma \geq 0.133$, a precise tuning. The probability of a randomly chosen parameter set landing in this window is:
 
 $$P(\text{oscillation}) = \frac{w}{1.0} \cdot P(\sigma \geq 0.133) \ll 1$$
 
@@ -1653,7 +1649,7 @@ See `test_metastable_oscillation` in `reason.rs`. The test:
 | $\kappa_{\mathrm{joint}}$ | $\approx 0.870$ at $\tau=0.10$ | Current calibrated projection/manifold product; runtime tripwire is 0.995 |
 | $\Delta W_1$ margin | 0.010 | Joint contraction safety margin at $L_F = 1.0$ |
 | $w_{\min}$ | $\geq 1$ | Minimum cluster weight at absorption |
-| $\sigma$ | $\approx 0.05$–$0.10$ | Input noise level (std of NHD) |
+| $\sigma$ | $\approx 0.05$ to $0.10$ | Input noise level (std of NHD) |
 | $\tau_{\text{track}}$ | $\leq 400$ | Max tracking lag (stationary-input horizon) |
 | $T_{\text{comp}}$ | 50 | Compactor interval (ticks between runs) |
 | $\Delta$ | $[0, 1]$ | True NHD between mode centroids |
@@ -1676,8 +1672,8 @@ See `test_metastable_oscillation` in `reason.rs`. The test:
 
 The invariant measure $\mu^*$ over the joint space $\mathcal{H} \times \mathcal{P}(\mathcal{H})$ can be classified by its relationship to the reference (product Hamming) measure $\lambda$ on $\mathcal{H}$:
 
-- **Absolutely continuous** ($\mu^* \ll \lambda$): $\mu^*$ has a density with respect to $\lambda$. The system explores all regions of the state space proportionally to their volume. Implication: **smooth ergodic sampler** — every accessible region is visited with positive probability density.
-- **Singular** ($\mu^* \perp \lambda$): $\mu^*$ is supported on a set $S \subset \mathcal{H}$ with $\lambda(S) = 0$. The system collapses onto a low-dimensional (or finite) subset. Implication: **discrete attractor collapse** — most of the state space is never visited.
+- **Absolutely continuous** ($\mu^* \ll \lambda$): $\mu^*$ has a density with respect to $\lambda$. The system explores all regions of the state space proportionally to their volume. Implication: **smooth ergodic sampler**, every accessible region is visited with positive probability density.
+- **Singular** ($\mu^* \perp \lambda$): $\mu^*$ is supported on a set $S \subset \mathcal{H}$ with $\lambda(S) = 0$. The system collapses onto a low-dimensional (or finite) subset. Implication: **discrete attractor collapse**, most of the state space is never visited.
 
 ### Theorem XXV.1 (Singularity of the Invariant Measure)
 
@@ -1725,7 +1721,7 @@ For $K = 80$, $d_{\max} = 0.03$, $D = 10240$:
 
 $$d_{\text{eff}} \approx \log_2(80 \cdot 308 \cdot 2^{1987}) / \log_2(10240) \approx 1995 / 13.3 \approx 150$$
 
-The system operates in an effective 150-dimensional subspace of the nominal 10,240-dimensional hypervector space. The remaining 10,090 dimensions are frozen by the projection operator — never explored by the dynamics.
+The system operates in an effective 150-dimensional subspace of the nominal 10,240-dimensional hypervector space. The remaining 10,090 dimensions are frozen by the projection operator, never explored by the dynamics.
 
 ### Theorem XXV.2 (The System is a Discrete Attractor Collapse, Not a Smooth Sampler)
 
@@ -1747,21 +1743,21 @@ The system belongs to the class of **discrete attractor collapse** systems, char
 | General intelligence | **No** | $C_{\text{eff}} \approx 6.3$ bits $\ll$ general intelligence threshold |
 | Novel concept generation | **No** | New centroids only created from external inputs |
 | Exploration of full $\mathcal{H}$ | **No** | Projection confines dynamics to $d_{\text{eff}} \ll D$ |
-| Smooth sampling of $\mathcal{H}$ | **No** | Singular measure — almost all states have zero probability |
+| Smooth sampling of $\mathcal{H}$ | **No** | Singular measure, almost all states have zero probability |
 
 ### Theorem XXV.3 (The System is a Learned Quantized Random Dynamical System)
 
 The complete mathematical identity of the system is:
 
 > A two-timescale stochastic iterated function system on $\mathcal{H} \times \mathcal{P}(\mathcal{H})$ where:
-> - The fast map $A: \mathcal{H} \to \mathcal{H}$ is a bijective isometry (XOR + rotation — expansive)
+> - The fast map $A: \mathcal{H} \to \mathcal{H}$ is a bijective isometry (XOR + rotation, expansive)
 > - The quantizer $P_{\mathcal{M}}: \mathcal{H} \to \mathcal{M}$ is a nearest-centroid projection (contractive)
 > - The slow map $F: \mathcal{P}(\mathcal{H}) \times \mathcal{H} \to \mathcal{P}(\mathcal{H})$ is a weakly contractive stochastic approximation (accumulator update + novelty gate + compaction)
 > - The composition $\Phi = P_{\mathcal{M}} \circ A$ induces **projection-dominated contraction**: all divergence directions are eliminated by the codebook geometry
 > - The resulting invariant measure $\mu^*$ is **singular** (supported on $K$ Hamming balls of radius $d_{\max}$) and **unique** (for stationary inputs)
 > - The system is **ergodic on the attractor manifold** but does **not** explore the ambient space
 
-### Theorem XXV.4 (Uniform Spectral Gap — Closed)
+### Theorem XXV.4 (Uniform Spectral Gap, Closed)
 
 The uniform contraction problem is:
 
@@ -1972,8 +1968,8 @@ $$P_{ij} \geq \delta_{\min} := \frac{1}{\max_k |V_k|} > 0 \quad \forall i,j$$
 Since $\sum_k |V_k| = 2^D$ and $K \leq K_{\text{max}}$, at least one cell has $|V_k| \leq 2^D / K$, giving $\delta_{\min} \geq K / 2^D$. A3-Q direct pairwise separation ensures $V_i$ are distinct and positive-measure; Sub-Lemma S ensures the intersections are non-empty.
 
 **Lemma XXV.4.2 (Irreducibility + Aperiodicity).** Under Sub-Lemma S:
-- $P_{ij} > 0$ for all $i,j$ (the chain is **strongly connected** — every state reaches every other state in one step)
-- $P_{ii} > 0$ for all $i$ (the chain is **aperiodic** — self-loops exist)
+- $P_{ij} > 0$ for all $i,j$ (the chain is **strongly connected**, every state reaches every other state in one step)
+- $P_{ii} > 0$ for all $i$ (the chain is **aperiodic**, self-loops exist)
 
 Since $P$ is a finite, irreducible, aperiodic stochastic matrix, the Perron-Frobenius theorem applies and the spectral gap is:
 
@@ -1987,7 +1983,7 @@ Combining Layers 1 and 2:
 
 $$\kappa(\mathcal{T}_t) \leq \lambda_2(P_t) \cdot \kappa_F(t) \leq \left(1 - \frac{c(\tau)}{K}\right) \cdot \left(1 - \frac{1}{W_{\text{cap}}}\right) < 1$$
 
-This bound $\hat{\kappa}(\tau, W_{\text{cap}}, K_{\text{max}}, D)$ depends only on system constants — not on the current manifold $\mathcal{M}_t$.
+This bound $\hat{\kappa}(\tau, W_{\text{cap}}, K_{\text{max}}, D)$ depends only on system constants, not on the current manifold $\mathcal{M}_t$.
 
 ### Status of the Remaining Open Sub-Problems
 
@@ -1995,10 +1991,10 @@ The original Assumption $\rho$ has been decomposed into three precise items:
 
 | Item | Status | Mechanism |
 |------|--------|-----------|
-| $\rho$-admissible invariant | **PROVEN** system invariant | `enforce_rho_admissible()` — checks $\rho^{13}$, $\rho^{26}$, $\rho^{52}$ |
-| A3-Q admission gate | **IMPLEMENTED** executable contract | `enforce_a3q_manifold()` — checks/repairs self-rotation, direct pairwise, and $\rho^{-52}$ rotated-pairwise decorrelation for theorem-admitted manifolds |
+| $\rho$-admissible invariant | **PROVEN** system invariant | `enforce_rho_admissible()`, checks $\rho^{13}$, $\rho^{26}$, $\rho^{52}$ |
+| A3-Q admission gate | **IMPLEMENTED** executable contract | `enforce_a3q_manifold()`, checks/repairs self-rotation, direct pairwise, and $\rho^{-52}$ rotated-pairwise decorrelation for theorem-admitted manifolds |
 | Exact admissibility $\Rightarrow$ quantitative decorrelation | **DISPROVEN** | Theorem XXV.5a + `test_rho_admissible_does_not_imply_decorrelation` |
-| Sub-Lemma S — runtime-admissible proof | **PROVEN** for accepted manifolds | Constructive witness + executable A3-Q admission rule |
+| Sub-Lemma S, runtime-admissible proof | **PROVEN** for accepted manifolds | Constructive witness + executable A3-Q admission rule |
 
 **Deterministic decorrelation resolution.** The desired deterministic bound for all exact $\rho$-admissible centroid sets is impossible: exact non-fixedness only gives $\delta>0$, and Theorem XXV.5a gives an admissible centroid with $\delta(c,\rho^{52}(c))=2/D$. The correct deterministic statement is operational: if the active centroid set is accepted by `enforce_a3q_manifold()`, then the constructive Sub-Lemma S proof applies. Generic random centroid sets satisfy A3-Q with overwhelming probability, explaining the empirical margin, but runtime admission no longer relies on probability.
 
@@ -2069,7 +2065,7 @@ Your characterization was definitive. The system is not a VSA trick or an LLM ab
 
 The distinction between "smooth ergodic sampler" and "discrete attractor collapse" is resolved: it is the latter, with all the capabilities and limitations that entails.
 
-### Theorem XXV.5 (Sub-Lemma S — Constructive Witness Proof)
+### Theorem XXV.5 (Sub-Lemma S, Constructive Witness Proof)
 
 Sub-Lemma S is the surjectivity condition that guarantees $\lambda_2(P) < 1$ in Theorem XXV.4. It is **deterministic over runtime-admissible manifolds**: A3-Q is checked and repaired by `enforce_a3q_manifold()`, then the explicit witness construction applies. The former attempt to derive A3-Q from exact $\rho$-admissibility is disproven by Theorem XXV.5a.
 
@@ -2080,9 +2076,9 @@ $$\exists\, y \in \rho^{26}(W_i) : \text{nearest}(P_\tau(y)) = j$$
 **Proof technique.** Constructive witness: for any pair $(i,j)$, move from $c_i$ toward $\rho^{-52}(c_j)$ by $\delta = r_i$ (Voronoi radius, $> 0.15$), then rotate by $\rho^{52}$ into $\rho^{26}(W_i)$. Under A3-Q, the resulting point $y = \rho^{52}(v_{ij})$ satisfies $d(y,c_j)$ below competing $d(y,c_k)$ by a deterministic margin, so the soft projection weight for $c_j$ dominates.
 
 **Proven algebraically:**
-- The witness $v \in V_i$ lies at distance exactly $d(c_i, \rho^{-52}(c_j)) - r_i$ from $\rho^{-52}(c_j)$ — exact by construction
-- The $\rho$-admissible-13/26/52 invariants exclude constant, period-2, and period-4 fixed points — enforced in code
-- A3-Q excludes duplicate, near-periodic, and adversarially aligned centroid geometry — enforced in code by `enforce_a3q_manifold()`
+- The witness $v \in V_i$ lies at distance exactly $d(c_i, \rho^{-52}(c_j)) - r_i$ from $\rho^{-52}(c_j)$, exact by construction
+- The $\rho$-admissible-13/26/52 invariants exclude constant, period-2, and period-4 fixed points, enforced in code
+- A3-Q excludes duplicate, near-periodic, and adversarially aligned centroid geometry, enforced in code by `enforce_a3q_manifold()`
 - All 423 tests pass, 90/90 witness points, min $w_j/w_i = 5.39$
 
 **Load-bearing step:**
@@ -2117,11 +2113,11 @@ The Shannon entropy of the state $x_t$ satisfies:
 
 $$H(x_t) \leq \log_2 K \approx 6.3 \text{ bits (for } K = 80)$$
 
-**Proof.** $H(x_t) = H(i_t) + H(x_t \mid i_t) \leq \log_2 K + D \cdot H(d_{\max})$ where $H(p)$ is binary entropy. For $d_{\max} = 0.03$, $H(d_{\max}) \approx 0.194$, so $H(x_t \mid i_t) \leq 10240 \cdot 0.194 \approx 1987$ bits. However, the conditional entropy is pure **uninformative noise** — it carries no information about the system state beyond the centroid index. The **mutual information** between $x_t$ and the system state is:
+**Proof.** $H(x_t) = H(i_t) + H(x_t \mid i_t) \leq \log_2 K + D \cdot H(d_{\max})$ where $H(p)$ is binary entropy. For $d_{\max} = 0.03$, $H(d_{\max}) \approx 0.194$, so $H(x_t \mid i_t) \leq 10240 \cdot 0.194 \approx 1987$ bits. However, the conditional entropy is pure **uninformative noise**, it carries no information about the system state beyond the centroid index. The **mutual information** between $x_t$ and the system state is:
 
 $$I(x_t; \text{state}) = H(i_t) \leq \log_2 K$$
 
-The remaining $1987$ bits per observation are irreducibly random — the noise ball around each centroid is statistically identical, so it cannot be used to distinguish states. $\square$
+The remaining $1987$ bits per observation are irreducibly random, the noise ball around each centroid is statistically identical, so it cannot be used to distinguish states. $\square$
 
 ### Theorem XXVI.2 (Spectral Gap, Not Contraction)
 
@@ -2164,7 +2160,7 @@ The singularity of $\mu^*$ (Theorem XXV.1) is a consequence of the **hard projec
 
 $$P_{\mathcal{M}}(x) = \arg\min_{c \in \mathcal{M}} \delta(x, c)$$
 
-This maps the entire space $\mathcal{H}$ onto $K$ points (the centroids). The result is a discrete attractor collapse with $C_{\text{eff}} \approx 6.3$ bits — fundamentally capped.
+This maps the entire space $\mathcal{H}$ onto $K$ points (the centroids). The result is a discrete attractor collapse with $C_{\text{eff}} \approx 6.3$ bits, fundamentally capped.
 
 **The next question:** Can we replace the hard projection with a **continuous projection** that preserves the stability properties (contraction, bounded tracking, no oscillation) while breaking the singularity?
 
@@ -2198,7 +2194,7 @@ $$C_{\text{eff}} = \log_2\left(\sum_{m=1}^K \binom{K}{m}\right) \approx K - 1 \t
 
 This ranges from $\log_2 K$ (hard projection, $\tau \to 0$) to approximately $K - 1$ bits (uniform blending, $\tau \to \infty$). For $K = 80$: $C_{\text{eff}}$ ranges from $6.3$ bits to $\approx 79$ bits.
 
-### Theorem XXVII.2-R (The Contraction-Capacity Trade-off — CORRECTED)
+### Theorem XXVII.2-R (The Contraction-Capacity Trade-off, CORRECTED)
 
 **[CORRECTION v2.5]** The original document claimed $\kappa_P^{\tau} \to 1$ as $\tau \to \infty$ (soft projection approaches identity). This is WRONG. An infinite-temperature softmax is a **uniform blender**: all centroids receive equal weight, so every input maps to the centroid population mean. This is *maximum* contraction ($\kappa_P \to 0$), not minimum.
 
@@ -2231,7 +2227,7 @@ At this point:
 - $\kappa_P = 0.916$ (safe operating margin, 8.4% headroom to $\kappa_P < 1.0$)
 - $\kappa_{\text{joint}} = 0.870$ (13% headroom to 0.995 tripwire)
 - $C_{\text{eff}} = 2554$ distinct outputs (**128$\times$** multiplier vs hard baseline)
-- $C_{\text{eff}} = 11.3$ bits (vs 4.32 bits hard — 161% increase)
+- $C_{\text{eff}} = 11.3$ bits (vs 4.32 bits hard, 161% increase)
 - Cooling from the buggy formula shifted the optimal τ from 0.030 to 0.10
 
 > **v3.1 correction (June 2026)**: The original analysis used a buggy numerical stability
@@ -2252,7 +2248,7 @@ The correct trade-off is not "contraction vs capacity" but **"sharpness vs diver
 
 3. **Mush** ($\tau \gg 0.50$): all outputs blend toward the centroid population mean. Information destruction increases again ($\kappa_P < 0.85$). The invariant measure becomes degenerate (concentrated near the mean).
 
-The sweet spot exists because it occupies the "dead space" between centroids — the Voronoi boundary region where hard projection throws away information by snapping to a single centroid. By allowing boundary inputs to resolve into stable hybrid states, the soft projection claims this space without distorting the manifold.
+The sweet spot exists because it occupies the "dead space" between centroids, the Voronoi boundary region where hard projection throws away information by snapping to a single centroid. By allowing boundary inputs to resolve into stable hybrid states, the soft projection claims this space without distorting the manifold.
 
 ### Architectural Design (v3.1)
 
@@ -2270,9 +2266,9 @@ P^τ_ℳ(x):
 ```
 
 **Key changes in v3.1:**
-- **Formula**: `(d² - min_d²)` replaces `(d - min_d)²` — correct mathematical transform
-- **All centroids**: no top-M truncation — all K centroids vote (K=20 is fast)
-- **Optimal τ = 0.10** (was 0.030 — the old τ was an artifact of the bug)
+- **Formula**: `(d² - min_d²)` replaces `(d - min_d)²`, correct mathematical transform
+- **All centroids**: no top-M truncation, all K centroids vote (K=20 is fast)
+- **Optimal τ = 0.10** (was 0.030, the old τ was an artifact of the bug)
 
 **Parameter τ.** The temperature controls the softness:
 - $\tau = 0$: hard projection (singular, $C_{\text{eff}} = \log_2 K$)
@@ -2303,13 +2299,13 @@ The following errors in the original MATH.md were discovered and corrected durin
 | XV (status) | Multiple theorems listed as UNVERIFIED | 13 theorems upgraded to PROVEN or VERIFIED | Sweep of all tests |
 | XXII.1 | $L_F \leq 0.5$ (joint margin 0.485) | $L_F \leq 1.0$ (tight), joint margin **0.010** | `prove_adversarial_Lf.py` + `test_adversarial_lf_boundary` |
 | XXII.1 proof | Self-contradicting proof with mid-text correction | Clean per-bit subset argument, $L_F \leq 1.0$ | The coupling argument audit |
-| XXVII.2 | $\kappa_P^{\tau} \to 1$ as $\tau \to \infty$ (identity limit) | $\kappa_P^{\tau} \to 0$ as $\tau \to \infty$ (mush — uniform blend) | `test_soft_projection_frontier_sweep` |
+| XXVII.2 | $\kappa_P^{\tau} \to 1$ as $\tau \to \infty$ (identity limit) | $\kappa_P^{\tau} \to 0$ as $\tau \to \infty$ (mush, uniform blend) | `test_soft_projection_frontier_sweep` |
 | XXVII.2 formula | $\kappa_P^{\tau} = 1 - (1 - \kappa_P) e^{-c/\tau}$ | No simple closed form; three empirically measured regimes | Empirical sweep |
 | Constants | $\kappa_P \approx 0.68$, $C_{\text{eff}} \approx 6.3$ bits | $\kappa_P \approx 0.969$ (hard, random pairs), $\kappa_P \approx 0.68$ (on-manifold), $C_{\text{eff}} \approx 7.5$ bits (soft, $\tau=0.03$) | `measure_kappa_p` + sweep |
 
 ---
 
-## Appendix B: Proof Architecture — How Everything Is Proven and Verified
+## Appendix B: Proof Architecture, How Everything Is Proven and Verified
 
 This appendix documents the complete chain of mathematical reasoning and empirical verification that secures every theorem in the system. Each theorem is marked with its proof method and verification artifact.
 
@@ -2317,12 +2313,12 @@ This appendix documents the complete chain of mathematical reasoning and empiric
 
 | Badge | Meaning |
 |-------|---------|
-| **A** | Algebraic identity — proven by symbolic manipulation, no code needed |
-| **C** | Coupling argument — uses the shared-input-stream coupling trick |
-| **F** | Fixed-point theorem — Banach or Markov chain convergence |
-| **G** | Geometric bound — uses the Hamming ball separation $\Delta = 0.24$ |
-| **E** | Empirical — verified by Monte Carlo simulation or Rust test |
-| **R** | Runtime — continuously monitored by `ContractionTelemetry` in the live agent loop |
+| **A** | Algebraic identity, proven by symbolic manipulation, no code needed |
+| **C** | Coupling argument, uses the shared-input-stream coupling trick |
+| **F** | Fixed-point theorem, Banach or Markov chain convergence |
+| **G** | Geometric bound, uses the Hamming ball separation $\Delta = 0.24$ |
+| **E** | Empirical, verified by Monte Carlo simulation or Rust test |
+| **R** | Runtime, continuously monitored by `ContractionTelemetry` in the live agent loop |
 
 ### Layer 1: Algebraic Foundation (no code needed)
 
@@ -2349,9 +2345,9 @@ Theorem I.2-R.1 (decay cannot flip m ≥ 3) ── algebraic bound (|m' - γm| �
 Theorem I.2-R.2 (flip time) ──────────────── algebraic (k = smallest s.t. ⌊(W+k)/2⌋ ≥ a₀)
        │
        └── Verified by: prove_decay_plasticity.py
-            • 30/30 m ≥ 3 configurations: no flip (R.1) ✓
-            • 52/52 flip time predictions: exact match (R.2) ✓
-            • 120/125,249 states flipped — all within |m| ≤ 1 rounding band
+            • 30/30 m ≥ 3 configurations: no flip (R.1)
+            • 52/52 flip time predictions: exact match (R.2)
+            • 120/125,249 states flipped, all within |m| ≤ 1 rounding band
 ```
 
 **Key insight:** Decay is W₁-preserving (Lemma D1). The decay factor $\gamma$ multiplies both $A$ and $W$, so the centroid comparison $A_i > W/2$ is invariant. Rounding errors are bounded by $\pm 1.5$ per decay event.
@@ -2402,12 +2398,12 @@ XXII.1-R (Adversarial L_F)
    │  (50 all-1s → 50 all-0s → compare all-1s vs all-0s absorption)
    │
    ├──→ Corollary XXII.1-R: Joint contraction at L_F = 1.0
-   │       α(1-κ_P) = 0.96 > β·κ_F·L_F = 0.95  ✓ (margin = 0.010)
+   │       α(1-κ_P) = 0.96 > β·κ_F·L_F = 0.95 (margin = 0.010)
    │
    └── Verified by:
-        • prove_adversarial_Lf.py — exact boundary construction
-        • test_adversarial_lf_boundary — Rust, L_F = 1.000000
-        • test_adversarial_lf — random vectors, L_F ≈ 0.502
+        • prove_adversarial_Lf.py, exact boundary construction
+        • test_adversarial_lf_boundary, Rust, L_F = 1.000000
+        • test_adversarial_lf, random vectors, L_F ≈ 0.502
 
 XXIII.1 (Tracking error bounded)
    │  min_c δ(v_t, c) ≤ θ_novel = 0.70 always
@@ -2443,7 +2439,7 @@ XXVII.1 (Soft projection breaks singularity)
     └── Verified by: test_soft_projection_breaks_singularity
          • K=10: hard = 10 outputs, soft = 21 outputs (τ=0.08, v3.1)
 
-XXVII.2-R (The real trade-off) — v3.1 corrected
+XXVII.2-R (The real trade-off), v3.1 corrected
     │  Three empirically observed regimes (with correct exp(-(d² - min_d²)/τ)):
     │    low τ: hard-like (κ_P ≈ 0.97, C_eff ≈ K)
     │    0.06-0.12: calibrated operating window; exact values are sweep-dependent
@@ -2505,7 +2501,7 @@ Wasserstein Contraction (Layer 3) ──── Coupling Argument
                      │
                      └──→ Tracking Error (novelty gate bound)
                 
-Soft Projection (Layer 5) — v3.1 corrected
+Soft Projection (Layer 5), v3.1 corrected
     │  Bug fix: exp(-(d - min_d)²/τ) → exp(-(d² - min_d²)/τ)
     │          top-3 truncation → all K centroids
     └──→ Empirical sweep → τ = 0.10 optimal (was 0.030)
@@ -2536,7 +2532,7 @@ universal property.
 
 ## Appendix C: Chess Self-Play Mathematics
 
-The chess subsystem extends the core VSA engine with perception, planning, self-improvement, and opponent modeling — all expressed in the same XOR/bundle/rotate algebra. This appendix documents the mathematical structure of each extension.
+The chess subsystem extends the core VSA engine with perception, planning, self-improvement, and opponent modeling, all expressed in the same XOR/bundle/rotate algebra. This appendix documents the mathematical structure of each extension.
 
 ### C.1 Position Encoding (Perception)
 
@@ -2682,7 +2678,7 @@ where $t$ = games played at current curriculum level.
 
 $$E_{final}(f) \gets E_{final}(f) - 0.40 \cdot \mathbb{I}[(l_{cur}, l_{cand}) \in \mathcal{N}]$$
 
-where $\mathcal{N}$ is the set of negative transition pairs (win rate $\leq 0.40$, support $\geq 5$). This bypasses the planner chain completely — negative rules are tactical filters applied directly to the evaluation.
+where $\mathcal{N}$ is the set of negative transition pairs (win rate $\leq 0.40$, support $\geq 5$). This bypasses the planner chain completely, negative rules are tactical filters applied directly to the evaluation.
 
 ### C.7 Curriculum Ladder (Progression)
 
@@ -2769,13 +2765,13 @@ $$(\mathtt{opponent\_response}, \mathtt{correlates\_with}, \mathtt{positive\_out
 | 0 | 10% SF d1 | 500 | 46.0% | 38 | 0 | Yes |
 | 1 | 30% SF d1 | 500 | 30.4% | 16 | pending | No |
 
-**Cold-start domain gap:** Training on 90% random / 10% SF d1 achieves 46% WR. Transferring to 30% SF d1 drops WR to 30% and stabilizes — the learned patterns are opponent-specific. Pure Stockfish d1 from cold start yields 2.2% WR, confirming that the k-NN representation learns opponent-specific invariances, not general chess knowledge.
+**Cold-start domain gap:** Training on 90% random / 10% SF d1 achieves 46% WR. Transferring to 30% SF d1 drops WR to 30% and stabilizes, the learned patterns are opponent-specific. Pure Stockfish d1 from cold start yields 2.2% WR, confirming that the k-NN representation learns opponent-specific invariances, not general chess knowledge.
 
 **Key bound (empirical):** The WR ceiling at opponent strength $p$ is approximately:
 
 $$\text{WR}_{max}(p) \approx \frac{0.46}{1 + 2.3p}, \quad p \in [0, 1]$$
 
-derived from 46% at $p=0.10$, 30% at $p=0.30$, 2.2% at $p=1.0$. This suggests the VSA evaluation function's opponent-specific knowledge decays as $\sim 1/(1 + cp)$ — a testable prediction for future curriculum stages.
+derived from 46% at $p=0.10$, 30% at $p=0.30$, 2.2% at $p=1.0$. This suggests the VSA evaluation function's opponent-specific knowledge decays as $\sim 1/(1 + cp)$, a testable prediction for future curriculum stages.
 
 ---
 
@@ -2804,7 +2800,7 @@ becomes infinitely sluggish: $e_t \sim r \cdot \log(W_t) \to \infty$. $\square$
 
 **Recovery condition.** The novelty gate (Theorem XXIII.1) bounds system-level tracking
 error to $\theta_{\text{novel}} = 0.70$ by creating new clusters when the lag exceeds threshold.
-But this does not save the INDIVIDUAL cluster — stale centroids are never repaired.
+But this does not save the INDIVIDUAL cluster, stale centroids are never repaired.
 
 ### Theorem XXVIII.2 (Hard Projection Destroys $\log_2(K)$ Bits of Information)
 
@@ -2818,7 +2814,7 @@ inequality, $I(x; P(x)) \leq H(P(x)) \leq \log_2(K)$.  For $D = 10240$ and $K = 
 the system loses $10240 - \log_2(80) \approx 10234$ bits of the input. $\square$
 
 **Implication.** The system is a lossy compressor.  It does not "reason" in the ambient
-space — it reasons in a $\log_2(K)$-bit discrete codebook.  All claims of "understanding"
+space, it reasons in a $\log_2(K)$-bit discrete codebook.  All claims of "understanding"
 must be understood as claims about this codebook, not about the full hypervector space.
 
 ### Theorem XXVIII.3 (XOR Chain Depth Bound Without Cleanup)
@@ -2850,7 +2846,7 @@ $S$ from $S'$.
 
 **Proof.** Both $S$ and $S'$ produce the same canonical SVO triples for all texts in the
 training distribution, by construction.  The only distinguishing test is held-out
-OUT-OF-DISTRIBUTION inputs — structural variants with zero textual overlap with any
+OUT-OF-DISTRIBUTION inputs, structural variants with zero textual overlap with any
 training example.  The intervention test (Section XV-A) is exactly this:
 the hand-coded tables succeed where learned centroids fail. $\square$
 
@@ -2875,7 +2871,7 @@ injective. $\square$
 maps variable-length strings to fixed-length hypervectors.  For $D = 10240$, the maximum
 number of distinct trigram sets encodable is $2^D$, but the number of possible error
 messages is unbounded.  Collision probability for $N$ random texts is approximately
-$N^2 / 2^{D+1}$ (birthday bound).  For $N = 10^6$, $P(\text{collision}) \approx 0.05$ —
+$N^2 / 2^{D+1}$ (birthday bound).  For $N = 10^6$, $P(\text{collision}) \approx 0.05$,
 small but non-zero.  For adversarially crafted texts, collisions can be forced.
 
 ### Summary of Negative Results
@@ -2915,10 +2911,10 @@ The two-threshold gate ($0.15$ routine, $0.70$ novel) defines four operating reg
 | Region | Behavior | Condition |
 |--------|----------|-----------|
 | **COLLAPSE** | All inputs merge into 1-2 clusters; $K \to 1$ | $\theta_{\text{routine}}$ too low OR $\theta_{\text{novel}}$ too high |
-| **FRAGMENT** | Every input creates a new cluster; $K \to K_{\max}$ | $\theta_{\text{novel}}$ too low — observations never match existing centroids |
+| **FRAGMENT** | Every input creates a new cluster; $K \to K_{\max}$ | $\theta_{\text{novel}}$ too low, observations never match existing centroids |
 | **META** | Cluster count oscillates; merge/split cycles | $\theta_{\text{routine}}$ near $\theta_{\text{novel}} / 2$; marginal separation |
 | **TRACKING** | Cluster count stabilizes; bounded drift tracking | Current operating point: $\theta_{\text{routine}} = 0.15$, $\theta_{\text{novel}} = 0.70$ |
-| **EXPLOSION** | Cluster count grows without bound; fission dominates | $\theta_{\text{routine}}$ too high — observations always trigger novelty |
+| **EXPLOSION** | Cluster count grows without bound; fission dominates | $\theta_{\text{routine}}$ too high, observations always trigger novelty |
 
 **Empirical verification** (chess experiment):
 - $\theta_{\text{routine}} = 0.15 \to 574$ clusters in 2000 games (slight fragmentation)
@@ -2926,7 +2922,7 @@ The two-threshold gate ($0.15$ routine, $0.70$ novel) defines four operating reg
 - $\theta_{\text{routine}} = 0.35 \to 1$ cluster (collapse)
 
 **Current setting** $\theta_{\text{routine}} = 0.15$ is on the low edge of the tracking
-region — close to fragmentation for high-variance inputs.  Consider $\theta_{\text{routine}} = 0.20$
+region, close to fragmentation for high-variance inputs.  Consider $\theta_{\text{routine}} = 0.20$
 for domains with higher input variance.
 
 ### XXIX.2 Compaction Merge Threshold ($\theta_{\text{merge}}$)
@@ -2945,8 +2941,8 @@ The compaction threshold $\theta_{\text{merge}} = 0.30$ determines when two clus
 ```
 
 **Phase transition points:**
-- $\theta_{\text{merge}} < 0.15$: merge probability $> 0.50$ for random pairs — semantic collapse
-- $\theta_{\text{merge}} > 0.40$: merge probability $< 0.01$ for typical concept separations — fragmentation
+- $\theta_{\text{merge}} < 0.15$: merge probability $> 0.50$ for random pairs, semantic collapse
+- $\theta_{\text{merge}} > 0.40$: merge probability $< 0.01$ for typical concept separations, fragmentation
 
 **Cost of wrong setting:**
 - Too low ($< 0.20$): $\log_2 K$ bits lost to over-merging; false generalizations
@@ -2963,7 +2959,7 @@ and contraction ($\kappa_P$), mapped by the frontier sweep (Theorem XXVII):
 | 0.08 | measured conservative regime | 1,528 | 10.6 bits / 76× | Conservative sweet spot |
 | **0.10** | **0.916** | **2,554** | **11.3 bits / 128×** | **Calibrated optimum** |
 | 0.12 | measured high-capacity regime | above hard baseline | measured sweep range | Acceptable boundary |
-| 0.50 | mush regime | not used for production | — | Degenerate/avoid |
+| 0.50 | mush regime | not used for production |, | Degenerate/avoid |
 
 The corrected frontier sweep uses 800 centroid pairs and 2,000 queries with a
 fixed RNG seed. Values not listed as exact above are intentionally described as
@@ -2975,11 +2971,11 @@ regimes rather than presented as unsupported point estimates.
 2. **Sweet spot** ($0.06 \leq \tau \leq 0.12$): $\kappa_P \in [0.90, 0.97]$, $C_{\text{eff}} \gg K$.
    Optimal balance.  $\tau = 0.10$ is the calibrated optimum.
 3. **Mush** ($\tau \geq 0.15$): $\kappa_P < 0.87$, projection output is a mushy average.
-   Higher capacity but unstable — two different inputs map to the same soft centroid.
+   Higher capacity but unstable, two different inputs map to the same soft centroid.
 
 **Critical boundary:** The joint contraction condition $\kappa_P \cdot \kappa_F < 1$ fails
 when $\tau > 0.18$ (assuming $\kappa_F \approx 0.95$, which gives $0.82 \cdot 0.95 = 0.779$).
-Wait — that IS still $< 1$.  The actual failure point is when $\kappa_P < 1 / \kappa_F \approx 1.05$,
+Wait, that IS still $< 1$.  The actual failure point is when $\kappa_P < 1 / \kappa_F \approx 1.05$,
 which is always satisfied since $\kappa_P \leq 1$.  So joint contraction holds for ALL $\tau$.
 The real penalty is $\kappa_{\text{joint}} < 0.85$ at $\tau > 0.15$, meaning the system's
 Attentive Reader (soft projection-based composition tracking) takes $> 20\%$ more cycles
@@ -3050,7 +3046,7 @@ $$\delta(c_{t+1}, \nu) \leq \frac{W}{W+1} \cdot \delta(c_t, \nu) + \frac{r}{W+1}
 
 *Proof.* The centroid shift per absorption is bounded by $1/(W+1)$ times the input
 distance.  The contraction rate is $W/(W+1)$.  For $W \geq W_{\min} = 2$, this is
-$\leq 2/3$ — strict contraction. $\square$
+$\leq 2/3$, strict contraction. $\square$
 
 **Lemma XXX.1.2 (Novelty Gate Bound).** Under A1 ($r < \theta_{\text{protect}} = 0.35$),
 the probability of a novelty gate firing in any single tick is zero.
@@ -3129,7 +3125,7 @@ for a cluster that is not fissioning, aliasing is present.
 to prevent re-merge.  Requires human review to verify the split is semantically correct.
 
 **Prevention.** Ensure input encoding preserves task-relevant distinctions.  The trigram
-encoder is the current bottleneck — structural SVO centroids would reduce aliasing.
+encoder is the current bottleneck, structural SVO centroids would reduce aliasing.
 
 ### XXXI.2 False Attractors
 
@@ -3238,7 +3234,7 @@ $$N_{\text{states}} \approx 5120 \cdot 2^{500} \approx 2^{512}$$
 
 **But** this is misleading because:
 1. Hot/cold management limits active clusters to $H_{\max} = 100$.
-2. The accumulator states are not all distinguishable — two accumulators that produce
+2. The accumulator states are not all distinguishable, two accumulators that produce
    the same centroid are equivalent.
 3. The centroids themselves are drawn from $\{0,1\}^D$, so at most $2^D$ distinct centroids.
 
@@ -3252,7 +3248,7 @@ For practical $K \approx 80$, $W_{\max} = 500$:
 $$C_{\text{storage}} \leq 80 \cdot \log_2(500) \approx 80 \cdot 9 \approx 720 \text{ bits}$$
 
 This is enough to store about 90 UTF-8 characters.  The system is not a general-purpose
-memory — it is a domain-specific pattern recognizer with a few hundred bits of capacity.
+memory, it is a domain-specific pattern recognizer with a few hundred bits of capacity.
 
 ### XXXII.2 Channel Capacity of the Projection Operator
 
@@ -3325,7 +3321,7 @@ The strongest information-theoretic adversary is one that exploits the bundling 
 
 > **Strategy.** Send $W_{\max} - 1$ innocuous inputs to entrench a centroid, then send
 > 1 adversarial input to bias it.  The adversarial input contributes only $1/W_{\max}$
-> of the centroid's weight — negligible.
+> of the centroid's weight, negligible.
 
 **Counter-strategy.** The accumulator weight cap ($W_{\max} = 500$) bounds this attack:
 after $500$ inputs, the centroid stops entrenching.  Adversarial inputs beyond this

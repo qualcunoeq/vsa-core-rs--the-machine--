@@ -1,5 +1,8 @@
 # Development Environment
 
+**Version:** v3.4
+**Last updated:** 2026-09-28
+
 Recorded 2026-09-18 on `shibamobile`. This document is the reproducible setup
 and startup reference for local development.
 
@@ -11,7 +14,7 @@ and startup reference for local development.
 | CPU | Intel Core i7-1365U (Raptor Lake-U), 10 cores / 12 threads, AVX2 + AVX-VNNI, **no AVX-512** |
 | Memory | 15 GiB RAM, 4 GiB swap |
 | Storage | 476 GiB NVMe (`/` and `/home`), ~426 GiB free |
-| GPU | Intel Iris Xe (integrated) — **no NVIDIA GPU**, no `nvidia-smi`, no CUDA toolkit |
+| GPU | Intel Iris Xe (integrated), **no NVIDIA GPU**, no `nvidia-smi`, no CUDA toolkit |
 | Toolchain | `rustc` 1.97.1 / `cargo` 1.97.1 (Arch package `rust` 1:1.97.1-1); `rustup` is not installed |
 | C toolchain | gcc/cc 16.1.1, make, cmake, pkg-config, perl |
 | Python | system Python 3.14 (no `sympy`); repo-local `.venv` has Python 3.14.6 + sympy 1.14 |
@@ -104,7 +107,7 @@ pre-existing failure set fails, and the stochastic pair swapped once again
 adapter tests, 5 service tests, 2 `chat_server` tests, and 1 frozen scenario
 test) a full run on 2026-09-20 reports **2429 passed / 41 failed / 15
 ignored** in 325 s; the 41 are the known pre-existing set (the stochastic pair
-both passed this run, so the count is 42 − 1) and no test in the modules
+both passed this run, so the count is 41) and no test in the modules
 touched by Phase 5 fails. After Phase 6 (9 `semantic_fidelity` tests and 7
 `semantic_shadow` tests; the frozen coverage measurement is one of them) a full
 run on 2026-09-20 reports **2445 passed / 41 failed / 15 ignored** in 340 s;
@@ -112,35 +115,35 @@ the failure set is identical to the Phase 5 run, and no module touched by
 Phase 6 fails. After Phase 7 (13 `reliability` tests, 5 added `chat_server`
 tests, and the report binary) a full run on 2026-09-27 reports **2463 passed /
 41 failed / 15 ignored** in 356 s; the failure set is identical to the earlier
-runs (the stochastic pair both passed, so the count is 42 − 1), and no module
-touched by Phase 7 — `reliability`, `chat_server`, `lib.rs` memory paths,
-`bin/machine_chat` — fails. After Phase 8 (7 `document_learning` tests, 4
+runs (the stochastic pair both passed, so the count is 41), and no module
+touched by Phase 7 (`reliability`, `chat_server`, `lib.rs` memory paths,
+`bin/machine_chat`) fails. After Phase 8 (7 `document_learning` tests, 4
 `conversation` workflow tests, 1 `chat_server` test, 2 `persistence` tests, and
 2 acceptance tests in the integration crate) a full run on 2026-09-27 reports
 **2476 passed / 42 failed / 15 ignored** in 379 s; the failure set is identical
 to the 41 known pre-existing failures plus the stochastic
 `indexer::test_learned_projector_training_improves_over_block_sampling`, and no
-module touched by Phase 8 — `document_learning`, `persistence::documents`,
-`conversation` document methods, `bin/machine_docs`, `/api/documents` — fails.
+module touched by Phase 8 (`document_learning`, `persistence::documents`,
+`conversation` document methods, `bin/machine_docs`, `/api/documents`) fails.
 After Phase 9 (6 `conversation_eval` tests plus 1 acceptance test in the
 integration crate, and the `machine_eval` binary) a full run on 2026-09-27
 reports **2483 passed / 41 failed / 15 ignored** in 351 s; the failure set is
 identical to the known 41 pre-existing failures (the stochastic pair both
-passed), and no module touched by Phase 9 — `conversation_eval`,
-`conversation` evaluation toggles, `bin/machine_eval` — fails.
+passed), and no module touched by Phase 9 (`conversation_eval`,
+`conversation` evaluation toggles, `bin/machine_eval`) fails.
 After Phase 10 (14 `autonomy_task` tests, 1 acceptance test, and the new
 `reliability` guarantees) a full run on 2026-09-27 reports **2496 passed / 42
 failed / 15 ignored** in 340 s; the failure set is identical to the known 41
 pre-existing failures plus the stochastic
 `indexer::test_learned_projector_outperforms_random_sampling`, and no module
-touched by Phase 10 — `autonomy_task`, `reliability` guarantees, `bin/machine_eval`
-`task` mode — fails.
+touched by Phase 10 (`autonomy_task`, `reliability` guarantees, `bin/machine_eval`
+`task` mode) fails.
 After Phase 11 (14 `operator` tests, 1 acceptance test, the `machine` binary,
 and the `G-RELEASE-SCHEMA` guarantee) a full run on 2026-09-28 reports **2511
 passed / 41 failed / 15 ignored** in 318 s; the failure set is identical to the
 known 41 pre-existing failures (the stochastic pair both passed, so the count is
-42 − 1), and no module touched by Phase 11 — `operator`, `reliability`
-guarantees, `bin/machine` — fails.
+41), and no module touched by Phase 11 (`operator`, `reliability`
+guarantees, `bin/machine`) fails.
 
 Failure breakdown for the 42 (38 fail regardless of environment):
 
@@ -365,7 +368,7 @@ same six steps for every capability:
 
 1. **Interpret** the question (`interpret`), reusing the project's existing
    formalization and target builder rather than new regexes.
-2. **Construct typed inputs** — a `FormalizedTarget` (or a unit artifact).
+2. **Construct typed inputs**: a `FormalizedTarget` (or a unit artifact).
 3. **Identify missing information or ambiguity** from the capability's own
    contract, not from a guess.
 4. **Execute** through the capability's `execute_*` entry point.
@@ -375,8 +378,8 @@ same six steps for every capability:
 
 `ConversationService::run_question` consults the adapter first (only for
 math- and unit-shaped prompts, via `is_capability_shaped`) and falls back to
-the library `QuestionRouter` for everything the adapter declines — CAS
-calculus, physics, and factual QA are untouched. A successful turn records
+the library `QuestionRouter` for everything the adapter declines (CAS
+calculus, physics, and factual QA are untouched). A successful turn records
 `Capability::StructuredSolver { domain: <capability id> }`, so the interface
 shows exactly which capability served the request.
 
@@ -404,11 +407,11 @@ in `src/conversation/service.rs` and `src/chat_server.rs`.
 
 ## 11. Semantic fidelity and shadow worker connection (Phase 6)
 
-Phases 1–5 answered *is this well formed?* (structural validation) and *can we
+Phases 1 to 5 answered *is this well formed?* (structural validation) and *can we
 solve it?* (typed capabilities). Phase 6 adds the question the earlier phases
 deliberately left open: **does the interpretation faithfully represent the
-source?** A proposal can be structurally perfect — valid schema, valid evidence
-spans, closed symbol scopes — and still reverse a relationship, flip a sign,
+source?** A proposal can be structurally perfect (valid schema, valid evidence
+spans, closed symbol scopes) and still reverse a relationship, flip a sign,
 drop a condition, or invent an equation whose spans happen to be real
 substrings.
 
@@ -429,16 +432,16 @@ covers eight labelled categories:
 | `unsupported_domain` | a commitment in a domain with no labelled consumer |
 
 `src/semantic_shadow.rs` connects stored worker proposals to the existing typed
-consumer — decode, structural validation, then `semantic_handoff` lowering into
+consumer (decode, structural validation, then `semantic_handoff` lowering into
 `EquationProblemBinding`, then `equation_classification` +
-`route_classified_equation` — **in shadow mode**: nothing authorizes a
+`route_classified_equation`) **in shadow mode**: nothing authorizes a
 user-visible answer, every record carries `downstream_authorized = false`, and
 the original worker configuration, raw output, validation diagnostics, and
 replay mode are preserved. Interpretation accuracy and solver accuracy are
 separate fields of `ShadowReport`.
 
-Ambiguous proposals present a short, derivable clarification — the wording is
-built from the candidate's own relation, e.g. `Do you mean that b = a + 3?` —
+Ambiguous proposals present a short, derivable clarification (the wording is
+built from the candidate's own relation, e.g. `Do you mean that b = a + 3?`)
 and never invented. A fail-closed `ShadowPolicy` maps each verdict to
 `Proceed`, `Clarify`, or `Reject`; nothing but a faithful reading proceeds.
 
@@ -508,7 +511,7 @@ appending past the cap:
 `VSABrain::memory_report` returns a `MemoryReport` that accounts for the whole
 resident footprint: entry payloads, label/metadata strings, dense accumulators,
 centroids and anchors, cross-cluster associations, experiences, live indexer
-entries, and — via `account_conversation` — conversation sessions, turns,
+entries, and, via `account_conversation`, conversation sessions, turns,
 pending clarifications, and per-session context.  This replaces the earlier
 `MemorySnapshot`, which counted only cluster/entry counts and one accumulator
 approximation and hard-coded several fields to zero.
@@ -658,7 +661,7 @@ cargo run --bin machine_docs -- demo
 The frozen acceptance test imports a small document, inspects the extracted
 knowledge, asks a supported question (which abstains before commit and cites the
 source after), and removes the document to confirm the influence disappears
-predictably — including across a database reload.
+predictably, including across a database reload.
 
 ## 14. Conversation evaluation (Phase 9)
 
@@ -768,7 +771,7 @@ with a `cognition::AutonomyBudget` (actions, wall-clock, external writes, max
 risk) and a step cap. `AuthorityScope::for_kind` grants exactly the capabilities
 a kind needs. The scope is checked twice: once at planning (does the budget
 cover the required capabilities?) and once per step (is the capability about to
-run inside the scope?). A breach is a `TaskState::Refused` — the capability is
+run inside the scope?). A breach is a `TaskState::Refused`: the capability is
 never invoked, so "within authority" stays true even when a task is stopped for
 wanting more.
 
@@ -858,10 +861,10 @@ the generated artifact.
 ### Release notes tied to evaluation results
 
 `release_notes()` reads the committed evaluation reports and reports what was
-actually measured — the reliability report's guarantee counts and projection
+actually measured (the reliability report's guarantee counts and projection
 path, the conversation-evaluation regression/holdout coverage and ablation
 count, the semantic-fidelity wrong-answer limit, and the autonomy suite's
-scenario counts — rather than hard-coded text. `machine release notes` renders
+scenario counts) rather than hard-coded text. `machine release notes` renders
 the Markdown; `machine release write` regenerates
 `docs/phase11_capability_inventory_v1.json`, `docs/phase11_release_notes_v1.md`,
 and `docs/phase11_doctor_v1.json`.

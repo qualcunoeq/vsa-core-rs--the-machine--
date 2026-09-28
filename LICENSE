@@ -1,0 +1,174 @@
+# THE MACHINE RESEARCH SOURCE LICENSE 1.0
+
+Version 1.0.0
+
+Copyright (c) 2026 Giuseppe Lira Curcio (qualcunoeq). All rights reserved.
+
+Required Notice: Copyright (c) 2026 Giuseppe Lira Curcio (qualcunoeq). All rights reserved.
+
+Source: <https://github.com/qualcunoeq/the-machine>
+
+This license is source-available. It is not an open source license, because it does not permit use for any purpose, including commercial purposes. See `COMMERCIAL.md` for commercial licensing.
+
+## Acceptance
+
+In order to get any license under these terms, you must agree to them as both strict obligations and conditions to all your licenses.
+
+## Copyright License
+
+The licensor grants you a copyright license for the software to do everything you might do with the software that would otherwise infringe the licensor's copyright in it for any permitted purpose. However, you may only distribute the software according to the Distribution License, and make changes or new works based on the software according to the Changes and New Works License.
+
+Commercial Use is not a permitted purpose. See Commercial Use below.
+
+## Distribution License
+
+The licensor grants you an additional copyright license to distribute copies of the software, but only for permitted purposes. Your license to distribute covers distributing the software with changes and new works permitted by the Changes and New Works License. Every copy you distribute must be governed by these terms.
+
+## Notices
+
+You must ensure that anyone who gets a copy of any part of the software from you also gets a copy of these terms or the URL for them above, as well as copies of any plain-text lines beginning with `Required Notice:` that the licensor provided with the software.
+
+You must not remove, obscure, or alter any copyright notice, license notice, attribution notice, or disclaimer in the software or in any modified version.
+
+## Changes and New Works License
+
+The licensor grants you an additional copyright license to make changes and new works based on the software for any permitted purpose.
+
+## Source Availability
+
+This section applies whenever you distribute the software or a modified version, and whenever you make a modified version available to users over a network.
+
+1. **Corresponding Source.** You must make the Corresponding Source of the version you distribute or make available, and make it available to every person who receives or interacts with that version. Any modified version you distribute or make available must be licensed under these terms.
+2. **Distribution.** If you distribute copies, you must accompany them with the Corresponding Source, or with a written offer, valid for at least three years, to provide the Corresponding Source for no more than the reasonable cost of delivery.
+3. **Network availability.** If you make a modified version available to users over a network, including as a hosted or network service, you must offer those users a clear and practical way to obtain the Corresponding Source of that version, under these terms, at no additional charge and with no additional restriction.
+4. **Identification of changes.** You must clearly identify the changes you made to the software, and the date of each change, in the Corresponding Source or in a changelog included with the distribution.
+5. **Preservation.** The Corresponding Source must retain the original copyright and license notices, the `Required Notice:` line, and this license.
+
+This section does not apply to Independent Interoperating Software, as defined below.
+
+## Patent License
+
+The licensor grants you a patent license for the software that covers patent claims the licensor can license, or becomes able to license, that you would infringe by using the software.
+
+## Permitted Purposes
+
+Any purpose that is not a Commercial Use and is not otherwise prohibited by these terms is a permitted purpose. The noncommercial purposes below are permitted purposes.
+
+## Personal Uses
+
+Personal use for research, experiment, and testing for the benefit of public knowledge, personal study, private entertainment, hobby projects, amateur pursuits, or religious observance, without any anticipated commercial application, is use for a permitted purpose.
+
+## Noncommercial Organizations
+
+Use by a charitable organization, educational institution, public research organization, public safety or health organization, environmental protection organization, or government institution is use for a permitted purpose regardless of the source of funding or obligations resulting from the funding, subject to the limitations below.
+
+This does not extend to use by a for-profit entity, and does not extend to any use that is a Commercial Use. Academic or university research is a permitted purpose only where it is not a Commercial Use and does not give a commercial advantage to a for-profit sponsor. Commercial research programs, and research performed for the benefit of a for-profit sponsor, are Commercial Use.
+
+## Commercial Use
+
+Commercial Use is not a permitted purpose and requires a separate commercial license from the licensor.
+
+You make a Commercial Use if you, your company, or anyone on your behalf does any of the following in connection with the software or a modified version:
+
+1. use it for, on behalf of, or for the benefit of a for-profit entity, a business, or any entity engaged in commercial activity;
+2. use it in internal research, development, testing, operations, or infrastructure, even if the results are not sold, licensed, or offered for a fee;
+3. use it in trading, investment, portfolio management, hedging, market analysis, or any financial or investment activity, including use by or for an investment fund, hedge fund, trading firm, or similar entity;
+4. integrate it into, or use it to develop, a product, service, application, API, or system that is sold, licensed, or offered for a fee;
+5. make it available as a hosted or network service, including software-as-a-service or an API, whether paid or free, where it supports or forms part of a commercial offering;
+6. use it to provide consulting, professional, or managed services to another party;
+7. use it to create revenue, cost savings, efficiency gains, or any other commercial advantage, whether direct or indirect;
+8. use it in a commercial research program, or in research funded by a party that obtains a commercial advantage from the results;
+9. use it in competition with the software, or to develop a product or service that competes with the software or with the licensor's products or services.
+
+This list is illustrative and not exhaustive. Any use that directly or indirectly benefits a business, for-profit entity, investment activity, paid service, revenue-generating operation, product development, consulting engagement, or competitive business activity is a Commercial Use.
+
+## Prohibited Uses
+
+You may not do any of the following without the prior written authorization of the licensor:
+
+1. use the software for any Commercial Use;
+2. re-license the software or a modified version under any other license, including any open source or permissive license;
+3. distribute the software or a modified version in source or object form without meeting the Source Availability and Notices obligations;
+4. distribute a modified version as closed source, or distribute object code without the Corresponding Source;
+5. remove, obscure, or alter any copyright, license, attribution, or `Required Notice:` line;
+6. claim authorship of the software or a modified version, or represent a modified version as the original;
+7. sell, resell, sublicense, rent, lease, or otherwise commercially transfer the software or a modified version;
+8. use the software or a modified version to train, fine-tune, distill, evaluate for training, generate training data for, or otherwise develop any artificial-intelligence or machine-learning model, including any large language model, whether or not for a Commercial Use.
+
+## Artificial Intelligence and Machine Learning Restriction
+
+You may not use the software, in whole or in part, including its source code, documentation, mathematical specifications, proofs, data, and any modified version, to develop, train, fine-tune, distill, benchmark for the purpose of training, or otherwise build artificial-intelligence or machine-learning models, systems, or training datasets, whether for a Commercial Use or otherwise, without the prior written authorization of the licensor.
+
+You may not scrape, ingest, or extract the software or its contents for those purposes.
+
+## Attribution
+
+Any research, publication, thesis, report, or work that uses, derives from, or is based on the software or its underlying concepts must provide clear and visible attribution to the author, Giuseppe Lira Curcio, and must identify this project as the source. Failure to provide attribution is a violation of these terms.
+
+## Commercial Licensing
+
+The licensor may grant commercial rights under a separate agreement. A commercial license may authorize Commercial Use, may authorize uses otherwise prohibited by these terms, and may be granted on negotiated terms. Giving others a noncommercial license under these terms does not limit the licensor's own rights, and the licensor remains free to use, license, and commercialize the software and any contributions.
+
+To request a commercial license, contact the author at <gliracurcio@gmail.com>. See `COMMERCIAL.md`.
+
+## Contributions
+
+Contributions are governed by `CONTRIBUTING.md` and `CLA.md`. By submitting a contribution, you agree to those terms. If you do not agree to them, do not submit a contribution.
+
+## Fair Use
+
+You may have "fair use" rights for the software under the law. These terms do not limit them. Nothing in these terms is intended to restrict rights that cannot be restricted under applicable law.
+
+## No Other Rights
+
+These terms do not allow you to sublicense or transfer any of your licenses to anyone else, or prevent the licensor from granting licenses to anyone else. These terms do not imply any other licenses.
+
+## Patent Defense
+
+If you make any written claim that the software infringes or contributes to infringement of any patent, your patent license for the software granted under these terms ends immediately. If your company makes such a claim, your patent license ends immediately for work on behalf of your company.
+
+## Violations
+
+The first time you are notified in writing that you have violated any of these terms, or done anything with the software not covered by your licenses, your licenses can continue if you come into full compliance with these terms, and take practical steps to correct past violations, within 32 days of receiving notice. Otherwise, all your licenses end immediately.
+
+## Termination
+
+Your licenses end immediately if you violate these terms and do not cure the violation under Violations above, or if the licensor terminates them as provided in these terms. On termination, you must stop all use and distribution of the software and any modified version, and remove the software and any modified version from any system or service you control.
+
+## No Liability
+
+As far as the law allows, the software comes as is, without any warranty or condition, and the licensor will not be liable to you for any damages arising out of these terms or the use or nature of the software, under any kind of legal claim.
+
+## Severability
+
+If any provision of these terms is held to be invalid, illegal, or unenforceable, the remaining provisions remain in full force and effect.
+
+## Governing Law
+
+These terms are governed by, and construed in accordance with, the laws of Italy, without regard to its conflict-of-law rules. The courts of Italy have exclusive jurisdiction over any dispute arising out of or in connection with these terms, subject to any mandatory provision of applicable law.
+
+## Definitions
+
+The **licensor** is the individual or entity offering these terms. The author and copyright holder is Giuseppe Lira Curcio.
+
+The **software** is the software the licensor makes available under these terms.
+
+**The Machine** means the software in the repository identified above, including its source code, documentation, mathematical specifications, algorithms, proofs, models, and associated materials, together with any modified version.
+
+A **modified version** is any work based on the software, including any derivative, adaptation, translation, or work that incorporates the software in whole or in part. Independent Interoperating Software is not a modified version.
+
+**Independent Interoperating Software** means separate software that you develop independently and that interacts with The Machine only through its documented public interfaces, such as its HTTP API, its command-line interface, or its documented file formats, and that does not copy, incorporate, adapt, or derive from the source code, internal data structures, or non-public interfaces of The Machine. Independent Interoperating Software is not a modified version for the purposes of these terms.
+
+**Corresponding Source** means the preferred form of a work for making modifications to it, including all source code for all modules it contains, any associated build scripts and scripts used to install or run it, and any interface definition files, together with the changes you made and their dates.
+
+**Commercial Use** is defined in the Commercial Use section above.
+
+**You** refers to the individual or entity agreeing to these terms.
+
+**Your company** is any legal entity, sole proprietorship, or other kind of organization that you work for, plus all organizations that have control over, are under the control of, or are under common control with that organization. **Control** means ownership of substantially all the assets of an entity, or the power to direct its management and policies by vote, contract, or otherwise. Control can be direct or indirect.
+
+**Your licenses** are all the licenses granted to you for the software under these terms.
+
+**Use** means anything you do with the software requiring one of your licenses.
+
+## End of Terms

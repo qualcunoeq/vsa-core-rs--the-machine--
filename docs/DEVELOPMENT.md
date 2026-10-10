@@ -147,24 +147,25 @@ passed / 41 failed / 15 ignored** in 318 s; the failure set is identical to the
 known 41 pre-existing failures (the stochastic pair both passed, so the count is
 41), and no module touched by Phase 11 (`operator`, `reliability`
 guarantees, `bin/machine`) fails.
-After the verification-hardening pass (5 new `lib.rs` tests,
+After the verification-hardening pass (6 new `lib.rs` tests,
 `test_contraction_telemetry_tracks_mean_and_sampled_max`,
 `test_tripwire_fires_on_sampled_worst_case`,
 `test_kappa_p_adversarial_search_beats_random_sampling`,
-`test_soft_projection_is_not_lipschitz_either`, and
-`test_continuous_projection_lipschitz_bound`; the five Python
+`test_soft_projection_is_not_lipschitz_either`,
+`test_continuous_projection_lipschitz_bound`, and
+`test_index_chain_dobrushin_bound_and_a3q_requirement`; the five Python
 verification scripts made assertion-based and guarded so they refuse to run
 under `-O`; `ContractionTelemetry` now reports the sampled worst-case product
 `kappa_P_max * kappa_F_max` and the CRITICAL tripwire fires on it; Proposition
-XVI.1.2 records that the thresholded projection is discontinuous, and
-Proposition XVI.1.3 that `soft_project_continuous` is Lipschitz with constant
-`4/tau`) a full run on 2026-10-10 reports **2515 passed / 42 failed / 15
-ignored** in 351 s. The 42 are the known pre-existing failures plus the
-stochastic `indexer::test_learned_projector_outperforms_random_sampling` (which
-failed this run); all new tests pass, and no test in the modules touched by the
-pass (`lib.rs` telemetry, `reason::soft_project` and
-`reason::soft_project_continuous` exercised by the adversarial, non-Lipschitz,
-and Lipschitz tests) fails.
+XVI.1.2 records that the thresholded projection is discontinuous, Proposition
+XVI.1.3 that `soft_project_continuous` is Lipschitz with constant `4/tau`, and
+the XXV.4 tightening that the rigorous one-step index-mixing constant is the
+Dobrushin coefficient `eta(P) <= 1 - K*delta_min < 1`) a full run on 2026-10-10
+reports **2517 passed / 41 failed / 15 ignored** in 341 s; the 41 are the known
+pre-existing failures (the stochastic pair both passed this run, so the count is
+41), all new tests pass, and no test in the modules touched by the pass (`lib.rs`
+telemetry, `reason::soft_project` and `reason::soft_project_continuous`
+exercised by the adversarial, non-Lipschitz, and Lipschitz tests) fails.
 
 Failure breakdown for the 42 (38 fail regardless of environment):
 

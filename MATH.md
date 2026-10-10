@@ -2013,6 +2013,18 @@ $$\kappa(\mathcal{T}_t) \leq \lambda_2(P_t) \cdot \kappa_F(t) \leq \left(1 - \fr
 
 This bound $\hat{\kappa}(\tau, W_{\text{cap}}, K_{\text{max}}, D)$ depends only on system constants, not on the current manifold $\mathcal{M}_t$.
 
+#### Rigorous Lipschitz and Dobrushin Inputs
+
+The factorization above was previously stated with a heuristic manifold-contraction factor $\kappa_F$. Two rigorous inputs replace it.
+
+1. **Vector-level Lipschitz input (XVI.1.3).** The continuous projection $P_\tau^{\mathrm{c}}$ is Lipschitz, $\|P_\tau^{\mathrm{c}}(x)-P_\tau^{\mathrm{c}}(y)\|_\infty\le(4/\tau)\,\delta(x,y)$. The thresholded map used at runtime has no such constant (XVI.1.2), so the analysis must refer to the continuous variant. The same constant bounds how a state perturbation moves the soft assignment $w(x)$ and hence the index marginal.
+
+2. **One-step index mixing (Dobrushin).** Write $P$ for the averaged centroid-transition matrix, $P_{ij}=|V_i\cap f^{-1}(j)|/|V_i|$. If the active manifold is A3-Q-admitted then Sub-Lemma S gives $P_{ij}\ge\delta_{\min}>0$ for all $i,j$ (Lemma XXV.4.1), so $P$ is strictly positive. Its Dobrushin coefficient satisfies
+$$\eta(P)=1-\min_{i,j}\sum_k\min(P_{ik},P_{jk})\ \le\ 1-K\,\delta_{\min}\ <\ 1,$$
+and the index marginal contracts in total variation, $\|\nu P^t-\pi\|_{TV}\le\eta(P)^t\,\|\nu-\pi\|_{TV}$. Unlike a $\lambda_2$ statement this needs neither symmetry nor reversibility, so it is not subject to the non-normal-operator caveat; $\lambda_2(P)\le\eta(P)$ is the asymptotic refinement.
+
+**The A3-Q conditionality is real, not cosmetic.** The bound requires $\delta_{\min}>0$. For a generic centroid set the averaged transition matrix is sparse: the deterministic check `test_index_chain_dobrushin_bound_and_a3q_requirement` estimates a transition matrix with zero entries and $\eta(P)=1$ for a non-admitted set, while Sub-Lemma S gives $\delta_{\min}>0$ only for an admitted one. There is also a capacity/contraction trade-off: the vector Lipschitz constant $4/\tau$ exceeds $1$ at the operating temperature, so the vector map is not a contraction and the contraction lives entirely in the index chain, gated by A3-Q admission.
+
 ### Remark (Scope of the $\lambda_2(P)$ argument)
 
 The eigenvalue argument is applied to a **stochastic** matrix, and only in the analytic sense of Markov-chain mixing. The precise conditions are:

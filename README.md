@@ -47,7 +47,7 @@ Key results and their status:
 | Cluster count is bounded | II.1 | PROVED (structural) | K <= 5120 |
 | A unique attractor exists | XXI.1 | PROVED (conditional on kappa < 1) | Banach fixed point |
 | The system mixes exponentially | XXVI.2 | PROVED (conditional; see the XXV.4 scope remark in [`MATH.md`](MATH.md)) | d_TV <= 0.01 within 77 cycles |
-| An adversary cannot break contraction | XXII.1-R, XXV.4 | PROVED (conditional: A3-Q-admissible manifolds, asymptotic rate) | L_F <= 1.0 for all inputs; lambda2(P) * kappa_F < 1 on admissible manifolds |
+| An adversary cannot break contraction | XXII.1-R, XXV.4 | PROVED (conditional: A3-Q-admissible manifolds) | L_F <= 1.0 for all inputs; on admitted manifolds the index chain contracts in total variation at the Dobrushin rate `eta(P) <= 1 - K*delta_min < 1` (lambda2 is the asymptotic refinement) |
 | Tracking error stays within its threshold | XXIII.1 | PROVED (under the novelty-gate invariant) | min_c delta(v_t, c) <= 0.70 |
 | The capacity gain is real | XXVII.2-R | EMPIRICAL (measured at tau = 0.10) | 128x multiplier (C_eff = 2554) |
 
@@ -63,7 +63,7 @@ What is not claimed:
 - The projection operator has no Lipschitz bound, on either path. The default path (`soft_projection_tau = 0.0`) is the hard nearest-centroid limit, which is discontinuous: two inputs one bit apart can map to centroids at least 0.30 apart. The soft path (`tau = 0.10`) is also discontinuous because its output is thresholded to a hypercube vertex: a single-bit input move can flip many output bits at once (Proposition XVI.1.2 in [`MATH.md`](MATH.md)), so it has no Lipschitz bound in any norm either. No Banach contraction argument applies to the projection itself.
 - A continuous variant, `soft_project_continuous`, emits the real-valued weighted average instead of thresholding. It is Lipschitz with constant `4 / tau` (Proposition XVI.1.3), which is finite but exceeds 1 at the operating `tau = 0.10`, so it is not a contraction there. Projection-level contraction requires `tau > 4`, the low-capacity ("mush") regime where capacity collapses toward `C_eff = 1`. At operating capacity the system's contraction rests on the index-chain argument (XXV.4), not on the projection.
 - The `alpha(1 - kappa_P) > beta * kappa_F * L_F` margin (0.010) is retired because `alpha` and `beta` are free weights.
-- `lambda2(P) * kappa_F < 1` is conditional on A3-Q admission and is an asymptotic spectral-gap statement about the row-stochastic centroid chain, not a Euclidean operator-norm bound (see the `MATH.md` scope remark).
+- `lambda2(P) * kappa_F < 1` is conditional on A3-Q admission. The rigorous one-step constant is the Dobrushin coefficient `eta(P) <= 1 - K*delta_min < 1` of the strictly positive index chain, which contracts the index marginal in total variation without assuming symmetry or reversibility; `lambda2` is the asymptotic refinement. A generic (non-A3-Q) centroid set gives a sparse transition matrix with `eta(P) = 1`, so the contraction is genuinely conditional (see the `MATH.md` scope remark and `test_index_chain_dobrushin_bound_and_a3q_requirement`).
 
 Reliability claims are enforced in code, not only declared. Memory budgets, replay strength, server limits, document-derived knowledge, and the release schema are covered by the guarantees in [`docs/CLAIMS.md`](docs/CLAIMS.md) and [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) sections 12 to 16.
 

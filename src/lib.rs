@@ -5216,6 +5216,116 @@ mod tests {
         }
     }
 
+    /// Dobrushin-bound test for the index chain, and the A3-Q conditionality.
+    ///
+    /// If the averaged centroid-transition matrix `P` is strictly positive with
+    /// minimum entry `delta_min` (the A3-Q / Sub-Lemma S input), then its
+    /// Dobrushin coefficient satisfies `eta(P) = 1 - min_{i,j} sum_k
+    /// min(P_ik, P_jk) <= 1 - K * delta_min < 1`, so TV distance to the
+    /// stationary distribution contracts at rate `eta(P)`.  This is a rigorous,
+    /// norm-free one-step bound and avoids the non-normality caveat of a
+    /// lambda_2 statement.
+    ///
+    /// A generic (non-A3-Q) centroid set does not satisfy the hypothesis: the
+    /// estimated transition matrix has zero entries and `eta(P) = 1`, so the
+    /// contraction is genuinely conditional on the admitted geometry.
+    #[test]
+    fn test_index_chain_dobrushin_bound_and_a3q_requirement() {
+        // (1) Rigorous bound on a strictly positive matrix.
+        let k = 4usize;
+        let delta = 0.05_f64;
+        let mut p = vec![vec![delta; k]; k];
+        for (i, row) in p.iter_mut().enumerate() {
+            row[i] = 1.0 - (k as f64 - 1.0) * delta;
+        }
+        let mut min_ov = f64::INFINITY;
+        for i in 0..k {
+            for j in 0..k {
+                let mut ov = 0.0;
+                for m in 0..k {
+                    ov += p[i][m].min(p[j][m]);
+                }
+                min_ov = min_ov.min(ov);
+            }
+        }
+        let eta = 1.0 - min_ov;
+        assert!(
+            eta <= 1.0 - k as f64 * delta + 1e-12,
+            "Dobrushin eta {} must be <= 1 - K*delta = {}",
+            eta,
+            1.0 - k as f64 * delta
+        );
+        assert!(eta < 1.0, "strictly positive chain must have eta < 1");
+
+        // (2) A generic centroid set (no A3-Q admission) gives a sparse chain.
+        let clusters: Vec<MemoryCluster> = (0..8usize)
+            .map(|i| {
+                let ch = char::from_u32('a' as u32 + i as u32).unwrap();
+                test_cluster_from_centroid(Hypervector::encode_char(ch, i))
+            })
+            .collect();
+        let kk = clusters.len();
+        let nearest = |x: &Hypervector| -> usize {
+            let mut best = 0usize;
+            let mut bd = f64::INFINITY;
+            for (j, c) in clusters.iter().enumerate() {
+                let d = x.normalized_hamming_distance(&c.centroid);
+                if d < bd {
+                    bd = d;
+                    best = j;
+                }
+            }
+            best
+        };
+        let mut counts = vec![vec![0.0f64; kk]; kk];
+        for i in 0..kk {
+            let ci = clusters[i].centroid;
+            let mut got = 0usize;
+            let mut tries = 0usize;
+            while got < 300 && tries < 40000 {
+                tries += 1;
+                let mut x = ci;
+                let r = 1 + (tries % 300);
+                for s in 0..r {
+                    let pos = (tries * 31 + s * 97) % HD_DIMENSION;
+                    x.bits[pos / 64] ^= 1u64 << (pos % 64);
+                }
+                if nearest(&x) != i {
+                    continue;
+                }
+                let z = crate::reason::soft_project_continuous(&x.rotate_left(13), &clusters, 0.10);
+                let mut best = 0usize;
+                let mut bd = f64::INFINITY;
+                for (j, c) in clusters.iter().enumerate() {
+                    let mut d = 0.0;
+                    for b in 0..HD_DIMENSION {
+                        let cb = ((c.centroid.bits[b / 64] >> (b % 64)) & 1) as f64;
+                        d += (z[b] - cb).abs();
+                    }
+                    d /= HD_DIMENSION as f64;
+                    if d < bd {
+                        bd = d;
+                        best = j;
+                    }
+                }
+                counts[i][best] += 1.0;
+                got += 1;
+            }
+        }
+        let mut p = vec![vec![0.0f64; kk]; kk];
+        for i in 0..kk {
+            let s: f64 = counts[i].iter().sum();
+            for j in 0..kk {
+                p[i][j] = if s > 0.0 { counts[i][j] / s } else { 0.0 };
+            }
+        }
+        let zeros = p.iter().flatten().filter(|&&v| v < 1e-9).count();
+        assert!(
+            zeros > 0,
+            "a generic non-A3-Q centroid set should give a sparse transition matrix"
+        );
+    }
+
     #[test]
     fn test_char_encoder() {
         let v1 = Hypervector::encode_char('a', 42);

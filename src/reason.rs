@@ -930,6 +930,114 @@ pub fn soft_project(x: &Hypervector, clusters: &[MemoryCluster], tau: f64) -> Hy
     Hypervector { bits: result }
 }
 
+/// Continuous counterpart of [`soft_project`].
+///
+/// Returns the real-valued weighted average
+/// `z = Σ_i w_i(x) c_i ∈ [0,1]^D` instead of thresholding each bit, where
+/// `w_i(x) = softmax_i(-δ(x, c_i)² / τ)`.  Because the output is not snapped
+/// to a hypercube vertex this map is **continuous**, unlike [`soft_project`]
+/// (whose thresholding makes it discontinuous; see MATH.md XVI.1.2).  Applying
+/// a `> 0.5` threshold to the result reproduces [`soft_project`] exactly.
+///
+/// **Lipschitz bound (MATH.md XVI.1.3).** With normalized Hamming distance
+/// `δ_H`, for all `x, y`:
+///
+/// ```text
+/// ||z(x) - z(y)||_inf <= (4 / tau) * δ_H(x, y).
+/// ```
+///
+/// The constant `4/tau` exceeds `1` at the operating temperature
+/// (`tau = 0.10` -> `40`), so the projection alone is **not** a contraction
+/// there; it becomes one only for `tau > 4`, the low-capacity ("mush") regime.
+/// This function supplies the finite Lipschitz constant that the thresholded
+/// map lacks; the contraction itself must come from the index-chain argument
+/// (MATH.md XXV.4).
+pub fn soft_project_continuous(
+    x: &Hypervector,
+    clusters: &[MemoryCluster],
+    tau: f64,
+) -> Vec<f64> {
+    let mut z = vec![0.0f64; HD_DIMENSION];
+    let write_vertex = |dst: &mut Vec<f64>, v: &Hypervector| {
+        for (b, zb) in dst.iter_mut().enumerate() {
+            *zb = ((v.bits[b / 64] >> (b % 64)) & 1) as f64;
+        }
+    };
+    if clusters.is_empty() {
+        write_vertex(&mut z, x);
+        return z;
+    }
+    if tau < 1e-12 {
+        // Limit: nearest centroid, returned as a vertex (matches hard projection).
+        let mut best_i = 0usize;
+        let mut best_d = f64::INFINITY;
+        for (i, c) in clusters.iter().enumerate() {
+            let d = x.normalized_hamming_distance(&c.centroid);
+            if d.is_finite() && d < best_d {
+                best_d = d;
+                best_i = i;
+            }
+        }
+        write_vertex(&mut z, &clusters[best_i].centroid);
+        return z;
+    }
+
+    let dists: Vec<f64> = clusters
+        .iter()
+        .map(|c| x.normalized_hamming_distance(&c.centroid))
+        .collect();
+    let min_d = dists
+        .iter()
+        .cloned()
+        .filter(|d| d.is_finite())
+        .fold(f64::INFINITY, f64::min);
+    if !min_d.is_finite() {
+        write_vertex(&mut z, x);
+        return z;
+    }
+    let mut weights: Vec<f64> = dists
+        .iter()
+        .map(|&d| {
+            if d.is_finite() {
+                (-(d * d - min_d * min_d) / tau).exp()
+            } else {
+                0.0
+            }
+        })
+        .collect();
+    let w_sum: f64 = weights.iter().sum();
+    if w_sum < 1e-30 {
+        write_vertex(&mut z, &clusters[0].centroid);
+        return z;
+    }
+    for w in weights.iter_mut() {
+        *w /= w_sum;
+    }
+
+    for (b, zb) in z.iter_mut().enumerate() {
+        let mut acc = 0.0;
+        for (i, c) in clusters.iter().enumerate() {
+            let bit = (c.centroid.bits[b / 64] >> (b % 64)) & 1;
+            acc += weights[i] * bit as f64;
+        }
+        *zb = acc;
+    }
+    z
+}
+
+/// Threshold the continuous projection back to a hypervector.  Equal to
+/// [`soft_project`] (weighted bit-majority at `1/2`), but derived from
+/// [`soft_project_continuous`]; used to check the two agree.
+pub fn binarize_continuous(z: &[f64]) -> Hypervector {
+    let mut bits = [0u64; U64_BLOCKS];
+    for b in 0..HD_DIMENSION.min(z.len()) {
+        if z[b] > 0.5 {
+            bits[b / 64] |= 1u64 << (b % 64);
+        }
+    }
+    Hypervector { bits }
+}
+
 /// Soft projection accelerated by the Lightning Indexer.
 ///
 /// When `indexer` is `Some` and has indexed centroids matching `clusters`:

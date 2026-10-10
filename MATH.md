@@ -864,6 +864,32 @@ $$\delta(P_{\mathcal{M}}(x), P_{\mathcal{M}}(y)) \leq \theta_{\text{novel}} \leq
 
 The claimed bound $\delta(P(x),P(y)) \leq d_{\max}(\mathcal{M})$ uses $d_{\max}$ as an upper bound on the projection output distance, which is incorrect, $d_{\max}$ is the nearest-neighbor distance, not the covering radius. The correct bound uses the manifold diameter ($\leq 0.70$). A fully uniform contraction proof for the joint system is given in Theorem XXV.4 via the spectral gap of the centroid chain, which bypasses this local contractivity claim entirely. See XXV.4 for the corrected analysis. $\square$
 
+**Proposition XVI.1.2 (The soft projection is not Lipschitz either).** The thresholded soft projection $P_\tau$ (per-bit weighted majority of the centroids, weights $\propto \exp(-(\delta(x,c_i)^2-\min_j\delta(x,c_j)^2)/\tau)$) is discontinuous. There exist inputs $x, x'$ differing in a single bit with $\delta(P_\tau(x), P_\tau(x')) \geq 10 / D$.
+
+**Proof (explicit counterexample).** For a single input-bit flip, the weights change by at most a factor $\exp(\pm 2/(D\tau))$, so each weighted sum $s_b=\sum_i w_i(x)\,c_{ib}$ moves by at most $\Delta := 2/(D\tau)$. Any coordinate $b$ with $|s_b - 1/2| < \Delta$ can therefore cross the $1/2$ threshold and flip, and a single input move can flip all such coordinates at once. In the mushy region where the weights are spread over many nearly-equidistant centroids, many coordinates sit within $\Delta$ of the threshold. A deterministic instance, the `Hypervector::encode_char('z', 999)` input against the $K=20$ centroids `encode_char('a'+i, i)` at $\tau=0.10$, flips **22** output bits from one input-bit move ($\Delta \approx 1.95\times10^{-3}$, i.e. about $670$ coordinates within $\Delta$ of the threshold). `test_soft_projection_is_not_lipschitz_either` asserts this. $\square$
+
+**Consequence.** Because the Hamming metric and the $L^1$/$L^2$ norms are comparable on $\{0,1\}^D$, the ratio $\|P_\tau(x)-P_\tau(x')\|/\|x-x'\|$ is unbounded in every norm on the ambient space. No norm makes the thresholded projection a contraction, hard or soft: its output is a hypercube vertex and its discontinuities are exactly the weighted-sum crossings. Therefore no Banach/fixed-point argument can rest on the projection operator itself. A genuine contraction requires a continuous state map (option b: emit the real-valued weighted average, or damp toward the previous state with a proven factor) or a coarse-grained/expected-distance argument (contracting the index chain, as in XXV.4).
+
+**Proposition XVI.1.3 (The continuous projection is Lipschitz).** Define the continuous projection
+
+$$P_\tau^{\mathrm{c}}(x) \;=\; \sum_i w_i(x)\,c_i \;\in\; [0,1]^D, \qquad w_i(x)=\mathrm{softmax}_i\!\left(-\delta(x,c_i)^2/\tau\right).$$
+
+Then for all $x,y$:
+
+$$\bigl\|P_\tau^{\mathrm{c}}(x)-P_\tau^{\mathrm{c}}(y)\bigr\|_\infty \;\le\; \frac{4}{\tau}\,\delta(x,y).$$
+
+**Proof.** Put $d_i=\delta(x,c_i)$ and $f_i=-d_i^2/\tau$, and let $g=f(y)-f(x)$. Since $|d_i(x)-d_i(y)|\le\delta(x,y)$ and $0\le d_i\le 1$, we have $|f_i(x)-f_i(y)|\le(2/\tau)\delta(x,y)$, so $\|g\|_\infty\le2\delta/\tau$. Along the segment $f(t)=f(x)+tg$ the softmax derivative is $\dot w_i=w_i\bigl(g_i-\langle g\rangle_w\bigr)$ with $\langle g\rangle_w=\sum_j w_jg_j$, hence
+
+$$\sum_i|\dot w_i|=\sum_i w_i\bigl|g_i-\langle g\rangle_w\bigr|\le 2\|g\|_\infty .$$
+
+Integrating over $t\in[0,1]$ gives $\|w(x)-w(y)\|_1\le2\|g\|_\infty$. Therefore
+
+$$\bigl\|P_\tau^{\mathrm{c}}(x)-P_\tau^{\mathrm{c}}(y)\bigr\|_\infty=\Bigl\|\sum_i(w_i(x)-w_i(y))c_i\Bigr\|_\infty\le\sum_i|w_i(x)-w_i(y)|\le2\|g\|_\infty\le\frac{4}{\tau}\delta(x,y). \;\square$$
+
+**Corollary XVI.1.3 (Capacity/contraction trade-off).** $P_\tau^{\mathrm{c}}$ is a Banach contraction ($L<1$) whenever $\tau>4$, and only then. At the operating temperature $\tau=0.10$ the proven bound is $L\le40$, an empirical single-bit search finds $L\approx5.0$, and random far pairs ($\delta\approx0.5$) contract with ratio $\approx0.08$; the projection is therefore Lipschitz but **not** a contraction at operating capacity. It becomes one only for $\tau>4$, the high-$\tau$ ("mush") regime where the weights approach uniform and the capacity $C_{\mathrm{eff}}$ collapses toward $1$. `soft_project_continuous` implements $P_\tau^{\mathrm{c}}$; `binarize_continuous` thresholds it and reproduces `soft_project`. `test_continuous_projection_lipschitz_bound` checks the $4/\tau$ bound at $\tau\in\{0.10,\,10\}$ and the exact recovery under thresholding.
+
+**Consequence.** The continuous projection supplies the finite Lipschitz constant the thresholded map lacks, which makes the state map well posed and the dynamical analysis legitimate. It does **not** by itself give contraction at operating capacity: the capacity/contraction trade-off is intrinsic, so the system's contraction still rests on the index-chain factorization (XXV.4), now over a continuous state map.
+
 ### Corollary XVI.1.1 (Fixed Point Entropy Suppression)
 
 Under repeated application of $\Phi_{\mathcal{M}}$, the retrieval error $\varepsilon(n) = \delta(\Phi_{\mathcal{M}}^n(x_0), x_\text{true})$ satisfies:
@@ -1343,7 +1369,7 @@ Because contraction is only guaranteed on runtime-admissible manifolds, the syst
 - Checks the joint product $\kappa = \kappa_P \cdot \kappa_F$ against a tripwire (0.995 = WARNING, 1.001 = CRITICAL). The WARNING uses the mean product; the CRITICAL condition also fires on the sampled worst-case product $\kappa_{P,\max}\cdot\kappa_{F,\max}$
 - Logs telemetry status in the agent loop
 
-This is a **diagnostic, not a proof.** The mean of a convenience distribution is not a Lipschitz constant, and the sampled maximum is only a lower bound on the true worst case, so a clean reading does not certify contraction. In the default configuration (`soft_projection_tau = 0.0`) the measured projection is the discontinuous hard limit and has no finite Lipschitz constant; use `tau = 0.10` (or another soft setting) to measure a continuous map. The formal stability statement remains the conditional $\lambda_2(P)\cdot\kappa_F < 1$ factorization (XXV.4), which does not use $\kappa_P$.
+This is a **diagnostic, not a proof.** The mean of a convenience distribution is not a Lipschitz constant, and the sampled maximum is only a lower bound on the true worst case, so a clean reading does not certify contraction. Both the hard default (`soft_projection_tau = 0.0`) and the soft setting (`tau = 0.10`) are discontinuous: the soft output is still thresholded to a hypercube vertex, and Proposition XVI.1.2 shows a single input-bit move can flip many output bits, so no Lipschitz or contraction bound exists in any norm. The formal stability statement remains the conditional $\lambda_2(P)\cdot\kappa_F < 1$ factorization (XXV.4), which does not use $\kappa_P$.
 
 ---
 
@@ -1997,7 +2023,7 @@ The eigenvalue argument is applied to a **stochastic** matrix, and only in the a
 
 3. **Common metric.** The two factors act in different spaces: $\lambda_2(P)$ is index-chain mixing and $\kappa_F$ is weight/manifold geometry. Their multiplicative factorization assumes both are measured in the same Hamming-induced metric. This is an assumption on the composed map, stated here rather than proved.
 
-4. **The hard/soft vector projection is separate.** The projection operator $P_\tau$/nearest is a discontinuous nonlinear map (XVI.1.1) and is **not** controlled by $\lambda_2(P)$; the factorization deliberately bypasses it. Its contraction is monitored only empirically by the telemetry $\kappa_P$, which is a sampled lower bound on the true Lipschitz constant (see the runtime note and `test_kappa_p_adversarial_search_beats_random_sampling`). In the default configuration `soft_projection_tau = 0.0`, so the active projection is the hard nearest-centroid limit, i.e. exactly the discontinuous case, where no finite Lipschitz constant exists. The telemetry therefore cannot certify contraction on the default path, and the $\kappa_P\cdot\kappa_F$ tripwire is a heuristic alert, not a proof. Closing this gap requires either a proven Lipschitz (or contraction) bound for the soft projection in a specified norm, or a projection that is contractive by construction; neither is established here.
+4. **The hard/soft vector projection is separate.** The projection operator $P_\tau$/nearest is a discontinuous nonlinear map (XVI.1.1) and is **not** controlled by $\lambda_2(P)$; the factorization deliberately bypasses it. Its contraction is monitored only empirically by the telemetry $\kappa_P$, which is a sampled lower bound on the true worst-case ratio (see the runtime note and `test_kappa_p_adversarial_search_beats_random_sampling`). In the default configuration `soft_projection_tau = 0.0`, so the active projection is the hard nearest-centroid limit, the discontinuous case with no finite Lipschitz constant. Proposition XVI.1.2 shows the soft setting is discontinuous as well (a single input bit can flip many output bits), so no norm makes the thresholded projection a contraction. The telemetry therefore cannot certify contraction on either path, and the $\kappa_P\cdot\kappa_F$ tripwire is a heuristic alert, not a proof. Closing this requires a projection whose output is continuous (a real-valued weighted average, or a damped update), or a coarse-grained index-chain argument; neither is established here.
 
 **Consequence for the status.** Theorem XXV.4 is conditional on the manifold being runtime-admissible (A3-Q) and on the common-metric assumption in item 3. It is a spectral-gap/mixing bound for a row-stochastic chain, and the shipped configuration's guarantee should be read with that scope. The implementation does not compute $\lambda_2(P)$ at runtime; the guard that actually runs is the tripwire.
 

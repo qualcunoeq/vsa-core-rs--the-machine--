@@ -5108,6 +5108,114 @@ mod tests {
         );
     }
 
+    /// Proposition XVI.1.2: the soft (thresholded) projection is discontinuous
+    /// and not Lipschitz in any norm.  A single input bit flip in the mushy
+    /// region (many centroids nearly equidistant) can flip many output bits.
+    /// The deterministic `encode_char('z', 999)` witness flips 22 output bits
+    /// from one input-bit move against the 20 `encode_char('a'+i, i)` centroids
+    /// at tau = 0.10.  This refutes the idea that the soft path supplies a
+    /// contraction; only a continuous (non-thresholded) output could.
+    #[test]
+    fn test_soft_projection_is_not_lipschitz_either() {
+        let clusters: Vec<MemoryCluster> = (0..20usize)
+            .map(|i| {
+                let ch = char::from_u32('a' as u32 + i as u32).unwrap();
+                test_cluster_from_centroid(Hypervector::encode_char(ch, i))
+            })
+            .collect();
+        let tau = 0.10_f64;
+        let x = Hypervector::encode_char('z', 999);
+        let px = crate::reason::soft_project(&x, &clusters, tau);
+        let stride = 4usize;
+        let mut max_flips = 0usize;
+        let mut k = 0usize;
+        while k * stride < HD_DIMENSION {
+            let p = k * stride;
+            let mut y = x;
+            y.bits[p / 64] ^= 1u64 << (p % 64);
+            let py = crate::reason::soft_project(&y, &clusters, tau);
+            let flips =
+                (px.normalized_hamming_distance(&py) * HD_DIMENSION as f64).round() as usize;
+            max_flips = max_flips.max(flips);
+            k += 1;
+        }
+        // delta(x, y) = 1 bit, yet delta(P(x), P(y)) reaches 22 bits.
+        assert!(
+            max_flips >= 10,
+            "soft projection should expand a single-bit move, got only {} bits",
+            max_flips
+        );
+    }
+
+    /// Proposition XVI.1.3: the continuous projection is Lipschitz with
+    /// constant 4/tau (l-inf vs normalized Hamming), and thresholding it
+    /// recovers the discontinuous soft projection.  At the operating
+    /// tau = 0.10 the constant is 40 (not a contraction); at tau = 10 it is
+    /// 0.4 (a contraction, but the low-capacity mush regime).
+    #[test]
+    fn test_continuous_projection_lipschitz_bound() {
+        let clusters: Vec<MemoryCluster> = (0..20usize)
+            .map(|i| {
+                let ch = char::from_u32('a' as u32 + i as u32).unwrap();
+                test_cluster_from_centroid(Hypervector::encode_char(ch, i))
+            })
+            .collect();
+
+        let worst_ratio = |tau: f64| -> f64 {
+            let mut worst = 0.0_f64;
+            for _ in 0..300 {
+                let x = Hypervector::new_random();
+                let y = Hypervector::new_random();
+                let dh = x.normalized_hamming_distance(&y);
+                if dh < 1e-9 {
+                    continue;
+                }
+                let zx = crate::reason::soft_project_continuous(&x, &clusters, tau);
+                let zy = crate::reason::soft_project_continuous(&y, &clusters, tau);
+                let dz = zx
+                    .iter()
+                    .zip(zy.iter())
+                    .map(|(a, b)| (a - b).abs())
+                    .fold(0.0_f64, f64::max);
+                worst = worst.max(dz / dh);
+            }
+            worst
+        };
+
+        let w_operating = worst_ratio(0.10);
+        assert!(
+            w_operating <= 4.0 / 0.10 + 1e-6,
+            "operating ratio {} exceeds 4/tau = 40",
+            w_operating
+        );
+        let w_contraction = worst_ratio(10.0);
+        assert!(
+            w_contraction <= 4.0 / 10.0 + 1e-6,
+            "contraction-regime ratio {} exceeds 4/tau = 0.4",
+            w_contraction
+        );
+        assert!(
+            w_contraction < 1.0,
+            "tau = 10 should be a contraction, got ratio {}",
+            w_contraction
+        );
+
+        // Thresholding the continuous map reproduces the discontinuous one.
+        for tau in [0.10_f64, 0.30, 1.0] {
+            for _ in 0..20 {
+                let x = Hypervector::new_random();
+                let z = crate::reason::soft_project_continuous(&x, &clusters, tau);
+                let binarized = crate::reason::binarize_continuous(&z);
+                let direct = crate::reason::soft_project(&x, &clusters, tau);
+                assert_eq!(
+                    binarized, direct,
+                    "binarize(continuous) must equal soft_project at tau = {}",
+                    tau
+                );
+            }
+        }
+    }
+
     #[test]
     fn test_char_encoder() {
         let v1 = Hypervector::encode_char('a', 42);

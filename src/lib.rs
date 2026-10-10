@@ -7971,4 +7971,200 @@ mod tests {
         brain.build_summary_index(5);
         assert!(brain.summary_index.is_none());
     }
+
+    /// Counterexample regression (review response): the role binding
+    /// R(vx, vy) = rho^3(vx) xor rho^7(vy) is NOT injective across roles.
+    /// x = 0, y = 1 collide, and R(vx,vy) == R(vy,vx) iff rho^4(vx xor vy) = vx xor vy.
+    #[test]
+    fn test_vii1_noncommutativity_has_degenerate_fixed_point() {
+        let bind = |vx: &Hypervector, vy: &Hypervector| {
+            vx.rotate_left(3).bitwise_xor(&vy.rotate_left(7))
+        };
+        let zero = Hypervector::new_zero();
+        let ones = Hypervector::new_ones();
+        assert_eq!(
+            bind(&zero, &ones),
+            bind(&ones, &zero),
+            "VII.1: 0 and 1 must collide (universal non-commutativity is false)"
+        );
+
+        for _ in 0..2000 {
+            let vx = Hypervector::new_random();
+            let vy = Hypervector::new_random();
+            let z = vx.bitwise_xor(&vy);
+            let equal = bind(&vx, &vy) == bind(&vy, &vx);
+            let fixed = z.rotate_left(4) == z;
+            assert_eq!(equal, fixed, "VII.1: equality iff rho^4(z) = z");
+        }
+    }
+
+    /// Counterexample regression: the old compaction potential with a NEGATIVE
+    /// dispersion term increases under fission, so the monotonicity theorem was
+    /// false.  With a positive dispersion penalty the near-merge direction holds.
+    #[test]
+    fn test_x1_potential_sign_requires_positive_dispersion() {
+        let zero = Hypervector::new_zero();
+        let ones = Hypervector::new_ones();
+        let lambda = 1.0f64;
+
+        let phi_old = |inter: f64, disp: f64| inter - lambda * disp;
+        let before = phi_old(0.0, zero.normalized_hamming_distance(&zero) + zero.normalized_hamming_distance(&ones));
+        let after = phi_old(zero.normalized_hamming_distance(&ones), 0.0);
+        assert!(
+            after > before,
+            "X.1: negative-sign potential must INCREASE under fission ({} > {})",
+            after,
+            before
+        );
+        assert!((after - before - (1.0 + lambda)).abs() < 1e-12);
+
+        let phi_new = |inter: f64, disp: f64, k: f64| inter + lambda * disp + 0.01 * k;
+        let mut near = zero;
+        near.bits[0] ^= 1;
+        let merge_before = phi_new(
+            zero.normalized_hamming_distance(&near),
+            0.0,
+            2.0,
+        );
+        let merge_after = phi_new(0.0, zero.normalized_hamming_distance(&near), 1.0);
+        assert!(
+            merge_after < merge_before,
+            "X.1: positive-dispersion potential must decrease under a near merge"
+        );
+    }
+
+    /// Counterexample regression: a single real accumulator absorption can flip
+    /// more than one bit.  The claimed bound delta(c,c') <= 1/D is false; the
+    /// correct bound is delta(c,c') <= delta(c,v).
+    #[test]
+    fn test_xvi_absorption_flips_exceed_one_bit() {
+        // W = 3, threshold floor(W/2) = 1.  Bits with acc = 2 are marginal:
+        // after absorbing v (weight 4, threshold 2) they fall to 0.  Set five
+        // marginal bits plus one solid bit so the centroid is not all-ones
+        // (which would be a rotation fixed point and get repaired).
+        let mut acc = vec![0u32; HD_DIMENSION];
+        for slot in acc.iter_mut().take(5) {
+            *slot = 2;
+        }
+        acc[5] = 3;
+        let mut centroid = Hypervector::new_zero();
+        centroid.bits[0] = 0b11_1111;
+
+        let mut cluster = MemoryCluster {
+            centroid,
+            entries: Vec::new(),
+            reverberation: 1.0,
+            last_reinforced_tick: 0,
+            anchor: Hypervector::new_zero(),
+            accumulator: acc,
+            total_weight: 3,
+            last_access_tick: 0,
+        };
+
+        let v = Hypervector::new_zero();
+        let (shift, input_dist) = cluster.absorb_entry(&v);
+        let flips = (shift * HD_DIMENSION as f64).round() as usize;
+
+        assert!(flips >= 5, "XVI.2.1: expected >= 5 bit flips, got {}", flips);
+        assert!(
+            shift > 1.0 / HD_DIMENSION as f64,
+            "XVI.2.1: the 1/D bound must fail (shift {})",
+            shift
+        );
+        assert!(
+            shift <= input_dist + 1e-12,
+            "XVI.2.1: correct bound delta(c,c') <= delta(c,v) violated"
+        );
+    }
+
+    /// XXVII.1: the shipped soft projection is {0,1}^D -> {0,1}^D, so its image
+    /// is finite (Lebesgue measure zero) and cannot carry a positive-volume
+    /// invariant measure.  It IS richer than hard projection: more than K
+    /// distinct outputs are reachable.
+    #[test]
+    fn test_xxvii_binary_projection_image_is_finite_but_rich() {
+        let mut rng = 0xA5A5_0001u64;
+        let next = |rng: &mut u64| {
+            *rng = rng
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
+            *rng
+        };
+        let k = 7usize; // odd -> no exact tie in the high-tau majority
+        let centroids: Vec<Hypervector> = (0..k)
+            .map(|_| {
+                let mut bits = [0u64; U64_BLOCKS];
+                for w in bits.iter_mut() {
+                    *w = next(&mut rng);
+                }
+                Hypervector { bits }
+            })
+            .collect();
+        let clusters: Vec<MemoryCluster> = centroids
+            .into_iter()
+            .map(test_cluster_from_centroid)
+            .collect();
+
+        // Hybrid outputs appear for queries near a centroid or a bisector, not
+        // for uniform-random queries (at D = 10240 those sit ~0.5 from every
+        // centroid, weights equalise, and the output is the unweighted
+        // majority).  Sample both regimes.
+        let mut queries: Vec<Hypervector> = Vec::new();
+        for ci in &clusters {
+            for pct in [10usize, 20, 30, 40] {
+                for _ in 0..120 {
+                    let mut x = ci.centroid;
+                    let nflip = HD_DIMENSION * pct / 100;
+                    for _ in 0..nflip {
+                        let pos = (next(&mut rng) as usize) % HD_DIMENSION;
+                        x.bits[pos / 64] ^= 1u64 << (pos % 64);
+                    }
+                    queries.push(x);
+                }
+            }
+        }
+        for i in 0..k {
+            for j in (i + 1)..k {
+                let mut x = clusters[i].centroid;
+                let diff = clusters[i].centroid.bitwise_xor(&clusters[j].centroid);
+                let mut flipped = 0usize;
+                let want = HD_DIMENSION / 2;
+                'outer: for b in 0..U64_BLOCKS {
+                    let mut w = diff.bits[b];
+                    while w != 0 {
+                        let bit = w.trailing_zeros() as usize;
+                        w &= w - 1;
+                        x.bits[b] ^= 1u64 << bit;
+                        flipped += 1;
+                        if flipped >= want {
+                            break 'outer;
+                        }
+                    }
+                }
+                queries.push(x);
+            }
+        }
+
+        let mut operating: std::collections::HashSet<Hypervector> = std::collections::HashSet::new();
+        let mut mush: std::collections::HashSet<Hypervector> = std::collections::HashSet::new();
+        for x in &queries {
+            operating.insert(crate::reason::soft_project(x, &clusters, 0.10));
+            mush.insert(crate::reason::soft_project(x, &clusters, 1e9));
+        }
+
+        assert!(
+            operating.len() > k,
+            "XXVII.1: soft projection must reach more than K outputs ({} vs {})",
+            operating.len(),
+            k
+        );
+        // Finite (measure zero) image: the count is a finite integer, and the
+        // high-temperature blender collapses richness to the unweighted majority.
+        assert!(
+            mush.len() < operating.len(),
+            "XXVII.1: high-tau richness ({}) must collapse below operating ({})",
+            mush.len(),
+            operating.len()
+        );
+    }
 }

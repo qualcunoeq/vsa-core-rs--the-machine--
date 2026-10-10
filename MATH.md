@@ -454,13 +454,19 @@ A relation $R(x, y)$ with bindings $v_x, v_y$ is encoded as:
 
 $$R(v_x, v_y) = \rho^3(v_x) \oplus \rho^7(v_y)$$
 
-### Theorem VII.1 (Non-Commutativity)
+### Theorem VII.1 (Non-Commutativity, Generic)
 
-For $v_x \neq v_y$:
+The encoding is **not injective across roles in general**: the two bindings coincide exactly when $v_x \oplus v_y$ is a fixed point of the role-difference rotation. With the offsets above the difference is $7 - 3 = 4$:
 
-$$R(v_x, v_y) \neq R(v_y, v_x)$$
+$$R(v_x, v_y) = R(v_y, v_x) \iff \rho^3(v_x) \oplus \rho^7(v_y) = \rho^3(v_y) \oplus \rho^7(v_x) \iff \rho^4(v_x \oplus v_y) = v_x \oplus v_y.$$
 
-**Proof.** Since $\rho^3 \neq \rho^7$, $\rho^3(v_x) \oplus \rho^7(v_y) \neq \rho^3(v_y) \oplus \rho^7(v_x)$ unless $v_x = v_y$ (which would require $\rho^3(v_x) = \rho^7(v_x)$, impossible since 3 and 7 are both coprime to $D$). $\square$
+**Proof.** XOR both sides to get $\rho^3(v_x \oplus v_y) = \rho^7(v_x \oplus v_y)$; apply $\rho^{-3}$ to reach $\rho^4 z = z$ for $z = v_x \oplus v_y$. $\square$
+
+**Consequences.**
+
+- The original claim "$v_x \neq v_y \Rightarrow R(v_x, v_y) \neq R(v_y, v_x)$" is **false**. The all-zero and all-one vectors are a counterexample: with $v_x = 0$, $v_y = \mathbf{1}$, the value $z = \mathbf{1}$ is fixed by every rotation, so $R(0,\mathbf{1}) = R(\mathbf{1},0)$. The executable witness is `test_vii1_noncommutativity_has_degenerate_fixed_point`.
+- The fixed-point set of $\rho^4$ has cardinality $2^{\gcd(4,D)} = 2^4$ (since $\gcd(4, 10240) = 4$), so for i.i.d. uniform $v_x, v_y$ distinct bindings occur with probability $1 - 2^{4-D} = 1 - 2^{-10236}$.
+- Bindings are therefore non-commutative for random vectors (and for any $z$ outside the period-$\mid$4 subgroup), but the guarantee is probabilistic, not deterministic. A general correctness argument must add a non-periodicity condition on $v_x \oplus v_y$, or accept the zero-probability degenerate case.
 
 ---
 
@@ -509,31 +515,33 @@ An abstaining agent maintains geometric grounding in shared reality even as its 
 
 Define the cluster potential:
 
-$$\Phi(\mathcal{C}) = \sum_{i < j} \delta(c_i, c_j) - \lambda \sum_i \sum_{e \in \mathcal{E}_i} \delta(e, c_i)$$
+$$\Phi(\mathcal{C}) = \sum_{i < j} \delta(c_i, c_j) + \lambda \sum_i \sum_{e \in \mathcal{E}_i} \delta(e, c_i) + \mu K$$
 
-where $\mathcal{C} = \{c_1, \ldots, c_K\}$ is the set of cluster centroids, $\mathcal{E}_i$ is the entry set for cluster $i$, and $\lambda > 0$ is a weighting parameter.
+where $\mathcal{C} = \{c_1, \ldots, c_K\}$ is the set of cluster centroids, $\mathcal{E}_i$ is the entry set for cluster $i$, $K = |\mathcal{C}|$, and $\lambda, \mu > 0$ weight within-cluster dispersion and cluster count respectively.
 
-### Theorem X.1 (Monotonic Decrease under Merge/Fission)
+> **Sign correction (v3.5).** An earlier revision wrote the dispersion term with a negative sign, $-\lambda \sum_i \sum_{e \in \mathcal{E}_i} \delta(e, c_i)$. That sign *rewards* dispersion (spreading entries away from their centroid lowers $\Phi$), which makes the monotonicity theorem false. The dispersion term must be **positive** for $\Phi$ to act as a Lyapunov function for compaction.
 
-Every merge or fission operation strictly decreases $\Phi(\mathcal{C})$.
+### Theorem X.1 ($\Phi$ is a Lyapunov function for compaction)
 
-**Proof.** 
+The compactor accepts a merge or fission only if it strictly decreases $\Phi$; consequently $\Phi$ is non-increasing along any compaction trace, and since $\Phi$ is bounded below it converges.
 
-*Merge*: Merging clusters $i$ and $j$ with $\delta(c_i, c_j) \leq 0.30$ into a single centroid $c_{\text{new}}$ reduces the inter-centroid distance sum by $\delta(c_i, c_j) > 0$. The intra-cluster dispersion term changes by:
+**Proof.**
 
-$$\sum_{e \in \mathcal{E}_i \cup \mathcal{E}_j} \delta(e, c_{\text{new}}) - \left(\sum_{e \in \mathcal{E}_i} \delta(e, c_i) + \sum_{e \in \mathcal{E}_j} \delta(e, c_j)\right)$$
+*Merge*: Merging clusters $i$ and $j$ with $\delta(c_i, c_j) \leq 0.30$ into a single centroid $c_{\text{new}}$ removes the pair term $\delta(c_i, c_j) > 0$ from the inter-centroid sum and reduces $K$ by one (contributing $-\mu$). The dispersion term changes by
 
-Since $c_{\text{new}}$ is the bundle of all entries, it minimizes the sum of distances to the entries, so this difference is $\leq 0$. Therefore $\Phi$ decreases.
+$$\sum_{e \in \mathcal{E}_i \cup \mathcal{E}_j} \delta(e, c_{\text{new}}) - \left(\sum_{e \in \mathcal{E}_i} \delta(e, c_i) + \sum_{e \in \mathcal{E}_j} \delta(e, c_j)\right) \leq 0,$$
 
-*Fission*: Splitting a cluster with max pairwise entry NHD $> 0.70$ creates two sub-clusters with centroids $c_i', c_j'$. The intra-cluster dispersion term decreases because each entry is closer to its new sub-centroid than to the original centroid. The inter-centroid distance sum increases by $\delta(c_i', c_j')$, but the decrease in intra-cluster dispersion dominates (by the fission condition $\delta > 0.70$). Therefore $\Phi$ decreases. $\square$
+because the bundle $c_{\text{new}}$ minimizes the sum of distances to its entries (it is the coordinate-wise majority) and receives no dispersion penalty under the positive sign. All three contributions are $\leq 0$, so $\Phi$ decreases.
 
-### Corollary X.1 (Convergence to Fixed Point)
+*Fission*: Splitting a cluster with internal dispersion above $\theta_{\text{novel}}$ creates two sub-clusters whose centroids $c_i', c_j'$ add the pair term $\delta(c_i', c_j')$ and one extra cluster ($+\mu$), while reducing the dispersion term by the amount each entry is pulled toward its nearer sub-centroid. Fission is admissible (and the theorem applies) exactly when the dispersion decrease exceeds $\delta(c_i', c_j') + \mu$, so an accepted fission decreases $\Phi$ by construction. $\square$
 
-The compaction process converges to a local minimum of $\Phi$ where every cluster satisfies:
+**Why the negative-sign version fails.** With $\Phi_{\text{old}} = \sum_{i<j} \delta(c_i, c_j) - \lambda \sum_i \sum_e \delta(e, c_i)$, take a single cluster holding the all-zero and all-one vectors with centroid $0$: $\Phi_{\text{old}} = 0 - \lambda(0 + 1) = -\lambda$. Split it into two pure clusters (each a single entry, centroid equal to the entry): the inter-centroid term is $1$ and the dispersion term is $0$, giving $\Phi_{\text{old}} = 1$. Thus $\Delta \Phi_{\text{old}} = 1 + \lambda > 0$, so fission *increases* the old potential and contradicts the claimed monotone decrease. The executable witness is `test_x1_potential_sign_requires_positive_dispersion`.
 
-$$0.30 < \delta(c_i, c_j) < 0.70 \quad \forall i \neq j$$
+### Corollary X.1 (Convergence to a fixed point)
 
-**Proof.** $\Phi$ is bounded below (distances are in $[0,1]$) and decreases monotonically. Therefore it must converge to a local minimum. At the minimum, no merge ($\delta \leq 0.30$) and no fission ($\delta > 0.70$) improves $\Phi$, so all inter-centroid distances are strictly between 0.30 and 0.70. $\square$
+The compaction process converges to a configuration in which no admissible merge ($\delta \leq 0.30$) or fission (internal dispersion $> 0.70$) strictly reduces $\Phi$; at that point inter-centroid distances lie in $[0.30, 0.70]$.
+
+**Proof.** $\Phi$ is bounded below (each distance lies in $[0,1]$ and $K \leq K_{\max}$) and decreases by a fixed positive amount per accepted operation, so it converges. At the limit no admissible operation reduces $\Phi$ further. The interval claim follows from the compaction invariants: merges are forbidden above the merge threshold and fissions are triggered above the novelty threshold. $\square$
 
 ---
 
@@ -711,7 +719,7 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXIX.1 to 5 | Phase diagrams for all thresholds | **MAPPED** | Operating envelope for novelty gate, compaction, soft projection, association, decay |
 | XXX.1 | Unified tracking bound | **PROVEN** | Four lemmas: accumulator contraction + novelty bound + fission rate + memory cap. $\varepsilon \approx 0.155$ |
 | XXXI.1 to 8 | Failure mode taxonomy | **CATALOGUED** | 8 failure modes with detection monitors and recovery procedures |
-| XXXII.1 to 6 | Information-theoretic bounds | **COMPUTED** | $C_{\text{storage}} \approx 720$ bits, $C_{\text{channel}} \approx 6.3$ bits, bundling loss $\approx 98\%$ at $n=100$ |
+| XXXII.1 to 6 | Information-theoretic bounds | **COMPUTED (corrected)** | Routable concept capacity $\log_2 K \approx 6.3$ bits; semantic codebook $K D \approx 8.2 \times 10^{5}$ bits; bundling loss $\approx 98\%$ at $n=100$ |
 | XXXIII.1 to 3 | Traceable concept resolution | **IMPLEMENTED** | `resolve_term_trace` is a conservative extension of `resolve_term`; tests verify path provenance |
 
 ### Empirical Measurements
@@ -910,9 +918,17 @@ Let the slow dynamics $F$ consist of:
 2. **Novelty gating:** creating new clusters when $\delta(v, \mathcal{M}) \geq 0.70$
 3. **Compaction:** merging clusters with $\delta(c_i, c_j) \leq 0.30$, fissioning when internal dispersion exceeds $0.70$
 
+**Lemma XVI.2.0 (Single-absorption shift).** Let a cluster have total weight $W$ and centroid $c = \mathbf{1}_{A > W/2}$ derived from accumulator $A$. Absorbing one vector $v$ yields $A' = A + v$, $W' = W + 1$, and $c' = \mathbf{1}_{A' > W'/2}$. Then
+
+$$\delta(c, c') \leq \delta(c, v).$$
+
+**Proof.** Consider a position $i$. If $c_i = 1$ then $A_i > W/2$; since $v_i = 1$ at an agreeing position, $A_i + 1 > W/2 + 1 = (W+2)/2 > (W+1)/2 = W'/2$, so $c_i' = 1$. If $c_i = 0$ then $A_i \leq W/2$; since $v_i = 0$, $A_i \leq W/2 < (W+1)/2 = W'/2$, so $c_i' = 0$. Hence a bit can flip only where $v$ disagrees with $c$, giving $\delta(c,c') \leq \delta(c,v)$. $\square$
+
+> **Correction (v3.5).** An earlier revision claimed the stronger bound $\delta(c,c') \leq 1/D$ (at most one bit flips). This is **false**: the majority threshold depends on $W$, so a single absorption raises the threshold for *every* position at once and can flip several marginal bits. Take $D = 10$, $W = 3$, $A = (2,\ldots,2)$ (so $c = \mathbf{1}$), and absorb $v = (0,0,1,1,1,1,1,1,1,1)$. Then $W' = 4$, $A' = (2,2,3,\ldots,3)$, and $c' = (0,0,1,\ldots,1)$, so $\delta(c,c') = 2/10 = 0.2 > 1/D = 0.1$. The Python check `XVI.2.1` and the Rust witness `test_xvi_absorption_flips_exceed_one_bit` cover this. The correct bound is $\delta(c,c') \leq \delta(c,v)$.
+
 **Claim XVI.2.1.** If the input stream $\{v_t\}$ has bounded support $\text{supp}(v_t) \subset B(c^*, r)$ for some centroid $c^*$ and radius $r < 0.35$, then $\mathcal{M}_t$ converges to a fixed set $\mathcal{M}^{*}$ with $d_{\max}(\mathcal{M}^{*}) \leq 0.30$.
 
-**Proof sketch.** The novelty gate creates new clusters only for inputs with $\delta(v, \mathcal{M}) \geq 0.70$. Since all inputs lie within radius $r < 0.35$ of $c^*$, no input can be $0.70$ from all existing centroids once $c^*$ is in $\mathcal{M}$. Therefore the cluster count $K_t$ stabilizes. The compactor ensures $0.30 < \delta(c_i, c_j) < 0.70$ for all pairs at equilibrium (Corollary X.1). $\square$
+**Proof sketch.** The novelty gate creates new clusters only for inputs with $\delta(v, \mathcal{M}) \geq 0.70$. Since all inputs lie within radius $r < 0.35$ of $c^*$, no input can be $0.70$ from all existing centroids once $c^*$ is in $\mathcal{M}$. Therefore the cluster count $K_t$ stabilizes. The compactor ensures $d_{\max}$ is driven into the admissible band at equilibrium (Corollary X.1). By Lemma XVI.2.0 each absorption moves a centroid by at most $\delta(c,v) \leq r + d_{\max}$ toward the input, and repeated absorption of a bounded-support stream pulls each centroid into $B(c^*, r)$; the fast dynamics then re-anchor. $\square$
 
 ### Theorem XVI.3 (Two-Timescale Convergence)
 
@@ -1213,7 +1229,7 @@ where $d_{\max}^*$ is the equilibrium covering radius of $\mathcal{M}^{*}$.
 | Dense manifold (K ≈ 80) | $\approx 0.7$ | $\approx 0.98$ | $\leq 1.0$ | **Yes** |
 | Adversarial input (rapid drift) | $\approx 0.5$ | $\approx 1.05$ | $> 1.0$ | **Marginal** |
 
-The Lipschitz constant $L_F$ is bounded by $L_F \leq 1 / w_{\min} \leq 1.0$ (the centroid shift per absorption cannot exceed $1$ bit when $w_{\min} = 1$). For the accumulator with $w_{\min} \geq 1$, the worst-case $L_F = 1.0$ gives:
+The Lipschitz constant $L_F$ is bounded by $L_F \leq 1.0$ (by Lemma XVI.2.0 the centroid shift per absorption is at most $\delta(c,v)$, i.e. at most the input distance, so $L_F = \text{shift}/\text{input distance} \leq 1$; this does not mean one bit). For the accumulator with $w_{\min} \geq 1$, the worst-case $L_F = 1.0$ gives:
 
 $$\alpha \cdot (1 - 0.5) > \beta \cdot 1.05 \cdot 1.0 \implies \frac{\alpha}{\beta} > 2.1$$
 
@@ -1389,7 +1405,9 @@ where $\nu_t^*$ is the current input mode. As $W_t \to \infty$ (the cluster accu
 
 $$\lim_{t \to \infty} e_t^{\text{(cluster)}} = \infty \quad \text{under persistent drift}$$
 
-**Proof sketch.** The centroid update is $c_{t+1} = \text{majority}(W_t \cdot c_t, v_t)$. Each absorption shifts the centroid by at most $1/(W_t+1)$ toward the new input. For persistent drift $r > 0$, the cumulative lag is $\sum_{s=0}^{t-1} \frac{r}{W_s+1}$, which grows like $r \cdot \log(W_t)$ as $W_t \to \infty$. $\square$
+**Proof sketch.** The centroid update is $c_{t+1} = \text{majority}(W_t \cdot c_t, v_t)$. In the running-average relaxation each absorption shifts the centroid by at most $1/(W_t+1)$ toward the new input; for persistent drift $r > 0$ the cumulative lag is $\sum_{s=0}^{t-1} \frac{r}{W_s+1}$, which grows like $r \cdot \log(W_t)$ as $W_t \to \infty$. $\square$
+
+> **Scope note (v3.5).** The per-step "$1/(W_t+1)$" shift is exact only for the real-valued running-average model. The discrete thresholded accumulator obeys the weaker exact bound of Lemma XVI.2.0, $\delta(c,c') \leq \delta(c,v)$, so a single absorption can move the centroid further than $1/(W+1)$ (several marginal bits flip when $W$ changes the majority threshold). The qualitative conclusion (a single fixed-weight accumulator cannot track unbounded drift) is unaffected, but the displayed rate is a relaxation, not a discrete-dynamics identity.
 
 **Empirical confirmation.** In the drift test ($r \approx 0.001$, $W \to 500$), the tracking error grows linearly from $0$ to $0.49$ over $500$ steps. A single cluster cannot track persistent drift indefinitely.
 
@@ -2234,21 +2252,25 @@ $$\text{output}_b = \mathbf{1}_{\sum_i w_i \cdot c_{i,b} > 0.5}$$
 
 where $b$ indexes the bit position.
 
-### Theorem XXVII.1 (Soft Projection Breaks Singularity)
+### Theorem XXVII.1 (Soft Projection Increases Output Richness)
 
-The soft projection $P^{\tau}_{\mathcal{M}}$ maps $\mathcal{H}$ to a **positive-volume subset** for any $\tau > 0$ and $K \geq 2$.
+The soft projection admits **hybrid outputs** that hard projection cannot produce: its image has cardinality strictly greater than $K$ for $\tau > 0$ and $K \geq 2$, because inputs near a Voronoi bisector blend two or more centroids and resolve to a code that is not any single centroid.
 
-**Proof sketch.** When $x$ is equidistant from two centroids $c_i$ and $c_j$ ($\delta(x, c_i) = \delta(x, c_j)$), the weights satisfy $w_i = w_j$. For bits where $c_i$ and $c_j$ differ, the weighted sum is exactly $0.5$, and the tiebreaker (constitution vector) resolves the bit. For $x$ in a neighborhood of the bisector, small perturbations change which centroids influence which bits, producing output vectors that vary continuously with $x$. The set of distinct output vectors has cardinality $> K$, and more importantly, the output vectors span a **continuous region** of $\mathcal{H}$ (specifically, the convex set of majority combinations of centroid subsets).
+**What is true.** When $x$ is equidistant from $c_i$ and $c_j$ the weights satisfy $w_i = w_j$; at bits where the centroids differ the weighted sum is $0.5$ and the constitution tiebreak resolves the bit. Perturbing $x$ off the bisector changes which centroids dominate which bits, so the reachable output set is strictly larger than $\{c_1,\ldots,c_K\}$. This is a statement about image *richness*, and it is confirmed empirically ($2554$ distinct outputs for $K = 20$ at $\tau = 0.10$, see `test_soft_projection_frontier_sweep`).
 
-**Formal bound.** The number of distinct output regions (connected components of the preimage of a single output vector) grows as $O(K^M)$ where $M$ is the number of centroids with $w_i > \varepsilon$. For $\tau$ large enough that $M > 1$, the output set has positive measure. $\square$
+> **Correction (v3.5).** The original statement said $P^{\tau}_{\mathcal{M}}$ "maps $\mathcal{H}$ to a positive-volume subset" and that the outputs "span a continuous region of $\mathcal{H}$" with an $O(K^M)$ count of connected components. This is a category error. The shipped `soft_project` is $\{0,1\}^D \to \{0,1\}^D$; every map out of the finite set $\mathcal{H}$ has a finite image, hence Lebesgue measure **zero**. A finite-state invariant measure is necessarily atomic, regardless of $\tau$. The earlier claim conflated the discrete operator with its real-valued relaxation.
 
-### Corollary XXVII.1 (Capacity Increase)
+**The continuous relaxation.** The real-valued blend `soft_project_continuous` maps into $[0,1]^D$ and, as a function on $\mathbb{R}^D$, is Lipschitz with constant $4/\tau$ (Proposition XVI.1.3). A non-atomic positive-volume invariant measure requires a **continuous** state: either the real-valued accumulator before thresholding, or input noise making $x$ a positive-volume random variable. On a genuine continuous domain the positive-volume conclusion holds; on the shipped binary state space it does not. `binarize_continuous` thresholds the blend back to $\mathcal{H}$, and thereby returns to an atomic image.
 
-The effective capacity of the soft-projected system is:
+### Corollary XXVII.1 (Effective Capacity Is Measured, Not $\approx K-1$)
 
-$$C_{\text{eff}} = \log_2\left(\sum_{m=1}^K \binom{K}{m}\right) \approx K - 1 \text{ bits (for large } \tau)$$
+For a fixed input domain, define $C_{\text{eff}} = \log_2(\#\text{distinct outputs})$. Then
 
-This ranges from $\log_2 K$ (hard projection, $\tau \to 0$) to approximately $K - 1$ bits (uniform blending, $\tau \to \infty$). For $K = 80$: $C_{\text{eff}}$ ranges from $6.3$ bits to $\approx 79$ bits.
+$$C_{\text{eff}}^{\text{hard}} \leq \log_2 K, \qquad \log_2 K \leq C_{\text{eff}}^{\text{soft}}(\tau) \leq \min\bigl(\log_2(2^K-1),\, D\bigr),$$
+
+with the soft count measured rather than predicted (for $K = 20$, $\tau = 0.10$: $2554$ outputs, $C_{\text{eff}} \approx 11.3$ bits).
+
+> **Correction (v3.5).** The original corollary claimed $C_{\text{eff}} = \log_2\sum_m \binom{K}{m} \approx K-1$ bits "for large $\tau$", reaching $\approx 79$ bits at $K = 80$. This is wrong and contradicts Theorem XXVII.2-R: as $\tau \to \infty$ all softmax weights equalize, the weighted majority becomes independent of the input, and $C_{\text{eff}} \to 0$ (the mush limit), not $K-1$. The combinatorial count $\sum_m \binom{K}{m} = 2^K - 1$ is only an upper bound on the number of sign patterns, never approached, and is not the capacity. The measured $C_{\text{eff}}$ rises to a finite optimum near $\tau \approx 0.10$ and collapses at high $\tau$.
 
 ### Theorem XXVII.2-R (The Contraction-Capacity Trade-off, CORRECTED)
 
@@ -2847,7 +2869,9 @@ The tracking error $e_t = \delta(c_t, \nu_t)$ satisfies:
 $$\lim_{t \to \infty} e_t = \infty \quad \text{for any fixed } r > 0$$
 
 **Proof.** The centroid update per absorption is $c_{t+1} = \text{majority}(W_t \cdot c_t, \nu_t)$.
-Each absorption shifts the centroid toward $\nu_t$ by at most $1/(W_t+1)$ in Hamming distance.
+In the running-average relaxation each absorption shifts the centroid toward $\nu_t$ by at most
+$1/(W_t+1)$ in Hamming distance (the discrete accumulator obeys the weaker Lemma XVI.2.0,
+$\delta(c,c') \leq \delta(c,\nu_t)$).
 The input $\nu_t$ moves away at rate $r$ per tick.  The cumulative lag is:
 
 $$e_t \geq \sum_{s=0}^{t-1} \frac{r}{W_s + 1}$$
@@ -3097,14 +3121,29 @@ a single tracking bound.  It is the closest thing the system has to a master the
 
 The proof decomposes into four lemmas, each corresponding to a subsystem:
 
-**Lemma XXX.1.1 (Accumulator Contraction).** For a single centroid with weight $W$ absorbing
-a sequence of inputs from the same mode (A1: $\delta(v_t, c) \leq r$):
+**Lemma XXX.1.1 (Accumulator tracking, running-average relaxation).** Under the real-valued
+running-average relaxation of the accumulator, for a single centroid of weight $W$ absorbing
+a sequence of inputs from the same mode (A1: $\delta(v_t, \nu) \leq r$):
 
 $$\delta(c_{t+1}, \nu) \leq \frac{W}{W+1} \cdot \delta(c_t, \nu) + \frac{r}{W+1}$$
 
-*Proof.* The centroid shift per absorption is bounded by $1/(W+1)$ times the input
-distance.  The contraction rate is $W/(W+1)$.  For $W \geq W_{\min} = 2$, this is
-$\leq 2/3$, strict contraction. $\square$
+*Proof.* In the running-average relaxation the centroid is the mean of the absorbed vectors,
+so each absorption is a convex combination with weight $1/(W+1)$ on the new input and
+$W/(W+1)$ on the old centroid; the triangular inequality gives the display. $\square$
+
+> **Correction (v3.5).** The original text concluded "for $W \geq W_{\min} = 2$ this is
+> $\leq 2/3$, strict contraction." That inequality is **reversed**: $W/(W+1)$ is *increasing*
+> in $W$, equals $2/3$ only at $W = 2$, and tends to $1$. At the weight cap
+> $W_{\max} = 500$ the retention factor is $500/501 \approx 0.998$, so there is **no uniform
+> strict contraction**. Lemma XXX.1.1 is a *tracking* (bounded-lag) statement: the memory
+> retains a fraction $W/(W+1) \to 1$ of its state while the per-step pull toward the input
+> decays like $r/(W+1)$.  The system tracks slowly but with bounded lag, which is exactly the
+> $r \log(W_t)$ cumulative lag noted in the concept-drift discussion.
+>
+> The continuous relaxation is also not the shipped operator. The discrete, thresholded
+> accumulator obeys the exact one-step bound of **Lemma XVI.2.0**, $\delta(c,c') \leq \delta(c,v)$,
+> which permits several bits to flip at once. Consequently Lemmas XXX.1.2 to XXX.1.4 and
+> Theorem XXX.1 inherit a *bounded-lag* guarantee, not a contraction guarantee.
 
 **Lemma XXX.1.2 (Novelty Gate Bound).** Under A1 ($r < \theta_{\text{protect}} = 0.35$),
 the probability of a novelty gate firing in any single tick is zero.
@@ -3278,35 +3317,34 @@ hypotheses using independent diagnostic paths (if the system has them).
 
 ### XXXII.1 Storage Capacity
 
-The maximum number of distinguishable memory states is:
+A cluster's physical state is its accumulator: a $D$-dimensional vector of integer
+counts, each in $\{0, \ldots, W_{\max}\}$, from which the $D$-bit centroid is thresholded.
+The raw number of accumulator states per cluster is therefore
 
-$$N_{\text{states}} = K \cdot 2^{W_{\max}}$$
+$$N_{\text{acc}} = (W_{\max}+1)^D, \qquad N_{\text{acc}}(K \text{ clusters}) = (W_{\max}+1)^{KD}.$$
 
-where $K$ is the number of clusters (each with a distinct centroid) and $W_{\max}$ is
-the maximum weight per cluster (each bit's accumulator can be in one of $W_{\max}$ states
-before the next refinement).
+> **Correction (v3.5).** An earlier revision wrote $N_{\text{states}} = K \cdot 2^{W_{\max}}$
+> and then a "storage capacity" $C_{\text{storage}} \le K \log_2 W_{\max} \approx 720$ bits
+> ($\approx 90$ characters). Both drop the accumulator dimension $D$: $2^{W_{\max}}$ treats
+> a single bit's count as if it were the whole $D$-bit register, and $K \log_2 W_{\max}$
+> is a channel-type count with $W_{\max}$ substituted for the symbol alphabet. At
+> $D = 10240$ the undercount is a factor of order $D$.
 
-For $K_{\max} = 5120$ and $W_{\max} = 500$:
+It is more useful to separate three quantities, which the single "720 bits" number conflated:
 
-$$N_{\text{states}} \approx 5120 \cdot 2^{500} \approx 2^{512}$$
+1. **Physical state capacity.** $\log_2 (W_{\max}+1)^{KD} \approx K D \log_2(W_{\max}+1)$
+   bits of raw register content. For $K = 5120$, $W_{\max} = 500$, $D = 10240$ this is
+   $\approx 4.7 \times 10^{8}$ bits ($\approx 56$ MB). This is machine state, not
+   retrievable information.
+2. **Semantic (pattern) capacity.** Each centroid is a $D$-bit code, so $K$ clusters hold
+   up to $K D$ bits of distinct centroid content; for $K = 80$ this is
+   $\approx 8.2 \times 10^{5}$ bits ($\approx 100$ KiB).
+3. **Channel capacity.** The number of distinct *concepts* the LSH route resolves is
+   $\lceil \log_2 K \rceil$ bits (Section XXXII.2), i.e. $\approx 9$ bits at $K = 500$.
 
-**But** this is misleading because:
-1. Hot/cold management limits active clusters to $H_{\max} = 100$.
-2. The accumulator states are not all distinguishable, two accumulators that produce
-   the same centroid are equivalent.
-3. The centroids themselves are drawn from $\{0,1\}^D$, so at most $2^D$ distinct centroids.
-
-The **effective storage capacity** is bounded by the number of distinguishable centroid
-configurations times the number of distinguishable accumulator states per centroid:
-
-$$C_{\text{storage}} \leq \min(K_{\max}, 2^D) \cdot \log_2(W_{\max})$$
-
-For practical $K \approx 80$, $W_{\max} = 500$:
-
-$$C_{\text{storage}} \leq 80 \cdot \log_2(500) \approx 80 \cdot 9 \approx 720 \text{ bits}$$
-
-This is enough to store about 90 UTF-8 characters.  The system is not a general-purpose
-memory, it is a domain-specific pattern recognizer with a few hundred bits of capacity.
+The system is a domain-specific pattern recognizer, not a general-purpose memory: its
+routable concept capacity is $\log_2 K$ bits, while its centroid codebook holds of order
+tens of kilobytes of pattern. The old "few hundred bits" statement was none of these.
 
 ### XXXII.2 Channel Capacity of the Projection Operator
 
@@ -3366,9 +3404,9 @@ is negligible ($< 0.001$ bits).  The cleanup is effectively exact for practical 
 
 | Component | Capacity | Notes |
 |-----------|----------|-------|
-| Per-centroid accumulator | $\log_2(W_{\max}) \approx 9$ bits | Fine-grained state within one concept |
+| Per-centroid accumulator | $\log_2 (W_{\max}+1)^D \approx D \log_2 W_{\max}$ bits | Raw register state of one concept |
 | Centroid codebook | $\log_2(K) \approx 6.3$ bits | Distinguishable concepts ($K \approx 80$) |
-| Storage (all centroids) | $K \cdot \log_2(W_{\max}) \approx 720$ bits | Total memory capacity |
+| Semantic centroid content | $K\,D \approx 8.2 \times 10^{5}$ bits ($K=80$) | $D$-bit code per centroid |
 | Channel per reasoning hop | $\log_2(K) \approx 6.3$ bits | Information transfer per projection |
 | SVO triple | $\log_2(N_S N_V N_O)$ | Depends on vocabulary size |
 | Bundling loss per entry | $\sim 98\%$ at $n = 100$ | Majority rule drowns individual inputs |

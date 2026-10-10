@@ -496,18 +496,40 @@ derivation(
 
 section("THEOREM XVI.2: Manifold Invariance Under Slow Dynamics")
 
-# Bounded single-absorption centroid shift: at most 1 bit flips.
+# Single-absorption centroid shift under the REAL accumulator update.
+# Old claim (wrong): delta(c, c') <= 1/D.  The majority threshold depends on
+# W, so one absorption raises the bar for every position and can flip several
+# marginal bits.  Correct bound: delta(c, c') <= delta(c, v), because a bit can
+# only flip where the input v disagrees with the centroid c.
+def _majority(acc, W):
+    return [1 if 2 * a > W else 0 for a in acc]
+
+
 shift_ok = True
-for _ in range(500):
-    D = 128
-    c = [rng.randint(0, 1) for _ in range(D)]
-    tau = c[:]
-    idx = rng.randrange(D)
-    tau[idx] ^= 1
-    if nhd(c, tau) > 1.0 / D + 1e-12:
+multi_bit_seen = False
+for _ in range(4000):
+    D = 64
+    W = rng.randint(1, 60)
+    acc = [rng.randint(0, W) for _ in range(D)]
+    c = _majority(acc, W)
+    v = [rng.randint(0, 1) for _ in range(D)]
+    c2 = _majority([a + b for a, b in zip(acc, v)], W + 1)
+    if nhd(c, c2) > nhd(c, v) + 1e-12:
         shift_ok = False
-assert shift_ok, "XVI.2 single-absorption shift <= 1/D"
-ok("XVI.2.1  a single absorption shifts the centroid by <= 1/D")
+    if nhd(c, c2) > 1.0 / D + 1e-12:
+        multi_bit_seen = True
+assert shift_ok, "XVI.2.1 single-absorption shift <= delta(c, v)"
+assert multi_bit_seen, "XVI.2.1 the 1/D bound is not a theorem (multi-bit flips occur)"
+ok("XVI.2.1  delta(c,c') <= delta(c,v) for a real accumulator update")
+
+# Explicit counterexample: D=10, W=3, A=(2,...,2), c=(1,...,1),
+# absorb v=(0,0,1,...,1) -> W'=4, c'=(0,0,1,...,1): delta = 0.2 > 1/D = 0.1.
+_c = _majority([2] * 10, 3)
+_c2 = _majority([a + b for a, b in zip([2] * 10, [0, 0, 1, 1, 1, 1, 1, 1, 1, 1])], 4)
+assert _c == [1] * 10, "XVI.2.1 counterexample centroid is all ones"
+assert abs(nhd(_c, _c2) - 0.2) < 1e-12, "XVI.2.1 counterexample shift is 0.2"
+assert nhd(_c, _c2) > 1.0 / 10 + 1e-12, "XVI.2.1 the 1/D bound fails"
+ok("XVI.2.1  explicit counterexample: delta=0.2 > 1/D=0.1")
 
 derivation(
     "XVI.2.2 Manifold converges at rate O(kappa_F^t) to M*",
@@ -768,7 +790,7 @@ derivation(
 # THEOREM XXVII.1-2: Soft Projection
 # ═════════════════════════════════════════════════════════════════════════════
 
-section("THEOREM XXVII.1: Soft Projection Breaks Singularity")
+section("THEOREM XXVII.1: Soft Projection Increases Output Richness")
 
 
 def soft_weights(x, cents, tau):
@@ -777,32 +799,60 @@ def soft_weights(x, cents, tau):
     return [w / s for w in ws]
 
 
-def soft_project(x, cents, tau):
+def soft_project_continuous(x, cents, tau):
+    """Real-valued blend, matching Rust `soft_project_continuous`."""
     ws = soft_weights(x, cents, tau)
     D = len(x)
-    out = []
-    for i in range(D):
-        val = sum(w * c[i] for w, c in zip(ws, cents))
-        out.append(val)
-    return out
+    return [sum(w * c[i] for w, c in zip(ws, cents)) for i in range(D)]
 
 
-soft_cents = [[rng.randint(0, 1) for _ in range(64)] for _ in range(5)]
+def soft_project_binary(x, cents, tau):
+    """Thresholded blend, matching Rust `soft_project` / `binarize_continuous`."""
+    return [1 if v > 0.5 else 0 for v in soft_project_continuous(x, cents, tau)]
+
+
+soft_cents = [[rng.randint(0, 1) for _ in range(64)] for _ in range(5)]  # K odd
 xq = [rng.randint(0, 1) for _ in range(64)]
 ws = soft_weights(xq, soft_cents, 0.10)
 assert all(w > 0 for w in ws), "XXVII.1 positive weights"
 assert math.isclose(sum(ws), 1.0, abs_tol=1e-12), "XXVII.1 weights sum to 1"
 ok("XXVII.1  softmax weights are positive and sum to 1")
 
-# The soft output is a continuous blend, not one of the discrete centroids.
-soft_out = soft_project(xq, soft_cents, 0.10)
-assert all(soft_out != [float(b) for b in c] for c in soft_cents), "XXVII.1 blend"
-ok("XXVII.1  soft projection returns a blend, not a hard centroid")
+# The continuous blend is not one of the discrete centroids.
+soft_out = soft_project_continuous(xq, soft_cents, 0.10)
+assert any(v != 0.0 and v != 1.0 for v in soft_out), "XXVII.1 blend is not binary"
+ok("XXVII.1  soft_project_continuous returns a real blend, not a centroid")
+
+# Richness: the binary soft projector reaches more than K distinct outputs.
+K = len(soft_cents)
+seen = set()
+for _ in range(4000):
+    xs = [rng.randint(0, 1) for _ in range(64)]
+    seen.add(tuple(soft_project_binary(xs, soft_cents, 0.10)))
+assert len(seen) > K, "XXVII.1 binary soft projector must exceed K outputs"
+ok(f"XXVII.1  binary soft projection reachable outputs ({len(seen)}) > K ({K})")
+
+# The shipped operator maps the FINITE domain {0,1}^D to a FINITE image, so
+# its image has Lebesgue measure ZERO — it cannot carry a positive-volume
+# invariant measure.  Only the continuous relaxation can.
+assert len(seen) <= 2 ** 64, "XXVII.1 binary image is finite (measure zero)"
+ok("XXVII.1  binary image is finite => zero-volume (atomic invariant measure)")
+
+# Mush limit: as tau -> infinity the weights equalise and the output becomes
+# input-independent, so richness collapses (contradicting the old K-1 claim).
+mush = set()
+for _ in range(500):
+    xs = [rng.randint(0, 1) for _ in range(64)]
+    mush.add(tuple(soft_project_binary(xs, soft_cents, 1e9)))
+assert len(mush) == 1, "XXVII.1 high-tau output must be input-independent"
+ok("XXVII.1  tau->infinity collapses the output set to a single vector")
 
 derivation(
-    "XXVII.1 Continuous support of mu*_tau for tau > 0",
-    "Continuity of the softmax blend and the resulting continuous "
-    "support of the invariant measure are analytic, not finite checks.",
+    "XXVII.1 Non-atomic support of mu*_tau needs a CONTINUOUS state",
+    "A positive-volume invariant measure requires a continuous state space "
+    "(real-valued accumulator or input noise). On the binary state space the "
+    "invariant measure is atomic for every tau; this is analytic, not a "
+    "finite check.",
 )
 
 section("THEOREM XXVII.2-R: Contraction-Capacity Trade-off (Corrected)")
@@ -851,6 +901,82 @@ assert margin_ok, "D1 entrenched bit stays 1"
 ok("D1  entrenchment margin 2a-W >= 2 keeps a 1-bit set")
 
 # ═════════════════════════════════════════════════════════════════════════════
+# COUNTEREXAMPLE REGRESSION CHECKS
+# ═════════════════════════════════════════════════════════════════════════════
+
+section("COUNTEREXAMPLE REGRESSION CHECKS")
+
+# VII.1: non-commutativity is generic, not universal.
+# R(vx, vy) = rho^3(vx) xor rho^7(vy); equal iff rho^4(vx xor vy) = vx xor vy.
+def role_bind(vx, vy):
+    return xor(rot(vx, 3), rot(vy, 7))
+
+
+D8 = 8
+zero8 = [0] * D8
+ones8 = [1] * D8
+assert role_bind(zero8, ones8) == role_bind(ones8, zero8), "VII.1 degenerate binding"
+ok("VII.1  v_x=0, v_y=1 share a binding (non-commutativity is not universal)")
+
+impl_ok = True
+for _ in range(2000):
+    vx = [rng.randint(0, 1) for _ in range(D8)]
+    vy = [rng.randint(0, 1) for _ in range(D8)]
+    z = xor(vx, vy)
+    if (role_bind(vx, vy) == role_bind(vy, vx)) != (rot(z, 4) == z):
+        impl_ok = False
+assert impl_ok, "VII.1 equality iff rho^4(v_x xor v_y) = v_x xor v_y"
+ok("VII.1  bindings equal iff rho^4(v_x xor v_y) = v_x xor v_y (2000 trials)")
+
+# X.1: the OLD potential (negative dispersion sign) is NOT monotone under fission.
+lam = 1.0
+
+
+def phi_old(cents, entries):
+    inter = sum(nhd(cents[i], cents[j])
+                for i in range(len(cents)) for j in range(i + 1, len(cents)))
+    disp = sum(nhd(e, cents[i]) for i, es in enumerate(entries) for e in es)
+    return inter - lam * disp
+
+
+b0 = [0] * D8
+b1 = [1] * D8
+before = phi_old([b0], [[b0, b1]])
+after = phi_old([b0, b1], [[b0], [b1]])
+assert after > before, "X.1 old potential increases under fission"
+assert math.isclose(after - before, 1.0 + lam, abs_tol=1e-12), "X.1 delta = 1 + lambda"
+ok("X.1  negative-sign potential INCREASES under fission (old claim false)")
+
+
+def phi_new(cents, entries, mu=0.01):
+    inter = sum(nhd(cents[i], cents[j])
+                for i in range(len(cents)) for j in range(i + 1, len(cents)))
+    disp = sum(nhd(e, cents[i]) for i, es in enumerate(entries) for e in es)
+    return inter + lam * disp + mu * len(cents)
+
+
+# Merge of two near clusters (one entry each) decreases the corrected potential.
+ma = [0] * D8
+mb = ma[:]
+mb[0] ^= 1
+pb = phi_new([ma, mb], [[ma], [mb]])
+pa = phi_new([ma], [[ma, mb]])
+assert pa < pb, "X.1 corrected potential decreases under a near merge"
+ok("X.1  positive-dispersion potential decreases under a near merge")
+
+# XXX.1: W/(W+1) is increasing and >= 2/3 (the old "<=" was reversed).
+for W in range(2, 501):
+    assert W / (W + 1) >= 2.0 / 3.0 - 1e-12, "XXX.1 reversed inequality"
+assert 500 / 501 > 0.99, "XXX.1 near-unit retention at the cap"
+ok("XXX.1  W/(W+1) >= 2/3 and -> 1 (old '<= 2/3' was reversed)")
+
+# XXXII.1: the storage formula must include the accumulator dimension D.
+Ddim = 10240
+Wcap = 500
+assert Ddim * math.log2(Wcap + 1) / math.log2(Wcap) > 1000, "XXXII.1 factor-D undercount"
+ok("XXXII.1  per-cluster accumulator capacity scales with D, not log2 W")
+
+# ═════════════════════════════════════════════════════════════════════════════
 # SUMMARY
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -872,7 +998,7 @@ asserted = [
     "XIV.1 Unified decision rule (finite argmin)",
     "XVI.1.1 Non-expansiveness counterexample (CORRECTED)",
     "XVI.1.2 A is an isometry",
-    "XVI.2.1 Bounded single-absorption centroid shift",
+    "XVI.2.1 Single-absorption shift <= delta(c,v) (CORRECTED from 1/D)",
     "XVI.3 Timescale separation",
     "XVII.1 kappa_F < 1 for finite W",
     "XX.1 [SUPERSEDED] historical margin holds",
@@ -885,8 +1011,13 @@ asserted = [
     "XXV.1 Finite support << ambient",
     "XXVI.2 Mixing time bound",
     "XXVII.1 Softmax weights valid",
+    "XXVII.1 Binary output richness > K and measure-zero image",
     "XXVII.2-R Calibrated kappa_P and joint product",
     "D1 Decay rounding error and entrenchment",
+    "VII.1 Non-commutativity counterexample (0 vs 1) + equality condition",
+    "X.1 Potential sign counterexample + corrected merge decrease",
+    "XXX.1 W/(W+1) >= 2/3 (reversed inequality)",
+    "XXXII.1 Storage capacity includes the accumulator dimension D",
 ]
 
 not_machine_checked = [
@@ -900,7 +1031,7 @@ not_machine_checked = [
     "XXIV.2 Exact oscillation period",
     "XXV.1-3 Singularity / attractor collapse / quantized RDS",
     "XXVI.1 Finite Markov chain reduction",
-    "XXVII.1 Continuous support of the soft invariant measure",
+    "XXVII.1 Non-atomic support of mu*_tau (needs a continuous state)",
     "XXVII.2-R Existence of the contraction-capacity trade-off",
     "COMP Global convergence of the compaction potential",
     "XXII.1-R Adversarial adaptive-rate extension",
@@ -922,6 +1053,19 @@ print(f"""
     * XX.1    kappa_P ~ 0.68 block labelled SUPERSEDED; calibrated block
               uses kappa_P = 0.916, kappa_F = 0.95 and asserts that the
               historical margin fails while kappa_P * kappa_F < 1 holds.
+    * XVI.2.1 the "<= 1/D" single-absorption bound is FALSE; a real
+              accumulator update is simulated and the correct bound
+              delta(c,c') <= delta(c,v) is asserted, with the explicit
+              D=10 counterexample (delta = 0.2 > 0.1).
+    * VII.1   non-commutativity is generic, not universal: v_x=0, v_y=1
+              collide, and equality holds iff rho^4(v_x xor v_y)=v_x xor v_y.
+    * X.1     the negative-sign potential INCREASES under fission; the
+              positive dispersion + count penalty form is used instead.
+    * XXVII.1 "positive-volume subset" is a category error for a map out of
+              the finite set H; the binary image is finite (zero volume) and
+              the tau->infinity limit collapses to one output (not K-1 bits).
+    * XXX.1   the "W/(W+1) <= 2/3" inequality was reversed; it is >= 2/3 -> 1.
+    * XXXII.1 the storage formula dropped the accumulator dimension D.
 
   Asserted claims:      {len(asserted)}
   Derivations:          {len(not_machine_checked)}

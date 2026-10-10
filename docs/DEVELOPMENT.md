@@ -166,6 +166,26 @@ pre-existing failures (the stochastic pair both passed this run, so the count is
 41), all new tests pass, and no test in the modules touched by the pass (`lib.rs`
 telemetry, `reason::soft_project` and `reason::soft_project_continuous`
 exercised by the adversarial, non-Lipschitz, and Lipschitz tests) fails.
+A subsequent conformance pass (4 new `lib.rs` counterexample tests,
+`test_vii1_noncommutativity_has_degenerate_fixed_point`,
+`test_x1_potential_sign_requires_positive_dispersion`,
+`test_xvi_absorption_flips_exceed_one_bit`, and
+`test_xxvii_binary_projection_image_is_finite_but_rich`) corrected six
+statements whose proofs did not match the model: VII.1 (non-commutativity is
+generic, not universal; `x=0, y=1` collide), X.1 (the potential's dispersion
+term had the wrong sign, so fission *increased* it; restated with a positive
+dispersion penalty and a cluster-count penalty), XVI.2.1 (the single-absorption
+shift is `<= delta(c,v)`, not `<= 1/D`; the threshold moves with `W`), XXX.1
+(`W/(W+1)` is `>= 2/3` and `-> 1`, so there is no uniform strict contraction;
+it is a bounded-lag tracking statement), XXVII.1 (a map out of the finite set
+`{0,1}^D` has a finite, measure-zero image and cannot give a positive-volume
+invariant measure; richness is real but the `tau -> infinity` cap is not), and
+XXXII.1 (the storage formula omitted the accumulator dimension `D`). The
+`prove_math.py` checks were rewritten accordingly (now 61 asserted checks) and
+include counterexample regressions for VII.1, X.1, XVI.2.1, XXVII.1, XXX.1 and
+XXXII.1. A full run on 2026-10-10 after the conformance pass reports
+**2521 passed / 41 failed / 15 ignored** in 528 s (the same known pre-existing
+failures; all 4 new tests pass).
 
 Failure breakdown for the 42 (38 fail regardless of environment):
 

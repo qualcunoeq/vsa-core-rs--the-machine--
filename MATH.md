@@ -67,7 +67,7 @@ the architecture as a whole loses its guarantees.
 |---|------|-----------|-------------|-------------|
 | **A1** | **Bounded Drift** | $\delta(x_t, x_{t+1}) \leq r$ for consecutive world states, $r < 0.35$ | XXIII (tracking), X (compaction), IV (evidence) | Cluster proliferation unbounded (fission rate $K \cdot r/0.40$), centroid lag $O(r \cdot W)$ |
 | **A2** | **Centroid Separation** | $\delta(c_i, c_j) \geq s = 0.30$ for distinct concepts at equilibrium | X (compaction), XXV (singularity), VI (chain) | Semantic collapse: distinct concepts merge into one centroid, $\log_2 K$ capacity lost |
-| **A3** | **Quantitative Rotation Decorrelation** | For the active centroid set, direct and rotated centroid distances satisfy explicit margins: $\delta(c_i,c_j)\in[0.45,0.55]$ for $i\neq j$ and $\delta(c_i,\rho^{-52}(c_j)) \in [0.45,0.55]$ for all $(i,j)$ | Sub-Lemma S (XXV.5), VI (chain), VII (binding) | Near-periodic, duplicate, or aligned centroids pass exact fixed-point checks but remain correlated; $g = \text{nearest} \circ P_\tau$ may fail to surject; transition matrix can become reducible |
+| **A3** | **Quantitative Rotation Decorrelation + Witness Gate** | For the active centroid set, direct and $\rho^{-26}$-rotated centroid distances satisfy explicit margins ($\delta(c_i,c_j)\in[0.45,0.55]$ for $i\neq j$, $\delta(c_i,\rho^{-26}(c_j)) \in [0.45,0.55]$ for all $(i,j)$, plus the $\rho^{-52}$ band), and the executable witness gate `sublemma_s_witness_margin` reports a positive margin | Sub-Lemma S (XXV.5), VI (chain), VII (binding) | Near-periodic, duplicate, or aligned centroids pass exact fixed-point checks but remain correlated; $g = \text{nearest} \circ P_\tau$ may fail to surject; transition matrix can become reducible |
 | **A4** | **Cleanup Oracle** | Resonator cleanup returns the intended symbol if pre-cleanup similarity $\geq \tau_{\text{clean}} = 0.56$ | QA engine, forward chain, causal composition | XOR unbinding noise accumulates; $n$-hop chains become unrecoverable after $n > \tau_{\text{clean}} / \eta$ hops |
 | **A5** | **Feedback Reliability** | Reward/error signals are correct with probability $p > 0.5$ | IX (epistemic/instrumental), XII (promotion), epistemic learning | Self-confirming memory loops: wrong rules get reinforced, correct rules decay |
 
@@ -707,7 +707,7 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXV.3 | Learned quantized random dynamical system | **PROVEN** | Corollary of XXV.1, full mathematical identity |
 | XXV.4 | Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ once `enforce_a3q_manifold()` accepts the active centroid set. Scope: spectral gap of the row-stochastic centroid chain (asymptotic rate $\lambda_2$; finite-time constant via Dobrushin/reversibility, see the Scope Remark), not the Euclidean operator norm of the vector projection |
 | XXV.5a | No deterministic decorrelation from exact $\rho$-admissibility | **PROVEN** | `test_rho_admissible_does_not_imply_decorrelation` constructs an admissible near-period-4 centroid with $\delta(c,\rho^{52}(c))=2/D \ll 0.5$ |
-| Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN** for runtime-admissible manifolds | Constructive witness works for A3-Q-admitted manifolds; `enforce_a3q_manifold()` is the admission gate; empirical generic test: 90/90 pairs, min $w_j/w_i=5.39$ |
+| Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN conditional** on A3-Q adoption **and** a positive executable witness margin | Corrected $\rho^{26}$-domain witness; `sublemma_s_witness_margin`/`enforce_a3q_manifold()` is the gate; the static bands alone do not bound the witness direction; measured margin: 90/90 pairs, min 0.21 |
 | XXVI.2 | Spectral gap (exponential mixing) | **PROVEN** | λ₂(P) ≤ κ < 1, mixing in ~77 cycles |
 | XXVII | Soft projection frontier | **CALIBRATED** | $\tau = 0.10$ optimal (v3.1 corrected): $\kappa_P \approx 0.916$, $C_{\mathrm{eff}} = 2554$ (11.3 bits, 128× gain). Previous $\tau=0.030$ was a buggy artifact (see v3.1 fix notes). |
 | XXVII.2 | Optimal τ sensitivity | **MEASURED** | $\tau \in [0.06, 0.12]$ is the usable window. Below 0.06 is near-hard; above 0.12 is increasingly mushy. Optimum $\tau = 0.10$ balances $\kappa_P \approx 0.916$ with $C_{\mathrm{eff}} = 2554$ (11.3 bits, 128× gain). |
@@ -771,7 +771,7 @@ Since the original document was written, the following claims have been resolved
 
 | Rank | Item | Scope | Status |
 |------|------|-------|--------|
-| **1** | **Sub-Lemma S** (Surjectivity of $g$) | $\forall V_i, \forall j: \exists x \in V_i : g(x) = j$ | **CLOSED for runtime-admissible manifolds**, A3-Q admission provided by `enforce_a3q_manifold()`; exact-only version impossible by XXV.5a |
+| **1** | **Sub-Lemma S** (Surjectivity of $g$) | $\forall V_i, \forall j: \exists x \in V_i : g(x) = j$ | **CLOSED for runtime-admissible manifolds**, A3-Q admission **plus** the executable witness gate (`sublemma_s_witness_margin`) provided by `enforce_a3q_manifold()`; exact-only version impossible by XXV.5a |
 | **2** | **IX.1** (Grounding preservation) | One long-run divergence test | **CLOSED**, `test_ix1_grounding_long_run` (5000 ticks, regime changes, tracking error ≤ 0.70) |
 | **3** | **XII.1** (Promotion boundedness) | One adversarial frequency test | **CLOSED**, `test_xii1_adversarial_promotion_frequency` (64 label variants, 0 new clusters) |
 | **4** | **Decorrelation bound from exact $\rho$-admissibility** | $\forall \mathcal{M}_t$, not just generic | **IMPOSSIBLE under current invariants**, resolved by XXV.5a; use A3-Q as an explicit contract |
@@ -826,7 +826,7 @@ the learned structural centroids OUTPERFORM the hand-coded pattern list (3/3 vs 
 **Detail on Sub-Lemma S (corrected v3.4).** The original Assumption $\rho$ bundled three distinct claims: (a) exact fixed-point exclusion under $\rho^{13}$, (b) exact fixed-point exclusion under $\rho^{26}$ and $\rho^{52}$, and (c) **quantitative** direct/rotated decorrelation strong enough for the Sub-Lemma S witness margin. After correction:
 - Claims (a) and (b) are handled by the exact $\rho$-admissible invariant: $\delta(c_k,\rho^{13}(c_k))>0$, $\delta(c_k,\rho^{26}(c_k))>0$, and $\delta(c_k,\rho^{52}(c_k))>0$.
 - Claim (c) is **not implied** by exact admissibility. The deterministic counterexample in Theorem XXV.5a and `test_rho_admissible_does_not_imply_decorrelation` constructs a centroid that passes all three exact checks while $\delta(c,\rho^{52}(c))=2/D\ll0.5$.
-- Sub-Lemma S is therefore **deterministic over runtime-admissible manifolds**, where A3-Q admission is performed by `enforce_a3q_manifold()` using direct pairwise and $\rho^{-52}$ rotated-pairwise distance bands. Without that admission rule, no deterministic all-exact-admissible proof exists.
+- Sub-Lemma S is therefore **deterministic over runtime-admissible manifolds**, where A3-Q admission is performed by `enforce_a3q_manifold()` using direct pairwise and $\rho^{-26}$/$\rho^{-52}$ rotated-pairwise distance bands, **and** the soft-projection regime additionally verifies the explicit witness via `sublemma_s_witness_margin` (the bands alone do not bound the witness direction). Without that admission rule, no deterministic all-exact-admissible proof exists.
 
 This closes the former "proven modulo decorrelation" gap by replacing an implicit probabilistic assumption with an executable theorem boundary: exact $\rho$-admissibility prevents fixed-point collapse, and A3-Q admits only manifolds whose quantitative geometry is strong enough for the constructive witness proof.
 
@@ -1822,7 +1822,7 @@ A centroid set $\mathcal{M}_t$ is **$\rho$-admissible** if:
 
 $$\delta(c_k, \rho^{13}(c_k)) > 0 \quad\text{and}\quad \delta(c_k, \rho^{26}(c_k)) > 0 \quad\text{and}\quad \delta(c_k, \rho^{52}(c_k)) > 0 \quad \forall k \in \{1,\ldots,K\}$$
 
-All three shifts are required. The first two ensure the centroid is not a fixed point of the single-rotation or double-rotation dynamics (which would collapse the transition domain). The third ($\rho^{52}$) excludes period-4 vectors needed by the constructive witness construction in Sub-Lemma S. The cases are:
+All three shifts are required. The first two ensure the centroid is not a fixed point of the single-rotation or double-rotation dynamics (which would collapse the transition domain). The $\rho^{26}$ check is the one that guards the (corrected) Sub-Lemma S witness, since the transition domain is $\rho^{26}(W_i)$; the $\rho^{52}$ check additionally excludes period-4 vectors. The cases are:
 
 | Shift | $\gcd(\text{shift}, 10240)$ | Fixed points (beyond constants) | Caught by |
 |-------|---------------------------|--------------------------------|-----------|
@@ -1830,7 +1830,7 @@ All three shifts are required. The first two ensure the centroid is not a fixed 
 | $\rho^{26}$ | 2 | Period-2 vectors ($0101\ldots$, $1010\ldots$) | $\rho^{26}$ check |
 | $\rho^{52}$ | 4 | Period-4 vectors ($0011\ldots$, $0110\ldots$, etc.) | $\rho^{52}$ check |
 
-**Why periodic vectors matter.** A period-2 centroid has $\delta(c, \rho^{13}(c)) = 1.0$ (odd shift flips every bit), so it passes the $\rho^{13}$ check. But $\delta(c, \rho^{26}(c)) = 0$ (even shift preserves period-2), making it a fixed point of $\rho^{26}$. This would collapse $\rho^{26}(W_k) = W_k$, eliminating the decorrelation needed for Sub-Lemma S. Similarly, period-4 vectors pass both $\rho^{13}$ ($\delta = 0.50$) and $\rho^{26}$ ($\delta = 1.0$) but are fixed points of $\rho^{52}$ ($\gcd(52,10240)=4$), making $\rho^{52}(c_k) = c_k$ and hence $d(c_k, \rho^{-52}(c_k)) = 0$, which would break the witness construction in Sub-Lemma S.
+**Why periodic vectors matter.** A period-2 centroid has $\delta(c, \rho^{13}(c)) = 1.0$ (odd shift flips every bit), so it passes the $\rho^{13}$ check. But $\delta(c, \rho^{26}(c)) = 0$ (even shift preserves period-2), making it a fixed point of $\rho^{26}$: this collapses $\rho^{26}(W_k) = W_k$ and breaks the corrected witness, so the $\rho^{26}$ check is essential. Period-4 vectors pass both $\rho^{13}$ ($\delta = 0.50$) and $\rho^{26}$ ($\delta = 1.0$), so they are not fixed points of $\rho^{26}$; the $\rho^{52}$ check ($\gcd(52,10240)=4$) additionally excludes them as a safety invariant on the geometry.
 
 **Enforcement.** Implemented in `MemoryCluster::enforce_rho_admissible()`, which checks all three shifts and flips bit 0 (for $\rho^{13}$ violations), bit 1 (for $\rho^{26}$ violations), or bit 2 (for $\rho^{52}$ violations) when $\delta = 0$. Cost: three XOR + popcount per centroid per compaction (~$0.9\mu$s). Never fires on real-world embeddings.
 
@@ -1852,23 +1852,23 @@ This is admissible but not decorrelated. Therefore exact non-fixedness cannot im
 
 #### Corrected Contract: A3-Q
 
-For deterministic use of Sub-Lemma S, exact $\rho$-admissibility must be supplemented by a **quantitative direct/rotated-decorrelation** contract. The runtime implementation uses:
+For deterministic use of Sub-Lemma S, exact $\rho$-admissibility must be supplemented by a **quantitative direct/rotated-decorrelation** contract. The A3-Q distance bands are:
 
-$$\delta(c_i,c_j) \in [0.45,0.55] \quad \forall i\neq j$$
+$$\delta(c_i,c_j) \in [0.45,0.55] \quad \forall i\neq j,\qquad \delta(c_i,\rho^{-26}(c_j)) \in [0.45,0.55] \quad \forall i,j,$$
 
-$$\delta(c_i,\rho^{-52}(c_j)) \in [0.45,0.55] \quad \forall i,j$$
-
-and self-rotation checks:
+(with the $\rho^{-52}$ band retained as well), plus the self-rotation checks
 
 $$\delta(c_i,\rho^{13}(c_i)),\;\delta(c_i,\rho^{26}(c_i)),\;\delta(c_i,\rho^{52}(c_i)) \in [0.45,0.55].$$
 
-The direct pairwise condition excludes duplicate/near-duplicate centroids whose Voronoi cells would make index-level surjectivity ill-posed. The rotated condition excludes near-periodic and adversarially aligned centroids. In code this admission check is implemented by `a3q_distance_in_band()`, `hypervector_is_a3q_self_admissible()`, `centroids_are_a3q_admissible()`, and `VSABrain::enforce_a3q_manifold()`.
+The direct pairwise condition excludes duplicate/near-duplicate centroids whose Voronoi cells would make index-level surjectivity ill-posed. The rotated conditions exclude near-periodic and adversarially aligned centroids. In code this admission check is implemented by `a3q_distance_in_band()`, `hypervector_is_a3q_self_admissible()`, `centroids_are_a3q_admissible()`, and `VSABrain::enforce_a3q_manifold()`.
 
-The corresponding witness-direction non-alignment bound is:
+> **Correction (v3.6).** The rotated band is at $\rho^{-26}$, the rotation the Sub-Lemma S witness actually uses (the transition domain is $\rho^{26}(W_i)$); the earlier spec checked only $\rho^{-52}$, which does not control the constructed witness.
 
-$$\left|d(v_{ij},\rho^{-52}(c_k)) - d(c_i,\rho^{-52}(c_k))\right| \leq \epsilon_{\text{corr}} \quad \forall k\neq j$$
+These static bands do **not** by themselves imply the witness-direction non-alignment bound
 
-where $\epsilon_{\text{corr}} < r_i - 0.10$ for the constructed witness $v_{ij}$. This is the deterministic replacement for the old "38$\sigma$ generic decorrelation" step. It is a runtime admission rule on the active centroid geometry, not a consequence of exact periodicity checks.
+$$\bigl|d(v_{ij},\rho^{-26}(c_k)) - d(c_i,\rho^{-26}(c_k))\bigr| \leq \epsilon_{\text{corr}} \quad \forall k\neq j,$$
+
+because the overlap $g_k$ of Phase 3 can align adversarially. That bound is supplied by the **executable witness gate** `sublemma_s_witness_margin`, which measures the end-to-end margin directly for the constructed witness and is applied by `enforce_a3q_manifold()` whenever the soft projection is active. It replaces the old "38$\sigma$ generic decorrelation" step with a checked condition rather than a probabilistic one.
 
 #### Layer 1: $\kappa_F$ is Uniformly Bounded (PROVEN)
 
@@ -1886,11 +1886,13 @@ $$P_{ij} = \frac{|V_i \cap f^{-1}(j)|}{|V_i|}, \quad f(x) = \underset{k}{\arg\mi
 
 The challenge is guaranteeing $|V_i \cap f^{-1}(j)| > 0$ for all pairs $(i,j)$. This is the job of Sub-Lemma S.
 
-**Sub-Lemma S (Surjectivity of $\mathbf{g}$, Theorem XXV.5).** Let $g = \text{nearest} \circ P_\tau$ be the composed map from hypervectors to centroid indices. For a centroid set $\mathcal{M}_t$ accepted by `enforce_a3q_manifold()` with $\tau = 0.10$ and $D = 10240$, for any Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any centroid index $j$:
+**Sub-Lemma S (Surjectivity of $\mathbf{g}$, Theorem XXV.5).** Let $g = \text{nearest} \circ P_\tau$ be the composed map from hypervectors to centroid indices. For a centroid set $\mathcal{M}_t$ that passes the **executable Sub-Lemma S gate** (the A3-Q distance bands of Section A3-Q *and* a positive witness margin from `sublemma_s_witness_margin`), with $\tau = 0.10$ and $D = 10240$, for any Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any centroid index $j$:
 
 $$\exists\, y \in \rho^{26}(W_i) : g(y) = j$$
 
 where $W_i = \{z : \delta(z, c_i) \leq \delta(z, c_k) \;\forall k\}$ is the Voronoi cell of $c_i$ in the **original** manifold $\mathcal{M}_t$, and $\rho^{26}(W_i)$ is its image under double rotation by 26 bits.
+
+> **What the gate adds (v3.6).** The A3-Q bands are static; they constrain direct and rotated centroid distances but do **not** bound how the constructed witness move perturbs its distance to a competing centroid (the $g_k$ term of Phase 3). `sublemma_s_witness_margin` verifies that bound directly for every ordered pair. The distance bands alone are insufficient; A3-Q admission **and** a positive gate margin is the exact hypothesis.
 
 ---
 
@@ -1930,64 +1932,60 @@ $$\rho^{26}(W_i) \cap P_\tau^{-1}(V_j) \neq \emptyset \quad \forall i,j$$
 
 ### Constructive Proof (Theorem XXV.5)
 
-The proof constructs an explicit witness point $v_{ij} \in V_i$ for any pair $(i,j)$. The key requirement is A3-Q: the $\rho^{26}$ transition-domain rotation must be quantitatively decorrelated from all non-target centroids so the soft projection output is dominated by $c_j$.
+The proof constructs an explicit witness $y_{ij} \in \rho^{26}(W_i)$ that maps to $j$. It is deterministic **conditional on the executable witness gate**; the static A3-Q bands alone are necessary but not sufficient.
 
-**Phase 1: Witness construction.** For a pair $(i,j)$ with $d(c_i, c_j) > 0.30$ (guaranteed by the compactor invariant $[0.30, 0.70]$), let $r_i$ be the Voronoi radius of $W_i$:
+**Phase 1: Witness construction.** For a pair $(i,j)$ with $d(c_i, c_j) > 0.30$ (compactor invariant $[0.30, 0.70]$), let
 
-$$r_i = \min_{k \neq i} \frac{d(c_i, c_k)}{2} > 0.15$$
+$$r_i = \min_{k \neq i} \frac{d(c_i, c_k)}{2} > 0.15, \qquad s = 0.95\,r_i.$$
 
-Let $z_{ij} = c_i \oplus \rho^{-52}(c_j)$ be the hypervector XOR between the source centroid $c_i$ and the doubly-inverse-rotated target centroid $\rho^{-52}(c_j)$. Move from $c_i$ toward $\rho^{-52}(c_j)$ by $\delta = r_i$:
+Move from $c_i$ toward the doubly-inverse-rotated target $\rho^{-26}(c_j)$ by $s$, flipping $sD$ of the bits where $c_i$ and $\rho^{-26}(c_j)$ differ:
 
-$$v_{ij} = \text{flip}\left(c_i, \frac{r_i}{d(c_i, \rho^{-52}(c_j))} \cdot D \text{ bits toward } \rho^{-52}(c_j)\right)$$
+$$v_{ij} = \text{flip}\bigl(c_i,\ sD \text{ bits toward } \rho^{-26}(c_j)\bigr).$$
 
-where $\text{flip}(c, n)$ flips the $n$ bits of $c$ that differ from $\rho^{-52}(c_j)$ (i.e., the bits where $z_{ij}$ has 1s), choosing those with the largest dot-product alignment with the move direction when $n$ is fractional. By construction, $v_{ij} \in W_i$ (still closest to $c_i$ after moving $r_i$ units) and $d(v_{ij}, \rho^{-52}(c_j)) = d(c_i, \rho^{-52}(c_j)) - r_i$.
+Since $s < r_i$ and $c_i$ is nearest to itself, $v_{ij} \in W_i$, and by construction $d(v_{ij}, \rho^{-26}(c_j)) = d(c_i, \rho^{-26}(c_j)) - s$.
 
-**Phase 2: Rotation to the transition domain.** Apply $\rho^{52}$ to get $y_{ij} = \rho^{52}(v_{ij}) \in \rho^{26}(W_i)$ (since $\rho^{52}(W_i) \subset \rho^{26}(W_i)$). The distance to the target centroid is exactly:
+> **Correction (v3.6).** The earlier revision aimed the witness at $\rho^{-52}(c_j)$ and then rotated by $\rho^{52}$, asserting $y_{ij} = \rho^{52}(v_{ij}) \in \rho^{26}(W_i)$ "since $\rho^{52}(W_i) \subset \rho^{26}(W_i)$". That containment is **false**: it would require $\rho^{26}(W_i) \subset W_i$, i.e. $W_i$ invariant under $\rho^{26}$, which does not hold. The domain is genuinely $\rho^{26}(W_i)$ (from $x = \rho^{13}(z)$, $z \in W_i$), so the witness must use the $26$-rotation and target $\rho^{-26}(c_j)$. Validated by `test_sublemma_s_constructive_witness` ($90/90$ ordered pairs, minimum margin $0.21$).
 
-$$d(y_{ij}, c_j) = d(\rho^{52}(v_{ij}), c_j) = d(v_{ij}, \rho^{-52}(c_j)) = d(c_i, \rho^{-52}(c_j)) - r_i$$
+**Phase 2: The witness lies in the domain.** With $v_{ij} \in W_i$, the point $y_{ij} = \rho^{26}(v_{ij})$ lies in $\rho^{26}(W_i)$ exactly, and
 
-Exact $\rho$-admissibility only ensures $d(c_i,\rho^{-52}(c_i))>0$. By Theorem XXV.5a this is not enough for decorrelation. Under A3-Q, however, $d(c_i,\rho^{-52}(c_j)) \in [\beta_-,\beta_+]$ with $\beta_\pm \approx 0.50$. Thus, for the calibrated regime:
+$$d(y_{ij}, c_j) = d(v_{ij}, \rho^{-26}(c_j)) = d(c_i, \rho^{-26}(c_j)) - s.$$
 
-$$d(y_{ij}, c_j) \approx 0.50 - 0.15 = 0.35$$
+Under A3-Q, $d(c_i, \rho^{-26}(c_j)) \in [\beta_-,\beta_+]$, $\beta_\pm \approx 0.50$, so $d(y_{ij}, c_j) \approx 0.50 - 0.15 = 0.35$.
 
-**Phase 3: Distance to other centroids.** For any $k \neq j$, A3-Q requires that the distance to $\rho^{-52}(c_k)$ is not adversarially reduced by the move direction ($c_i \to \rho^{-52}(c_j)$):
+**Phase 3: The competitor distance is the missing hypothesis.** Let $F$ be the set of flipped bits and $b_k = \rho^{-26}(c_k)$. Since $y_{ij} = \rho^{26}(v_{ij})$ and $v_{ij} = c_i \oplus F$,
 
-$$d(v_{ij}, \rho^{-52}(c_k)) \approx d(c_i, \rho^{-52}(c_k)) \pm \epsilon_k$$
+$$d(y_{ij}, c_k) = d(v_{ij}, b_k) = d(c_i, b_k) + s - \frac{2\,|(c_i \triangle b_k) \cap F|}{D} = d(c_i, b_k) + s - 2\,g_k,$$
 
-where $|\epsilon_k|\leq\epsilon_{\text{corr}}$ deterministically under A3-Q. In the generic random-centroid model, $\epsilon_k$ has mean 0 and standard deviation $\sqrt{r_i/D} \approx \sqrt{0.15/10240} \approx 0.004$, which explains the empirical 38$\sigma$ margin, but the deterministic theorem uses the explicit $\epsilon_{\text{corr}}$ bound instead of probability.
+where $g_k := |(c_i \triangle b_k) \cap F|/D$ is the fraction of the move that flips bits where $c_i$ already agrees with $b_k$. The condition $d(y_{ij}, c_j) < d(y_{ij}, c_k)$ becomes
 
-**Phase 4: Soft projection domination.** The soft projection weight assigned to centroid $c_k$ at point $y = y_{ij}$ is:
+$$g_k < s + \tfrac{1}{2}\bigl(d(c_i, b_k) - d(c_i, b_j)\bigr).$$
 
-$$\frac{\exp(-d(y, c_k)^2 / \tau)}{\sum_{\ell} \exp(-d(y, c_\ell)^2 / \tau)}$$
+The first factor $d(c_i, b_k)$ is controlled by the A3-Q band, but the overlap $g_k$ is **not** bounded by any static distance band: if the move direction toward $\rho^{-26}(c_j)$ aligns with $c_i \triangle \rho^{-26}(c_k)$, then $g_k$ can approach $s$ and the margin can vanish. This is exactly the witness-direction term $\epsilon_{\text{corr}}$ that the earlier proof invokes but the bands do not supply.
 
-For the target centroid $j$:
-$$\exp(-0.35^2 / 0.10) = \exp(-1.225) \approx 0.294$$
+> **Resolution (v3.6): the executable gate.** Sub-Lemma S is conditional on `sublemma_s_witness_margin(centroids, tau)`, which builds every $v_{ij}$ as above, rotates to $y_{ij} \in \rho^{26}(W_i)$, and returns
+> $$\min_{i \neq j}\Bigl(\min_{k \neq j} d(y_{ij}, c_k)\;-\;d(y_{ij}, c_j)\Bigr),$$
+> or `None` if some witness escapes $W_i$ or fails to select $j$. The overlap $g_k$ is therefore *measured* rather than assumed, and `enforce_a3q_manifold()` applies the gate whenever the soft projection is active. A3-Q admission plus a positive gate margin is the operational hypothesis of Theorem XXV.5.
 
-For any other centroid $k \neq j$:
-$$\exp(-0.50^2 / 0.10) = \exp(-2.50) \approx 0.082$$
+**Phase 4: Why a positive margin gives domination.** The soft projection weight at $y_{ij}$ is proportional to $\exp(-d^2/\tau)$. With $d(y_{ij}, c_j) \approx 0.35$ and the runners-up at $\approx 0.50$:
 
-The weight ratio is:
-$$\frac{w_j}{w_k} \approx \frac{0.294}{0.082} \approx 3.59$$
+$$w_j \propto \exp(-0.35^2/0.10) = e^{-1.225} \approx 0.294, \qquad w_k \propto \exp(-0.50^2/0.10) = e^{-2.50} \approx 0.082.$$
 
-With $K = 10$ centroids, the total weight of all non-target centroids is $\sum_{k \neq j} w_k \approx 9 \cdot 0.082 \approx 0.74$, so $P_\tau(y) \approx 0.29 \cdot c_j + \text{(blend of 9 others)}$. The nearest centroid to this convex combination is $c_j$ because its coefficient dominates (0.29 vs 0.08 per other centroid). The effective margin against the nearest competing centroid is $0.294 - 0.082 \approx 0.212$, which is 53$\times$ the fluctuation standard deviation ($0.004$).
+The per-competitor ratio is $w_j/w_k \approx 3.59$. Even summing the $K-1$ competitors, the weighted blend has coefficient $\approx 0.29$ on $c_j$ against $\approx 0.08$ each on the others, so the nearest centroid to $P_\tau(y_{ij})$ is $c_j$ whenever the measured margin is positive and large enough to survive the blend's pull toward the centroid mean. The gate checks the end-to-end condition directly, which is stronger than the pairwise distance margin.
 
-**Phase 5: The near-fixed self case is excluded by A3-Q, not by exact admissibility.** The subtle case is $k=i$. Exact $\rho^{52}$ admissibility gives only $d(c_i,\rho^{-52}(c_i))\geq 2/D$, which is far too weak: a near-period-4 centroid can pass the exact check while remaining almost fixed. In that case $c_i$ may dominate the soft projection and the witness can fail. A3-Q explicitly rules out this geometry by requiring the self-rotated distance to lie near $0.5$ as well.
+**Phase 5: The near-fixed self case.** The delicate case is $k = i$. Exact $\rho^{52}$-admissibility gives only $d(c_i, \rho^{-26}(c_i)) > 0$, far too weak: a near-period-2 centroid (fixed by $\rho^{26}$) can pass the exact check while remaining almost fixed, and then $c_i$ can dominate the projection and break the witness. A3-Q excludes this by requiring the $\rho^{13}$, $\rho^{26}$ **and** $\rho^{52}$ self-distances to lie near $0.5$; the $\rho^{26}$ self-check is the one that matters for this construction.
 
-**Generic-model failure probability.** For random centroid sets satisfying A3-Q with high probability, the construction fails only if $d(y_{ij}, c_k) < d(y_{ij}, c_j)$ for some $k \neq j$. This requires the fluctuation $\epsilon_k$ to exceed $0.35 - 0.50 = -0.15$ (i.e., $d(y_{ij}, c_k)$ must decrease by at least 0.15 from its expectation). Since $\epsilon_k \sim \mathcal{N}(0, \sqrt{r_i/D})$ in the independent random model, the probability is:
-
-$$P(\epsilon_k < -0.15) = \Phi\left(\frac{-0.15}{\sqrt{0.15/10240}}\right) = \Phi(-38.7) < 10^{-320}$$
-
-By the union bound over $K-1$ centroids:
-
-$$P(\text{failure for pair } (i,j)) < (K-1) \cdot 10^{-320} < 10^{-318}$$
-
-This probability statement justifies why random tests pass with enormous margin. It is not a deterministic all-admissible proof; the deterministic theorem requires A3-Q. $\square$
+**Why the gate passes generically.** For random A3-Q manifolds, $g_k$ concentrates at $s\cdot d(c_i, b_k) \approx 0.5s$, half the worst case, so the margin $0.35$ vs $0.50$ holds with enormous slack (empirically $\approx 0.21$ over all ordered pairs). The gate turns this from a probabilistic remark into a checked fact. $\square$
 
 ---
 
 ### Computational Verification
 
-Sub-Lemma S is **verified computationally** via two independent tests:
+Sub-Lemma S is verified computationally by three checks that share the corrected $26$-rotation domain:
+
+**Executable gate** (`sublemma_s_witness_margin`, exercised by `test_a3q_witness_gate_soft_regime`):
+- Generate $K=8$ dense random centroids (seed 7) that pass the A3-Q bands.
+- Build every witness $v_{ij}$ (Phase 1), rotate to $y_{ij} = \rho^{26}(v_{ij}) \in \rho^{26}(W_i)$, and return the minimum end-to-end margin.
+- Assert the margin is positive; then assert `enforce_a3q_manifold()` succeeds with `soft_projection_tau = 0.10` (the gate is applied).
 
 **Surjectivity test** (`test_sublemma_s_surjectivity`):
 - Generate $K=10$ random centroids satisfying the compactor invariant.
@@ -1997,13 +1995,12 @@ Sub-Lemma S is **verified computationally** via two independent tests:
 - Assert that $\{g(y)\} = \{1, \ldots, K\}$.
 
 **Constructive witness test** (`test_sublemma_s_constructive_witness`):
-- Generate $K=10$ deterministic centroids (seed 42).
-- For each pair $(i,j)$, construct the explicit witness $v_{ij}$ per Phase 1-2 above.
-- Verify $d(y_{ij}, c_j) = d(c_i, \rho^{-52}(c_j)) - r_i$ (algebraic exactness).
-- Verify $w_j/w_i > 1.0$ for all pairs.
-- Assert 100% success rate across all $K \times K$ pairs.
+- Generate $K=10$ deterministic centroids (seed 42) that pass A3-Q admission.
+- For each ordered pair $(i,j)$, construct the explicit witness $v_{ij}$ aimed at $\rho^{-26}(c_j)$ and rotate to $y_{ij} = \rho^{26}(v_{ij})$.
+- Verify $v_{ij} \in W_i$ and that the distance margin $d_{\text{runner-up}}(y_{ij}) - d(y_{ij}, c_j) > 0.05$.
+- Assert 100% success rate and cross-check against the gate.
 
-**Results:** Both tests pass with 100% success rate. Surjectivity: all 10 cells hit all $K$ centroids. Constructive witness: 90/90 pairs, min $w_j/w_i = 5.39$, min $d_j - d_i = 0.21$.
+**Results:** All three pass. Surjectivity: all 10 cells hit all $K$ centroids. Constructive witness: 90/90 pairs, minimum distance margin $0.21$. Gate: positive margin, and soft-regime admission succeeds.
 
 The frontier sweep independently confirms that $P_\tau$ at $\tau = 0.10$ produces $C_{\text{eff}} = 2554$ distinct outputs (11.3 bits, 128$\times$ the $K=20$ baseline), consistent with dense coverage. In the calibrated soft regime the runtime telemetry (mean and sampled-worst $\kappa_P \cdot \kappa_F$) has not crossed the tripwire; this is a diagnostic, not a proof of contraction.
 
@@ -2064,11 +2061,11 @@ The original Assumption $\rho$ has been decomposed into three precise items:
 | Item | Status | Mechanism |
 |------|--------|-----------|
 | $\rho$-admissible invariant | **PROVEN** system invariant | `enforce_rho_admissible()`, checks $\rho^{13}$, $\rho^{26}$, $\rho^{52}$ |
-| A3-Q admission gate | **IMPLEMENTED** executable contract | `enforce_a3q_manifold()`, checks/repairs self-rotation, direct pairwise, and $\rho^{-52}$ rotated-pairwise decorrelation for theorem-admitted manifolds |
+| A3-Q admission gate | **IMPLEMENTED** executable contract | `enforce_a3q_manifold()`, checks/repairs self-rotation, direct pairwise, and $\rho^{-26}$/$\rho^{-52}$ rotated-pairwise decorrelation, and (soft regime) verifies the explicit witness via `sublemma_s_witness_margin` |
 | Exact admissibility $\Rightarrow$ quantitative decorrelation | **DISPROVEN** | Theorem XXV.5a + `test_rho_admissible_does_not_imply_decorrelation` |
-| Sub-Lemma S, runtime-admissible proof | **PROVEN** for accepted manifolds | Constructive witness + executable A3-Q admission rule |
+| Sub-Lemma S, runtime-admissible proof | **PROVEN conditional** for accepted manifolds | Corrected $\rho^{26}$-domain constructive witness + A3-Q admission + executable witness gate |
 
-**Deterministic decorrelation resolution.** The desired deterministic bound for all exact $\rho$-admissible centroid sets is impossible: exact non-fixedness only gives $\delta>0$, and Theorem XXV.5a gives an admissible centroid with $\delta(c,\rho^{52}(c))=2/D$. The correct deterministic statement is operational: if the active centroid set is accepted by `enforce_a3q_manifold()`, then the constructive Sub-Lemma S proof applies. Generic random centroid sets satisfy A3-Q with overwhelming probability, explaining the empirical margin, but runtime admission no longer relies on probability.
+**Deterministic decorrelation resolution.** The desired deterministic bound for all exact $\rho$-admissible centroid sets is impossible: exact non-fixedness only gives $\delta>0$, and Theorem XXV.5a gives an admissible centroid with $\delta(c,\rho^{52}(c))=2/D$. The correct deterministic statement is operational: if the active centroid set is accepted by `enforce_a3q_manifold()` (A3-Q bands **and**, in the soft regime, a positive `sublemma_s_witness_margin`), then the corrected constructive Sub-Lemma S proof applies. Generic random centroid sets satisfy both with overwhelming probability, explaining the empirical margin, but admission no longer relies on probability.
 
 ### Summary of Theorem XXV
 
@@ -2081,7 +2078,7 @@ The original Assumption $\rho$ has been decomposed into three precise items:
 | **$\rho$-admissible invariant** | **PROVEN** (system invariant) | `enforce_rho_admissible()` in lib.rs ($\rho^{13}$, $\rho^{26}$, $\rho^{52}$) |
 | **A3-Q admission gate** | **IMPLEMENTED** | `enforce_a3q_manifold()` + `test_a3q_*` |
 | **XXV.5a** Exact admissibility does not imply decorrelation | **PROVEN** | Near-period-4 counterexample, $\delta(c,\rho^{52}(c))=2/D$ |
-| **Sub-Lemma S** (Surjectivity) | **PROVEN** for runtime-admissible manifolds | Constructive witness, executable A3-Q admission, empirical generic tests, min $w_j/w_i = 5.39$ |
+| **Sub-Lemma S** (Surjectivity) | **PROVEN conditional** on A3-Q + witness gate | Corrected $\rho^{26}$-domain constructive witness, executable A3-Q admission and `sublemma_s_witness_margin` gate, min measured margin $0.21$ |
 
 ### Dependency Closure
 
@@ -2139,31 +2136,33 @@ The distinction between "smooth ergodic sampler" and "discrete attractor collaps
 
 ### Theorem XXV.5 (Sub-Lemma S, Constructive Witness Proof)
 
-Sub-Lemma S is the surjectivity condition that guarantees $\lambda_2(P) < 1$ in Theorem XXV.4. It is **deterministic over runtime-admissible manifolds**: A3-Q is checked and repaired by `enforce_a3q_manifold()`, then the explicit witness construction applies. The former attempt to derive A3-Q from exact $\rho$-admissibility is disproven by Theorem XXV.5a.
+Sub-Lemma S is the surjectivity condition that guarantees $\lambda_2(P) < 1$ in Theorem XXV.4. It is **deterministic over runtime-admissible manifolds, conditional on the executable witness gate**: the A3-Q bands are checked and repaired by `enforce_a3q_manifold()`, and (in the soft regime) `sublemma_s_witness_margin` verifies the explicit witness, whose construction the bands alone do not justify. The former attempt to derive A3-Q from exact $\rho$-admissibility is disproven by Theorem XXV.5a.
 
-**Statement.** For any centroid set $\mathcal{M}_t$ accepted by `enforce_a3q_manifold()`, with $\tau = 0.10$ and $D = 10240$, for any source Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any target centroid index $j$:
+**Statement.** For any centroid set $\mathcal{M}_t$ accepted by `enforce_a3q_manifold()` (A3-Q bands and, for `soft_projection_tau > 0`, a positive witness margin), with $\tau = 0.10$ and $D = 10240$, for any source Voronoi cell $V_i$ of $\rho^{13}(\mathcal{M}_t)$ and any target centroid index $j$:
 
 $$\exists\, y \in \rho^{26}(W_i) : \text{nearest}(P_\tau(y)) = j$$
 
-**Proof technique.** Constructive witness: for any pair $(i,j)$, move from $c_i$ toward $\rho^{-52}(c_j)$ by $\delta = r_i$ (Voronoi radius, $> 0.15$), then rotate by $\rho^{52}$ into $\rho^{26}(W_i)$. Under A3-Q, the resulting point $y = \rho^{52}(v_{ij})$ satisfies $d(y,c_j)$ below competing $d(y,c_k)$ by a deterministic margin, so the soft projection weight for $c_j$ dominates.
+**Proof technique.** Constructive witness (corrected v3.6): for any pair $(i,j)$, move from $c_i$ toward $\rho^{-26}(c_j)$ by $s = 0.95\,r_i$ (Voronoi radius $r_i > 0.15$), then rotate by $\rho^{26}$ to land in $\rho^{26}(W_i)$ exactly. The point $y_{ij} = \rho^{26}(v_{ij})$ satisfies $d(y_{ij}, c_j) = d(c_i, \rho^{-26}(c_j)) - s$, and the gate measures its margin over every competitor.
+
+> **Correction (v3.6).** The earlier technique aimed at $\rho^{-52}(c_j)$ and rotated by $\rho^{52}$, claiming $\rho^{52}(W_i) \subset \rho^{26}(W_i)$. That containment is false. The corrected construction uses the $26$-rotation throughout.
 
 **Proven algebraically:**
-- The witness $v \in V_i$ lies at distance exactly $d(c_i, \rho^{-52}(c_j)) - r_i$ from $\rho^{-52}(c_j)$, exact by construction
-- The $\rho$-admissible-13/26/52 invariants exclude constant, period-2, and period-4 fixed points, enforced in code
+- The witness $v_{ij} \in W_i$ lies at distance exactly $d(c_i, \rho^{-26}(c_j)) - s$ from $\rho^{-26}(c_j)$, so $y_{ij} \in \rho^{26}(W_i)$ and $d(y_{ij}, c_j)$ is exact by construction
+- The $\rho^{13}/\rho^{26}/\rho^{52}$ self-invariants exclude constant, period-2, and period-4 fixed points, enforced in code
 - A3-Q excludes duplicate, near-periodic, and adversarially aligned centroid geometry, enforced in code by `enforce_a3q_manifold()`
-- All 423 tests pass, 90/90 witness points, min $w_j/w_i = 5.39$
 
 **Load-bearing step:**
 - Exact $\rho$-admissibility excludes only exact fixed points. It does not imply quantitative decorrelation.
-- A3-Q supplies the deterministic bound formerly assumed probabilistically: competing direct/rotated distances and witness-direction perturbations must remain inside the explicit decorrelation margin.
-- Generic random centroid configurations satisfy this with the observed 38$\sigma$ margin, but adversarial exact-admissible configurations need not.
+- The static A3-Q distance bands control $d(c_i, \rho^{-26}(c_k))$ but **not** the overlap $g_k$ (how much the witness move flips bits agreeing with a competitor). The executable gate measures the end-to-end margin and is therefore the necessary extra hypothesis.
+- Generic random centroid configurations yield a large positive margin (empirically $\approx 0.21$), but adversarial exact-admissible configurations need not, so the gate is what makes the claim deterministic.
 
-**Former gap status:** Closed operationally and resolved negatively in the stronger exact-only form. A deterministic bound for **all** exact-admissible $\mathcal{M}_t$ does not exist; see Theorem XXV.5a. A deterministic bound for all **runtime-admissible** $\mathcal{M}_t$ is supplied by A3-Q admission.
+**Gap status:** The witness-direction gap is closed by making the witness margin an explicit, executable admission condition. A deterministic bound for **all** exact-admissible $\mathcal{M}_t$ remains impossible (Theorem XXV.5a); the bound holds for all $\mathcal{M}_t$ that pass A3-Q **and** the witness gate.
 
-**Computational verification.** Verified independently by two tests:
+**Computational verification.** Verified by three tests sharing the corrected $26$-rotation:
+- `sublemma_s_witness_margin` via `test_a3q_witness_gate_soft_regime`: positive margin and successful soft-regime admission ($K=8$)
 - `test_sublemma_s_surjectivity`: sampling-based surjectivity ($K=10$, 300 samples/cell, 100% coverage)
-- `test_sublemma_s_constructive_witness`: explicit witness construction ($K=10$, 90/90 pairs, min $w_j/w_i = 5.39$)
-- `test_a3q_*`: runtime admission rejects/repairs exact-admissible near-periodic and duplicate manifolds
+- `test_sublemma_s_constructive_witness`: explicit witness construction ($K=10$, 90/90 pairs, min margin $0.21$)
+- `test_a3q_*`: admission rejects/repairs exact-admissible near-periodic and duplicate manifolds
 
 ---
 

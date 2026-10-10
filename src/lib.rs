@@ -1076,6 +1076,11 @@ pub fn hypervector_is_a3q_self_admissible(centroid: &Hypervector) -> bool {
     })
 }
 
+/// Rotation used by the Sub-Lemma S witness.  The transition domain is
+/// `rho^26(W_i)` (from `x = rho^13(z)`), so the witness needs the target
+/// direction `rho^-26(c_j)`, not `rho^-52`.
+pub const A3Q_TRANSITION_ROTATION: usize = 26;
+
 pub fn centroids_are_a3q_admissible(centroids: &[Hypervector]) -> bool {
     if !centroids.iter().all(hypervector_is_a3q_self_admissible) {
         return false;
@@ -1090,15 +1095,105 @@ pub fn centroids_are_a3q_admissible(centroids: &[Hypervector]) -> bool {
                 }
             }
 
-            let rotated_target = target.rotate_left(HD_DIMENSION - 52);
-            let distance = source.normalized_hamming_distance(&rotated_target);
-            if !a3q_distance_in_band(distance) {
-                return false;
+            // Check the domain rotation (rho^-26) the witness construction
+            // actually uses, plus the historical rho^-52 period-4 exclusion.
+            for shift in [A3Q_TRANSITION_ROTATION, 52] {
+                let rotated_target = target.rotate_left(HD_DIMENSION - shift);
+                let distance = source.normalized_hamming_distance(&rotated_target);
+                if !a3q_distance_in_band(distance) {
+                    return false;
+                }
             }
         }
     }
 
     true
+}
+
+/// Executable Sub-Lemma S witness gate (Theorem XXV.5).
+///
+/// The A3-Q distance bands are static: they do not bound how the constructed
+/// witness move perturbs its distance to competing centroids. This gate closes
+/// that gap by *verifying the witness itself*. For every ordered pair `(i, j)`
+/// it builds `v_ij` by moving from `c_i` toward `rho^-26(c_j)` by the Voronoi
+/// radius, rotates to `y_ij = rho^26(v_ij) in rho^26(W_i)` (the true transition
+/// domain, since `x = rho^13(z)` with `z in W_i`), and measures how much closer
+/// the soft projection's nearest centroid is to `c_j` than to the runner-up.
+///
+/// Returns the minimum margin over all ordered pairs, or `None` if any witness
+/// escapes `W_i` or fails to select `c_j`. Sub-Lemma S (strict positivity of the
+/// centroid-transition matrix, hence `eta(P) < 1`) holds for a manifold iff this
+/// returns `Some(m)` with `m > 0`.
+pub fn sublemma_s_witness_margin(centroids: &[Hypervector], tau: f64) -> Option<f64> {
+    let k = centroids.len();
+    if k < 2 {
+        return None;
+    }
+    let clusters: Vec<MemoryCluster> = centroids
+        .iter()
+        .map(|&c| MemoryCluster {
+            centroid: c,
+            entries: Vec::new(),
+            reverberation: 1.0,
+            last_reinforced_tick: 0,
+            anchor: Hypervector::new_zero(),
+            accumulator: Vec::new(),
+            total_weight: 1,
+            last_access_tick: 0,
+        })
+        .collect();
+
+    let mut min_margin = f64::MAX;
+    for i in 0..k {
+        let r_i = (0..k)
+            .filter(|&j| j != i)
+            .map(|j| centroids[i].normalized_hamming_distance(&centroids[j]))
+            .fold(f64::MAX, f64::min)
+            / 2.0;
+        for j in 0..k {
+            if i == j {
+                continue;
+            }
+            let target = centroids[j].rotate_left(HD_DIMENSION - A3Q_TRANSITION_ROTATION);
+            let n_flip = (r_i * 0.95 * HD_DIMENSION as f64) as usize;
+            let mut v = centroids[i];
+            let mut flipped = 0usize;
+            'outer: for block in 0..U64_BLOCKS {
+                let mut diff = centroids[i].bits[block] ^ target.bits[block];
+                while diff != 0 {
+                    let bit = diff.trailing_zeros() as usize;
+                    diff &= diff - 1;
+                    v.bits[block] ^= 1u64 << bit;
+                    flipped += 1;
+                    if flipped >= n_flip {
+                        break 'outer;
+                    }
+                }
+            }
+            let d_vi = v.normalized_hamming_distance(&centroids[i]);
+            if !(0..k)
+                .filter(|&m| m != i)
+                .all(|m| v.normalized_hamming_distance(&centroids[m]) > d_vi - 1e-12)
+            {
+                return None;
+            }
+            let y = v.rotate_left(A3Q_TRANSITION_ROTATION);
+            let projected = crate::reason::soft_project(&y, &clusters, tau);
+            let d_j = projected.normalized_hamming_distance(&centroids[j]);
+            let d_other = (0..k)
+                .filter(|&m| m != j)
+                .map(|m| projected.normalized_hamming_distance(&centroids[m]))
+                .fold(f64::MAX, f64::min);
+            let margin = d_other - d_j;
+            if margin <= 0.0 {
+                return None;
+            }
+            if margin < min_margin {
+                min_margin = margin;
+            }
+        }
+    }
+    Some(min_margin)
 }
 
 fn splitmix64(mut x: u64) -> u64 {
@@ -1949,7 +2044,6 @@ impl VSABrain {
             return false;
         }
 
-        let candidate_rotated = candidate.rotate_left(HD_DIMENSION - 52);
         for (other_idx, other_cluster) in self.dejavu_clusters.iter().enumerate() {
             if other_idx == idx {
                 continue;
@@ -1961,11 +2055,14 @@ impl VSABrain {
                 return false;
             }
 
-            let other_rotated = other.rotate_left(HD_DIMENSION - 52);
-            let forward = candidate.normalized_hamming_distance(&other_rotated);
-            let reverse = other.normalized_hamming_distance(&candidate_rotated);
-            if !a3q_distance_in_band(forward) || !a3q_distance_in_band(reverse) {
-                return false;
+            for shift in [A3Q_TRANSITION_ROTATION, 52] {
+                let candidate_rotated = candidate.rotate_left(HD_DIMENSION - shift);
+                let other_rotated = other.rotate_left(HD_DIMENSION - shift);
+                let forward = candidate.normalized_hamming_distance(&other_rotated);
+                let reverse = other.normalized_hamming_distance(&candidate_rotated);
+                if !a3q_distance_in_band(forward) || !a3q_distance_in_band(reverse) {
+                    return false;
+                }
             }
         }
 
@@ -1976,11 +2073,14 @@ impl VSABrain {
     ///
     /// After this succeeds, every active centroid is quantitatively
     /// decorrelated from its rho^13/rho^26/rho^52 self-rotations and every
-    /// pair satisfies the rho^-52 rotated-distance band used by Sub-Lemma S.
-    /// This is the deterministic closure condition for Theorem XXV.5 over
-    /// runtime-admissible manifolds. The method returns false only if a
-    /// deterministic repair mask cannot be found within the bounded attempt
-    /// budget; normal dense HDC centroids pass without mutation.
+    /// pair satisfies the rho^-26 and rho^-52 rotated-distance bands used by
+    /// Sub-Lemma S. When the soft projection is active (`soft_projection_tau
+    /// > 0`) it additionally verifies the explicit Sub-Lemma S witness
+    /// (`sublemma_s_witness_margin`), because the static distance bands do not
+    /// bound how the witness move perturbs its distance to the competition.
+    /// The method returns false only if a deterministic repair mask cannot be
+    /// found within the bounded attempt budget or a witness fails; normal dense
+    /// HDC centroids pass without mutation.
     pub fn enforce_a3q_manifold(&mut self) -> bool {
         for cluster in &mut self.dejavu_clusters {
             if !cluster.enforce_a3q_self_admissible() {
@@ -2018,11 +2118,32 @@ impl VSABrain {
             }
 
             if !changed {
-                return self.is_a3q_manifold_admissible();
+                return self.finalize_a3q_admission();
             }
         }
 
-        self.is_a3q_manifold_admissible()
+        self.finalize_a3q_admission()
+    }
+
+    /// Close A3-Q admission: check the geometric bands, and (when the soft
+    /// projection is active) verify the explicit Sub-Lemma S witness. The
+    /// geometric bands alone do not bound the witness direction, so the witness
+    /// gate is required for the `eta(P) < 1` conclusion.
+    fn finalize_a3q_admission(&self) -> bool {
+        if !self.is_a3q_manifold_admissible() {
+            return false;
+        }
+        if self.soft_projection_tau > 1e-9 {
+            let centroids: Vec<Hypervector> = self
+                .dejavu_clusters
+                .iter()
+                .map(|cluster| cluster.centroid)
+                .collect();
+            if sublemma_s_witness_margin(&centroids, self.soft_projection_tau).is_none() {
+                return false;
+            }
+        }
+        true
     }
 
     pub fn seed_synthetic_regimes(
@@ -6060,6 +6181,46 @@ mod tests {
             a3q_distance_in_band(direct),
             "direct pairwise centroid distance must be in A3-Q band, got {:.6}",
             direct
+        );
+    }
+
+    /// The geometric A3-Q bands alone do not bound the Sub-Lemma S witness
+    /// direction; the executable witness gate must, and `enforce_a3q_manifold`
+    /// must apply it whenever the soft projection is active.
+    #[test]
+    fn test_a3q_witness_gate_soft_regime() {
+        use rand::rngs::StdRng;
+        use rand::SeedableRng;
+        let mut rng = StdRng::seed_from_u64(7);
+        let centroids: Vec<Hypervector> = (0..8)
+            .map(|_| {
+                let mut bits = [0u64; U64_BLOCKS];
+                for w in bits.iter_mut() {
+                    *w = rng.gen();
+                }
+                Hypervector { bits }
+            })
+            .collect();
+
+        assert!(
+            centroids_are_a3q_admissible(&centroids),
+            "fixture must satisfy the geometric A3-Q bands"
+        );
+        let margin = sublemma_s_witness_margin(&centroids, 0.10);
+        assert!(
+            margin.map_or(false, |m| m > 0.0),
+            "Sub-Lemma S witness gate must report a positive margin, got {:?}",
+            margin
+        );
+
+        let mut brain = VSABrain::new(0.43);
+        brain.soft_projection_tau = 0.10;
+        for c in centroids {
+            brain.dejavu_clusters.push(test_cluster_from_centroid(c));
+        }
+        assert!(
+            brain.enforce_a3q_manifold(),
+            "soft-regime admission must pass with the witness gate active"
         );
     }
 

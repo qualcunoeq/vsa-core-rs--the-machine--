@@ -7158,6 +7158,11 @@ mod tests {
             })
             .collect();
 
+        assert!(
+            crate::centroids_are_a3q_admissible(&centroids),
+            "constructive witness fixture must satisfy runtime A3-Q admission"
+        );
+
         let clusters: Vec<MemoryCluster> = centroids
             .iter()
             .map(|c| MemoryCluster {
@@ -7186,6 +7191,14 @@ mod tests {
             best_idx
         };
 
+        // The executable gate must agree with the hand-built witness loop below.
+        let gate = crate::sublemma_s_witness_margin(&centroids, tau);
+        assert!(
+            gate.map_or(false, |m| m > 0.0),
+            "Sub-Lemma S witness gate must report a positive margin, got {:?}",
+            gate
+        );
+
         eprintln!("\n  ╔══════════════════════════════════════════════════════╗");
         eprintln!("  ║  Sub-Lemma S — Constructive Witness (Thm XXV.5)   ║");
         eprintln!("  ╚══════════════════════════════════════════════════════╝");
@@ -7193,7 +7206,7 @@ mod tests {
 
         let mut total_success = 0;
         let mut total_pairs = 0;
-        let mut min_weight_ratio = std::f64::MAX;
+        let mut min_margin = std::f64::MAX;
 
         for i in 0..k {
             // Voronoi radius of c_i
@@ -7209,16 +7222,16 @@ mod tests {
                 }
                 total_pairs += 1;
 
-                // ρ⁻⁵²(c_j) = rotate right by 52 (left by 10240-52 = 10188)
-                let c52_inv_j = centroids[j].rotate_left(10188);
-                let c52_inv_i = centroids[i].rotate_left(10188);
+                // Corrected domain (v3.5): the substitution x = ρ¹³(z) makes the
+                // target direction ρ⁻²⁶(c_j) = rotate_left(D - 26), NOT ρ⁻⁵².
+                let c26_inv_j = centroids[j].rotate_left(HD_DIMENSION - 26);
 
-                // Build v_j: move from c_i toward ρ⁻⁵²(c_j) by δ = r_i
+                // Build v_ij: move from c_i toward ρ⁻²⁶(c_j) by δ = r_i
                 let delta = r_i * 0.95; // slight safety margin
-                let n_flip = (delta * 10240.0) as usize;
+                let n_flip = (delta * HD_DIMENSION as f64) as usize;
                 let mut v_bits = centroids[i].bits;
 
-                // Flip bits where c_i differs from ρ⁻⁵²(c_j)
+                // Flip bits where c_i differs from ρ⁻²⁶(c_j)
                 let mut flipped = 0;
                 'outer: for block in 0..160 {
                     for bit in 0..64 {
@@ -7226,7 +7239,7 @@ mod tests {
                             break 'outer;
                         }
                         let ci_bit = (centroids[i].bits[block] >> bit) & 1;
-                        let cj_bit = (c52_inv_j.bits[block] >> bit) & 1;
+                        let cj_bit = (c26_inv_j.bits[block] >> bit) & 1;
                         if ci_bit != cj_bit {
                             v_bits[block] ^= 1u64 << bit;
                             flipped += 1;
@@ -7235,31 +7248,30 @@ mod tests {
                 }
                 let v = Hypervector { bits: v_bits };
 
-                // Verify v ∈ V_i (closer to c_i than to any other centroid)
+                // Verify v ∈ W_i (Voronoi cell of c_i in the original manifold)
                 let d_vi = v.normalized_hamming_distance(&centroids[i]);
-                let in_Vi = (0..k)
+                let in_Wi = (0..k)
                     .filter(|&kk| kk != i)
                     .all(|kk| v.normalized_hamming_distance(&centroids[kk]) > d_vi - 1e-12);
-                if !in_Vi {
+                if !in_Wi {
                     continue;
                 }
 
-                // y = ρ⁵²(v) = rotate_left(v, 52)
-                let y = v.rotate_left(52);
+                // y = ρ²⁶(v) ∈ ρ²⁶(W_i): the real transition domain.
+                let y = v.rotate_left(26);
 
-                // Compute φ(y)
+                // Compute g(y) = nearest(P_τ(y))
                 let phi_val = g(&y);
 
-                // Measure weight ratio w_j/w_i
-                let dists: Vec<f64> = (0..k)
+                // Distance margin: d(y, c_j) must beat every competitor.
+                let d_j = y.normalized_hamming_distance(&centroids[j]);
+                let d_min_other = (0..k)
+                    .filter(|&kk| kk != j)
                     .map(|kk| y.normalized_hamming_distance(&centroids[kk]))
-                    .collect();
-                let min_d = dists.iter().cloned().fold(std::f64::MAX, |a, b| a.min(b));
-                let w_j = (-(dists[j] * dists[j] - min_d * min_d) / tau).exp();
-                let w_i = (-(dists[i] * dists[i] - min_d * min_d) / tau).exp();
-                let ratio = if w_i > 1e-100 { w_j / w_i } else { 1000.0 };
-                if ratio < min_weight_ratio {
-                    min_weight_ratio = ratio;
+                    .fold(std::f64::MAX, f64::min);
+                let margin = d_min_other - d_j;
+                if margin < min_margin {
+                    min_margin = margin;
                 }
 
                 if phi_val == j {
@@ -7275,7 +7287,7 @@ mod tests {
             "  Success rate: {:.1}%",
             100.0 * total_success as f64 / total_pairs as f64
         );
-        eprintln!("  Min weight ratio (w_j/w_i): {:.2}", min_weight_ratio);
+        eprintln!("  Min distance margin (d(y,second) - d(y,c_j)): {:.4}", min_margin);
         eprintln!();
 
         assert_eq!(
@@ -7285,14 +7297,10 @@ mod tests {
             100.0 * total_success as f64 / total_pairs as f64
         );
         assert!(
-            min_weight_ratio > 1.5,
-            "Weight ratio too low: {:.2} (need > 1.5 for soft projection to prefer c_j)",
-            min_weight_ratio
+            min_margin > 0.05,
+            "Witness margin too small: {:.4} (need a positive gap so c_j is nearest)",
+            min_margin
         );
         eprintln!("  ✓ Sub-Lemma S witness holds for this A3-Q-compatible centroid set");
-        eprintln!(
-            "  ✓ Min w_j/w_i = {:.2} >> 1 → c_j dominates P_τ at witness point",
-            min_weight_ratio
-        );
     }
 }

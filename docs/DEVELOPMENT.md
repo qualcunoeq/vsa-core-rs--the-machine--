@@ -186,6 +186,18 @@ include counterexample regressions for VII.1, X.1, XVI.2.1, XXVII.1, XXX.1 and
 XXXII.1. A full run on 2026-10-10 after the conformance pass reports
 **2521 passed / 41 failed / 15 ignored** in 528 s (the same known pre-existing
 failures; all 4 new tests pass).
+A Sub-Lemma S repair pass corrected the witness construction: the transition
+domain is `rho^26(W_i)` (from `x = rho^13(z)`), so the witness is built by
+moving from `c_i` toward `rho^-26(c_j)` and rotating by `rho^26`, not the old
+`rho^-52` construction whose `rho^52(W_i) subset rho^26(W_i)` premise is false.
+A3-Q now also checks the `rho^-26` rotated pairwise distance the construction
+uses. Because the static bands do not bound the witness-direction overlap, a new
+executable gate `sublemma_s_witness_margin` measures the end-to-end margin for
+every ordered pair and is applied by `enforce_a3q_manifold` whenever the soft
+projection is active; Sub-Lemma S is now stated as PROVEN **conditional** on
+A3-Q admission plus a positive gate margin. The constructive-witness test was
+rewritten to the `rho^26` domain (90/90 pairs, minimum margin 0.21) and a new
+`test_a3q_witness_gate_soft_regime` covers the gate.
 
 Failure breakdown for the 42 (38 fail regardless of environment):
 

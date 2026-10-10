@@ -1769,6 +1769,24 @@ pub struct TransientCluster {
 
 // ─── VSABrain ─────────────────────────────────────────────────────────────
 
+/// Runtime A3-Q admission status of the active manifold, refreshed at
+/// compaction. This is the precondition of Theorem XXV.4 / Sub-Lemma S: the
+/// index chain contracts only when the manifold is admitted, and in the soft
+/// regime admission additionally requires a positive Sub-Lemma S witness margin.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct A3QAdmission {
+    /// Active centroid set passes the A3-Q direct and rotated distance bands.
+    pub bands_ok: bool,
+    /// Active manifold passes the executable Sub-Lemma S witness gate
+    /// (`sublemma_s_witness_margin`). Always true when the hard projection is
+    /// active (the soft-projection chain is not in use).
+    pub witness_ok: bool,
+    /// Minimum witness margin over ordered pairs; `NaN` when not evaluated.
+    pub witness_margin: f64,
+    /// Overall admission: `bands_ok && witness_ok`.
+    pub admitted: bool,
+}
+
 pub struct VSABrain {
     pub variables: HashMap<String, VarConfig>,
     pub concepts: HashMap<String, Hypervector>,
@@ -1787,6 +1805,8 @@ pub struct VSABrain {
     /// 0.10 = high-capacity alternative (72× gain, κ_P ≈ 0.89, slight mush).
     /// See `test_soft_projection_frontier_sweep` for calibration data.
     pub soft_projection_tau: f64,
+    /// Last evaluated A3-Q + Sub-Lemma S admission status (see `refresh_a3q_admission`).
+    pub a3q_admission: A3QAdmission,
     /// ██ FIX v2.6 (Layer 3): Cold storage for frozen clusters ██
     /// When a cluster is frozen, its entries and accumulator are serialized
     /// and stored here.  On write access, the cluster is thawed.
@@ -1977,6 +1997,7 @@ impl VSABrain {
             experiences: Vec::new(),
             contraction_telemetry: ContractionTelemetry::new(),
             soft_projection_tau: 0.0, // default: hard projection (backward compatible)
+            a3q_admission: A3QAdmission::default(),
             cold_storage: crate::compression::ColdStorageManager::new(),
             cross_cluster_associations: HashMap::new(),
             activation_history: HashMap::new(),
@@ -2037,6 +2058,44 @@ impl VSABrain {
             .map(|cluster| cluster.centroid)
             .collect();
         centroids_are_a3q_admissible(&centroids)
+    }
+
+    /// Re-evaluate the runtime A3-Q admission of the active manifold and store
+    /// it in `self.a3q_admission`. This is **non-mutating**: it observes the
+    /// contraction precondition (Theorem XXV.4 / Sub-Lemma S) without repairing
+    /// centroids, because A3-Q repair can move a semantic centroid by ~0.5 and
+    /// must stay an explicit, deliberate operation (`enforce_a3q_manifold`) rather
+    /// than an automatic learning-time mutation.
+    ///
+    /// In the soft regime (`soft_projection_tau > 0`) admission additionally
+    /// requires a positive Sub-Lemma S witness margin for every ordered pair;
+    /// the static A3-Q bands alone do not certify the contraction precondition.
+    pub fn refresh_a3q_admission(&mut self) -> A3QAdmission {
+        let centroids: Vec<Hypervector> = self
+            .dejavu_clusters
+            .iter()
+            .map(|cluster| cluster.centroid)
+            .collect();
+
+        let bands_ok = centroids_are_a3q_admissible(&centroids);
+        let (witness_ok, witness_margin) =
+            if self.soft_projection_tau > 1e-9 && centroids.len() >= 2 {
+                match sublemma_s_witness_margin(&centroids, self.soft_projection_tau) {
+                    Some(margin) => (margin > 0.0, margin),
+                    None => (false, f64::NAN),
+                }
+            } else {
+                (true, f64::NAN)
+            };
+
+        let admission = A3QAdmission {
+            bands_ok,
+            witness_ok,
+            witness_margin,
+            admitted: bands_ok && witness_ok,
+        };
+        self.a3q_admission = admission;
+        admission
     }
 
     fn candidate_a3q_compatible(&self, idx: usize, candidate: &Hypervector) -> bool {
@@ -2663,10 +2722,13 @@ impl VSABrain {
         if !was_frozen {
             self.unfreeze_indexer(true); // rebuild immediately
         }
+        // Re-evaluate the runtime contraction precondition (A3-Q + Sub-Lemma S
+        // witness gate). Observational only; see `refresh_a3q_admission`.
+        self.refresh_a3q_admission();
         merges
     }
 
-    /// ██ Tier 4: Absorb an epistemic update from the broker.
+    /// ██ Tier 4: Absorb an epistemic update from the broker.
     ///
     /// After an agent executes an action and the broker broadcasts the
     /// new world state, ALL agents absorb it into their private cluster
@@ -6221,6 +6283,45 @@ mod tests {
         assert!(
             brain.enforce_a3q_manifold(),
             "soft-regime admission must pass with the witness gate active"
+        );
+    }
+
+    /// The production compaction path must refresh the A3-Q + Sub-Lemma S
+    /// admission status, and the refresh must be non-mutating.
+    #[test]
+    fn test_compaction_refreshes_a3q_admission() {
+        use rand::rngs::StdRng;
+        use rand::SeedableRng;
+        let mut rng = StdRng::seed_from_u64(11);
+        let mut brain = VSABrain::new(0.43);
+        brain.soft_projection_tau = 0.10;
+        for _ in 0..6 {
+            let mut bits = [0u64; U64_BLOCKS];
+            for w in bits.iter_mut() {
+                *w = rng.gen();
+            }
+            brain
+                .dejavu_clusters
+                .push(test_cluster_from_centroid(Hypervector { bits }));
+        }
+
+        let merges = brain.compact_clusters(0.0, None); // threshold 0 => no merges
+        assert_eq!(merges, 0, "dense distinct centroids must not merge at threshold 0");
+        assert!(brain.a3q_admission.bands_ok, "A3-Q bands must hold");
+        assert!(brain.a3q_admission.witness_ok, "witness gate must hold");
+        assert!(brain.a3q_admission.admitted);
+        assert!(brain.a3q_admission.witness_margin > 0.0);
+
+        // Non-mutating: a duplicate fails admission and is left untouched.
+        let dup = brain.dejavu_clusters[0].centroid;
+        let before = brain.dejavu_clusters[0].centroid;
+        brain.dejavu_clusters.push(test_cluster_from_centroid(dup));
+        let status = brain.refresh_a3q_admission();
+        assert!(!status.admitted, "duplicate centroid must fail A3-Q admission");
+        assert!(!status.bands_ok);
+        assert_eq!(
+            brain.dejavu_clusters[0].centroid, before,
+            "refresh_a3q_admission must not mutate centroids"
         );
     }
 

@@ -1348,6 +1348,22 @@ async fn run_agent(
                     }
                 }
 
+                // ██ Runtime contraction precondition (A3-Q + Sub-Lemma S) ██
+                // Observational: records whether the active manifold satisfies
+                // the Theorem XXV.4 admission gate (in the soft regime this
+                // includes the executable Sub-Lemma S witness margin). A failure
+                // voids the contraction guarantee for this manifold. It is
+                // logged, not auto-repaired: A3-Q repair moves centroids by ~0.5.
+                {
+                    let admission = brain_guard.refresh_a3q_admission();
+                    if !admission.admitted && brain_guard.dejavu_clusters.len() >= 2 {
+                        let _ = subconscious_log_tx.send(format!(
+                            "AGENT {}: A3-Q admission NOT satisfied (bands_ok={}, witness_ok={}, margin={:.3}); contraction guarantee void for this manifold.",
+                            id_str, admission.bands_ok, admission.witness_ok, admission.witness_margin
+                        ));
+                    }
+                }
+
                 // ██ Association decay (UPGRADE v3.0) ██
                 // Decay all association strengths by ASSOCIATION_DECAY = 0.995
                 // per call (≈ 50 ticks).  Effective half-life ≈ 3.8 hours.

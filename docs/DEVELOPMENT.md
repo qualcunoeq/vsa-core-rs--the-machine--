@@ -198,6 +198,15 @@ projection is active; Sub-Lemma S is now stated as PROVEN **conditional** on
 A3-Q admission plus a positive gate margin. The constructive-witness test was
 rewritten to the `rho^26` domain (90/90 pairs, minimum margin 0.21) and a new
 `test_a3q_witness_gate_soft_regime` covers the gate.
+The admission precondition is now evaluated in production: `compact_clusters`
+calls the non-mutating `VSABrain::refresh_a3q_admission` (recorded in the
+`a3q_admission` field) and `src/main.rs` refreshes it every 50 ticks, logging
+when the active manifold fails admission (which voids the contraction guarantee
+for that manifold). It observes rather than repairs, because A3-Q repair moves a
+centroid by ~0.5 and stays an explicit `enforce_a3q_manifold` call. A new
+`test_compaction_refreshes_a3q_admission` covers the compaction-path refresh and
+its non-mutation. A full run on 2026-10-10 after this wiring reports
+**2523 passed / 41 failed / 15 ignored** (known pre-existing set).
 
 Failure breakdown for the 42 (38 fail regardless of environment):
 

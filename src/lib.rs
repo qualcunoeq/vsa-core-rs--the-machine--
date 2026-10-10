@@ -2721,6 +2721,8 @@ impl VSABrain {
         // so the reported guarantee matches the active configuration. ██
         self.contraction_telemetry.projection_path = crate::reliability::projection_path();
         let tau = self.soft_projection_tau;
+        // Record whether the measured path is the discontinuous hard limit.
+        self.contraction_telemetry.hard_projection = tau < 1e-12;
 
         for _ in 0..n_pairs {
             let x = Hypervector::new_random();
@@ -4586,14 +4588,16 @@ pub(crate) fn lsh_sector_inline(vector: &Hypervector) -> usize {
 // ═══════════════════════════════════════════════════════════════════════════
 //
 // Tracks empirical κ_P (projection contraction) and κ_F (manifold contraction)
-// to ensure the joint product κ = κ_P · κ_F stays below 1.0 in the calibrated
-// operating regime.  This is runtime telemetry: it measures the mean and the
-// sampled maximum of the contraction ratios, not a proven uniform bound.
+// as runtime DIAGNOSTICS.  The mean of a convenience distribution is not a
+// Lipschitz constant, so no reading here certifies contraction; the sampled
+// maximum is only a lower bound on the true (sup-based) worst case.
 //
 // The historical product metric margin of 0.010 came from
 // α(1 - κ_P) > β · κ_F · L_F at κ_P ≈ 0.68 and is SUPERSEDED (see MATH.md
 // XX.1 and Corollary XXII.1-R).  The current stability argument is the
-// factorization κ̂ = λ₂(P) · κ_F < 1 on runtime-admissible manifolds.
+// factorization κ̂ = λ₂(P) · κ_F < 1 on runtime-admissible manifolds, and it
+// does not use any κ_P reading.  See the MATH.md Scope Remark for the exact
+// conditions (row-stochastic chain, asymptotic rate).
 //
 // κ_P measurement:
 //   Samples pairs of (pre-projection, post-projection) states.  For each
@@ -4601,19 +4605,24 @@ pub(crate) fn lsh_sector_inline(vector: &Hypervector) -> usize {
 //     κ_P_sample = δ(P(x), P(y)) / δ(x, y)   (clamped to [0, 2])
 //   κ_P = rolling mean of samples; κ_P_max = rolling maximum of samples.
 //   The mean is the typical-case ratio.  κ_P_max is a sampled worst-case
-//   estimate: a lower bound on the true (sup-based) Lipschitz constant,
-//   never an upper bound, because it is measured only on sampled pairs.
+//   estimate and a lower bound on the true Lipschitz constant, never an
+//   upper bound: it is measured only on sampled pairs.  In the default
+//   configuration (soft_projection_tau = 0.0) the projection is the hard
+//   nearest-centroid limit, which is discontinuous and has no finite
+//   Lipschitz constant at all, so κ_P describes an unbounded map there.
 //
 // κ_F measurement:
 //   Per cluster absorption:
 //     centroid_shift = δ(centroid_before, centroid_after)
 //     input_distance = δ(centroid_before, input)
 //     κ_F_sample = 1.0 - centroid_shift / max(input_distance, 1e-10)
-//   κ_F = rolling mean of samples.
+//   κ_F = rolling mean of samples; κ_F_max = rolling maximum of samples.
 //
-// Tripwire:
-//   If κ = κ_P · κ_F ≥ 0.995: log WARNING (approaching instability)
-//   If κ ≥ 1.001: log CRITICAL (structural divergence detected)
+// Tripwire (heuristic alert, NOT a proof of contraction):
+//   WARNING:  κ = κ_P_mean · κ_F_mean ≥ 0.995 (typical product approaching 1)
+//   CRITICAL: κ ≥ 1.001, or the sampled worst-case product
+//             κ_P_max · κ_F_max ≥ 1.001 (direct sampled-expansion evidence)
+
 
 #[derive(Clone, Debug)]
 pub struct ContractionTelemetry {
@@ -4629,11 +4638,25 @@ pub struct ContractionTelemetry {
     // κ_F samples (manifold contraction)
     pub kappa_f_samples: Vec<f64>,
     pub kappa_f_mean: f64,
+    /// Rolling maximum of the sampled κ_F values (clamped to [-1, 2]).
+    /// A sampled worst-case (least absorbed) estimate, only a lower bound on
+    /// the true worst case.
+    pub kappa_f_max: f64,
     pub kappa_f_count: u64,
 
     // Joint product tracking
     pub kappa_joint: f64,
     pub kappa_joint_max: f64,
+    /// Sampled worst-case product: κ_P_max · κ_F_max.  Both factors are sampled
+    /// maxima, so this is a lower bound on the true worst case.  It can flag
+    /// sampled expansion, but it cannot certify contraction.
+    pub kappa_joint_worst: f64,
+
+    /// True when the measured projection path is the hard nearest-centroid
+    /// limit (`soft_projection_tau < 1e-12`).  That map is discontinuous and
+    /// has no finite Lipschitz constant, so κ_P carries no contraction
+    /// guarantee for it.  Set by [`VSABrain::measure_kappa_p`].
+    pub hard_projection: bool,
 
     // Tripwire state
     pub tripwire_triggered: bool,
@@ -4660,9 +4683,12 @@ impl ContractionTelemetry {
             kappa_p_count: 0,
             kappa_f_samples: Vec::with_capacity(1000),
             kappa_f_mean: 0.0,
+            kappa_f_max: 0.0,
             kappa_f_count: 0,
             kappa_joint: 0.0,
             kappa_joint_max: 0.0,
+            kappa_joint_worst: 0.0,
+            hard_projection: false,
             tripwire_triggered: false,
             last_tripwire_tick: 0,
             max_samples: 1000,
@@ -4705,6 +4731,10 @@ impl ContractionTelemetry {
         }
         self.kappa_f_mean =
             self.kappa_f_samples.iter().sum::<f64>() / self.kappa_f_samples.len() as f64;
+        self.kappa_f_max = self
+            .kappa_f_samples
+            .iter()
+            .fold(f64::NEG_INFINITY, |acc, &s| acc.max(s));
         self.kappa_f_count += 1;
         self.update_joint();
     }
@@ -4714,35 +4744,60 @@ impl ContractionTelemetry {
         if self.kappa_joint > self.kappa_joint_max {
             self.kappa_joint_max = self.kappa_joint;
         }
+        self.kappa_joint_worst = self.kappa_p_max * self.kappa_f_max;
     }
 
     /// Check the tripwire. Returns a diagnostic string if breached, None otherwise.
+    ///
+    /// This is a heuristic alert, not a proof of contraction.  The WARNING uses
+    /// the typical (mean) product; the CRITICAL condition additionally fires on
+    /// the sampled worst-case product, which is the only term that can expose
+    /// sampled expansion.  Even a clean check does not certify a Lipschitz
+    /// bound, because sampling misses adversarial pairs by construction.
     pub fn check_tripwire(&mut self, tick: u64) -> Option<String> {
         if self.kappa_p_count < 10 || self.kappa_f_count < 10 {
             return None; // not enough data
         }
 
-        if self.kappa_joint >= self.critical_threshold && !self.tripwire_triggered {
+        if (self.kappa_joint >= self.critical_threshold
+            || self.kappa_joint_worst >= self.critical_threshold)
+            && !self.tripwire_triggered
+        {
             self.tripwire_triggered = true;
             self.last_tripwire_tick = tick;
             return Some(format!(
-                "CRITICAL: Joint contraction κ = {:.6} ≥ {:.3}! \
-                 (κ_P={:.4}, κ_F={:.4}, samples: P={}, F={}) \
+                "CRITICAL: Joint contraction κ mean = {:.6}, worst-case sampled = {:.6} ≥ {:.3}! \
+                 (κ_P mean/max = {:.4}/{:.4}, κ_F mean/max = {:.4}/{:.4}, samples: P={}, F={}, path={}{}) \
                  System may be structurally diverging!",
                 self.kappa_joint,
+                self.kappa_joint_worst,
                 self.critical_threshold,
                 self.kappa_p_mean,
+                self.kappa_p_max,
                 self.kappa_f_mean,
+                self.kappa_f_max,
                 self.kappa_p_count,
                 self.kappa_f_count,
+                self.projection_path.label(),
+                if self.hard_projection {
+                    " [hard projection: no proven Lipschitz bound]"
+                } else {
+                    ""
+                },
             ));
         }
 
         if self.kappa_joint >= self.tripwire_threshold {
             return Some(format!(
-                "WARNING: Joint contraction κ = {:.6} approaching threshold {:.3}. \
-                 (κ_P={:.4}, κ_F={:.4})",
-                self.kappa_joint, self.tripwire_threshold, self.kappa_p_mean, self.kappa_f_mean,
+                "WARNING: Joint contraction κ mean = {:.6} approaching threshold {:.3}, \
+                 worst-case sampled = {:.6}. (κ_P mean/max = {:.4}/{:.4}, κ_F mean/max = {:.4}/{:.4})",
+                self.kappa_joint,
+                self.tripwire_threshold,
+                self.kappa_joint_worst,
+                self.kappa_p_mean,
+                self.kappa_p_max,
+                self.kappa_f_mean,
+                self.kappa_f_max,
             ));
         }
 
@@ -4752,14 +4807,21 @@ impl ContractionTelemetry {
     /// Generate a summary report string.
     pub fn report(&self) -> String {
         format!(
-            "path={} κ_P={:.4} mean / {:.4} sampled-max (n={}), κ_F={:.4} (n={}), κ={:.6}, κ_max={:.6}",
+            "path={}{} κ_P={:.4} mean / {:.4} sampled-max (n={}), κ_F={:.4} mean / {:.4} sampled-max (n={}), κ={:.6} mean, κ_worst={:.6} sampled, κ_max={:.6}",
             self.projection_path.label(),
+            if self.hard_projection {
+                " (hard: discontinuous, no Lipschitz bound)"
+            } else {
+                ""
+            },
             self.kappa_p_mean,
             self.kappa_p_max,
             self.kappa_p_count,
             self.kappa_f_mean,
+            self.kappa_f_max,
             self.kappa_f_count,
             self.kappa_joint,
+            self.kappa_joint_worst,
             self.kappa_joint_max,
         )
     }
@@ -4845,6 +4907,48 @@ mod tests {
             "clamped sampled max should be 2.0, got {}",
             telemetry.kappa_p_max
         );
+
+        // κ_F sampled max and the joint worst-case product.
+        let mut joint = ContractionTelemetry::new();
+        joint.record_kappa_p(1.0, 0.9);
+        joint.record_kappa_f(1.0, 2.0); // κ_F = 1 - 0.5 = 0.5
+        joint.record_kappa_f(1.0, 1.0); // κ_F = 1 - 1.0 = 0.0
+        assert!(
+            (joint.kappa_f_max - 0.5).abs() < 1e-9,
+            "kappa_f_max should be 0.5, got {}",
+            joint.kappa_f_max
+        );
+        assert!(
+            (joint.kappa_joint_worst - 0.9 * 0.5).abs() < 1e-9,
+            "worst-case product should be 0.45, got {}",
+            joint.kappa_joint_worst
+        );
+        assert!(
+            joint.kappa_joint_worst >= joint.kappa_joint,
+            "sampled worst-case product must be >= mean product"
+        );
+    }
+
+    #[test]
+    fn test_tripwire_fires_on_sampled_worst_case() {
+        let mut telemetry = ContractionTelemetry::new();
+        // Typical product stays low: κ_P mean 0.1, κ_F mean 0.9.
+        for _ in 0..12 {
+            telemetry.record_kappa_p(1.0, 0.1);
+            telemetry.record_kappa_f(1.0, 10.0);
+        }
+        assert!(
+            telemetry.kappa_joint < 0.995,
+            "mean product should stay below the warning, got {}",
+            telemetry.kappa_joint
+        );
+        // A single sampled expansion leaves the mean product low but pushes the
+        // sampled worst-case product to 2.0 * 0.9 = 1.8.
+        telemetry.record_kappa_p(1.0, 2.0);
+        let message = telemetry
+            .check_tripwire(7)
+            .expect("critical tripwire should fire on sampled expansion");
+        assert!(message.starts_with("CRITICAL"), "got {}", message);
     }
 
     /// Adversarial contraction test.  Instead of sampling random trajectories,

@@ -161,7 +161,7 @@ N-gram chain prediction observes `CognitiveMode` transitions and predicts the ne
 | Two binary targets fail to compile | Open. `stage243_second_source_corpus` and `stage173_route_blind_technical_language`, pre-existing |
 | Compiler warnings in experimental modules | Open. A clean library build records 9 warnings; warning volume makes regressions harder to spot |
 | LSH collision at high cluster counts | Bounded. A full-scan fallback handles overflow above roughly 200 clusters |
-| Joint contraction | Monitored. Stability is the lambda_2(P) * kappa_F < 1 factorization on A3-Q manifolds, where lambda_2(P) is the spectral gap of the row-stochastic centroid chain (asymptotic rate; not a Euclidean operator-norm bound); the telemetry tripwire on kappa_P * kappa_F is at 0.995. The historical alpha(1 - kappa_P) margin of 0.010 (at kappa_P = 0.68) is superseded and does not hold at the calibrated kappa_P = 0.916 |
+| Joint contraction | Monitored. Stability is the lambda_2(P) * kappa_F < 1 factorization on A3-Q manifolds, where lambda_2(P) is the spectral gap of the row-stochastic centroid chain (asymptotic rate; not a Euclidean operator-norm bound). The kappa_P * kappa_F telemetry (mean and sampled worst case, tripwire 0.995) is a diagnostic, not a proof; the default hard projection (soft_projection_tau = 0.0) is discontinuous and has no Lipschitz bound. The historical alpha(1 - kappa_P) margin of 0.010 (at kappa_P = 0.68) is retired: alpha and beta are free weights and it fails at the calibrated kappa_P = 0.916 |
 | Documentation drift | Addressed by this pass: version, dates, and counts are aligned across the core documents |
 
 ## Module reference

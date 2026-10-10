@@ -1380,10 +1380,14 @@ async fn run_agent(
                 ));
             }
 
-            // ██ Joint Contraction Telemetry (Theorem XXII.1-R) ██
-            // Every 50 ticks, measure κ_P (projection contraction) via random
-            // pairs, check the joint κ = κ_P · κ_F against the tripwire.
-            // The theoretical margin is 0.010 at L_F = 1.0 (worst case).
+            // ██ Joint Contraction Telemetry ██
+            // Every 50 ticks, measure κ_P via random pairs and check the joint
+            // κ = κ_P · κ_F against the tripwire.  This is a heuristic runtime
+            // DIAGNOSTIC, not a proof: the ratio mean is not a Lipschitz
+            // constant, and the sampled worst case is only a lower bound.  The
+            // historical 0.010 margin came from the superseded α(1-κ_P)
+            // condition (see MATH.md XX.1); stability now rests on
+            // λ₂(P)·κ_F < 1 on A3-Q-admissible manifolds.
             if ticker % 50 == 0 {
                 let mut brain_guard = brain_subconscious.write().await;
 
@@ -1392,6 +1396,8 @@ async fn run_agent(
                 let kp = brain_guard.contraction_telemetry.kappa_p_mean;
                 let kf = brain_guard.contraction_telemetry.kappa_f_mean;
                 let kj = brain_guard.contraction_telemetry.kappa_joint;
+                let kw = brain_guard.contraction_telemetry.kappa_joint_worst;
+                let hard = brain_guard.contraction_telemetry.hard_projection;
 
                 // Check tripwire
                 if let Some(warning) = brain_guard
@@ -1410,8 +1416,9 @@ async fn run_agent(
                 drop(brain_guard);
 
                 let _ = subconscious_log_tx.send(format!(
-                    "AGENT {}: CONTRACTION TELEMETRY — κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}",
-                    id_str, kp, n_p, kf, n_f, kj
+                    "AGENT {}: CONTRACTION TELEMETRY — κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6} mean, {:.6} sampled-worst, projection={}",
+                    id_str, kp, n_p, kf, n_f, kj, kw,
+                    if hard { "hard" } else { "soft" }
                 ));
 
                 // ██ Sync cluster data to QA engine for semantic resolution ██

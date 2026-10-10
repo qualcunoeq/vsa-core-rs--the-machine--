@@ -39,21 +39,30 @@ Ten cognitive subsystems from the DRIFT project are ported in `src/drift.rs`: DM
 
 The formal specification states each result as an algebraic identity, a Banach fixed point argument, or an empirically measured bound. The stated operating envelope is 31 assumptions (A1 to A31), each labelled as assumed, checked, or enforced in [`MATH.md`](MATH.md) section 0.4.
 
-Key guarantees:
+Key results and their status:
 
-| Guarantee | Theorem | Value |
-|---|---|---|
-| Memory is bounded with respect to time | III.1 | about 10.6 MB maximum at K=5120 clusters |
-| Cluster count is bounded | II.1 | K <= 5120 (structural) |
-| A unique attractor exists | XXI.1 | Banach fixed point from kappa < 1 |
-| The system mixes exponentially | XXVI.2 | d_TV <= 0.01 within 77 cycles |
-| An adversary cannot break contraction | XXII.1-R, XXV.4 | L_F <= 1.0 for all inputs; stability via lambda2(P) * kappa_F < 1 on admissible manifolds, where lambda2 is the spectral gap of the row-stochastic centroid chain (asymptotic rate, not a Euclidean operator-norm bound) |
-| Tracking error stays within its threshold | XXIII.1 | min_c delta(v_t, c) <= 0.70 |
-| The capacity gain is real | XXVII.2-R | 128x multiplier (C_eff = 2554) at tau = 0.10 |
+| Result | Theorem | Status | Value |
+|---|---|---|---|
+| Memory is bounded with respect to time | III.1 | ENFORCED in code | about 10.6 MB maximum at K=5120 clusters |
+| Cluster count is bounded | II.1 | PROVED (structural) | K <= 5120 |
+| A unique attractor exists | XXI.1 | PROVED (conditional on kappa < 1) | Banach fixed point |
+| The system mixes exponentially | XXVI.2 | PROVED (conditional; see the XXV.4 scope remark in [`MATH.md`](MATH.md)) | d_TV <= 0.01 within 77 cycles |
+| An adversary cannot break contraction | XXII.1-R, XXV.4 | PROVED (conditional: A3-Q-admissible manifolds, asymptotic rate) | L_F <= 1.0 for all inputs; lambda2(P) * kappa_F < 1 on admissible manifolds |
+| Tracking error stays within its threshold | XXIII.1 | PROVED (under the novelty-gate invariant) | min_c delta(v_t, c) <= 0.70 |
+| The capacity gain is real | XXVII.2-R | EMPIRICAL (measured at tau = 0.10) | 128x multiplier (C_eff = 2554) |
 
-The historical joint-metric margin of 0.010 came from the condition `alpha(1 - kappa_P) > beta * kappa_F * L_F` evaluated at `kappa_P = 0.68`. That parameterization is superseded in [`MATH.md`](MATH.md) (Theorem XX.1) and does not hold at the calibrated `kappa_P = 0.916`; current stability is carried by the `lambda2(P) * kappa_F` factorization above, and by the runtime tripwire on `kappa = kappa_P * kappa_F`.
+Status meanings: PROVED means a written proof under the stated hypotheses; ENFORCED means a runtime contract rejects violations; EMPIRICAL means measured on the reported configuration and not proved in general.
 
-`ContractionTelemetry` in `src/lib.rs` monitors the joint product `kappa = kappa_P * kappa_F` every 50 ticks. It raises a warning at 0.995 and a critical alert at 1.001.
+The historical joint-metric margin of 0.010 came from `alpha(1 - kappa_P) > beta * kappa_F * L_F` evaluated at `kappa_P = 0.68`. That condition is retired: it is superseded in [`MATH.md`](MATH.md) (Theorem XX.1), `alpha` and `beta` are uncalibrated free weights, and it fails at the calibrated `kappa_P = 0.916`. It is not a guarantee and is not listed as one above.
+
+Contraction is not certified by runtime sampling. `ContractionTelemetry` in `src/lib.rs` reports the mean and the sampled worst case of `kappa_P` (projection ratio) and `kappa_F` (absorption ratio). A mean over random pairs is not a Lipschitz constant, and a sampled maximum is only a lower bound on the true worst case, so neither certifies contraction. The formal stability result is the conditional `lambda2(P) * kappa_F < 1` factorization (XXV.4), which does not use `kappa_P`; the tripwire is a heuristic divergence alert, not a proof.
+
+What is not claimed:
+
+- No proven Lipschitz or contraction bound for the projection operator. The telemetry product `kappa_P * kappa_F` is a diagnostic, not a guarantee.
+- The default projection path (`soft_projection_tau = 0.0`) is the hard nearest-centroid limit. It is discontinuous: two inputs one bit apart can map to centroids at least 0.30 apart, so it has no finite Lipschitz constant and no Banach contraction argument applies to it. The soft path (`tau = 0.10`) is continuous but is not proved contractive either.
+- The `alpha(1 - kappa_P) > beta * kappa_F * L_F` margin (0.010) is retired because `alpha` and `beta` are free weights.
+- `lambda2(P) * kappa_F < 1` is conditional on A3-Q admission and is an asymptotic spectral-gap statement about the row-stochastic centroid chain, not a Euclidean operator-norm bound (see the `MATH.md` scope remark).
 
 Reliability claims are enforced in code, not only declared. Memory budgets, replay strength, server limits, document-derived knowledge, and the release schema are covered by the guarantees in [`docs/CLAIMS.md`](docs/CLAIMS.md) and [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) sections 12 to 16.
 

@@ -744,7 +744,7 @@ Since the original document was written, the following claims have been resolved
 
 3. ~~**LSH collision saturation:**~~ **RESOLVED**, With $M=1024$ sectors (upgraded from 16), collision is negligible up to $K \approx 200$. Verified at $K=300$ in `test_cluster_proliferation_bound`: Phase 1 prefilter hit rate ~27%, max sector occupancy = 4.
 
-4. ~~**Feedback loop stability:**~~ **RESOLVED**, Theorem XXV.4 proves $\hat{\kappa} < 1$ uniformly via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}})$ for runtime-admissible manifolds. The exact $\rho$ invariant eliminates fixed-point collapse, and `enforce_a3q_manifold()` enforces the quantitative decorrelation needed by Sub-Lemma S. The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ from Section XX is SUPERSEDED by this cleaner factorization. Runtime telemetry monitors $\kappa_P \cdot \kappa_F$ continuously, never triggering the tripwire.
+4. ~~**Feedback loop stability:**~~ **RESOLVED**, Theorem XXV.4 proves $\hat{\kappa} < 1$ uniformly via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}})$ for runtime-admissible manifolds. The exact $\rho$ invariant eliminates fixed-point collapse, and `enforce_a3q_manifold()` enforces the quantitative decorrelation needed by Sub-Lemma S. The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ from Section XX is SUPERSEDED by this cleaner factorization. Runtime telemetry monitors the mean and sampled-worst $\kappa_P \cdot \kappa_F$; in the calibrated soft regime ($\tau = 0.10$) it has not crossed the tripwire, but the reading is a diagnostic, not a proof, and the default hard path has no Lipschitz bound.
 
 5. ~~**Adversarial input:**~~ **RESOLVED**, Theorem XXII.1-R proves $L_F \le 1.0$ for ALL adversarial inputs. The structured adversarial construction (`test_adversarial_lf_boundary`) achieves the tight bound. The historical "joint margin 0.010" belonged to the superseded $\alpha(1-\kappa_P)$ condition at $\kappa_P = 0.68$; at the calibrated $\kappa_P = 0.916$ that condition fails, and stability rests on $\lambda_2(P)\cdot\kappa_F < 1$ (XXV.4) and the runtime tripwire on $\kappa_P \cdot \kappa_F$.
 
@@ -1339,9 +1339,11 @@ The original probabilistic argument (Hoeffding bound on near-boundary bits) was 
 
 Because contraction is only guaranteed on runtime-admissible manifolds, the system includes `ContractionTelemetry` (in `lib.rs`) that:
 - Measures empirical $\kappa_P$ every 50 ticks by sampling random projection pairs, recording both the mean and the sampled maximum ratio
-- Records $\kappa_F$ per absorption via the `absorb_entry` return value
-- Checks the joint product $\kappa = \kappa_P \cdot \kappa_F$ against a tripwire (0.995 = WARNING, 1.001 = CRITICAL)
+- Records $\kappa_F$ per absorption via the `absorb_entry` return value, recording both the mean and the sampled maximum
+- Checks the joint product $\kappa = \kappa_P \cdot \kappa_F$ against a tripwire (0.995 = WARNING, 1.001 = CRITICAL). The WARNING uses the mean product; the CRITICAL condition also fires on the sampled worst-case product $\kappa_{P,\max}\cdot\kappa_{F,\max}$
 - Logs telemetry status in the agent loop
+
+This is a **diagnostic, not a proof.** The mean of a convenience distribution is not a Lipschitz constant, and the sampled maximum is only a lower bound on the true worst case, so a clean reading does not certify contraction. In the default configuration (`soft_projection_tau = 0.0`) the measured projection is the discontinuous hard limit and has no finite Lipschitz constant; use `tau = 0.10` (or another soft setting) to measure a continuous map. The formal stability statement remains the conditional $\lambda_2(P)\cdot\kappa_F < 1$ factorization (XXV.4), which does not use $\kappa_P$.
 
 ---
 
@@ -1959,7 +1961,7 @@ Sub-Lemma S is **verified computationally** via two independent tests:
 
 **Results:** Both tests pass with 100% success rate. Surjectivity: all 10 cells hit all $K$ centroids. Constructive witness: 90/90 pairs, min $w_j/w_i = 5.39$, min $d_j - d_i = 0.21$.
 
-The frontier sweep independently confirms that $P_\tau$ at $\tau = 0.10$ produces $C_{\text{eff}} = 2554$ distinct outputs (11.3 bits, 128$\times$ the $K=20$ baseline), consistent with dense coverage. Runtime telemetry ($\kappa_P \cdot \kappa_F$) never triggers the tripwire.
+The frontier sweep independently confirms that $P_\tau$ at $\tau = 0.10$ produces $C_{\text{eff}} = 2554$ distinct outputs (11.3 bits, 128$\times$ the $K=20$ baseline), consistent with dense coverage. In the calibrated soft regime the runtime telemetry (mean and sampled-worst $\kappa_P \cdot \kappa_F$) has not crossed the tripwire; this is a diagnostic, not a proof of contraction.
 
 **Lemma XXV.4.1 ($\delta_{\min}$ Positivity).** Under Sub-Lemma S:
 
@@ -1995,7 +1997,7 @@ The eigenvalue argument is applied to a **stochastic** matrix, and only in the a
 
 3. **Common metric.** The two factors act in different spaces: $\lambda_2(P)$ is index-chain mixing and $\kappa_F$ is weight/manifold geometry. Their multiplicative factorization assumes both are measured in the same Hamming-induced metric. This is an assumption on the composed map, stated here rather than proved.
 
-4. **The hard/soft vector projection is separate.** The projection operator $P_\tau$/nearest is a discontinuous nonlinear map (XVI.1.1) and is **not** controlled by $\lambda_2(P)$; the factorization deliberately bypasses it. Its contraction is monitored only empirically by the telemetry $\kappa_P$, which is a sampled lower bound on the true Lipschitz constant (see the runtime note and `test_kappa_p_adversarial_search_beats_random_sampling`). The operative runtime safety mechanism is the $\kappa_P\cdot\kappa_F$ tripwire, not a proven vector-projection bound.
+4. **The hard/soft vector projection is separate.** The projection operator $P_\tau$/nearest is a discontinuous nonlinear map (XVI.1.1) and is **not** controlled by $\lambda_2(P)$; the factorization deliberately bypasses it. Its contraction is monitored only empirically by the telemetry $\kappa_P$, which is a sampled lower bound on the true Lipschitz constant (see the runtime note and `test_kappa_p_adversarial_search_beats_random_sampling`). In the default configuration `soft_projection_tau = 0.0`, so the active projection is the hard nearest-centroid limit, i.e. exactly the discontinuous case, where no finite Lipschitz constant exists. The telemetry therefore cannot certify contraction on the default path, and the $\kappa_P\cdot\kappa_F$ tripwire is a heuristic alert, not a proof. Closing this gap requires either a proven Lipschitz (or contraction) bound for the soft projection in a specified norm, or a projection that is contractive by construction; neither is established here.
 
 **Consequence for the status.** Theorem XXV.4 is conditional on the manifold being runtime-admissible (A3-Q) and on the common-metric assumption in item 3. It is a spectral-gap/mixing bound for a row-stochastic chain, and the shipped configuration's guarantee should be read with that scope. The implementation does not compute $\lambda_2(P)$ at runtime; the guard that actually runs is the tripwire.
 
@@ -2525,7 +2527,7 @@ Soft Projection (Layer 5), v3.1 corrected
     └──→ Empirical sweep → τ = 0.10 optimal (was 0.030)
 
 Runtime Telemetry (Layer 6)
-    └──→ κ_P · κ_F < 0.995 → system is safe
+    └──→ κ_P · κ_F below the 0.995 tripwire → no sampled breach (heuristic alert, not a proof)
 ```
 
 ### Summary: 423 Passing Tests, 6 Mathematical Layers, Current Implementation Snapshot

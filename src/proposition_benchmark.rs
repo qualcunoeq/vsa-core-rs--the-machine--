@@ -6,6 +6,12 @@
 //! agreement is measured independently from initial acceptance.  Negative
 //! proof objects are expected to abstain and are classified by the kernel
 //! error that caused rejection.
+//!
+//! This is a SELF-CONSISTENCY check: the cases and their expected
+//! accept/reject labels are emitted by the same seeded generator (`case_at`),
+//! so a passing run shows the kernel agrees with its author's labels.  It is
+//! not an independent accuracy benchmark and does not measure theorem
+//! discovery.
 
 use crate::algebra::SymExpr;
 use crate::cognition::ExperimentResult;

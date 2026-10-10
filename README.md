@@ -47,9 +47,11 @@ Key guarantees:
 | Cluster count is bounded | II.1 | K <= 5120 (structural) |
 | A unique attractor exists | XXI.1 | Banach fixed point from kappa < 1 |
 | The system mixes exponentially | XXVI.2 | d_TV <= 0.01 within 77 cycles |
-| An adversary cannot break contraction | XXII.1-R | L_F <= 1.0, joint margin 0.010 |
+| An adversary cannot break contraction | XXII.1-R, XXV.4 | L_F <= 1.0 for all inputs; stability via lambda2(P) * kappa_F < 1 on admissible manifolds, where lambda2 is the spectral gap of the row-stochastic centroid chain (asymptotic rate, not a Euclidean operator-norm bound) |
 | Tracking error stays within its threshold | XXIII.1 | min_c delta(v_t, c) <= 0.70 |
 | The capacity gain is real | XXVII.2-R | 128x multiplier (C_eff = 2554) at tau = 0.10 |
+
+The historical joint-metric margin of 0.010 came from the condition `alpha(1 - kappa_P) > beta * kappa_F * L_F` evaluated at `kappa_P = 0.68`. That parameterization is superseded in [`MATH.md`](MATH.md) (Theorem XX.1) and does not hold at the calibrated `kappa_P = 0.916`; current stability is carried by the `lambda2(P) * kappa_F` factorization above, and by the runtime tripwire on `kappa = kappa_P * kappa_F`.
 
 `ContractionTelemetry` in `src/lib.rs` monitors the joint product `kappa = kappa_P * kappa_F` every 50 ticks. It raises a warning at 0.995 and a critical alert at 1.001.
 
@@ -85,8 +87,10 @@ docs/
   CLAIMS.md             claim ledger with evidence and failure modes
   EVALUATION.md         capability matrix and experiment taxonomy
 integration-tests/      conversational runtime acceptance crate
+prove_math.py                assertion-based symbolic/arithmetic checks (stdlib only)
 prove_decay_plasticity.py    Monte Carlo check of Theorem I.2-R
 prove_adversarial_Lf.py      construction of the L_F = 1.0 worst case
+midpoint_lemma.py            midpoint volume and spectral-gap bound checks
 verify_dynamics.py           dynamical systems verification
 derive_optimal_threshold.py  projection threshold derivation
 ```
@@ -96,7 +100,7 @@ derive_optimal_threshold.py  projection threshold derivation
 Prerequisites:
 
 - Rust 1.97.1 (pinned in `rust-toolchain.toml`), edition 2021
-- Python 3 for the verification scripts; `sympy` for the CAS paths
+- Python 3 (standard library only) for the verification scripts. The optional CAS paths in `src/math.rs` shell out to a repo-local `.venv` that has `sympy`; the proof scripts do not need it.
 - Full environment inventory and recorded test baseline: [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md)
 
 Build and test:
@@ -138,7 +142,7 @@ Configuration comes from `MACHINE_*` environment variables or flags (`--data-dir
 - Evaluation: `cargo run --bin machine_eval` scores the conversation corpus and gates on regression drift, unsupported assertions, and ablation safety. `cargo run --bin machine_eval task` runs the bounded autonomy suite. See [`docs/EVALUATION.md`](docs/EVALUATION.md).
 - Semantic worker: `cargo run --bin semantic_fidelity_eval` regenerates the semantic fidelity report. The worker runs in shadow mode and never authorizes an answer.
 - Multi-agent simulation: `cargo run` launches a broker and three agents.
-- Verification scripts: `python3 prove_decay_plasticity.py`, `python3 prove_adversarial_Lf.py`, `python3 verify_dynamics.py`.
+- Verification scripts: `python3 prove_math.py`, `python3 prove_decay_plasticity.py`, `python3 prove_adversarial_Lf.py`, `python3 midpoint_lemma.py`, `python3 verify_dynamics.py`. Each runs on the standard library, exits non-zero if any assertion fails, and refuses to run under `-O` (which would strip the assertions).
 - Governed benchmark: `cargo run --release --bin governed_bench -- 500 500 42 results/governed_bench/large.jsonl`.
 
 ## Evaluation results
@@ -152,10 +156,12 @@ Recorded on the development host (Intel i7-1365U, portable release build).
 | Algebra (prose) | 20 | 15/15 | 1.000 | 0 | 0 |
 | Strategic route | 500 | 500/500 | 1.000 | 0 | 0 |
 | Recurrence | 500 | 251/251 | 1.000 | 0 | 0 |
-| Proposition kernel | 500 | 324/324 | 1.000 | 0 | 0 |
+| Proposition kernel (self-consistency) | 500 | 324/324 | 1.000 | 0 | 0 |
 | Adversarial (all) | 21+ | safe abstention | | 0 | 0 |
 
 Verification control: 32/32 valid receipts accepted, 32/32 tampered receipts rejected. Unified suite runtime about 1.0 to 1.1 s (release, seed 42, 500/500, seven tiers). Conversation evaluation, semantic fidelity, and autonomy results are in [`docs/EVALUATION.md`](docs/EVALUATION.md) and the phase reports under `docs/`.
+
+The proposition-kernel row is a self-consistency check, not an accuracy score. Its cases and their expected accept/reject labels are produced by the same seeded generator that builds each proof object, so "324/324 positive" means the kernel agrees with its author's labels; the 176 remaining cases are deliberately malformed and are expected to be rejected. See `src/proposition_benchmark.rs` and `docs/EVALUATION.md`.
 
 ## Documentation map
 

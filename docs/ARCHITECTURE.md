@@ -116,7 +116,7 @@ Key theorems:
 | XXI.1 | Unique invariant measure | Banach fixed point |
 | XXII.1-R | L_F <= 1.0 (tight) | Bit-wise case analysis |
 | XXIII.1 | Tracking error <= 0.70 | Novelty gate invariant |
-| XXV.4 | Uniform spectral gap | lambda_2(P) * kappa_F < 1 via A3-Q |
+| XXV.4 | Uniform spectral gap | lambda_2(P) * kappa_F < 1 via A3-Q (row-stochastic chain; asymptotic rate) |
 | XXV.5 | Sub-Lemma S surjectivity | Constructive witness |
 
 ## Memory architecture (v3.3 and later)

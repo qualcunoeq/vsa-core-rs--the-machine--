@@ -114,9 +114,9 @@ Recorded guarantees:
 | Cluster count is bounded | II.1 | K <= 5120 |
 | A unique invariant measure exists | XXI.1 | Banach fixed point from kappa < 1 |
 | The system mixes exponentially | XXVI.2 | d_TV <= 0.01 within 77 cycles |
-| An adversary cannot break contraction | XXII.1-R | L_F <= 1.0, margin 0.010 |
+| An adversary cannot break contraction | XXII.1-R, XXV.4 | L_F <= 1.0; stability via lambda_2(P) * kappa_F < 1 on A3-Q manifolds (lambda_2 is the spectral gap of the row-stochastic centroid chain, an asymptotic rate; not a Euclidean operator-norm bound) |
 | Tracking error never exceeds 0.70 | XXIII.1 | min_c delta(v_t, c) <= 0.70 |
-| Spectral gap below 1 on A3-Q manifolds | XXV.4 | lambda_2(P) * kappa_F < 1 |
+| Spectral gap below 1 on A3-Q manifolds | XXV.4 | lambda_2(P) * kappa_F < 1; scope is the row-stochastic centroid chain (asymptotic rate, finite-time constant via Dobrushin/reversibility) |
 | Sub-Lemma S (surjectivity) | XXV.5 | g = nearest o P_tau surjects from rho^26(W_i) |
 
 The reliability registry records 15 enforced guarantees, 2 checked, and 0 assumed, including the memory-boundedness contracts (Phase 7), task authority and observability (`G-TASK-AUTHORITY`, `G-TASK-OBSERVABLE`, Phase 10), and upgrade safety (`G-RELEASE-SCHEMA`, Phase 11). `cargo run --bin reliability_report` regenerates `docs/phase7_reliability_v1.*`.
@@ -161,7 +161,7 @@ N-gram chain prediction observes `CognitiveMode` transitions and predicts the ne
 | Two binary targets fail to compile | Open. `stage243_second_source_corpus` and `stage173_route_blind_technical_language`, pre-existing |
 | Compiler warnings in experimental modules | Open. A clean library build records 9 warnings; warning volume makes regressions harder to spot |
 | LSH collision at high cluster counts | Bounded. A full-scan fallback handles overflow above roughly 200 clusters |
-| Joint contraction margin | Monitored. The margin is 0.010; the telemetry tripwire is at 0.995 |
+| Joint contraction | Monitored. Stability is the lambda_2(P) * kappa_F < 1 factorization on A3-Q manifolds, where lambda_2(P) is the spectral gap of the row-stochastic centroid chain (asymptotic rate; not a Euclidean operator-norm bound); the telemetry tripwire on kappa_P * kappa_F is at 0.995. The historical alpha(1 - kappa_P) margin of 0.010 (at kappa_P = 0.68) is superseded and does not hold at the calibrated kappa_P = 0.916 |
 | Documentation drift | Addressed by this pass: version, dates, and counts are aligned across the core documents |
 
 ## Module reference

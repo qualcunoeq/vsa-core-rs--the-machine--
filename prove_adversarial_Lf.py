@@ -22,6 +22,13 @@ import random
 import statistics
 from typing import List, Tuple
 
+# Verification depends on `assert` statements, which Python's -O flag strips.
+# Refuse to run optimized so a stripped script cannot silently report success.
+if not __debug__:
+    raise SystemExit("this script requires assertions; re-run without -O")
+
+CHECKS = []
+
 D = 10240
 γ = 0.975
 DECAY_INTERVAL = 50
@@ -131,6 +138,10 @@ def run_adversarial_Lf_test():
     L_F_single = delta_centroid / delta_input if delta_input > 0 else 0
     print(f"\n  Single-bit L_F = {delta_centroid}/{delta_input} = {L_F_single}")
     print(f"  (Extends to all D bits: L_F = 1.0)")
+    assert delta_centroid == 1.0, f"single-bit delta_centroid must be 1.0, got {delta_centroid}"
+    CHECKS.append("single-bit delta_centroid == 1.0")
+    assert L_F_single == 1.0, f"single-bit L_F must be 1.0, got {L_F_single}"
+    CHECKS.append("single-bit L_F_single == 1.0")
     
     # ═══════════════════════════════════════════════════════════════
     # PART 2: Full D-dimensional simulation
@@ -156,6 +167,8 @@ def run_adversarial_Lf_test():
     centroid_after_p1 = [1 if a[i] > threshold else 0 for i in range(D)]
     pop_p1 = sum(centroid_after_p1) / D
     print(f"  After Phase 1: W={W}, centroid popcount={pop_p1:.4f}")
+    assert pop_p1 == 1.0, f"Phase 1 centroid must be all-ones, got popcount {pop_p1}"
+    CHECKS.append("Phase 1 centroid all-ones (pop_p1 == 1.0)")
     
     # Phase 2: 50 all-0s
     for _ in range(50):
@@ -172,6 +185,9 @@ def run_adversarial_Lf_test():
     boundary_bits = sum(1 for m in margins if abs(m) <= 1)
     print(f"  After Phase 2: W={W}, centroid popcount={pop_p2:.4f}")
     print(f"  Margin range: [{min_margin}, {max_margin}], boundary bits: {boundary_bits}/{D}")
+    assert min_margin == 0 and max_margin == 0 and boundary_bits == D, \
+        f"after Phase 2 all D bits must be at the boundary; got min={min_margin}, max={max_margin}, boundary={boundary_bits}/{D}"
+    CHECKS.append("Phase 2: all D bits at boundary (min=max=0, boundary_bits==D)")
     
     # Phase 3a: absorb all-1s into a COPY
     a1 = a.copy()
@@ -197,6 +213,13 @@ def run_adversarial_Lf_test():
     delta_input = 1.0  # all-1s vs all-0s: all D bits differ
     L_F_achieved = delta_centroid / delta_input
     
+    assert differing_bits == D, f"full-dimensional differing_bits must be D={D}, got {differing_bits}"
+    CHECKS.append("full-dimensional differing_bits == D")
+    assert L_F_achieved == 1.0, f"L_F_achieved must be 1.0, got {L_F_achieved}"
+    CHECKS.append("L_F_achieved == 1.0")
+    assert L_F_achieved <= 1.0, f"L_F_achieved must be <= 1.0, got {L_F_achieved}"
+    CHECKS.append("L_F_achieved <= 1.0")
+    
     print(f"\n  Phase 3: L_F measurement")
     print(f"  δ(new_v, new_v') = {differing_bits}/{D} = {delta_centroid:.6f}")
     print(f"  δ(v, v')         = {delta_input}")
@@ -210,6 +233,7 @@ def run_adversarial_Lf_test():
 
     print("\n  Part 3: Joint contraction check")
     print("  ───────────────────────────────")
+    print("  HISTORICAL / SUPERSEDED metric (kappa_P = 0.68):")
     
     left = ALPHA * (1 - KAPPA_P)
     right = BETA * KAPPA_F * L_F_achieved
@@ -217,8 +241,29 @@ def run_adversarial_Lf_test():
     
     print(f"  Left:  α·(1-κ_P) = {ALPHA}·{1-KAPPA_P:.2f} = {left:.4f}")
     print(f"  Right: β·κ_F·L_F = {BETA}·{KAPPA_F}·{L_F_achieved:.4f} = {right:.4f}")
-    print(f"  Margin: {margin:.4f}")
-    print(f"  Joint contraction: {'✓ HOLDS' if margin > 0 else '✗ FAILS'}")
+    print(f"  Historical margin: {margin:.4f}")
+    print(f"  Historical joint contraction: {'✓ HOLDS' if margin > 0 else '✗ FAILS'}")
+    print("  NOTE: the kappa_P = 0.68 joint-parameterization is SUPERSEDED in this repo.")
+    print("        The calibrated soft-projection value is kappa_P = 0.916; the reigning")
+    print("        stability condition is the product kappa_P * kappa_F < 1 (lambda_2 factorization).")
+
+    # CORRECTED / CURRENT metric (MATH.md).
+    KAPPA_P_CALIBRATED = 0.916
+    KAPPA_F_CALIBRATED = 0.95
+    print("\n  CORRECTED / CURRENT metric (MATH.md: kappa_P = 0.916):")
+    left_cal = ALPHA * (1 - KAPPA_P_CALIBRATED)
+    right_cal = BETA * KAPPA_F_CALIBRATED * L_F_achieved
+    print(f"  Left:  α·(1-κ_P) = {ALPHA}·{1-KAPPA_P_CALIBRATED:.3f} = {left_cal:.4f}")
+    print(f"  Right: β·κ_F·L_F = {BETA}·{KAPPA_F_CALIBRATED}·{L_F_achieved:.4f} = {right_cal:.4f}")
+    print(f"  Corrected margin: {left_cal - right_cal:.4f}")
+    print(f"  Corrected product: κ_P·κ_F = {KAPPA_P_CALIBRATED}·{KAPPA_F_CALIBRATED} = "
+          f"{KAPPA_P_CALIBRATED * KAPPA_F_CALIBRATED:.4f} < 1.0")
+
+    assert not (ALPHA * (1 - 0.916) > BETA * 0.95 * L_F_achieved), \
+        "historical kappa_P=0.68 condition must NOT hold at calibrated kappa_P=0.916"
+    CHECKS.append("calibrated: historical condition does NOT hold at kappa_P=0.916")
+    assert 0.916 * 0.95 < 1.0, "current relation kappa_P*kappa_F < 1 must hold"
+    CHECKS.append("calibrated: 0.916 * 0.95 < 1.0")
     
     # Find critical L_F that WOULD break joint contraction
     L_F_critical = left / (BETA * KAPPA_F)
@@ -345,6 +390,11 @@ def run_adversarial_Lf_test():
     
     mean_lf = statistics.mean(lf_samples)
     print(f"    Max L_F = {max_lf_random:.4f}, Mean L_F = {mean_lf:.4f}")
+    assert max_lf_random <= 1.0, f"random-adversary max_lf_random must be <= 1.0, got {max_lf_random}"
+    CHECKS.append("random adversary max_lf_random <= 1.0")
+    assert L_F_achieved >= max_lf_random, \
+        f"structured L_F_achieved ({L_F_achieved}) must be >= random max ({max_lf_random})"
+    CHECKS.append("L_F_achieved >= max_lf_random")
     
     # Structured adversary (our construction)
     print("  Structured adversary (boundary construction):")
@@ -400,6 +450,10 @@ def run_adversarial_Lf_test():
     as-is (it tests the random-case bound, which is ∼0.5), but should
     be supplemented with a structured adversarial test.
 """)
+
+    print("=" * 72)
+    print(f"  CHECKS PASSED: {len(CHECKS)}")
+    print("=" * 72)
 
     return L_F_achieved, margin
 

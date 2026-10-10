@@ -17,7 +17,7 @@ and startup reference for local development.
 | GPU | Intel Iris Xe (integrated), **no NVIDIA GPU**, no `nvidia-smi`, no CUDA toolkit |
 | Toolchain | `rustc` 1.97.1 / `cargo` 1.97.1 (Arch package `rust` 1:1.97.1-1); `rustup` is not installed |
 | C toolchain | gcc/cc 16.1.1, make, cmake, pkg-config, perl |
-| Python | system Python 3.14 (no `sympy`); repo-local `.venv` has Python 3.14.6 + sympy 1.14 |
+| Python | system Python 3.14 (standard library only). The proof/verification scripts (`prove_math.py`, `prove_decay_plasticity.py`, `prove_adversarial_Lf.py`, `midpoint_lemma.py`, `verify_dynamics.py`) run on it with no third-party packages. Repo-local `.venv` (Python 3.14.6) provides `sympy` 1.14 and `numpy` 2.5.3 for the optional CAS paths |
 
 `Cargo.lock` is lockfile format v4 (304 packages; Phase 2 added `axum` and
 `futures-util`).
@@ -52,8 +52,11 @@ with native codegen must not be redistributed.
 
 No system libraries need installing: bundled SQLite (`rusqlite`) and `ring`
 compile from source with the gcc toolchain above. CUDA is optional and off by
-default. The symbolic-CAS paths shell out to `python3`; the system interpreter
-has no `sympy`, while `.venv/` does. To exercise CAS paths:
+default. The symbolic-CAS paths in `src/math.rs` shell out to `python3`; the
+system interpreter has no `sympy`, while `.venv/` does. The standalone
+verification scripts (`prove_*.py`, `midpoint_lemma.py`, `verify_dynamics.py`)
+use the standard library only, so they run under the system interpreter. To
+exercise the Rust CAS paths:
 
 ```bash
 python3 -m venv .venv
@@ -144,6 +147,16 @@ passed / 41 failed / 15 ignored** in 318 s; the failure set is identical to the
 known 41 pre-existing failures (the stochastic pair both passed, so the count is
 41), and no module touched by Phase 11 (`operator`, `reliability`
 guarantees, `bin/machine`) fails.
+After the verification-hardening pass (2 new `lib.rs` tests,
+`test_contraction_telemetry_tracks_mean_and_sampled_max` and
+`test_kappa_p_adversarial_search_beats_random_sampling`; the five Python
+verification scripts made assertion-based and guarded so they refuse to run
+under `-O`) a full run on 2026-10-10 reports **2512 passed / 42 failed / 15
+ignored** in 350 s. The 42 are the known pre-existing failures plus the
+stochastic `indexer::test_learned_projector_outperforms_random_sampling`
+(which failed this run); both new tests pass, and no test in the modules
+touched by the pass (`lib.rs` telemetry, `reason::soft_project` exercised by
+the adversarial test) fails.
 
 Failure breakdown for the 42 (38 fail regardless of environment):
 

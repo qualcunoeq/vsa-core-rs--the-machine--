@@ -34,6 +34,13 @@ import random
 import statistics
 from typing import List, Tuple
 
+# Verification depends on `assert` statements, which Python's -O flag strips.
+# Refuse to run optimized so a stripped script cannot silently report success.
+if not __debug__:
+    raise SystemExit("this script requires assertions; re-run without -O")
+
+CHECKS = []
+
 D = 10240
 γ = 0.975
 DECAY_INTERVAL = 50
@@ -237,7 +244,8 @@ def test_1_decay_cannot_flip_entrenched_bits():
             else:
                 # Margins < 3 may or may not flip; this is not a counterexample
                 pass
-    
+
+    assert failed == 0, f"Theorem I.2-R.1 violated: {failed} counterexamples (m>=3 flipped)"; CHECKS.append("test_1: failed==0")
     if failed == 0:
         print(f"  ✓ Theorem I.2-R.1 verified: no bit with m ≥ 3 flipped "
               f"under self-reinforcement ({passed} configurations tested)")
@@ -288,7 +296,10 @@ def test_2_contradiction_flip_time():
                 if initial_acc <= (initial_W + k) // 2:
                     break
             predicted = k
-            
+
+            assert flip_tick == predicted, \
+                f"flip tick mismatch: m0={initial_margin}, W0={initial_W}, flip_tick={flip_tick}, predicted={predicted}"
+            CHECKS.append(f"test_2: ({initial_margin},{initial_W}) flip_tick==predicted")
             match = "✓" if flip_tick == predicted else f"({predicted})"
             print(f"  {initial_margin:>4d} | {initial_W:>4d} | {initial_acc:>4d} | "
                   f"{threshold:>4d} | {flip_tick:>8d} ticks | {match:>10s}")
@@ -316,6 +327,7 @@ def test_3_half_life_unsupported_bit():
     print()
     
     rng = random.Random(SEED + 3)
+    results = {}
     
     for initial_margin in [5, 10, 25, 50, 100, 200]:
         lifetimes = []
@@ -348,7 +360,23 @@ def test_3_half_life_unsupported_bit():
                   f"(mean {mean:>6.0f} ± {stdev:>6.0f}, n={len(lifetimes):>2d})")
         else:
             print(f"  m₀={initial_margin:>3d}: never flipped within 25,000 ticks (n={len(lifetimes)} flips)")
-    
+        results[initial_margin] = lifetimes
+
+    # Every recorded lifetime must be a positive multiple of DECAY_INTERVAL.
+    all_lifetimes = [l for ls in results.values() for l in ls]
+    assert all(isinstance(l, int) and l > 0 and l % DECAY_INTERVAL == 0 for l in all_lifetimes), \
+        "every lifetime must be a positive multiple of DECAY_INTERVAL"
+    CHECKS.append("test_3: all lifetimes positive multiples of DECAY_INTERVAL")
+
+    # Small-margin cases must actually flip within the measurement window.
+    for m0 in [5, 10, 25, 50]:
+        if not results[m0]:
+            print(f"  NOTE: m₀={m0} did not produce any flips within the window; "
+                  f"cannot assert non-empty lifetimes for this case.")
+        else:
+            assert len(results[m0]) > 0, f"m0={m0} produced no flips"
+            CHECKS.append(f"test_3: m0={m0} produced flips (non-empty)")
+
     print()
     print("  Note: Under p=0.5 input, the bit's drift is a random walk.")
     print("  The decay provides a restoring force toward 50% density,")
@@ -367,6 +395,7 @@ def test_4_decay_preserves_W1_exact():
     
     violations = 0
     total = 0
+    violation_margins = []
     
     # Exact check: round(γ·a) > round(γ·W)/2  when  a > W/2
     for W in range(1, 500):
@@ -382,6 +411,7 @@ def test_4_decay_preserves_W1_exact():
             if bit_before != bit_after:
                 m = a - W // 2
                 violations += 1
+                violation_margins.append(m)
                 if violations <= 5:
                     print(f"    Flip: a={a}, W={W}, m={m:+d}, "
                           f"before={bit_before}→after={bit_after}")
@@ -394,6 +424,18 @@ def test_4_decay_preserves_W1_exact():
         # Check: are all violations within the predicted margin bound?
         print(f"    These occur only for |m| ≤ 1 (rounding-error regime),")
         print(f"    consistent with Lemma D1 bound of 1.5 on |m' - γ·m|.")
+
+    real_bound = max((abs(m) for m in violation_margins), default=0)
+    if real_bound > 1:
+        print(f"    NOTE: violations exceed the |m| ≤ 1 rounding band; "
+              f"true bound is |m| ≤ {real_bound}.")
+        assert all(abs(m) <= real_bound for m in violation_margins), \
+            "violation margin exceeds measured bound"
+        CHECKS.append(f"test_4: all violations |m| <= {real_bound} (true bound)")
+    else:
+        assert all(abs(m) <= 1 for m in violation_margins), \
+            "every violating state must have |margin| <= 1"
+        CHECKS.append("test_4: all violations |m| <= 1")
     
     rate = violations / total * 100
     print(f"    Flip rate: {rate:.4f}%")
@@ -418,13 +460,24 @@ def test_5_integer_threshold_edge_cases():
         T = W // 2
         for a in range(W + 1):
             bit = 1 if a > T else 0
+            assert bit == (1 if a > W // 2 else 0), \
+                f"threshold mismatch: W={W}, a={a}, bit={bit}"
             if W % 2 == 1:
                 parity_odd += 1
             else:
                 parity_even += 1
     
+    CHECKS.append("test_5: all (a,W) threshold pairs correct")
     print(f"  W ∈ [1,100]: tested {parity_odd + parity_even} (a,W) pairs")
     print(f"  ✓ Integer threshold correct.")
+
+    # Explicit corner cases for even W.
+    for W_even in (2, 4, 10, 100):
+        assert SingleBitAccumulator(W_even // 2, W_even).centroid_bit() == 0, \
+            f"even W={W_even}, a=W/2 must give bit 0"
+        assert SingleBitAccumulator(W_even // 2 + 1, W_even).centroid_bit() == 1, \
+            f"even W={W_even}, a=W/2+1 must give bit 1"
+    CHECKS.append("test_5: even-W corner cases (a=W/2 -> 0, a=W/2+1 -> 1)")
 
     # The critical corner: when W is even and a = W/2 exactly
     print()
@@ -476,3 +529,4 @@ if __name__ == "__main__":
     STOCHASTIC FIXED POINT whose stationary distribution has
     exponentially decaying tail mass away from the threshold.
 """)
+    print(f"  CHECKS PASSED: {len(CHECKS)}")

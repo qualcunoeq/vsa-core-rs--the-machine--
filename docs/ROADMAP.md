@@ -304,11 +304,14 @@ Current evidence (current formalization and governed benchmark slices):
   50/50 positive execution/replay and represents all six refusal classes.
 - Proposition-kernel vertical: the 500-case seed-42 run accepts and replays
   324/324 valid proof objects, rejects all 176 malformed proofs, and reports
-  zero false acceptances and zero false rejections. The 100-case holdout has
-  65/65 valid accept/replay results and covers all five refusal classes.
+  zero false acceptances and zero false rejections. This is a self-consistency
+  check (cases and expected labels share one generator), not an independent
+  accuracy benchmark. The 100-case holdout has 65/65 valid accept/replay
+  results and covers all five refusal classes.
 - Unified governed suite: the seed-42, 500/500 run reports seven explicit
   tiers. Direct algebra is 27/27 accepted/replayed; proposition proofs are
-  324/500 accepted with replay rate 1.000; strategic method selection is
+  324 expected-valid cases accepted (of 500 total, the other 176 being malformed
+  cases expected to be rejected) with replay rate 1.000; strategic method selection is
   500/500 correct with receipt-shadow replay rate 1.000; recurrence is
   251/500 authorized/replayed with 50/100 positive holdout execution/replay;
   and the 21-case adversarial tier has zero false authorizations or denials.

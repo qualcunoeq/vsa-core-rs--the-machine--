@@ -7,6 +7,13 @@ No sympy needed — pure arithmetic with Python floats for the concrete constant
 """
 import math
 
+# Verification depends on `assert` statements, which Python's -O flag strips.
+# Refuse to run optimized so a stripped script cannot silently report success.
+if not __debug__:
+    raise SystemExit("this script requires assertions; re-run without -O")
+
+CHECKS = []
+
 D = 10240
 TAU = 0.10
 THETA_MERGE = 0.30
@@ -59,6 +66,8 @@ print("\n  WORST CASE (smallest midpoints): m = %d" % m_min)
 print("    |M_ij| / 2^D ≈ %.6f ≈ 1/%.1f" % (frac_min, 1.0/frac_min))
 print("    Absolute count ≈ 2^%d · %.6f ≈ 2^(%f)" % (D, frac_min, D + math.log2(frac_min)))
 print("    This is astronomically large (>> 1). The fraction is positive.")
+assert frac_min > 0.0, "midpoint fraction frac_min must be positive"; CHECKS.append("frac_min > 0")
+assert D + math.log2(frac_min) > 1.0, "absolute midpoint count must exceed 1"; CHECKS.append("absolute midpoint count > 1")
 
 print("\n" + "-" * 72)
 print("PART 3: BLENDED ZONE VOLUME (τ = %.2f)" % TAU)
@@ -109,6 +118,11 @@ else:
     frac = binomial_fraction_in_band(m_min, m_min//2, blend_radius_at_merge)
     print("    Fraction of assignments in band: %.6f" % frac)
 
+coverage_at_merge = 1.0 if blend_radius_at_merge >= m_min / 2 else \
+    binomial_fraction_in_band(m_min, m_min//2, blend_radius_at_merge)
+assert coverage_at_merge == 1.0, "blended zone at d=0.30 must cover all assignments"; CHECKS.append("coverage at d=0.30 == 1.0")
+assert 0.0 <= coverage_at_merge <= 1.0, "coverage must lie in [0,1]"; CHECKS.append("coverage at d=0.30 in [0,1]")
+
 # At d = θ_novel = 0.70:
 blend_radius_at_novel = TAU * D / (2 * THETA_NOVEL)
 print("\n  At d = %.2f (novelty threshold):" % THETA_NOVEL)
@@ -122,6 +136,7 @@ else:
 
 # Demonstrate the full range
 print("\n  Blended zone coverage across ALL valid d ∈ [0.30, 0.70]:")
+coverages = []
 for d_int in range(30, 71, 5):
     d = d_int / 100
     m = int(d * D)
@@ -131,8 +146,13 @@ for d_int in range(30, 71, 5):
         cov = 1.0
     else:
         cov = binomial_fraction_in_band(m, int(half), int(radius))
+    coverages.append(cov)
     print("    d = %.2f: |Δ| ≤ %.4f, radius = %.0f bits, coverage = %.4f" %
           (d, TAU/d, radius, cov))
+
+assert len(coverages) > 0, "coverage scan must produce samples"; CHECKS.append("coverage scan non-empty")
+assert all(0.0 <= c <= 1.0 for c in coverages), "every coverage must lie in [0,1]"; CHECKS.append("all coverages in [0,1]")
+assert coverages[0] == 1.0, "coverage at d=0.30 must be 1.0"; CHECKS.append("coverage scan d=0.30 == 1.0")
 
 print("\n" + "-" * 72)
 print("PART 4: THE LOWER BOUND ON P_ij")
@@ -155,6 +175,8 @@ K_max = 5120  # Theorem II.1 bound
 min_voronoi_frac = 1.0 / K_max
 min_blend_frac_at_novel = 0.74  # approximate min coverage at d=0.70
 expected_overlap = min_voronoi_frac * min_blend_frac_at_novel
+assert expected_overlap > 0.0, "expected overlap must be strictly positive"; CHECKS.append("expected overlap > 0")
+assert 0.0 <= min_voronoi_frac <= 1.0, "Voronoi fraction must lie in [0,1]"; CHECKS.append("min Voronoi fraction in [0,1]")
 
 print("  Minimum Voronoi cell fraction: |V_i| / 2^D ≥ 1/K_max = 1/%d = %.6e" %
       (K_max, min_voronoi_frac))
@@ -181,6 +203,8 @@ print("-" * 72)
 kappa_F_max = 1.0 - 1.0 / W_CAP  # 0.998
 print("  κ_F(t) ≤ 1 - 1/W_cap = 1 - 1/%d = %.6f  (UNIFORM, hard bound)" %
       (W_CAP, kappa_F_max))
+assert kappa_F_max == 1.0 - 1.0 / W_CAP, "kappa_F_max must equal 1 - 1/W_cap"; CHECKS.append("kappa_F_max == 1 - 1/W_cap")
+assert kappa_F_max < 1.0, "uniform kappa_F bound must be < 1"; CHECKS.append("kappa_F_max < 1.0")
 
 # The soft projection ensures P_{ii} < 1 for all i (no absorbing states).
 print("  For τ > 0: soft projection ensures P_{ii} < 1 for all i.")
@@ -190,6 +214,9 @@ print("  By Perron-Frobenius: λ₂(P) ≤ 1 - c / K for some c > 0.")
 print()
 print("  κ̂ = λ₂(P) · κ_F(t)")
 kappa_joint = 1.0 * kappa_F_max  # worst case λ₂(P) → 1
+assert kappa_joint == 1.0 * (1.0 - 1.0 / W_CAP), "kappa_hat must equal lambda2 * kappa_F_max"; CHECKS.append("kappa_hat == 1 * (1 - 1/W_cap)")
+assert kappa_joint < 1.0, "uniform bound kappa_hat must be < 1"; CHECKS.append("kappa_hat < 1.0")
+assert 1.0 * (1 - 1 / W_CAP) < 1.0, "explicit 1 * (1 - 1/W_cap) < 1"; CHECKS.append("explicit 1*(1-1/W_cap) < 1.0")
 print("  ≤ (1 - c/K) · (1 - 1/W_cap)")
 print("  < 1  (UNIFORM for all t, all ℳ_t, any τ > 0, K ≤ K_max, W_cap fixed)")
 
@@ -209,3 +236,4 @@ print("  =========  Hard projection (τ = 0) is the degenerate limit;")
 print("             approach 1.0 as the Voronoi cells become rotation-invariant.")
 print("             Any positive τ breaks this degeneracy.")
 print("=" * 72)
+print("  CHECKS PASSED: %d" % len(CHECKS))

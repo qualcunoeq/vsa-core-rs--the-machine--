@@ -396,7 +396,8 @@ Known gaps:
 New in v3.4: governed reasoning verticals:
 - **Proposition kernel**: 12-schema trusted environment with theorem
   instantiation, premise certificates, and replay verification (500-case seed:
-  324/324 valid accepted, all 176 invalid rejected).
+  324/324 valid accepted, all 176 invalid rejected). This is a self-consistency
+  check: the cases and their expected labels come from the same generator.
 - **Recurrence vertical**: deterministic first-order affine recurrence solving
   with authorization, execution, and replay (500-case seed: 251/251 expected-
   positive executed/replayed, all 249 expected abstentions rejected).

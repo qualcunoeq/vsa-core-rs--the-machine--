@@ -2698,9 +2698,16 @@ impl VSABrain {
     }
 
     /// Measure empirical κ_P (projection contraction) by sampling random
-    /// pairs from the cluster set and projecting them through nearest-centroid.
+    /// pairs and projecting them through nearest-centroid.
     ///
-    /// κ_P = mean(δ(P(x), P(y)) / δ(x, y))
+    /// This records two statistics, not a single number:
+    ///   κ_P (mean)    = mean(δ(P(x), P(y)) / δ(x, y))   (typical case)
+    ///   κ_P (sampled max) = max over the same ratios      (worst case seen)
+    ///
+    /// The mean is NOT a Lipschitz constant and does not by itself justify a
+    /// Banach fixed-point argument.  The sampled maximum is a lower bound on
+    /// the true (sup-based) Lipschitz constant, since only sampled pairs are
+    /// measured; it must not be read as an upper bound.
     ///
     /// Respects the current soft_projection_tau setting.
     /// Called periodically by the agent loop for joint contraction monitoring.
@@ -4579,14 +4586,23 @@ pub(crate) fn lsh_sector_inline(vector: &Hypervector) -> usize {
 // ═══════════════════════════════════════════════════════════════════════════
 //
 // Tracks empirical κ_P (projection contraction) and κ_F (manifold contraction)
-// to ensure the joint product κ = κ_P · κ_F stays below 1.0.
-// The theoretical margin is 0.010 at L_F = 1.0 (worst case).
+// to ensure the joint product κ = κ_P · κ_F stays below 1.0 in the calibrated
+// operating regime.  This is runtime telemetry: it measures the mean and the
+// sampled maximum of the contraction ratios, not a proven uniform bound.
+//
+// The historical product metric margin of 0.010 came from
+// α(1 - κ_P) > β · κ_F · L_F at κ_P ≈ 0.68 and is SUPERSEDED (see MATH.md
+// XX.1 and Corollary XXII.1-R).  The current stability argument is the
+// factorization κ̂ = λ₂(P) · κ_F < 1 on runtime-admissible manifolds.
 //
 // κ_P measurement:
-//   Samples pairs of (pre-projection, post-projection) states from the
-//   anchor_through_clusters pipeline. For each pair (x, y):
-//     κ_P_sample = δ(P(x), P(y)) / δ(x, y)
-//   κ_P = rolling mean of samples.
+//   Samples pairs of (pre-projection, post-projection) states.  For each
+//   pair (x, y):
+//     κ_P_sample = δ(P(x), P(y)) / δ(x, y)   (clamped to [0, 2])
+//   κ_P = rolling mean of samples; κ_P_max = rolling maximum of samples.
+//   The mean is the typical-case ratio.  κ_P_max is a sampled worst-case
+//   estimate: a lower bound on the true (sup-based) Lipschitz constant,
+//   never an upper bound, because it is measured only on sampled pairs.
 //
 // κ_F measurement:
 //   Per cluster absorption:
@@ -4604,6 +4620,10 @@ pub struct ContractionTelemetry {
     // κ_P samples (projection contraction)
     pub kappa_p_samples: Vec<f64>,
     pub kappa_p_mean: f64,
+    /// Rolling maximum of the sampled κ_P ratios (clamped to [0, 2]).
+    /// A sampled worst-case estimate and a lower bound on the true
+    /// Lipschitz constant, not a proven upper bound.
+    pub kappa_p_max: f64,
     pub kappa_p_count: u64,
 
     // κ_F samples (manifold contraction)
@@ -4636,6 +4656,7 @@ impl ContractionTelemetry {
         ContractionTelemetry {
             kappa_p_samples: Vec::with_capacity(1000),
             kappa_p_mean: 0.0,
+            kappa_p_max: 0.0,
             kappa_p_count: 0,
             kappa_f_samples: Vec::with_capacity(1000),
             kappa_f_mean: 0.0,
@@ -4664,6 +4685,10 @@ impl ContractionTelemetry {
         }
         self.kappa_p_mean =
             self.kappa_p_samples.iter().sum::<f64>() / self.kappa_p_samples.len() as f64;
+        self.kappa_p_max = self
+            .kappa_p_samples
+            .iter()
+            .fold(0.0_f64, |acc, &s| acc.max(s));
         self.kappa_p_count += 1;
         self.update_joint();
     }
@@ -4727,9 +4752,10 @@ impl ContractionTelemetry {
     /// Generate a summary report string.
     pub fn report(&self) -> String {
         format!(
-            "path={} κ_P={:.4} (n={}), κ_F={:.4} (n={}), κ={:.6}, κ_max={:.6}",
+            "path={} κ_P={:.4} mean / {:.4} sampled-max (n={}), κ_F={:.4} (n={}), κ={:.6}, κ_max={:.6}",
             self.projection_path.label(),
             self.kappa_p_mean,
+            self.kappa_p_max,
             self.kappa_p_count,
             self.kappa_f_mean,
             self.kappa_f_count,
@@ -4788,6 +4814,193 @@ mod tests {
             dist > 0.40 && dist < 0.60,
             "Hamming distance of random vectors should be around 0.5, got {}",
             dist
+        );
+    }
+
+    #[test]
+    fn test_contraction_telemetry_tracks_mean_and_sampled_max() {
+        let mut telemetry = ContractionTelemetry::new();
+        telemetry.record_kappa_p(1.0, 0.5);
+        telemetry.record_kappa_p(1.0, 0.9);
+        telemetry.record_kappa_p(1.0, 0.1);
+        assert!(
+            (telemetry.kappa_p_mean - 0.5).abs() < 1e-9,
+            "mean should be 0.5, got {}",
+            telemetry.kappa_p_mean
+        );
+        assert!(
+            (telemetry.kappa_p_max - 0.9).abs() < 1e-9,
+            "sampled max should be 0.9, got {}",
+            telemetry.kappa_p_max
+        );
+        assert!(
+            telemetry.kappa_p_max >= telemetry.kappa_p_mean,
+            "sampled max must be >= mean"
+        );
+        // Ratios are clamped to [0, 2] so a discontinuous projection cannot
+        // report an unbounded sample.
+        telemetry.record_kappa_p(1.0, 5.0);
+        assert!(
+            (telemetry.kappa_p_max - 2.0).abs() < 1e-9,
+            "clamped sampled max should be 2.0, got {}",
+            telemetry.kappa_p_max
+        );
+    }
+
+    /// Adversarial contraction test.  Instead of sampling random trajectories,
+    /// this deliberately walks the Hamming segment between two centroids until
+    /// the nearest-centroid decision flips.  The two inputs at that one-bit
+    /// boundary step differ by a single bit but map to two different centroids,
+    /// so delta(P(x),P(y)) / delta(x,y) is huge.  This shows (a) the hard
+    /// projection is not non-expansive, and (b) a sampled maximum is only a
+    /// lower bound on the true worst case.
+    #[test]
+    fn test_kappa_p_adversarial_search_beats_random_sampling() {
+        fn nearest_index(x: &Hypervector, clusters: &[MemoryCluster]) -> usize {
+            let mut best_i = 0usize;
+            let mut best_d = f64::INFINITY;
+            for (i, c) in clusters.iter().enumerate() {
+                let d = x.normalized_hamming_distance(&c.centroid);
+                if d < best_d {
+                    best_d = d;
+                    best_i = i;
+                }
+            }
+            best_i
+        }
+
+        // Deterministic, high-entropy centroids (no RNG): reproducible test.
+        let clusters: Vec<MemoryCluster> = (0..20usize)
+            .map(|i| {
+                let ch = char::from_u32('a' as u32 + i as u32).unwrap();
+                test_cluster_from_centroid(Hypervector::encode_char(ch, i))
+            })
+            .collect();
+
+        // Deliberate search: walk toward each neighbour in 128-bit chunks, then
+        // refine to the exact one-bit flip where the decision changes.
+        let mut best_ratio = 0.0_f64;
+        let mut best_pair: Option<(Hypervector, Hypervector)> = None;
+        for i in 0..clusters.len() {
+            for j in (i + 1)..clusters.len() {
+                let ci = clusters[i].centroid;
+                let mask = ci.bitwise_xor(&clusters[j].centroid);
+                let mut positions: Vec<(usize, usize)> = Vec::new();
+                for block in 0..U64_BLOCKS {
+                    let mut w = mask.bits[block];
+                    while w != 0 {
+                        let bit = w.trailing_zeros() as usize;
+                        w &= w - 1;
+                        positions.push((block, bit));
+                    }
+                }
+                let mut prev = ci;
+                let mut prev_near = i;
+                let mut idx = 0;
+                while idx < positions.len() {
+                    let end = (idx + 128).min(positions.len());
+                    let mut next = prev;
+                    for &(blk, bit) in &positions[idx..end] {
+                        next.bits[blk] ^= 1u64 << bit;
+                    }
+                    let next_near = nearest_index(&next, &clusters);
+                    if next_near != prev_near {
+                        // Refine to the first single-bit flip that flips the
+                        // decision.
+                        let mut cur = prev;
+                        for &(blk, bit) in &positions[idx..end] {
+                            let mut cand = cur;
+                            cand.bits[blk] ^= 1u64 << bit;
+                            if nearest_index(&cand, &clusters) != prev_near {
+                                let db = cur.normalized_hamming_distance(&cand);
+                                // Exercise the production hard-projection path
+                                // (tau < 1e-12 recovers nearest-centroid).
+                                let pa = crate::reason::soft_project(&cur, &clusters, 0.0);
+                                let pb = crate::reason::soft_project(&cand, &clusters, 0.0);
+                                let da = pa.normalized_hamming_distance(&pb);
+                                let ratio = da / db;
+                                if ratio > best_ratio {
+                                    best_ratio = ratio;
+                                    best_pair = Some((cur, cand));
+                                }
+                                break;
+                            }
+                            cur = cand;
+                        }
+                        break;
+                    }
+                    prev = next;
+                    prev_near = next_near;
+                    idx = end;
+                }
+            }
+        }
+
+        let (adv_a, adv_b) = best_pair.expect("boundary search must find a decision flip");
+        // (a) The hard projection is not non-expansive.
+        assert!(
+            best_ratio > 1.0,
+            "hard projection must admit an expansion pair, got ratio {}",
+            best_ratio
+        );
+
+        // (b) Random hard-path trajectories never deliberately cross a decision
+        // boundary, so they miss the worst case.
+        let mut sampled_max = 0.0_f64;
+        let mut sampled_sum = 0.0_f64;
+        let n = 2_000usize;
+        for _ in 0..n {
+            let x = Hypervector::new_random();
+            let y = Hypervector::new_random();
+            let db = x.normalized_hamming_distance(&y);
+            let px = nearest_index(&x, &clusters);
+            let py = nearest_index(&y, &clusters);
+            let da = clusters[px]
+                .centroid
+                .normalized_hamming_distance(&clusters[py].centroid);
+            let r = if db > 1e-10 { da / db } else { 0.0 };
+            sampled_max = sampled_max.max(r);
+            sampled_sum += r;
+        }
+        let sampled_mean = sampled_sum / n as f64;
+        assert!(
+            best_ratio > sampled_max,
+            "deliberate search ({}) must beat the sampled max ({})",
+            best_ratio,
+            sampled_max
+        );
+
+        // Telemetry clamps the raw ratio; the mean stays far below it, so the
+        // mean is not a usable contraction guarantee.
+        let mut telemetry = ContractionTelemetry::new();
+        let db = adv_a.normalized_hamming_distance(&adv_b);
+        let pa = crate::reason::soft_project(&adv_a, &clusters, 0.0);
+        let pb = crate::reason::soft_project(&adv_b, &clusters, 0.0);
+        telemetry.record_kappa_p(db, pa.normalized_hamming_distance(&pb));
+        telemetry.record_kappa_p(1.0, sampled_mean.min(1.99));
+        assert!(
+            (telemetry.kappa_p_max - 2.0).abs() < 1e-9,
+            "clamped adversarial sample should be 2.0, got {}",
+            telemetry.kappa_p_max
+        );
+        assert!(
+            telemetry.kappa_p_max > telemetry.kappa_p_mean,
+            "sampled max ({}) must exceed sampled mean ({})",
+            telemetry.kappa_p_max,
+            telemetry.kappa_p_mean
+        );
+
+        // The shipped soft projection (tau = 0.10) is far better behaved on the
+        // same boundary pair.  The hard discontinuity is the failure mode that
+        // the lambda_2(P) factorization is meant to bypass, not the soft path.
+        let soft_pa = crate::reason::soft_project(&adv_a, &clusters, 0.10);
+        let soft_pb = crate::reason::soft_project(&adv_b, &clusters, 0.10);
+        let soft_ratio = soft_pa.normalized_hamming_distance(&soft_pb) / db;
+        assert!(
+            soft_ratio < best_ratio,
+            "soft projection ({}) must expand less than hard ({})",
+            soft_ratio,
+            best_ratio
         );
     }
 

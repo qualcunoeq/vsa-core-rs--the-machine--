@@ -9,7 +9,7 @@ This specification covers the VSA mathematics, assumptions, proof boundaries, an
 |---|---|
 | Full Rust test suite | **2,567 collected** (2,511 passing, 41 known pre-existing failures, 15 ignored) |
 | Structural SVO zero-overlap diagnostic | **3/3 correct**; historical trigram path: 0/3 |
-| Governed evaluation | 27/27 direct algebra; 324/500 proposition cases accepted with 1.000 replay; 500/500 strategic selection |
+| Governed evaluation | 27/27 direct algebra; 324 expected-valid proposition cases accepted of 500 (self-consistency: labels from the same generator) with 1.000 replay; 500/500 strategic selection |
 | Verification control | 32/32 valid receipts accepted; 32/32 tampered receipts rejected; bypass diagnostic false-accepts 32/32 |
 | Contextual strategy support | Six adversarial cases pass, including mixed global/contextual support |
 
@@ -76,7 +76,7 @@ the architecture as a whole loses its guarantees.
 | # | Name | Statement | Required By | Failure Mode |
 |---|------|-----------|-------------|-------------|
 | **A6** | **Piecewise-Stationary World** | Input distribution stable for intervals $\geq T_{\min}$, then may jump | XXI (invariant measure), XVII (Wasserstein) | Measure never converges; tracking lag $\tau_{\text{track}}$ dominates dynamics |
-| **A7** | **Burst-Limited Adversary** | In any window of $W$ ticks, at most $B$ inputs are adversarial | XXII ($L_F$ bound) | Adversarial inputs force $L_F > 1$; joint contraction margin collapses from 0.010 to negative |
+| **A7** | **Burst-Limited Adversary** | In any window of $W$ ticks, at most $B$ inputs are adversarial | XXII ($L_F$ bound) | Adversarial inputs force $L_F > 1$; the superseded joint-margin formulation collapses from 0.010 to negative (current stability is the $\lambda_2(P)\cdot\kappa_F$ factorization, XXV.4) |
 | **A8** | **Minimum Recurrence** | Important patterns recur $\geq m$ times within $T$ ticks | XII (promotion), evidence integration | Patterns never stabilize; every observation is novel; cluster count grows to $K_{\max}$ |
 | **A9** | **Bounded Novelty Rate** | New concepts per window $N_{\text{new}}(W) \leq \lambda W$ | II (novelty gate), III (memory bound) | Cluster creation rate exceeds compaction rate; memory bound hit; LSH sector saturation |
 | **A10** | **Covering Radius** | Every normal input lies near some valid concept: $\min_i \delta(x, c_i) \leq \varepsilon$ | XVI (anchored stability), XVIII (contraction) | Projection error $> d_{\max}$; contraction guarantee lost; fixed points wander |
@@ -689,7 +689,7 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XIX | Four open questions | **ANSWERED** | `answer_open_questions.py`, W*, self-interference, coupling ratio, capacity |
 | XX.1 | Joint contraction condition | **SUPERSEDED** | Replaced by XXV.4. The product $\alpha(1-\kappa_P) > \beta\cdot\kappa_F\cdot L_F$ uses pre-correction $\kappa_F$ (see v3.0 audit note). Joint stability is now proven via $\lambda_2(P)\cdot\kappa_F$ instead. |
 | XXI.1 | Unique invariant measure | **PROVEN** | Banach fixed point + Wasserstein contraction (XVII.1) |
-| XXII.1 | Adversarial $L_F$ bound (corrected) | **CORRECTED** | $L_F \leq 1.0$ (was 0.5, proof error fixed), joint contraction holds at margin 0.010 |
+| XXII.1 | Adversarial $L_F$ bound (corrected) | **CORRECTED** | $L_F \leq 1.0$ (was 0.5, proof error fixed). Stability is now carried by $\lambda_2(P)\cdot\kappa_F$ (XXV.4); the historical $\alpha(1-\kappa_P)$ margin of 0.010 at $\kappa_P = 0.68$ is superseded and does not hold at the calibrated $\kappa_P = 0.916$ |
 | XXIII.1 | System-level tracking error bounded | **PROVEN** | `test_tracking_error_bounded`, error never exceeds $\theta_{\text{novel}} = 0.70$ |
 | XXIII.2 | Protection gap (corrected) | **CORRECTED** | Unit error fixed: 0.05→0.35. Novelty gate suppressed under gradual drift. |
 | XXIII.3 | Cluster count under drift (corrected) | **PROVEN** (fission-driven) | `test_monotonic_drift_bounded_clusters`, $K$ bounded, growth rate $\leq K_{\text{active}}\cdot r/0.40$ |
@@ -697,7 +697,7 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | XXV.1 | Singularity of invariant measure | **PROVEN** | `test_invariant_measure_singularity`, volume fraction ≈ 2^{-8200} |
 | XXV.2 | Discrete attractor collapse | **PROVEN** | Corollary of XXV.1, state confined to K Hamming balls |
 | XXV.3 | Learned quantized random dynamical system | **PROVEN** | Corollary of XXV.1, full mathematical identity |
-| XXV.4 | Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ once `enforce_a3q_manifold()` accepts the active centroid set |
+| XXV.4 | Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ once `enforce_a3q_manifold()` accepts the active centroid set. Scope: spectral gap of the row-stochastic centroid chain (asymptotic rate $\lambda_2$; finite-time constant via Dobrushin/reversibility, see the Scope Remark), not the Euclidean operator norm of the vector projection |
 | XXV.5a | No deterministic decorrelation from exact $\rho$-admissibility | **PROVEN** | `test_rho_admissible_does_not_imply_decorrelation` constructs an admissible near-period-4 centroid with $\delta(c,\rho^{52}(c))=2/D \ll 0.5$ |
 | Sub-Lemma S (Thm XXV.5) | $g = \text{nearest}\circ P_\tau$ surjects from $\rho^{26}(W_i)$ | **PROVEN** for runtime-admissible manifolds | Constructive witness works for A3-Q-admitted manifolds; `enforce_a3q_manifold()` is the admission gate; empirical generic test: 90/90 pairs, min $w_j/w_i=5.39$ |
 | XXVI.2 | Spectral gap (exponential mixing) | **PROVEN** | λ₂(P) ≤ κ < 1, mixing in ~77 cycles |
@@ -723,8 +723,8 @@ $$\text{decision} = f\left( \frac{\text{evidence}}{\text{threshold}} > 1 \right)
 | Centroid popcount drift (200 random obs, W=20) | Stays in $(0.15, 0.85)$ | `test_accumulator_asymmetry` |
 | Novelty gate speciation trigger | $\delta(\tau, c) \geq 0.70$ | `test_novelty_gate_speciation_timing` |
 | LSH $\chi^2$ (10K samples, 16 sectors) | 22.61 (pass at $\alpha=0.05$) | `test_lsh_distribution` |
-| Bundling bias (n=3..11) | $\mu < 0.001$, $\sigma < 0.005$ | `verify_dynamics.py` |
-| Compaction $\Phi$ decrease | $-0.0078$ per cycle | `verify_dynamics.py` |
+| Bundling bias (n=3..11) | $\lvert \mu \rvert < 0.002$, $\sigma < 0.005$ | `verify_dynamics.py` |
+| Compaction $\Phi$ decrease (seeded near-duplicate groups) | $\Delta\Phi = -34.9$ for 4 merges (20→16 clusters); random centroids never merge, so $\Phi$ is then unchanged | `verify_dynamics.py` |
 | Soft projection frontier ($\tau=0.08$, K=20) | Conservative sweet spot; 1,528 distinct outputs (10.6 bits, $76\times$) | `test_soft_projection_frontier_sweep` |
 | Soft projection frontier ($\tau=0.10$, K=20) | $\kappa_P \approx 0.916$, $C_{\text{eff}} = 2554$ (11.3 bits, $128\times$) | `test_soft_projection_frontier_sweep` |
 | Zero-overlap classification (historical trigram path) | **0/3 correct, 1/3 false positive, 2/3 stuck** | Historical v3.1 intervention baseline |
@@ -746,7 +746,7 @@ Since the original document was written, the following claims have been resolved
 
 4. ~~**Feedback loop stability:**~~ **RESOLVED**, Theorem XXV.4 proves $\hat{\kappa} < 1$ uniformly via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}})$ for runtime-admissible manifolds. The exact $\rho$ invariant eliminates fixed-point collapse, and `enforce_a3q_manifold()` enforces the quantitative decorrelation needed by Sub-Lemma S. The joint contraction condition $\alpha(1-\kappa_P) > \beta \cdot \kappa_F \cdot L_F$ from Section XX is SUPERSEDED by this cleaner factorization. Runtime telemetry monitors $\kappa_P \cdot \kappa_F$ continuously, never triggering the tripwire.
 
-5. ~~**Adversarial input:**~~ **RESOLVED**, Theorem XXII.1-R proves $L_F \le 1.0$ for ALL adversarial inputs. The structured adversarial construction (`test_adversarial_lf_boundary`) achieves the tight bound. Joint contraction holds at margin 0.010.
+5. ~~**Adversarial input:**~~ **RESOLVED**, Theorem XXII.1-R proves $L_F \le 1.0$ for ALL adversarial inputs. The structured adversarial construction (`test_adversarial_lf_boundary`) achieves the tight bound. The historical "joint margin 0.010" belonged to the superseded $\alpha(1-\kappa_P)$ condition at $\kappa_P = 0.68$; at the calibrated $\kappa_P = 0.916$ that condition fails, and stability rests on $\lambda_2(P)\cdot\kappa_F < 1$ (XXV.4) and the runtime tripwire on $\kappa_P \cdot \kappa_F$.
 
 **Resolved (v3.1):**
 - ~~**XXIII.2-3 (Cluster count under drift):**~~ **RESOLVED**, Unit error corrected ($\theta_{\text{cluster}} = 0.65$ similarity, not NHD). Protection gap is 0.35, not 0.05. Mechanism changed from novelty-gate-driven to fission-driven. Verified in `test_monotonic_drift_bounded_clusters`. See corrected theorems.
@@ -1327,7 +1327,7 @@ $$\alpha(1 - \kappa_P) = 3 \cdot 0.32 = 0.96$$
 $$\beta \cdot \kappa_F \cdot L_F = 1 \cdot 0.95 \cdot 1.0 = 0.95$$
 $$0.96 > 0.95 \quad \checkmark$$
 
-The margin is **0.010**, substantially thinner than the originally claimed 0.485, but still positive. This makes the joint contraction telemetry (see below) essential for runtime safety.
+The margin is **0.010**, substantially thinner than the originally claimed 0.485, but still positive. Note that the $\kappa_P \approx 0.68$ used here is the pre-calibration value; the calibrated soft-projection value is $\kappa_P \approx 0.916$ (Section XXVII), at which $\alpha(1-\kappa_P) = 3 \cdot 0.084 = 0.252 < \beta \cdot \kappa_F \cdot L_F = 0.95$. The condition therefore does not hold in the shipped configuration, which is why it is superseded by the $\lambda_2(P)\cdot\kappa_F$ factorization rather than repaired. This makes the joint contraction telemetry (see below) essential for runtime safety.
 
 ### Corollary XXII.2 (Why the Original Proof was Wrong)
 
@@ -1337,8 +1337,8 @@ The original probabilistic argument (Hoeffding bound on near-boundary bits) was 
 
 ### Runtime Monitoring (v2.5)
 
-Because the joint contraction margin is only 0.010, the system includes `ContractionTelemetry` (in `lib.rs`) that:
-- Measures empirical $\kappa_P$ every 50 ticks by sampling random projection pairs
+Because contraction is only guaranteed on runtime-admissible manifolds, the system includes `ContractionTelemetry` (in `lib.rs`) that:
+- Measures empirical $\kappa_P$ every 50 ticks by sampling random projection pairs, recording both the mean and the sampled maximum ratio
 - Records $\kappa_F$ per absorption via the `absorb_entry` return value
 - Checks the joint product $\kappa = \kappa_P \cdot \kappa_F$ against a tripwire (0.995 = WARNING, 1.001 = CRITICAL)
 - Logs telemetry status in the agent loop
@@ -1647,7 +1647,7 @@ See `test_metastable_oscillation` in `reason.rs`. The test:
 | $\kappa_F$ | $\approx 0.95$ | Manifold drift contraction factor |
 | $\kappa_{W_1}$ | $\approx 0.925$ (legacy coupling measurement) | Historical hard/old-sweep Wasserstein contraction per 50-tick cycle |
 | $\kappa_{\mathrm{joint}}$ | $\approx 0.870$ at $\tau=0.10$ | Current calibrated projection/manifold product; runtime tripwire is 0.995 |
-| $\Delta W_1$ margin | 0.010 | Joint contraction safety margin at $L_F = 1.0$ |
+| $\Delta W_1$ margin | 0.010 (superseded) | Historical joint-metric margin at $L_F = 1.0$ and $\kappa_P = 0.68$; not the shipped-configuration margin |
 | $w_{\min}$ | $\geq 1$ | Minimum cluster weight at absorption |
 | $\sigma$ | $\approx 0.05$ to $0.10$ | Input noise level (std of NHD) |
 | $\tau_{\text{track}}$ | $\leq 400$ | Max tracking lag (stationary-input horizon) |
@@ -1985,6 +1985,20 @@ $$\kappa(\mathcal{T}_t) \leq \lambda_2(P_t) \cdot \kappa_F(t) \leq \left(1 - \fr
 
 This bound $\hat{\kappa}(\tau, W_{\text{cap}}, K_{\text{max}}, D)$ depends only on system constants, not on the current manifold $\mathcal{M}_t$.
 
+### Remark (Scope of the $\lambda_2(P)$ argument)
+
+The eigenvalue argument is applied to a **stochastic** matrix, and only in the analytic sense of Markov-chain mixing. The precise conditions are:
+
+1. **Row-stochastic, not a general non-normal operator.** $P$ has entries $P_{ij}=|V_i\cap f^{-1}(j)|/|V_i|$ (Section XXV.4), so each row sums to $1$. The relevant object is the second-largest eigenvalue modulus (SLEM) $\lambda_2(P)$, and the standard Perron-Frobenius theory applies: for a primitive stochastic matrix, $\|P^t_{i\cdot}-\pi\|_{TV}\to 0$ at geometric rate $\lambda_2(P)$. A counterexample such as $A=\left(\begin{smallmatrix}0&2\\0&0\end{smallmatrix}\right)$ (spectral radius $0$, Euclidean norm $2$) is not stochastic, has no Perron root, and does not arise here; the claim is **not** a statement about the Euclidean operator norm of an arbitrary non-normal map.
+
+2. **Asymptotic rate versus one-step constant.** $\lambda_2(P)$ is the asymptotic rate. The per-step product $\kappa(\mathcal{T}_t)\leq\lambda_2(P_t)\cdot\kappa_F(t)$ is exact when $P$ is normal (in particular reversible: $\pi_i P_{ij}=\pi_j P_{ji}$), so that the induced norm in the reversible metric equals $\lambda_2$. For a general non-reversible chain the sharp one-step coefficient is the Dobrushin coefficient $\eta(P)=\tfrac12\max_{i,j}\|P_{i\cdot}-P_{j\cdot}\|_1\geq\lambda_2(P)$. Finite-time convergence need not be the pure geometric $\|P^t_{i\cdot}-\pi\|_{TV}\leq C\,\lambda_2(P)^t$: when $P$ is non-normal and non-diagonalizable, Jordan blocks add polynomial factors, so $\|P^t-\Pi\|=O(t^{m-1}\lambda_2(P)^t)$ with $m$ the largest relevant Jordan block size and $0<\lambda_2(P)<1$. The safe statement is that the SLEM governs the asymptotic exponential rate while finite-time bounds may carry constants or polynomial factors. We do **not** assume symmetry, reversibility, or diagonalizability, so unless reversibility is checked, the factorization should be read as an asymptotic/leading-order statement with $\eta(P)$ as the finite-time constant, not as a one-step Euclidean-norm inequality.
+
+3. **Common metric.** The two factors act in different spaces: $\lambda_2(P)$ is index-chain mixing and $\kappa_F$ is weight/manifold geometry. Their multiplicative factorization assumes both are measured in the same Hamming-induced metric. This is an assumption on the composed map, stated here rather than proved.
+
+4. **The hard/soft vector projection is separate.** The projection operator $P_\tau$/nearest is a discontinuous nonlinear map (XVI.1.1) and is **not** controlled by $\lambda_2(P)$; the factorization deliberately bypasses it. Its contraction is monitored only empirically by the telemetry $\kappa_P$, which is a sampled lower bound on the true Lipschitz constant (see the runtime note and `test_kappa_p_adversarial_search_beats_random_sampling`). The operative runtime safety mechanism is the $\kappa_P\cdot\kappa_F$ tripwire, not a proven vector-projection bound.
+
+**Consequence for the status.** Theorem XXV.4 is conditional on the manifold being runtime-admissible (A3-Q) and on the common-metric assumption in item 3. It is a spectral-gap/mixing bound for a row-stochastic chain, and the shipped configuration's guarantee should be read with that scope. The implementation does not compute $\lambda_2(P)$ at runtime; the guard that actually runs is the tripwire.
+
 ### Status of the Remaining Open Sub-Problems
 
 The original Assumption $\rho$ has been decomposed into three precise items:
@@ -2005,7 +2019,7 @@ The original Assumption $\rho$ has been decomposed into three precise items:
 | **XXV.1** Singularity of $\mu^*$ | **PROVEN** | $d_{\text{eff}} \approx 150 \ll D$ (Hamming ball volume argument) |
 | **XXV.2** Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 |
 | **XXV.3** Learned quantized RDS | **PROVEN** | Corollary of XXV.1 |
-| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
+| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$. Scope: spectral gap of the row-stochastic centroid chain, asymptotic rate; not the Euclidean operator norm of the vector projection (see Scope Remark) |
 | **$\rho$-admissible invariant** | **PROVEN** (system invariant) | `enforce_rho_admissible()` in lib.rs ($\rho^{13}$, $\rho^{26}$, $\rho^{52}$) |
 | **A3-Q admission gate** | **IMPLEMENTED** | `enforce_a3q_manifold()` + `test_a3q_*` |
 | **XXV.5a** Exact admissibility does not imply decorrelation | **PROVEN** | Near-period-4 counterexample, $\delta(c,\rho^{52}(c))=2/D$ |
@@ -2040,7 +2054,7 @@ The distinction between "smooth ergodic sampler" and "discrete attractor collaps
 | **XXV.1** Singularity of $\mu^*$ | **PROVEN** | $d_{\text{eff}} \approx 150 \ll D$ (Hamming ball volume argument) |
 | **XXV.2** Discrete attractor collapse | **PROVEN** | Corollary of XXV.1 |
 | **XXV.3** Learned quantized RDS | **PROVEN** | Corollary of XXV.1 |
-| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$ |
+| **XXV.4** Uniform spectral gap $\hat{\kappa} < 1$ | **PROVEN** for runtime-admissible manifolds | $\hat{\kappa} = (1 - c/K) \cdot (1 - 1/W_{\text{cap}}) < 1$. Scope: spectral gap of the row-stochastic centroid chain, asymptotic rate; not the Euclidean operator norm of the vector projection (see Scope Remark) |
 | **Sub-Lemma S / $\rho$-admissible** | **CLOSED operationally** | Exact $\rho^{13/26/52}$ invariant proven; quantitative decorrelation supplied by A3-Q admission |
 
 ### Dependency Closure
@@ -2146,6 +2160,8 @@ Therefore, the system mixes exponentially:
 $$\|P^t_{i\cdot} - \pi\|_{\text{TV}} \leq C \cdot \lambda_2(P)^t$$
 
 with mixing time $\tau_{\text{mix}} \leq \frac{\log(1/\varepsilon)}{1 - \lambda_2(P)}$.
+
+The geometric form above is exact only when $P$ is diagonalizable in the relevant metric (in particular normal/reversible). For a general non-normal stochastic matrix, Jordan blocks add polynomial factors, so the rigorous asymptotic statement is $\|P^t-\Pi\|=O(t^{m-1}\lambda_2(P)^t)$ with $m$ the largest relevant Jordan block size ($0<\lambda_2(P)<1$); the SLEM governs the exponential rate while the finite-time bound may carry constants or polynomial factors.
 
 **Resolution (v3.4).** Theorem XXV.4 closes the uniform contraction problem via $\hat{\kappa} = \lambda_2(P) \cdot (1 - 1/W_{\text{cap}}) < 1$ for runtime-admissible manifolds. The former deterministic-decorrelation sub-problem is resolved negatively in the exact-only setting: exact $\rho$-admissibility cannot imply quantitative decorrelation for all centroid sets. The operational theorem boundary is explicit:
 > **A3-Q admission:** `enforce_a3q_manifold()` admits only active centroid geometries with direct and rotated quantitative decorrelation, then Sub-Lemma S applies. Without A3-Q, adversarial exact-admissible configurations can violate the witness margin.
@@ -2297,11 +2313,11 @@ The following errors in the original MATH.md were discovered and corrected durin
 |---------|---------------|------------|---------------|
 | I.2 | Bits cannot flip $1 \to 0$ (monotone accumulator) | Bits CAN flip $1 \to 0$ via decay; bounded by Theorems I.2-R.1/2 | `prove_decay_plasticity.py` |
 | XV (status) | Multiple theorems listed as UNVERIFIED | 13 theorems upgraded to PROVEN or VERIFIED | Sweep of all tests |
-| XXII.1 | $L_F \leq 0.5$ (joint margin 0.485) | $L_F \leq 1.0$ (tight), joint margin **0.010** | `prove_adversarial_Lf.py` + `test_adversarial_lf_boundary` |
+| XXII.1 | $L_F \leq 0.5$ (joint margin 0.485) | $L_F \leq 1.0$ (tight); v2.5 reported a margin of **0.010** under the later-superseded $\kappa_P = 0.68$ parameterization | `prove_adversarial_Lf.py` + `test_adversarial_lf_boundary` |
 | XXII.1 proof | Self-contradicting proof with mid-text correction | Clean per-bit subset argument, $L_F \leq 1.0$ | The coupling argument audit |
 | XXVII.2 | $\kappa_P^{\tau} \to 1$ as $\tau \to \infty$ (identity limit) | $\kappa_P^{\tau} \to 0$ as $\tau \to \infty$ (mush, uniform blend) | `test_soft_projection_frontier_sweep` |
 | XXVII.2 formula | $\kappa_P^{\tau} = 1 - (1 - \kappa_P) e^{-c/\tau}$ | No simple closed form; three empirically measured regimes | Empirical sweep |
-| Constants | $\kappa_P \approx 0.68$, $C_{\text{eff}} \approx 6.3$ bits | $\kappa_P \approx 0.969$ (hard, random pairs), $\kappa_P \approx 0.68$ (on-manifold), $C_{\text{eff}} \approx 7.5$ bits (soft, $\tau=0.03$) | `measure_kappa_p` + sweep |
+| Constants | $\kappa_P \approx 0.68$, $C_{\text{eff}} \approx 6.3$ bits | v2.5: $\kappa_P \approx 0.969$ (hard, random pairs), $\kappa_P \approx 0.68$ (on-manifold), $C_{\text{eff}} \approx 7.5$ bits (soft, $\tau=0.03$). Later recalibrated to $\kappa_P \approx 0.916$ at $\tau = 0.10$ (Section XXVII) | `measure_kappa_p` + sweep |
 
 ---
 
@@ -2397,8 +2413,10 @@ XXII.1-R (Adversarial L_F)
    │  Tightness: L_F = 1.0 achievable via boundary construction
    │  (50 all-1s → 50 all-0s → compare all-1s vs all-0s absorption)
    │
-   ├──→ Corollary XXII.1-R: Joint contraction at L_F = 1.0
-   │       α(1-κ_P) = 0.96 > β·κ_F·L_F = 0.95 (margin = 0.010)
+    ├──→ Corollary XXII.1-R: Joint contraction at L_F = 1.0
+    │       α(1-κ_P) = 0.96 > β·κ_F·L_F = 0.95 (margin = 0.010)
+    │       [SUPERSEDED: uses κ_P = 0.68. Calibrated κ_P = 0.916 gives
+    │        0.252 < 0.95; shipped stability is λ₂(P)·κ_F < 1, XXV.4.]
    │
    └── Verified by:
         • prove_adversarial_Lf.py, exact boundary construction
